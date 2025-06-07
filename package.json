@@ -1,0 +1,35 @@
+{
+  "name": "bert-webbink",
+  "description": "Bert Webbink's blog",
+  "keywords": [
+    "Bert",
+    "Webbink",
+    "Blog",
+    "Organs"
+  ],
+  "workspaces": [
+    "frontend",
+    "studio"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "start": "turbo start",
+    "deploy": "turbo deploy",
+    "lint": "turbo lint",
+    "format": "yarn prettier --write .",
+    "test": "turbo test",
+    "extract-types": "turbo extract-types",
+    "check-types": "turbo check-types"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "turbo": "latest"
+  },
+  "volta": {
+    "node": "24.1.0",
+    "yarn": "4.9.2"
+  },
+  "packageManager": "yarn@4.9.2"
+}
