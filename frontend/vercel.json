@@ -4,6 +4,5 @@
     "env": {
       "ENABLE_EXPERIMENTAL_COREPACK": "1"
     }
-  },
-  "regions": ["eu-central-1"]
+  }
 }
