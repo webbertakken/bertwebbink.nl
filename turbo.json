@@ -9,7 +9,7 @@
       "dependsOn": ["^prebuild"]
     },
     "build": {
-      "env": ["SANITY_API_READ_TOKEN"],
+      "env": ["SANITY_API_READ_TOKEN", "ENABLE_EXPERIMENTAL_COREPACK"],
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
