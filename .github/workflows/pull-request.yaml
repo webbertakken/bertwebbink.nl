@@ -23,7 +23,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install deps
-        run: yarn install --frozen-lockfile --immutable
+        run: yarn install --immutable
 
       - name: Tests
         run: yarn coverage

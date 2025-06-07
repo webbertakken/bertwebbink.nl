@@ -28,6 +28,10 @@
     },
     "test": {
       "dependsOn": ["^test"],
+      "persistent": true
+    },
+    "coverage": {
+      "dependsOn": ["^coverage"],
       "outputs": ["coverage/**"]
     },
     "extract-types": {

@@ -19,10 +19,10 @@
     "lint": "turbo lint",
     "format": "yarn prettier --write .",
     "test": "turbo test",
+    "coverage": "turbo coverage",
     "extract-types": "turbo extract-types",
     "check-types": "turbo check-types"
   },
-  "dependencies": {},
   "devDependencies": {
     "prettier": "^3.5.3",
     "turbo": "latest"
