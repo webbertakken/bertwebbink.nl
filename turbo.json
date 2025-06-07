@@ -9,8 +9,9 @@
       "dependsOn": ["^prebuild"]
     },
     "build": {
+      "env": ["SANITY_API_READ_TOKEN"],
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "start": {
       "dependsOn": ["build", "^start"],
