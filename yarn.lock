@@ -5214,7 +5214,7 @@ __metadata:
   resolution: "bert-webbink@workspace:."
   dependencies:
     prettier: "npm:^3.5.3"
-    turbo: "npm:latest"
+    turbo: "npm:^2.5.4"
   languageName: unknown
   linkType: soft
 
@@ -13148,7 +13148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo@npm:latest":
+"turbo@npm:^2.5.4":
   version: 2.5.4
   resolution: "turbo@npm:2.5.4"
   dependencies:
