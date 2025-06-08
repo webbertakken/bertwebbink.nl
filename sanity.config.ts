@@ -16,7 +16,7 @@ import {
   type DocumentLocation,
 } from 'sanity/presentation'
 import { assist } from '@sanity/assist'
-import { assertValue } from '@/util/assertValue'
+import { assertValue } from '@/core/util/assertValue'
 
 // Environment variables for project configuration
 const projectId = assertValue(
