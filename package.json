@@ -9,9 +9,9 @@
     "Organs"
   ],
   "scripts": {
-    "predev": "npm run typegen",
+    "predev": "yarn extract-types && yarn typegen",
     "dev": "next dev --turbopack",
-    "prebuild": "npm run typegen",
+    "prebuild": "yarn extract-types && yarn typegen",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
