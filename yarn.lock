@@ -5209,9 +5209,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bert-webbink@workspace:.":
+"bertwebbink.nl@workspace:.":
   version: 0.0.0-use.local
-  resolution: "bert-webbink@workspace:."
+  resolution: "bertwebbink.nl@workspace:."
   dependencies:
     prettier: "npm:^3.5.3"
     turbo: "npm:^2.5.4"
