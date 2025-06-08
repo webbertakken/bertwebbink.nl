@@ -3,7 +3,7 @@
  * Importing other npm packages here could lead to needlessly increasing the client bundle size, or end up in a server-only function that don't need it.
  */
 
-import { assertValue } from '@/util/assertValue'
+import { assertValue } from '@/core/util/assertValue'
 
 /**
  * As this file is reused in several other files, try to keep it lean and small.

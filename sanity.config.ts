@@ -3,32 +3,39 @@
  * Learn more: https://www.sanity.io/docs/configuration
  */
 
-import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
-import {visionTool} from '@sanity/vision'
-import {schemaTypes} from './src/schemaTypes'
-import {structure} from './src/structure'
-import {unsplashImageAsset} from 'sanity-plugin-asset-source-unsplash'
+import { defineConfig } from 'sanity'
+import { structureTool } from 'sanity/structure'
+import { visionTool } from '@sanity/vision'
+import { schemaTypes } from '@/sanity/schemaTypes'
+import { structure } from '@/sanity/structure'
+import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import {
   presentationTool,
   defineDocuments,
   defineLocations,
   type DocumentLocation,
 } from 'sanity/presentation'
-import {assist} from '@sanity/assist'
+import { assist } from '@sanity/assist'
+import { assertValue } from '@/core/util/assertValue'
 
 // Environment variables for project configuration
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
-const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
+const projectId = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  'Missing environment variable: NEXT_PUBLIC_SANITY_PROJECT_ID',
+)
 
-// URL for preview functionality, defaults to localhost:3000 if not set
-const SANITY_STUDIO_PREVIEW_URL = process.env.SANITY_STUDIO_PREVIEW_URL || 'http://localhost:3000'
+const dataset = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_DATASET,
+  'Missing environment variable: NEXT_PUBLIC_SANITY_DATASET',
+)
+
+const sanityStudioPreviewUrl = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_PREVIEW_URL,
+  'Missing environment variable: NEXT_PUBLIC_SANITY_PREVIEW_URL',
+)
 
 // Define the home location for the presentation tool
-const homeLocation = {
-  title: 'Home',
-  href: '/',
-} satisfies DocumentLocation
+const homeLocation = { title: 'Home', href: '/' } satisfies DocumentLocation
 
 // resolveHref() is a convenience function that resolves the URL
 // path for different document types and used in the presentation tool.
@@ -48,15 +55,14 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
 export default defineConfig({
   name: 'default',
   title: 'Bert Webbink',
-
   projectId,
   dataset,
-
+  basePath: '/admin', // Base path for the Sanity Studio, can be customized
   plugins: [
     // Presentation tool configuration for Visual Editing
     presentationTool({
       previewUrl: {
-        origin: SANITY_STUDIO_PREVIEW_URL,
+        initial: sanityStudioPreviewUrl,
         previewMode: {
           enable: '/api/draft-mode/enable',
         },

@@ -8,6 +8,19 @@
 .yarn/
 .turbo/
 
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# sanity
+/.sanity/
+/dist/
+#sanity.types.ts
+#schema.json
+
 # misc
 .DS_Store
 *.pem
