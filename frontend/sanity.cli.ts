@@ -5,10 +5,18 @@
  * Learn more: https://www.sanity.io/docs/cli
  */
 
-import {defineCliConfig} from 'sanity/cli'
+import { defineCliConfig } from 'sanity/cli'
+import { assertValue } from '@/util/assertValue'
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || '<your project ID>'
-const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
+const projectId = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  'Missing NEXT_PUBLIC_SANITY_PROJECT_ID environment variable',
+)
+
+const dataset = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_DATASET,
+  'Missing NEXT_PUBLIC_SANITY_DATASET environment variable',
+)
 
 export default defineCliConfig({
   api: {

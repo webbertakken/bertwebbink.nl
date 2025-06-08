@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "typegen": "sanity typegen generate",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "extract-types": "sanity schema extract --enforce-required-fields"
   },
   "dependencies": {
     "@sanity/assist": "^4.2.0",
