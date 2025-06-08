@@ -1,5 +1,8 @@
-dist/
-coverage/
-node_modules/
-.yarn/
-.next/
+**/dist/
+**/coverage/
+**/node_modules/
+**/.yarn/
+**/.next/
+**/.idea/
+**/.turbo/
+**/.sanity/
