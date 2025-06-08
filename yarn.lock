@@ -6059,6 +6059,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"date-fns@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: 10/d5f6e9de5bbc52310f786099e18609289ed5e30af60a71e0646784c8185ddd1d0eebcf7c96b7faaaefc4a8366f3a3a4244d099b6d0866ee2bec80d1361e64342
+  languageName: node
+  linkType: hard
+
 "debounce@npm:^1.0.0":
   version: 1.2.1
   resolution: "debounce@npm:1.2.1"
@@ -7599,9 +7606,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "frontend@workspace:frontend"
   dependencies:
+    "@sanity/assist": "npm:^4.2.0"
     "@sanity/client": "npm:^7.4.0"
+    "@sanity/icons": "npm:^3.7.0"
     "@sanity/image-url": "npm:^1.1.0"
     "@sanity/uuid": "npm:^3.0.2"
+    "@sanity/vision": "npm:^3.91.0"
     "@tailwindcss/postcss": "npm:^4.1.8"
     "@tailwindcss/typography": "npm:^0.5.16"
     "@types/node": "npm:^20.17.17"
@@ -7609,15 +7619,17 @@ __metadata:
     "@types/react-dom": "npm:^18.3.5"
     "@vercel/speed-insights": "npm:^1.1.0"
     autoprefixer: "npm:^10.4.20"
-    date-fns: "npm:^3.6.0"
+    date-fns: "npm:^4.1.0"
     eslint: "npm:^8.57.0"
     eslint-config-next: "npm:^15.1.6"
     next: "npm:^15.1.6"
     next-sanity: "npm:^9.8.42"
+    pluralize-esm: "npm:^9.0.5"
     postcss: "npm:^8.5.4"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     sanity: "npm:^3.91.0"
+    sanity-plugin-asset-source-unsplash: "npm:^3.0.3"
     sonner: "npm:^1.7.0"
     styled-components: "npm:^6.1.13"
     tailwindcss: "npm:^4.1.8"
@@ -11737,7 +11749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sanity-plugin-asset-source-unsplash@npm:^3.0.1":
+"sanity-plugin-asset-source-unsplash@npm:^3.0.1, sanity-plugin-asset-source-unsplash@npm:^3.0.3":
   version: 3.0.3
   resolution: "sanity-plugin-asset-source-unsplash@npm:3.0.3"
   dependencies:

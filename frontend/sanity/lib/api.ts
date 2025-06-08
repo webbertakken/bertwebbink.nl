@@ -3,14 +3,12 @@
  * Importing other npm packages here could lead to needlessly increasing the client bundle size, or end up in a server-only function that don't need it.
  */
 
-function assertValue<T>(v: T | undefined, errorMessage: string): T {
-  if (v === undefined) {
-    throw new Error(errorMessage)
-  }
+import { assertValue } from '@/util/assertValue'
 
-  return v
-}
-
+/**
+ * As this file is reused in several other files, try to keep it lean and small.
+ * Importing other npm packages here could lead to needlessly increasing the client bundle size, or end up in a server-only function that don't need it.
+ */
 export const dataset = assertValue(
   process.env.NEXT_PUBLIC_SANITY_DATASET,
   'Missing environment variable: NEXT_PUBLIC_SANITY_DATASET',
@@ -29,4 +27,7 @@ export const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-10
 /**
  * Used to configure edit intent links, for Presentation Mode, as well as to configure where the Studio is mounted in the router.
  */
-export const studioUrl = process.env.NEXT_PUBLIC_SANITY_STUDIO_URL || 'http://localhost:3333'
+export const studioUrl = assertValue(
+  process.env.NEXT_PUBLIC_SANITY_STUDIO_URL,
+  'Missing environment variable: NEXT_PUBLIC_SANITY_STUDIO_URL',
+)
