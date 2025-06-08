@@ -18,8 +18,8 @@
 # sanity
 /.sanity/
 /dist/
-sanity.types.ts
-schema.json
+#sanity.types.ts
+#schema.json
 
 # misc
 .DS_Store
