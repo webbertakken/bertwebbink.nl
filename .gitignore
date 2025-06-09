@@ -22,7 +22,8 @@
 #schema.json
 
 # migration from wordpress
-uploads/
+.migrations/database/*.sql
+.migrations/uploads/
 
 # misc
 .DS_Store
