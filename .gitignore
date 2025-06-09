@@ -21,6 +21,9 @@
 #sanity.types.ts
 #schema.json
 
+# migration from wordpress
+uploads/
+
 # misc
 .DS_Store
 *.pem
