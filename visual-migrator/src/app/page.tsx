@@ -34,18 +34,25 @@ function PrepareMigrationUI() {
     setFirst20Lines(null);
     try {
       const response = await fetch("/api/prepare-migration", { method: "POST" });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
       const data = await response.json();
-      setResult(data.success ? "Migration preparation completed successfully." : data.error || "Unknown error");
-      if (data.postCount !== undefined) {
-        setPostCount(data.postCount);
+      console.log('API Response:', data);
+
+      if (!response.ok || !data.success) {
+        throw new Error(JSON.stringify({
+          message: data.error,
+          details: data.details
+        }));
       }
-      if (data.first20Lines !== undefined) {
-        setFirst20Lines(data.first20Lines);
+
+      setResult(data.message || "Migration preparation completed successfully.");
+      if (data.data?.postCount !== undefined) {
+        setPostCount(data.data.postCount);
+      }
+      if (data.data?.preview !== undefined) {
+        setFirst20Lines(data.data.preview);
       }
     } catch (err) {
+      console.error('Error caught:', err);
       setError(err instanceof Error ? err.message : "Failed to run migration");
     } finally {
       setLoading(false);
@@ -79,7 +86,46 @@ function PrepareMigrationUI() {
           )}
         </div>
       )}
-      {error && <div className="text-red-500 mt-2">{error}</div>}
+      {error && (
+        <div className="mt-4">
+          <div className="bg-red-900/50 border border-red-700 rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-4 text-red-400">Error</h2>
+            <div className="space-y-4">
+              {(() => {
+                try {
+                  const errorData = JSON.parse(error);
+                  return (
+                    <>
+                      <p className="text-red-200">{errorData.message}</p>
+                      {errorData.details && (
+                        <div className="mt-4">
+                          {errorData.details.guidance && (
+                            <div className="mb-4">
+                              <h3 className="text-lg font-semibold text-red-300 mb-2">Troubleshooting Steps:</h3>
+                              <div className="bg-gray-900/50 p-4 rounded text-sm text-gray-300">
+                                {errorData.details.guidance.split('\n').map((line: string, index: number) => (
+                                  <p key={index} className="mb-2">{line}</p>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          <h3 className="text-lg font-semibold text-red-300 mb-2">Technical Details:</h3>
+                          <pre className="bg-gray-900/50 p-4 rounded text-sm text-gray-300 overflow-auto">
+                            {JSON.stringify(errorData.details, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </>
+                  );
+                } catch (e) {
+                  console.error('Error parsing error message:', e);
+                  return <p className="text-red-200">{error}</p>;
+                }
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
