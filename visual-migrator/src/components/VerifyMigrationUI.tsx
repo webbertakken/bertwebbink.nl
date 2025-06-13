@@ -1,28 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { MigrationRecord } from '../types/migration';
 
-interface MediaReference {
-  url: string;
-  localPath: string;
-  type: 'image' | 'audio';
-}
-
-interface SanityPost {
-  title: string;
-  slug: string;
-  publishedAt: string;
-  body: string;
-  excerpt: string;
-  media: MediaReference[];
-}
-
-interface MigrationRecord {
-  original: any;
-  transformed: SanityPost;
-}
-
-const VerifyMigrationUI: React.FC = () => {
+export const VerifyMigrationUI: React.FC = () => {
   const [records, setRecords] = useState<MigrationRecord[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [openDetails, setOpenDetails] = useState<{ [key: number]: boolean }>({});
@@ -150,5 +131,3 @@ const VerifyMigrationUI: React.FC = () => {
     </div>
   );
 };
-
-export default VerifyMigrationUI;
