@@ -21,7 +21,7 @@ export interface ContainerCommandResult {
   success: boolean
   message?: string
   error?: string
-  details?: any
+  details?: unknown
   steps: ContainerCommandStep[]
 }
 
@@ -29,6 +29,11 @@ interface DockerError extends Error {
   stderr?: string
   stdout?: string
   info?: boolean
+}
+
+interface ExecResult {
+  stdout: string
+  stderr: string
 }
 
 const DB_PASSWORD = 'P@ssw0rd!'
@@ -40,12 +45,11 @@ export async function executeContainerCommand(
   command: ContainerCommand,
 ): Promise<ContainerCommandResult> {
   const steps: ContainerCommandStep[] = []
-  function extractOutput(res: { stdout?: string; stderr?: string; message?: string } | Error): {
-    stdout: string
-    stderr: string
-  } {
+
+  function extractOutput(
+    res: { stdout?: string; stderr?: string; message?: string } | Error,
+  ): ExecResult {
     if (res instanceof Error) {
-      // Some exec errors have stdout/stderr attached
       const errObj = res as Error & { stdout?: string; stderr?: string; message?: string }
       return {
         stdout: typeof errObj.stdout === 'string' ? errObj.stdout : '',
@@ -56,24 +60,21 @@ export async function executeContainerCommand(
               ? errObj.message
               : res.message,
       }
-    } else {
-      return {
-        stdout: res.stdout ?? '',
-        stderr: res.stderr ?? res.message ?? '',
-      }
+    }
+    return {
+      stdout: res.stdout ?? '',
+      stderr: res.stderr ?? res.message ?? '',
     }
   }
+
   function pushStep(
     step: string,
     cmd: string,
     res: { stdout?: string; stderr?: string; message?: string; info?: boolean } | Error,
     success: boolean,
-  ) {
+  ): void {
     const { stdout, stderr } = extractOutput(res)
-    const infoValue =
-      res && typeof (res as { info?: unknown }).info === 'boolean'
-        ? (res as { info: boolean }).info
-        : undefined
+    const infoValue = 'info' in res && typeof res.info === 'boolean' ? res.info : undefined
     steps.push({
       step,
       cmd,
@@ -83,6 +84,7 @@ export async function executeContainerCommand(
       ...(infoValue !== undefined ? { info: infoValue } : {}),
     })
   }
+
   function getErrorDetails(
     error: unknown,
   ): { stack?: string; stdout?: string; stderr?: string; code?: string | number } | undefined {
@@ -99,6 +101,7 @@ export async function executeContainerCommand(
     }
     return undefined
   }
+
   try {
     if (command === 'start') {
       // 1. Start MariaDB container
@@ -271,11 +274,10 @@ export async function executeContainerCommand(
         steps,
       }
     } else if (command === 'stop') {
-      // Stop and remove the container
-      let res: { stdout: string; stderr: string } | Error
+      let res: ExecResult | Error
       try {
         res = await execAsync(`docker stop ${CONTAINER_NAME}`)
-        const isNoSuchContainer = res.stderr && res.stderr.includes('No such container')
+        const isNoSuchContainer = Boolean(res.stderr && res.stderr.includes('No such container'))
         const isSuccess = !(res.stderr && res.stderr.trim()) || isNoSuchContainer
         pushStep(
           'Stop container',
@@ -283,28 +285,27 @@ export async function executeContainerCommand(
           { ...res, info: isNoSuchContainer },
           isSuccess,
         )
-        // continue to try remove
       } catch (err: unknown) {
-        // If error is 'No such container', treat as info/success
-        if (
-          err instanceof Error &&
-          (err as DockerError).stderr &&
-          (err as DockerError).stderr.includes('No such container')
-        ) {
-          pushStep(
-            'Stop container',
-            `docker stop ${CONTAINER_NAME}`,
-            { ...err, info: true } as DockerError,
-            true,
-          )
+        if (err instanceof Error) {
+          const dockerError = err as DockerError
+          if (dockerError.stderr && dockerError.stderr.includes('No such container')) {
+            pushStep(
+              'Stop container',
+              `docker stop ${CONTAINER_NAME}`,
+              { ...dockerError, info: true },
+              true,
+            )
+          } else {
+            pushStep('Stop container', `docker stop ${CONTAINER_NAME}`, dockerError, false)
+          }
         } else {
-          pushStep('Stop container', `docker stop ${CONTAINER_NAME}`, err as DockerError, false)
+          pushStep('Stop container', `docker stop ${CONTAINER_NAME}`, err as Error, false)
         }
-        // continue to try remove
       }
+
       try {
         res = await execAsync(`docker rm ${CONTAINER_NAME}`)
-        const isNoSuchContainer = res.stderr && res.stderr.includes('No such container')
+        const isNoSuchContainer = Boolean(res.stderr && res.stderr.includes('No such container'))
         const isSuccess = !(res.stderr && res.stderr.trim()) || isNoSuchContainer
         pushStep(
           'Remove container',
@@ -314,22 +315,25 @@ export async function executeContainerCommand(
         )
         if (!isSuccess) return { success: false, error: 'Failed to remove container', steps }
       } catch (err: unknown) {
-        if (
-          err instanceof Error &&
-          (err as DockerError).stderr &&
-          (err as DockerError).stderr.includes('No such container')
-        ) {
-          pushStep(
-            'Remove container',
-            `docker rm ${CONTAINER_NAME}`,
-            { ...err, info: true } as DockerError,
-            true,
-          )
+        if (err instanceof Error) {
+          const dockerError = err as DockerError
+          if (dockerError.stderr && dockerError.stderr.includes('No such container')) {
+            pushStep(
+              'Remove container',
+              `docker rm ${CONTAINER_NAME}`,
+              { ...dockerError, info: true },
+              true,
+            )
+          } else {
+            pushStep('Remove container', `docker rm ${CONTAINER_NAME}`, dockerError, false)
+            return { success: false, error: 'Failed to remove container', steps }
+          }
         } else {
-          pushStep('Remove container', `docker rm ${CONTAINER_NAME}`, err as DockerError, false)
+          pushStep('Remove container', `docker rm ${CONTAINER_NAME}`, err as Error, false)
           return { success: false, error: 'Failed to remove container', steps }
         }
       }
+
       return {
         success: true,
         message: steps.some((step) => step.info)

@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { PrepareMigrationUI } from '@/components/PrepareMigrationUI'
-import { VerifyMigrationUI } from '@/components/VerifyMigrationUI'
-import { PlaceholderStep } from '@/components/PlaceholderStep'
-import { DockerManagerUI } from '@/components/DockerManagerUI'
-import { MIGRATION_STEPS } from '@/constants/migration'
+import { PrepareMigrationUI } from '../components/PrepareMigrationUI'
+import { VerifyMigrationUI } from '../components/VerifyMigrationUI'
+import { PlaceholderStep } from '../components/PlaceholderStep'
+import { DockerManagerUI } from '../components/DockerManagerUI'
+import { MIGRATION_STEPS } from '../constants/migration'
+import { MigrationStep } from '../types/migration'
 
 export default function Home() {
   const [step, setStep] = useState<number | null>(null)
@@ -16,7 +17,7 @@ export default function Home() {
         <div>
           <h1 className="text-3xl font-bold mb-8">Migration Dashboard</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {MIGRATION_STEPS.map((s, i) => (
+            {MIGRATION_STEPS.map((s: MigrationStep, i: number) => (
               <button
                 key={i}
                 onClick={() => setStep(i)}

@@ -90,7 +90,9 @@ export const VerifyMigrationUI: React.FC = () => {
                   <div className="w-full md:w-1/3">
                     <h3 className="text-lg font-semibold mb-2">Original</h3>
                     <pre className="whitespace-pre-wrap break-words bg-gray-950 text-gray-100 p-3 rounded">
-                      {record.original.post_content}
+                      {typeof record.original === 'object' && record.original !== null && 'post_content' in record.original && typeof (record.original as { post_content: string }).post_content === 'string'
+                        ? (record.original as { post_content: string }).post_content
+                        : ''}
                     </pre>
                   </div>
                   <div className="w-full md:w-1/3">

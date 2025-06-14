@@ -14,7 +14,7 @@ export interface SanityPost {
 }
 
 export interface MigrationRecord {
-  original: any
+  original: unknown
   transformed: SanityPost
 }
 
