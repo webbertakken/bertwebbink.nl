@@ -1,13 +1,14 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { PrepareMigrationUI } from "../components/PrepareMigrationUI";
-import { VerifyMigrationUI } from "../components/VerifyMigrationUI";
-import { PlaceholderStep } from "../components/PlaceholderStep";
-import { MIGRATION_STEPS } from "../constants/migration";
+import React, { useState } from 'react'
+import { PrepareMigrationUI } from '@/components/PrepareMigrationUI'
+import { VerifyMigrationUI } from '@/components/VerifyMigrationUI'
+import { PlaceholderStep } from '@/components/PlaceholderStep'
+import { DockerManagerUI } from '@/components/DockerManagerUI'
+import { MIGRATION_STEPS } from '@/constants/migration'
 
 export default function Home() {
-  const [step, setStep] = useState<number | null>(null);
+  const [step, setStep] = useState<number | null>(null)
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
@@ -29,20 +30,33 @@ export default function Home() {
         </div>
       ) : step === 0 ? (
         <>
-          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>&larr; Back to Dashboard</button>
-          <PrepareMigrationUI />
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
+          <DockerManagerUI />
         </>
       ) : step === 1 ? (
         <>
-          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>&larr; Back to Dashboard</button>
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
+          <PrepareMigrationUI />
+        </>
+      ) : step === 2 ? (
+        <>
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
           <VerifyMigrationUI />
         </>
       ) : (
         <>
-          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>&larr; Back to Dashboard</button>
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
           <PlaceholderStep />
         </>
       )}
     </div>
-  );
+  )
 }

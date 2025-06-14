@@ -121,3 +121,37 @@
    - Track resource usage
    - Profile bottlenecks
    - Optimize based on data
+
+## Testing
+
+### Testing Framework
+- Use Vitest as the testing framework
+- Configure Vitest with appropriate environment settings:
+  - Use `jsdom` environment for UI/React component tests
+  - Use `node` environment for API/backend tests
+- Write tests in a descriptive, behavior-focused manner:
+  - Use `it('returns...'` instead of `test('it should return...'`
+  - Focus on behavior and outcomes rather than implementation details
+  - Group related tests using `describe` blocks
+- Follow the Arrange-Act-Assert pattern:
+  - Arrange: Set up test data and conditions
+  - Act: Execute the code being tested
+  - Assert: Verify the results
+
+### Test Organization
+- Place test files next to the code they test
+- Use `.test.ts` or `.test.tsx` extension for test files
+- Group related tests in describe blocks
+- Use clear, descriptive test names
+
+### Mocking
+- Use Vitest's built-in mocking capabilities
+- Mock external dependencies and services
+- Keep mocks simple and focused
+- Reset mocks between tests using `beforeEach`
+
+### Coverage
+- Aim for high test coverage
+- Focus on critical paths and edge cases
+- Include both unit and integration tests
+- Run tests before committing changes
