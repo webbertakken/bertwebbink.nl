@@ -1,28 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { MigrationRecord } from '../types/migration';
 
-interface MediaReference {
-  url: string;
-  localPath: string;
-  type: 'image' | 'audio';
-}
-
-interface SanityPost {
-  title: string;
-  slug: string;
-  publishedAt: string;
-  body: string;
-  excerpt: string;
-  media: MediaReference[];
-}
-
-interface MigrationRecord {
-  original: any;
-  transformed: SanityPost;
-}
-
-const VerifyMigrationUI: React.FC = () => {
+export const VerifyMigrationUI: React.FC = () => {
   const [records, setRecords] = useState<MigrationRecord[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [openDetails, setOpenDetails] = useState<{ [key: number]: boolean }>({});
@@ -32,11 +13,17 @@ const VerifyMigrationUI: React.FC = () => {
     const loadMigrationData = async () => {
       try {
         const response = await fetch('/api/get-migration-data');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
         const data = await response.json();
-        setRecords(data);
+
+        if (!response.ok) {
+          throw new Error(data.error || data.details || `Failed to load migration data (Status: ${response.status})`);
+        }
+
+        if (!data.success) {
+          throw new Error(data.error || data.details || 'Failed to load migration data');
+        }
+
+        setRecords(data.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load migration data');
         console.error('Error loading migration data:', err);
@@ -48,9 +35,21 @@ const VerifyMigrationUI: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-8 text-red-600">
-        <h1 className="text-2xl font-bold mb-2">Error Loading Migration Data</h1>
-        <p>{error}</p>
+      <div className="p-8">
+        <div className="bg-red-900/50 border border-red-700 rounded-lg p-6">
+          <h1 className="text-2xl font-bold mb-4 text-red-400">Error Loading Migration Data</h1>
+          <div className="space-y-4">
+            <p className="text-red-200">{error}</p>
+            {error.includes('details') && (
+              <div className="mt-4">
+                <h2 className="text-lg font-semibold text-red-300 mb-2">Technical Details:</h2>
+                <pre className="bg-gray-900/50 p-4 rounded text-sm text-gray-300 overflow-auto">
+                  {JSON.stringify(JSON.parse(error.split('details:')[1]), null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
@@ -91,7 +90,9 @@ const VerifyMigrationUI: React.FC = () => {
                   <div className="w-full md:w-1/3">
                     <h3 className="text-lg font-semibold mb-2">Original</h3>
                     <pre className="whitespace-pre-wrap break-words bg-gray-950 text-gray-100 p-3 rounded">
-                      {record.original.post_content}
+                      {typeof record.original === 'object' && record.original !== null && 'post_content' in record.original && typeof (record.original as { post_content: string }).post_content === 'string'
+                        ? (record.original as { post_content: string }).post_content
+                        : ''}
                     </pre>
                   </div>
                   <div className="w-full md:w-1/3">
@@ -132,5 +133,3 @@ const VerifyMigrationUI: React.FC = () => {
     </div>
   );
 };
-
-export default VerifyMigrationUI;

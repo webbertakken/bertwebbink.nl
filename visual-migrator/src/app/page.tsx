@@ -1,100 +1,15 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import VerifyMigrationUI from "./verify-migration-ui";
-
-const steps = [
-  {
-    title: "Prepare Migration",
-    description: "Run the migration preparation script and generate the migration data.",
-    link: "/verify-migration",
-  },
-  {
-    title: "Verify Migration",
-    description: "Visually inspect and verify the migration data before import.",
-  },
-  {
-    title: "Next Step (Placeholder)",
-    description: "Continue to the next step of your migration process.",
-  },
-];
-
-function PrepareMigrationUI() {
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [postCount, setPostCount] = useState<number | null>(null);
-  const [first20Lines, setFirst20Lines] = useState<string | null>(null);
-
-  const runPrepareMigration = async () => {
-    setLoading(true);
-    setResult(null);
-    setError(null);
-    setPostCount(null);
-    setFirst20Lines(null);
-    try {
-      const response = await fetch("/api/prepare-migration", { method: "POST" });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setResult(data.success ? "Migration preparation completed successfully." : data.error || "Unknown error");
-      if (data.postCount !== undefined) {
-        setPostCount(data.postCount);
-      }
-      if (data.first20Lines !== undefined) {
-        setFirst20Lines(data.first20Lines);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to run migration");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Prepare Migration</h2>
-      <p className="mb-4">Run the migration preparation script and generate the migration data.</p>
-      <button
-        onClick={runPrepareMigration}
-        disabled={loading}
-        className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition mb-4"
-      >
-        {loading ? "Running..." : "Run Prepare Migration"}
-      </button>
-      {result && (
-        <div className="mt-2">
-          <div className="text-green-500">{result}</div>
-          {postCount !== null && (
-            <div className="mt-2">
-              <h2 className="text-xl font-semibold">Number of Posts: {postCount}</h2>
-            </div>
-          )}
-          {first20Lines !== null && (
-            <div className="mt-2">
-              <h2 className="text-xl font-semibold">First 20 Lines of Migration File:</h2>
-              <pre className="bg-gray-100 p-4 rounded">{first20Lines}</pre>
-            </div>
-          )}
-        </div>
-      )}
-      {error && <div className="text-red-500 mt-2">{error}</div>}
-    </div>
-  );
-}
-
-function PlaceholderStep() {
-  return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Next Step (Placeholder)</h2>
-      <p>This is a placeholder for the next step of your migration process.</p>
-    </div>
-  );
-}
+import React, { useState } from 'react'
+import { PrepareMigrationUI } from '../components/PrepareMigrationUI'
+import { VerifyMigrationUI } from '../components/VerifyMigrationUI'
+import { PlaceholderStep } from '../components/PlaceholderStep'
+import { DockerManagerUI } from '../components/DockerManagerUI'
+import { MIGRATION_STEPS } from '../constants/migration'
+import { MigrationStep } from '../types/migration'
 
 export default function Home() {
-  const [step, setStep] = useState<number | null>(null);
+  const [step, setStep] = useState<number | null>(null)
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 p-8">
@@ -102,7 +17,7 @@ export default function Home() {
         <div>
           <h1 className="text-3xl font-bold mb-8">Migration Dashboard</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {steps.map((s, i) => (
+            {MIGRATION_STEPS.map((s: MigrationStep, i: number) => (
               <button
                 key={i}
                 onClick={() => setStep(i)}
@@ -116,20 +31,33 @@ export default function Home() {
         </div>
       ) : step === 0 ? (
         <>
-          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>&larr; Back to Dashboard</button>
-          <PrepareMigrationUI />
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
+          <DockerManagerUI />
         </>
       ) : step === 1 ? (
         <>
-          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>&larr; Back to Dashboard</button>
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
+          <PrepareMigrationUI />
+        </>
+      ) : step === 2 ? (
+        <>
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
           <VerifyMigrationUI />
         </>
       ) : (
         <>
-          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>&larr; Back to Dashboard</button>
+          <button className="mb-4 text-blue-400 underline" onClick={() => setStep(null)}>
+            &larr; Back to Dashboard
+          </button>
           <PlaceholderStep />
         </>
       )}
     </div>
-  );
+  )
 }
