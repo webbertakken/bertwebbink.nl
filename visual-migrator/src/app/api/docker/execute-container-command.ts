@@ -43,6 +43,7 @@ const BACKUP_FILE = path.resolve(process.cwd(), 'input/database/backup.sql')
 
 export async function executeContainerCommand(
   command: ContainerCommand,
+  onStep?: (step: ContainerCommandStep) => void,
 ): Promise<ContainerCommandResult> {
   const steps: ContainerCommandStep[] = []
 
@@ -67,6 +68,37 @@ export async function executeContainerCommand(
     }
   }
 
+  function pushInitialStep(step: string, cmd: string): number {
+    const stepData = {
+      step,
+      cmd,
+      stdout: '',
+      stderr: '',
+      success: false,
+    }
+    steps.push(stepData)
+    onStep?.(stepData)
+    return steps.length - 1
+  }
+
+  function updateStep(
+    index: number,
+    res: { stdout?: string; stderr?: string; message?: string; info?: boolean } | Error,
+    success: boolean,
+  ): void {
+    const { stdout, stderr } = extractOutput(res)
+    const infoValue = 'info' in res && typeof res.info === 'boolean' ? res.info : undefined
+    const stepData = {
+      ...steps[index],
+      stdout,
+      stderr,
+      success,
+      ...(infoValue !== undefined ? { info: infoValue } : {}),
+    }
+    steps[index] = stepData
+    onStep?.(stepData)
+  }
+
   function pushStep(
     step: string,
     cmd: string,
@@ -75,14 +107,16 @@ export async function executeContainerCommand(
   ): void {
     const { stdout, stderr } = extractOutput(res)
     const infoValue = 'info' in res && typeof res.info === 'boolean' ? res.info : undefined
-    steps.push({
+    const stepData = {
       step,
       cmd,
       stdout,
       stderr,
       success,
       ...(infoValue !== undefined ? { info: infoValue } : {}),
-    })
+    }
+    steps.push(stepData)
+    onStep?.(stepData)
   }
 
   function getErrorDetails(
@@ -105,54 +139,40 @@ export async function executeContainerCommand(
   try {
     if (command === 'start') {
       // 1. Start MariaDB container
+      const startCmd = `docker run --name ${CONTAINER_NAME} -e MARIADB_ROOT_PASSWORD=\"${DB_PASSWORD}\" -d -p 3306:3306 mariadb:latest`
+      const startIndex = pushInitialStep('Start container', startCmd)
+
       let res: { stdout: string; stderr: string } | Error
       try {
-        res = await execAsync(
-          `docker run --name ${CONTAINER_NAME} -e MARIADB_ROOT_PASSWORD=\"${DB_PASSWORD}\" -d -p 3306:3306 mariadb:latest`,
-        )
+        res = await execAsync(startCmd)
         const isSuccess = !(res.stderr && res.stderr.trim())
-        pushStep(
-          'Start container',
-          `docker run --name ${CONTAINER_NAME} -e MARIADB_ROOT_PASSWORD=\"${DB_PASSWORD}\" -d -p 3306:3306 mariadb:latest`,
-          res,
-          isSuccess,
-        )
+        updateStep(startIndex, res, isSuccess)
         if (!isSuccess) return { success: false, error: 'Failed to start container', steps }
       } catch (err: unknown) {
-        pushStep(
-          'Start container',
-          `docker run --name ${CONTAINER_NAME} -e MARIADB_ROOT_PASSWORD=\"${DB_PASSWORD}\" -d -p 3306:3306 mariadb:latest`,
-          err as Error,
-          false,
-        )
+        updateStep(startIndex, err as Error, false)
         return { success: false, error: 'Failed to start container', steps }
       }
       // 2. Wait for MariaDB to initialize
-      await new Promise((resolve) => setTimeout(resolve, 10000))
-      pushStep('Wait for MariaDB to initialize', 'sleep 10s', { stdout: 'Waited 10s' }, true)
+      const waitIndex = pushInitialStep('Wait for MariaDB to initialize', 'sleep 12s')
+      await new Promise((resolve) => setTimeout(resolve, 12000))
+      updateStep(waitIndex, { stdout: 'Waited 12s' }, true)
       // 3. Create the target database
+      const createDbCmd = `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"`
+      const createDbIndex = pushInitialStep('Create database', createDbCmd)
+
       try {
-        res = await execAsync(
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"`,
-        )
+        res = await execAsync(createDbCmd)
         const isSuccess = !(res.stderr && res.stderr.trim())
-        pushStep(
-          'Create database',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"`,
-          res,
-          isSuccess,
-        )
+        updateStep(createDbIndex, res, isSuccess)
         if (!isSuccess) return { success: false, error: 'Failed to create database', steps }
       } catch (err: unknown) {
-        pushStep(
-          'Create database',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME};"`,
-          err as Error,
-          false,
-        )
+        updateStep(createDbIndex, err as Error, false)
         return { success: false, error: 'Failed to create database', steps }
       }
       // 4. Import the dump
+      const importCmd = `docker exec -i ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" ${DB_NAME} < backup.sql`
+      const importIndex = pushInitialStep('Import dump', importCmd)
+
       try {
         const importResult = await new Promise<{ stdout: string; stderr: string }>(
           (resolve, reject) => {
@@ -183,88 +203,51 @@ export async function executeContainerCommand(
           },
         )
         const isSuccess = !(importResult.stderr && importResult.stderr.trim())
-        pushStep(
-          'Import dump',
-          `docker exec -i ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" ${DB_NAME} < backup.sql`,
-          importResult,
-          isSuccess,
-        )
+        updateStep(importIndex, importResult, isSuccess)
         if (!isSuccess) return { success: false, error: 'Failed to import dump', steps }
       } catch (err: unknown) {
-        pushStep(
-          'Import dump',
-          `docker exec -i ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" ${DB_NAME} < backup.sql`,
-          err as Error,
-          false,
-        )
+        updateStep(importIndex, err as Error, false)
         return { success: false, error: 'Failed to import dump', steps }
       }
       // 5. Inspect databases
+      const inspectCmd = `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "SHOW DATABASES;"`
+      const inspectIndex = pushInitialStep('Inspect databases', inspectCmd)
+
       try {
-        res = await execAsync(
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "SHOW DATABASES;"`,
-        )
+        res = await execAsync(inspectCmd)
         const isSuccess = !(res.stderr && res.stderr.trim())
-        pushStep(
-          'Inspect databases',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "SHOW DATABASES;"`,
-          res,
-          isSuccess,
-        )
+        updateStep(inspectIndex, res, isSuccess)
         if (!isSuccess) return { success: false, error: 'Failed to inspect databases', steps }
       } catch (err: unknown) {
-        pushStep(
-          'Inspect databases',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "SHOW DATABASES;"`,
-          err as Error,
-          false,
-        )
+        updateStep(inspectIndex, err as Error, false)
         return { success: false, error: 'Failed to inspect databases', steps }
       }
 
       // Show all tables in the database
+      const listTablesCmd = `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SHOW TABLES;"`
+      const listTablesIndex = pushInitialStep('List tables', listTablesCmd)
+
       try {
-        res = await execAsync(
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SHOW TABLES;"`,
-        )
+        res = await execAsync(listTablesCmd)
         const isSuccess = !(res.stderr && res.stderr.trim())
-        pushStep(
-          'List tables',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SHOW TABLES;"`,
-          res,
-          isSuccess,
-        )
+        updateStep(listTablesIndex, res, isSuccess)
         if (!isSuccess) return { success: false, error: 'Failed to list tables', steps }
       } catch (err: unknown) {
-        pushStep(
-          'List tables',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SHOW TABLES;"`,
-          err as Error,
-          false,
-        )
+        updateStep(listTablesIndex, err as Error, false)
         return { success: false, error: 'Failed to list tables', steps }
       }
 
       // Count posts by type
+      const countPostsCmd = `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SELECT post_type, COUNT(*) as count FROM wp_posts GROUP BY post_type ORDER BY count DESC;"`
+      const countPostsIndex = pushInitialStep('Count posts by type', countPostsCmd)
+
       try {
-        res = await execAsync(
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SELECT post_type, COUNT(*) as count FROM wp_posts GROUP BY post_type ORDER BY count DESC;"`,
-        )
+        res = await execAsync(countPostsCmd)
         const isSuccess = !(res.stderr && res.stderr.trim())
-        pushStep(
-          'Count posts by type',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SELECT post_type, COUNT(*) as count FROM wp_posts GROUP BY post_type ORDER BY count DESC;"`,
-          res,
-          isSuccess,
-        )
+        updateStep(countPostsIndex, res, isSuccess)
         if (!isSuccess) return { success: false, error: 'Failed to count posts', steps }
       } catch (err: unknown) {
-        pushStep(
-          'Count posts by type',
-          `docker exec ${CONTAINER_NAME} mariadb -uroot -p\"${DB_PASSWORD}\" -e "USE ${DB_NAME}; SELECT post_type, COUNT(*) as count FROM wp_posts GROUP BY post_type ORDER BY count DESC;"`,
-          err as Error,
-          false,
-        )
+        updateStep(countPostsIndex, err as Error, false)
         return { success: false, error: 'Failed to count posts', steps }
       }
 
@@ -274,62 +257,50 @@ export async function executeContainerCommand(
         steps,
       }
     } else if (command === 'stop') {
+      // 1. Stop container
+      const stopCmd = `docker stop ${CONTAINER_NAME}`
+      const stopIndex = pushInitialStep('Stop container', stopCmd)
+
       let res: ExecResult | Error
       try {
-        res = await execAsync(`docker stop ${CONTAINER_NAME}`)
+        res = await execAsync(stopCmd)
         const isNoSuchContainer = Boolean(res.stderr && res.stderr.includes('No such container'))
         const isSuccess = !(res.stderr && res.stderr.trim()) || isNoSuchContainer
-        pushStep(
-          'Stop container',
-          `docker stop ${CONTAINER_NAME}`,
-          { ...res, info: isNoSuchContainer },
-          isSuccess,
-        )
+        updateStep(stopIndex, { ...res, info: isNoSuchContainer }, isSuccess)
       } catch (err: unknown) {
         if (err instanceof Error) {
           const dockerError = err as DockerError
           if (dockerError.stderr && dockerError.stderr.includes('No such container')) {
-            pushStep(
-              'Stop container',
-              `docker stop ${CONTAINER_NAME}`,
-              { ...dockerError, info: true },
-              true,
-            )
+            updateStep(stopIndex, { ...dockerError, info: true }, true)
           } else {
-            pushStep('Stop container', `docker stop ${CONTAINER_NAME}`, dockerError, false)
+            updateStep(stopIndex, dockerError, false)
           }
         } else {
-          pushStep('Stop container', `docker stop ${CONTAINER_NAME}`, err as Error, false)
+          updateStep(stopIndex, err as Error, false)
         }
       }
 
+      // 2. Remove container
+      const removeCmd = `docker rm ${CONTAINER_NAME}`
+      const removeIndex = pushInitialStep('Remove container', removeCmd)
+
       try {
-        res = await execAsync(`docker rm ${CONTAINER_NAME}`)
+        res = await execAsync(removeCmd)
         const isNoSuchContainer = Boolean(res.stderr && res.stderr.includes('No such container'))
         const isSuccess = !(res.stderr && res.stderr.trim()) || isNoSuchContainer
-        pushStep(
-          'Remove container',
-          `docker rm ${CONTAINER_NAME}`,
-          { ...res, info: isNoSuchContainer },
-          isSuccess,
-        )
+        updateStep(removeIndex, { ...res, info: isNoSuchContainer }, isSuccess)
         if (!isSuccess) return { success: false, error: 'Failed to remove container', steps }
       } catch (err: unknown) {
         if (err instanceof Error) {
           const dockerError = err as DockerError
           if (dockerError.stderr && dockerError.stderr.includes('No such container')) {
-            pushStep(
-              'Remove container',
-              `docker rm ${CONTAINER_NAME}`,
-              { ...dockerError, info: true },
-              true,
-            )
+            updateStep(removeIndex, { ...dockerError, info: true }, true)
           } else {
-            pushStep('Remove container', `docker rm ${CONTAINER_NAME}`, dockerError, false)
+            updateStep(removeIndex, dockerError, false)
             return { success: false, error: 'Failed to remove container', steps }
           }
         } else {
-          pushStep('Remove container', `docker rm ${CONTAINER_NAME}`, err as Error, false)
+          updateStep(removeIndex, err as Error, false)
           return { success: false, error: 'Failed to remove container', steps }
         }
       }

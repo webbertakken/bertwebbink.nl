@@ -11,20 +11,6 @@ interface DockerStep {
   info?: boolean
 }
 
-interface DockerResponse {
-  success: boolean
-  message?: string
-  error?: string
-  details?: {
-    stack?: string
-    stdout?: string
-    stderr?: string
-    code?: number
-    cwd?: string
-    guidance?: string
-  }
-  steps: DockerStep[]
-}
 
 export const DockerManagerUI: React.FC = () => {
   const [loading, setLoading] = useState(false)
@@ -46,21 +32,64 @@ export const DockerManagerUI: React.FC = () => {
         },
         body: JSON.stringify({ operation }),
       })
-      const data: DockerResponse = await response.json()
-      console.log('API Response:', data)
 
-      if (!response.ok || !data.success) {
-        throw new Error(
-          JSON.stringify({
-            message: data.error,
-            details: data.details,
-            steps: data.steps,
-          }),
-        )
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      setResult(data.message || null)
-      setSteps(data.steps || [])
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+
+      if (!reader) {
+        throw new Error('No response body')
+      }
+
+      let done = false
+      while (!done) {
+        const { value, done: readerDone } = await reader.read()
+        done = readerDone
+
+        if (value) {
+          const chunk = decoder.decode(value)
+          const lines = chunk.split('\n')
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6))
+                
+                if (data.type === 'status') {
+                  console.log('Status:', data.message)
+                } else if (data.type === 'step') {
+                  setSteps(prev => {
+                    const newSteps = [...prev]
+                    // Check if this step already exists (by comparing step name and cmd)
+                    const existingIndex = newSteps.findIndex(s => 
+                      s.step === data.step.step && s.cmd === data.step.cmd
+                    )
+                    
+                    if (existingIndex >= 0) {
+                      // Update existing step
+                      newSteps[existingIndex] = data.step
+                    } else {
+                      // Add new step
+                      newSteps.push(data.step)
+                    }
+                    return newSteps
+                  })
+                } else if (data.type === 'result') {
+                  setResult(data.result.message || null)
+                  // Final result - ensure all steps are updated (no need to add more)
+                } else if (data.type === 'error') {
+                  throw new Error(JSON.stringify(data.error))
+                }
+              } catch (parseError) {
+                console.warn('Failed to parse SSE data:', line, parseError)
+              }
+            }
+          }
+        }
+      }
     } catch (err) {
       console.error('Error caught:', err)
 
@@ -104,20 +133,48 @@ export const DockerManagerUI: React.FC = () => {
   const renderStep = (step: DockerStep, index: number) => {
     const isNoSuchContainer =
       (step.stderr && step.stderr.includes('No such container')) || step.info
-    const statusLabel = isNoSuchContainer ? 'Info' : step.success ? 'Success' : 'Failed'
-    const statusClass = isNoSuchContainer
-      ? 'bg-blue-900/50 text-blue-300'
-      : step.success
-        ? 'bg-green-900/50 text-green-300'
-        : 'bg-red-900/50 text-red-300'
+    const isRunning = !step.stdout && !step.stderr && !step.success
+    
+    let statusLabel: string
+    let statusClass: string
+    
+    if (isRunning) {
+      statusLabel = 'Running...'
+      statusClass = 'bg-yellow-900/50 text-yellow-300'
+    } else if (isNoSuchContainer) {
+      statusLabel = 'Info'
+      statusClass = 'bg-blue-900/50 text-blue-300'
+    } else if (step.success) {
+      statusLabel = 'Success'
+      statusClass = 'bg-green-900/50 text-green-300'
+    } else {
+      statusLabel = 'Failed'
+      statusClass = 'bg-red-900/50 text-red-300'
+    }
     return (
       <div key={index} className="mb-6 border border-gray-700 rounded-lg overflow-hidden">
         <div
-          className={`p-4 ${isNoSuchContainer ? 'bg-blue-900/20' : step.success ? 'bg-gray-800' : 'bg-red-900/50'}`}
+          className={`p-4 ${
+            isRunning 
+              ? 'bg-yellow-900/20' 
+              : isNoSuchContainer 
+                ? 'bg-blue-900/20' 
+                : step.success 
+                  ? 'bg-gray-800' 
+                  : 'bg-red-900/50'
+          }`}
         >
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-semibold">{step.step}</h3>
-            <span className={`px-2 py-1 rounded text-sm ${statusClass}`}>{statusLabel}</span>
+            <span className={`px-2 py-1 rounded text-sm ${statusClass} flex items-center gap-1`}>
+              {isRunning && (
+                <svg className="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              )}
+              {statusLabel}
+            </span>
           </div>
           <div className="mb-2">
             <span className="text-gray-400 text-sm">Command:</span>

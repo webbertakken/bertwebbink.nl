@@ -27,10 +27,56 @@ export async function POST(request: Request) {
       return NextResponse.json(statusResult, { status: 400 })
     }
 
-    // Execute the command
-    const result = await executeContainerCommand(command)
-    return NextResponse.json(result, {
-      status: result.success ? 200 : 400,
+    // Create streaming response
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder()
+        
+        try {
+          // Send initial status
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+            type: 'status',
+            message: 'Starting Docker operation...',
+            operation: command
+          })}\n\n`))
+
+          // Execute the command with streaming callback
+          const result = await executeContainerCommand(command, (step) => {
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+              type: 'step',
+              step
+            })}\n\n`))
+          })
+
+          // Send final result
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+            type: 'result',
+            result
+          })}\n\n`))
+
+        } catch (error) {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
+            type: 'error',
+            error: {
+              success: false,
+              error: 'Internal server error',
+              details: {
+                stack: error instanceof Error ? error.stack || String(error) : String(error),
+              },
+            }
+          })}\n\n`))
+        } finally {
+          controller.close()
+        }
+      }
+    })
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
     })
   } catch (error) {
     console.error('Unexpected error in Docker API route:', error)
