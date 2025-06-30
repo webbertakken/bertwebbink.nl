@@ -1,7 +1,119 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { MigrationRecord } from '../types/migration';
+import { MigrationRecord, MediaReference } from '../types/migration';
+
+// Function to process content and replace local paths with API URLs
+const processContentForPreview = (content: string, mediaRefs: MediaReference[]): string => {
+  let processedContent = content;
+  
+  // First, let's find all image, audio, and video tags in the content
+  // and replace their src attributes with API URLs
+  
+  // Replace img src attributes
+  processedContent = processedContent.replace(
+    /<img([^>]*?)src=["']([^"']+)["']([^>]*?)>/gi,
+    (match: string, before: string, src: string, after: string) => {
+      // Check if this src matches any of our media references
+      const mediaRef = mediaRefs.find(ref => {
+        // The src might be a relative path that matches our localPath
+        return ref.localPath && (
+          src === ref.localPath || 
+          src.endsWith(ref.localPath) ||
+          ref.localPath.endsWith(src)
+        );
+      });
+      
+      if (mediaRef && mediaRef.found) {
+        const apiUrl = `/api/serve-media?path=${encodeURIComponent(mediaRef.localPath)}`;
+        return `<img${before}src="${apiUrl}"${after}>`;
+      }
+      
+      // If it starts with input/uploads, it's likely a local path
+      if (src.startsWith('input/uploads/') || src.includes('/uploads/')) {
+        const apiUrl = `/api/serve-media?path=${encodeURIComponent(src)}`;
+        return `<img${before}src="${apiUrl}"${after}>`;
+      }
+      
+      return match;
+    }
+  );
+  
+  // Replace audio src attributes
+  processedContent = processedContent.replace(
+    /<audio([^>]*?)src=["']([^"']+)["']([^>]*?)>/gi,
+    (match: string, before: string, src: string, after: string) => {
+      // Check if this src matches any of our media references
+      const mediaRef = mediaRefs.find(ref => {
+        return ref.localPath && ref.type === 'audio' && (
+          src === ref.localPath || 
+          src.endsWith(ref.localPath) ||
+          ref.localPath.endsWith(src) ||
+          src.replace(/\\/g, '/') === ref.localPath.replace(/\\/g, '/')
+        );
+      });
+      
+      if (mediaRef && mediaRef.found) {
+        const apiUrl = `/api/serve-media?path=${encodeURIComponent(mediaRef.localPath)}`;
+        return `<audio${before}src="${apiUrl}"${after}>`;
+      }
+      
+      // Check if it's a local path (relative or absolute Windows/Unix path)
+      if (src.startsWith('input/uploads/') || src.includes('/uploads/') || 
+          src.match(/^[A-Za-z]:\\/) || src.startsWith('/')) {
+        const apiUrl = `/api/serve-media?path=${encodeURIComponent(src)}`;
+        return `<audio${before}src="${apiUrl}"${after}>`;
+      }
+      return match;
+    }
+  );
+  
+  // Replace video src attributes
+  processedContent = processedContent.replace(
+    /<video([^>]*?)src=["']([^"']+)["']([^>]*?)>/gi,
+    (match: string, before: string, src: string, after: string) => {
+      // Check if this src matches any of our media references
+      const mediaRef = mediaRefs.find(ref => {
+        return ref.localPath && ref.type === 'video' && (
+          src === ref.localPath || 
+          src.endsWith(ref.localPath) ||
+          ref.localPath.endsWith(src) ||
+          src.replace(/\\/g, '/') === ref.localPath.replace(/\\/g, '/')
+        );
+      });
+      
+      if (mediaRef && mediaRef.found) {
+        const apiUrl = `/api/serve-media?path=${encodeURIComponent(mediaRef.localPath)}`;
+        return `<video${before}src="${apiUrl}"${after}>`;
+      }
+      
+      // Check if it's a local path (relative or absolute Windows/Unix path)
+      if (src.startsWith('input/uploads/') || src.includes('/uploads/') || 
+          src.match(/^[A-Za-z]:\\/) || src.startsWith('/')) {
+        const apiUrl = `/api/serve-media?path=${encodeURIComponent(src)}`;
+        return `<video${before}src="${apiUrl}"${after}>`;
+      }
+      return match;
+    }
+  );
+  
+  // Replace source src attributes (for audio/video elements)
+  processedContent = processedContent.replace(
+    /<source([^>]*?)src=["']([^"']+)["']([^>]*?)>/gi,
+    (match: string, before: string, src: string, after: string) => {
+      // Check if it's a local path (relative or absolute Windows/Unix path)
+      if (src.startsWith('input/uploads/') || src.includes('/uploads/') || 
+          src.match(/^[A-Za-z]:\\/) || src.startsWith('/')) {
+        const apiUrl = `/api/serve-media?path=${encodeURIComponent(src)}`;
+        return `<source${before}src="${apiUrl}"${after}>`;
+      }
+      return match;
+    }
+  );
+  
+  return processedContent;
+};
+
 
 export const VerifyMigrationUI: React.FC = () => {
   const [records, setRecords] = useState<MigrationRecord[]>([]);
@@ -450,9 +562,24 @@ export const VerifyMigrationUI: React.FC = () => {
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Rendered Preview</h3>
                       <div className="bg-white text-gray-900 p-3 rounded shadow max-h-96 overflow-y-auto">
+                        <style dangerouslySetInnerHTML={{ __html: `
+                          .preview-content img {
+                            max-width: 100%;
+                            height: auto;
+                            display: block;
+                            margin: 1rem auto;
+                          }
+                          .preview-content audio,
+                          .preview-content video {
+                            max-width: 100%;
+                            margin: 1rem 0;
+                          }
+                        `}} />
                         <div
-                          className="prose prose-sm max-w-none"
-                          dangerouslySetInnerHTML={{ __html: record.transformed.body }}
+                          className="prose prose-sm max-w-none preview-content"
+                          dangerouslySetInnerHTML={{ 
+                            __html: processContentForPreview(record.transformed.body, record.transformed.media) 
+                          }}
                         />
                       </div>
                     </div>
