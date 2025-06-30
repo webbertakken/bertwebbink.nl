@@ -60,17 +60,49 @@ export const VerifyMigrationUI: React.FC = () => {
       {records.length === 0 ? (
         <p>Loading migration data...</p>
       ) : (
-        records.map((record, index) => {
-          const isDetailsOpen = openDetails[index] ?? false;
-          const isDataOpen = openData[index] ?? false;
-          return (
-            <div
-              key={index}
-              className="mb-10 border border-gray-700 rounded-lg p-6 bg-gray-800 shadow"
-            >
-              <h2 className="text-xl font-semibold mb-4">
-                Post: {record.transformed.title}
-              </h2>
+        <>
+          <div className="mb-6 flex gap-4">
+            <div className="bg-blue-900/50 border border-blue-700 rounded-lg p-4">
+              <div className="text-blue-200 text-sm">Posts</div>
+              <div className="text-2xl font-bold text-blue-100">
+                {records.filter(r => r.transformed.contentType === 'post').length}
+              </div>
+            </div>
+            <div className="bg-green-900/50 border border-green-700 rounded-lg p-4">
+              <div className="text-green-200 text-sm">Pages</div>
+              <div className="text-2xl font-bold text-green-100">
+                {records.filter(r => r.transformed.contentType === 'page').length}
+              </div>
+            </div>
+          </div>
+          {records.map((record, index) => {
+            const isDetailsOpen = openDetails[index] ?? false;
+            const isDataOpen = openData[index] ?? false;
+            const contentType = record.transformed.contentType;
+            const isPage = contentType === 'page';
+            const bgColor = isPage ? 'bg-green-800' : 'bg-blue-800';
+            const borderColor = isPage ? 'border-green-700' : 'border-blue-700';
+            
+            return (
+              <div
+                key={index}
+                className={`mb-10 border ${borderColor} rounded-lg p-6 ${bgColor} shadow`}
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                    isPage ? 'bg-green-600 text-green-100' : 'bg-blue-600 text-blue-100'
+                  }`}>
+                    {contentType.toUpperCase()}
+                  </span>
+                  <h2 className="text-xl font-semibold">
+                    {record.transformed.title}
+                  </h2>
+                  {isPage && record.transformed.parentId && (
+                    <span className="text-sm text-gray-300">
+                      (Child of ID: {record.transformed.parentId})
+                    </span>
+                  )}
+                </div>
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => setOpenDetails((prev) => ({ ...prev, [index]: !isDetailsOpen }))}
@@ -126,9 +158,10 @@ export const VerifyMigrationUI: React.FC = () => {
                   </div>
                 </div>
               )}
-            </div>
-          );
-        })
+              </div>
+            );
+          })}
+        </>
       )}
     </div>
   );

@@ -9,6 +9,8 @@ export interface MigrationResult {
   details?: Record<string, unknown>
   data?: {
     postCount: number
+    pageCount: number
+    totalCount: number
     preview: string
     outputPath: string
   }
@@ -21,13 +23,18 @@ export async function runMigrationPreparation(): Promise<MigrationResult> {
 
     // Read and parse the output file
     const { data, rawContent } = await readMigrationFile()
-    const posts = data as unknown[]
+    const content = data as { transformed: { contentType: 'post' | 'page' } }[]
+
+    const posts = content.filter(item => item.transformed.contentType === 'post')
+    const pages = content.filter(item => item.transformed.contentType === 'page')
 
     return {
       success: true,
       message: 'Migration preparation completed successfully',
       data: {
         postCount: posts.length,
+        pageCount: pages.length,
+        totalCount: content.length,
         preview: getMigrationFilePreview(rawContent),
         outputPath: MIGRATION_FILE_PATH,
       },

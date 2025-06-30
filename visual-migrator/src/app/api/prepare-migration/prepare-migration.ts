@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { parse } from 'node-html-parser'
 import { RowDataPacket } from 'mysql2'
+import { WordPressPost, MediaReference, SanityContent, MigrationRecord } from '@/types/migration'
 
 // Load environment variables if needed
 // require('dotenv').config();
@@ -14,38 +15,6 @@ const dbConfig = {
   user: 'root', // Update with your WordPress DB credentials
   password: 'P@ssw0rd!', // Update with your WordPress DB credentials
   database: 'wordpress', // Update with your WordPress DB name
-}
-
-interface WordPressPost {
-  ID: number
-  post_title: string
-  post_content: string
-  post_excerpt: string
-  post_date: string
-  post_modified: string
-  post_status: string
-  post_name: string
-  guid: string
-}
-
-interface MediaReference {
-  url: string
-  localPath: string
-  type: 'image' | 'audio'
-}
-
-interface SanityPost {
-  title: string
-  slug: string
-  publishedAt: string
-  body: string
-  excerpt: string
-  media: MediaReference[]
-}
-
-interface MigrationRecord {
-  original: WordPressPost
-  transformed: SanityPost
 }
 
 async function extractMediaFromContent(content: string): Promise<MediaReference[]> {
@@ -85,44 +54,83 @@ async function validateMediaFiles(mediaRefs: MediaReference[]): Promise<MediaRef
   return validRefs
 }
 
+function buildWordPressPageHierarchy(pages: WordPressPost[]): void {
+  const pageMap = new Map<number, WordPressPost>()
+  
+  // Create a map of all pages by ID
+  pages.forEach(page => {
+    pageMap.set(page.ID, page)
+  })
+
+  // Log page hierarchy information
+  const topLevelPages = pages.filter(page => page.post_parent === 0)
+  const childPages = pages.filter(page => page.post_parent > 0)
+  
+  console.log(`Page hierarchy analysis:`)
+  console.log(`- Top-level pages: ${topLevelPages.length}`)
+  console.log(`- Child pages: ${childPages.length}`)
+  
+  // Log parent-child relationships
+  childPages.forEach(child => {
+    const parent = pageMap.get(child.post_parent)
+    if (parent) {
+      console.log(`  └─ "${child.post_title}" is child of "${parent.post_title}"`)
+    } else {
+      console.log(`  └─ "${child.post_title}" has missing parent ID: ${child.post_parent}`)
+    }
+  })
+}
+
 export async function prepareMigration(dryRun: boolean = false) {
   try {
     // Connect to WordPress database
     const connection = await mysql2.createConnection(dbConfig)
 
-    // Fetch all published posts
-    const [posts] = await connection.execute<RowDataPacket[]>(
-      'SELECT * FROM wp_posts WHERE post_type = "post" AND post_status = "publish" LIMIT 10000',
+    // Fetch all published posts and pages
+    const [content] = await connection.execute<RowDataPacket[]>(
+      'SELECT * FROM wp_posts WHERE post_type IN ("post", "page") AND post_status = "publish" ORDER BY post_type, post_date DESC LIMIT 10000',
     )
-    const typedPosts = posts as WordPressPost[]
+    const typedContent = content as WordPressPost[]
 
-    console.log(`Found ${typedPosts.length} posts to migrate`)
+    console.log(`Found ${typedContent.length} items to migrate`)
+    const posts = typedContent.filter(item => item.post_type === 'post')
+    const pages = typedContent.filter(item => item.post_type === 'page')
+    console.log(`- Posts: ${posts.length}`)
+    console.log(`- Pages: ${pages.length}`)
+
+    // Analyze page hierarchy
+    if (pages.length > 0) {
+      buildWordPressPageHierarchy(pages)
+    }
 
     const migrationRecords: MigrationRecord[] = []
 
-    // Process each post
-    for (const post of typedPosts) {
-      console.log(`Processing post: ${post.post_title}`)
+    // Process each piece of content
+    for (const item of typedContent) {
+      console.log(`Processing ${item.post_type}: ${item.post_title}`)
 
       // Extract media references from content
-      const mediaRefs = await extractMediaFromContent(post.post_content)
+      const mediaRefs = await extractMediaFromContent(item.post_content)
 
       // Validate media files
       const validMediaRefs = await validateMediaFiles(mediaRefs)
 
-      // Build Sanity post object
-      const sanityPost: SanityPost = {
-        title: post.post_title,
-        slug: post.post_name,
-        publishedAt: post.post_date,
-        body: post.post_content,
-        excerpt: post.post_excerpt,
+      // Build Sanity content object
+      const sanityContent: SanityContent = {
+        title: item.post_title,
+        slug: item.post_name,
+        publishedAt: item.post_date,
+        body: item.post_content,
+        excerpt: item.post_excerpt,
         media: validMediaRefs,
+        contentType: item.post_type,
+        parentId: item.post_parent > 0 ? item.post_parent : undefined,
+        menuOrder: item.post_type === 'page' ? item.menu_order : undefined,
       }
 
       migrationRecords.push({
-        original: post,
-        transformed: sanityPost,
+        original: item,
+        transformed: sanityContent,
       })
     }
 
