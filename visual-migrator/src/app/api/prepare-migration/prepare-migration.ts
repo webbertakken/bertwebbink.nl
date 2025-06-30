@@ -1,9 +1,9 @@
 import mysql2 from 'mysql2/promise'
 import fs from 'fs'
 import path from 'path'
-import { parse } from 'node-html-parser'
 import { RowDataPacket } from 'mysql2'
-import { WordPressPost, MediaReference, SanityContent, MigrationRecord } from '@/types/migration'
+import { WordPressPost, SanityContent, MigrationRecord } from '@/types/migration'
+import { extractMediaFromContent, mapMediaToLocalPaths, replaceMediaUrls, generateMediaStats } from '@/utils/media-processor'
 
 // Load environment variables if needed
 // require('dotenv').config();
@@ -17,42 +17,6 @@ const dbConfig = {
   database: 'wordpress', // Update with your WordPress DB name
 }
 
-async function extractMediaFromContent(content: string): Promise<MediaReference[]> {
-  const root = parse(content)
-  const mediaRefs: MediaReference[] = []
-
-  // Extract image URLs
-  root.querySelectorAll('img').forEach((img) => {
-    const src = img.getAttribute('src')
-    if (src) {
-      const localPath = path.join(process.cwd(), 'uploads', path.basename(src))
-      mediaRefs.push({ url: src, localPath, type: 'image' })
-    }
-  })
-
-  // Extract audio URLs
-  root.querySelectorAll('audio source').forEach((source) => {
-    const src = source.getAttribute('src')
-    if (src) {
-      const localPath = path.join(process.cwd(), 'uploads', path.basename(src))
-      mediaRefs.push({ url: src, localPath, type: 'audio' })
-    }
-  })
-
-  return mediaRefs
-}
-
-async function validateMediaFiles(mediaRefs: MediaReference[]): Promise<MediaReference[]> {
-  const validRefs: MediaReference[] = []
-  for (const ref of mediaRefs) {
-    if (fs.existsSync(ref.localPath)) {
-      validRefs.push(ref)
-    } else {
-      console.error(`File not found: ${ref.localPath}`)
-    }
-  }
-  return validRefs
-}
 
 function buildWordPressPageHierarchy(pages: WordPressPost[]): void {
   const pageMap = new Map<number, WordPressPost>()
@@ -104,25 +68,41 @@ export async function prepareMigration(dryRun: boolean = false) {
     }
 
     const migrationRecords: MigrationRecord[] = []
+    const totalMediaStats = { totalImages: 0, totalAudio: 0, totalVideo: 0, totalFound: 0, totalMissing: 0 }
 
     // Process each piece of content
     for (const item of typedContent) {
       console.log(`Processing ${item.post_type}: ${item.post_title}`)
 
       // Extract media references from content
-      const mediaRefs = await extractMediaFromContent(item.post_content)
+      const mediaRefs = extractMediaFromContent(item.post_content)
 
-      // Validate media files
-      const validMediaRefs = await validateMediaFiles(mediaRefs)
+      // Map URLs to local file paths
+      const mappedMediaRefs = mapMediaToLocalPaths(mediaRefs)
+
+      // Replace URLs in content with local references
+      const updatedContent = replaceMediaUrls(item.post_content, mappedMediaRefs)
+
+      // Generate stats for this item
+      const itemStats = generateMediaStats(mappedMediaRefs)
+      totalMediaStats.totalImages += itemStats.totalImages
+      totalMediaStats.totalAudio += itemStats.totalAudio  
+      totalMediaStats.totalVideo += itemStats.totalVideo
+      totalMediaStats.totalFound += itemStats.totalFound
+      totalMediaStats.totalMissing += itemStats.totalMissing
+
+      if (mappedMediaRefs.length > 0) {
+        console.log(`  - Found ${mappedMediaRefs.length} media references (${itemStats.totalFound} found, ${itemStats.totalMissing} missing)`)
+      }
 
       // Build Sanity content object
       const sanityContent: SanityContent = {
         title: item.post_title,
         slug: item.post_name,
         publishedAt: item.post_date,
-        body: item.post_content,
+        body: updatedContent,
         excerpt: item.post_excerpt,
-        media: validMediaRefs,
+        media: mappedMediaRefs,
         contentType: item.post_type,
         parentId: item.post_parent > 0 ? item.post_parent : undefined,
         menuOrder: item.post_type === 'page' ? item.menu_order : undefined,
@@ -133,6 +113,14 @@ export async function prepareMigration(dryRun: boolean = false) {
         transformed: sanityContent,
       })
     }
+
+    // Log overall media statistics
+    console.log('\nMedia Processing Summary:')
+    console.log(`- Images: ${totalMediaStats.totalImages}`)
+    console.log(`- Audio: ${totalMediaStats.totalAudio}`)
+    console.log(`- Video: ${totalMediaStats.totalVideo}`)
+    console.log(`- Found locally: ${totalMediaStats.totalFound}`)
+    console.log(`- Missing: ${totalMediaStats.totalMissing}`)
 
     // Write to JSON file if not in dry run mode
     if (!dryRun) {

@@ -1,7 +1,8 @@
 export interface MediaReference {
   url: string
   localPath: string
-  type: 'image' | 'audio'
+  type: 'image' | 'audio' | 'video'
+  found: boolean
 }
 
 export interface WordPressPost {
