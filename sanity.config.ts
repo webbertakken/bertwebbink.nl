@@ -8,6 +8,7 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from '@/sanity/schemaTypes'
 import { structure } from '@/sanity/structure'
+import { media } from 'sanity-plugin-media'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import {
   presentationTool,
@@ -59,6 +60,18 @@ export default defineConfig({
   dataset,
   basePath: '/admin', // Base path for the Sanity Studio, can be customized
   plugins: [
+    media({
+      creditLine: {
+        enabled: true,
+        // boolean - enables an optional "Credit Line" field in the plugin.
+        // Used to store credits e.g. photographer, licence information
+        excludeSources: ['unsplash'],
+        // string | string[] - when used with 3rd party asset sources, you may
+        // wish to prevent users overwriting the creditLine based on the `source.name`
+      },
+      maximumUploadSize: 10000000,
+    }),
+
     // Presentation tool configuration for Visual Editing
     presentationTool({
       previewUrl: {

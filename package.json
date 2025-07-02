@@ -44,6 +44,7 @@
     "react-dom": "^19.0.0",
     "sanity": "^3.91.0",
     "sanity-plugin-asset-source-unsplash": "^3.0.3",
+    "sanity-plugin-media": "^3.0.3",
     "sonner": "^1.7.0",
     "styled-components": "^6.1.13",
     "tailwindcss": "^4.1.8"
