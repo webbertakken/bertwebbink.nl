@@ -2,6 +2,8 @@ import { person } from './documents/person'
 import { page } from './documents/page'
 import { post } from './documents/post'
 import { callToAction } from './objects/callToAction'
+import { divider } from './objects/divider'
+import { embed } from './objects/embed'
 import { infoSection } from './objects/infoSection'
 import { settings } from './singletons/settings'
 import { link } from './objects/link'
@@ -20,4 +22,6 @@ export const schemaTypes = [
   infoSection,
   callToAction,
   link,
+  divider,
+  embed,
 ]
