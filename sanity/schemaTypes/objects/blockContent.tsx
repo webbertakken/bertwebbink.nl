@@ -110,6 +110,20 @@ export const blockContent = defineType({
           title: 'Caption',
           description: 'Optional caption for the image.',
         }),
+        defineField({
+          name: 'alignment',
+          title: 'Alignment',
+          type: 'string',
+          description: 'How the image is laid out within the surrounding flow.',
+          options: {
+            list: [
+              {title: 'Left', value: 'left'},
+              {title: 'Center', value: 'center'},
+              {title: 'Right', value: 'right'},
+            ],
+            layout: 'radio',
+          },
+        }),
       ],
     }),
     defineArrayMember({
@@ -125,7 +139,7 @@ export const blockContent = defineType({
             list: [
               {title: 'YouTube', value: 'youtube'},
               {title: 'Vimeo', value: 'vimeo'},
-              {title: 'Direct URL', value: 'url'},
+              {title: 'Self-hosted file', value: 'url'},
             ],
             layout: 'radio',
           },
@@ -135,8 +149,24 @@ export const blockContent = defineType({
           name: 'url',
           title: 'Video URL',
           type: 'url',
-          description: 'Full URL to the video (YouTube, Vimeo, or direct video URL)',
-          validation: (Rule) => Rule.required(),
+          description:
+            'Full external URL (YouTube or Vimeo). Leave empty for self-hosted files.',
+          hidden: ({parent}) => parent?.videoType === 'url',
+          validation: (Rule) =>
+            Rule.custom((value, context: any) => {
+              if (context.parent?.videoType !== 'url' && !value) {
+                return 'URL is required for YouTube and Vimeo videos'
+              }
+              return true
+            }),
+        }),
+        defineField({
+          name: 'videoFile',
+          title: 'Video file',
+          type: 'file',
+          options: {accept: 'video/*'},
+          description: 'Self-hosted video file. Used when video type is "Self-hosted file".',
+          hidden: ({parent}) => parent?.videoType !== 'url',
         }),
         defineField({
           name: 'title',
@@ -242,5 +272,9 @@ export const blockContent = defineType({
         },
       },
     }),
+    // Divider and embed are registered as standalone object types
+    // (see ./divider.ts and ./embed.ts) and referenced by name here.
+    defineArrayMember({type: 'divider'}),
+    defineArrayMember({type: 'embed'}),
   ],
 })

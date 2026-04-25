@@ -67,7 +67,8 @@ export const post = defineType({
           },
         },
       ],
-      validation: (rule) => rule.required(),
+      // No required validation: bulk-imported posts may not have a source
+      // image; editors can attach a cover image manually after import.
     }),
     defineField({
       name: 'date',

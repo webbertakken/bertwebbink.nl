@@ -16,7 +16,10 @@ export const link = defineType({
       name: 'linkType',
       title: 'Link Type',
       type: 'string',
-      initialValue: 'url',
+      // The default has to match one of the option values below; the
+      // previous `'url'` did not, so newly-created links opened with no
+      // linkType selected at all.
+      initialValue: 'href',
       options: {
         list: [
           { title: 'URL', value: 'href' },
