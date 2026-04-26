@@ -228,7 +228,15 @@ export const blockContent = defineType({
           name: 'title',
           title: 'Audio Title',
           type: 'string',
-          description: 'Title for the audio clip',
+          description: 'Title for the audio clip, e.g. "Praeludium in g — Buxtehude, BuxWV 149".',
+        }),
+        defineField({
+          name: 'kind',
+          title: 'Kind label',
+          type: 'string',
+          description:
+            'Short label shown next to the duration on the post page. Defaults to "Recording". Other useful values: "Live", "Field recording", "Improvisation", "Demo".',
+          initialValue: 'Recording',
         }),
         defineField({
           name: 'description',

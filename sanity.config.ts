@@ -8,6 +8,7 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from '@/sanity/schemaTypes'
 import { structure } from '@/sanity/structure'
+import { StudioLayout } from '@/sanity/studio/StudioLayout'
 import { media } from 'sanity-plugin-media'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import {
@@ -150,5 +151,13 @@ export default defineConfig({
   // Schema configuration, imported from ./src/schemaTypes/index.ts
   schema: {
     types: schemaTypes,
+  },
+
+  // Custom studio chrome: widens the document pane so the PortableText
+  // editor on long posts has room to breathe.
+  studio: {
+    components: {
+      layout: StudioLayout,
+    },
   },
 })

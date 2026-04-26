@@ -1,10 +1,12 @@
 import { person } from './documents/person'
 import { page } from './documents/page'
 import { post } from './documents/post'
+import { score } from './documents/score'
 import { callToAction } from './objects/callToAction'
 import { divider } from './objects/divider'
 import { embed } from './objects/embed'
 import { infoSection } from './objects/infoSection'
+import { about } from './singletons/about'
 import { settings } from './singletons/settings'
 import { link } from './objects/link'
 import { blockContent } from './objects/blockContent'
@@ -13,9 +15,11 @@ import { blockContent } from './objects/blockContent'
 export const schemaTypes = [
   // Singletons
   settings,
+  about,
   // Documents
   page,
   post,
+  score,
   person,
   // Objects
   blockContent,

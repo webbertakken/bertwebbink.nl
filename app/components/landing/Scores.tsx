@@ -1,0 +1,478 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import Link from 'next/link'
+
+import { dataAttr } from '@/sanity/lib/utils'
+
+export type Score = {
+  _id: string
+  composer: string
+  work: string
+  catalog: string | null
+  era: 'baroque' | 'dutch' | 'romantic' | 'modern' | 'arrangement' | string | null
+  year: number | null
+  pages: number | null
+  editionNumber: number
+  forInstrument: string | null
+  edition: string | null
+  blurb: string | null
+  pdfUrl: string | null
+  isFeatured: boolean | null
+}
+
+type ScoresProps = {
+  scores: Score[]
+}
+
+const ERA_LABELS = {
+  baroque: 'Baroque',
+  dutch: 'Dutch School',
+  romantic: 'Romantic',
+  modern: 'Modern',
+  arrangement: 'Arrangement',
+} as const
+
+type EraKey = keyof typeof ERA_LABELS
+type FilterKey = 'all' | EraKey
+type SortKey = 'composer' | 'year' | 'edition'
+
+const FILTER_ORDER: FilterKey[] = ['all', 'baroque', 'dutch', 'romantic', 'modern', 'arrangement']
+const FILTER_LABEL: Record<FilterKey, string> = {
+  all: 'All',
+  baroque: 'Baroque',
+  dutch: 'Dutch School',
+  romantic: 'Romantic',
+  modern: 'Modern',
+  arrangement: 'Arrangements',
+}
+
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: 'composer', label: 'Composer' },
+  { key: 'year', label: 'Year' },
+  { key: 'edition', label: 'Edition №' },
+]
+
+const IconDownload = () => (
+  <svg
+    viewBox="0 0 12 12"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.4}
+    aria-hidden="true"
+    className="w-3 h-3"
+  >
+    <path d="M6 1 V8 M3 5.5 L6 8.5 L9 5.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 10.5 H10" strokeLinecap="round" />
+  </svg>
+)
+
+const IconCaret = () => (
+  <svg
+    viewBox="0 0 10 10"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.4}
+    aria-hidden="true"
+    className="w-2.5 h-2.5"
+  >
+    <path d="M2 4 L5 7 L8 4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
+
+const fmtEdition = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
+const fmtEditionShort = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
+const eraLabel = (era: string | null) =>
+  (era && (ERA_LABELS as Record<string, string>)[era]) || era || ''
+
+function Crumbs() {
+  return (
+    <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-14">
+      <Link href="/" className="transition-colors hover:text-accent">
+        Home
+      </Link>
+      <span className="opacity-40">/</span>
+      <span className="text-ink">Scores</span>
+    </div>
+  )
+}
+
+function Header() {
+  return (
+    <>
+      <Crumbs />
+      <div className="flex items-center gap-3.5 font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint mb-[22px]">
+        <span className="w-7 h-px bg-current opacity-50" />
+        <span className="text-accent">✦</span>
+        A small library
+      </div>
+      <h1
+        className="font-serif font-light leading-[1.0] m-0 mb-7 text-balance max-w-[18ch]"
+        style={{ fontSize: 'clamp(48px, 6vw, 84px)', letterSpacing: '-0.012em' }}
+      >
+        Editions, fingerings, <em className="italic font-normal">working scores</em>.
+      </h1>
+      <p className="font-serif italic text-[21px] leading-[1.5] text-ink-soft m-0 mb-14 max-w-[60ch] text-pretty">
+        Working editions I&apos;ve prepared for my own use — most for specific instruments visited
+        in the field notes. Fingerings and registrations are suggestions, not prescriptions. All
+        scores are free to download for non-commercial study.
+      </p>
+    </>
+  )
+}
+
+function Toolbar({
+  active,
+  setActive,
+  counts,
+  total,
+  sortKey,
+  cycleSort,
+}: {
+  active: FilterKey
+  setActive: (k: FilterKey) => void
+  counts: Record<FilterKey, number>
+  total: number
+  sortKey: SortKey
+  cycleSort: () => void
+}) {
+  const sortLabel = SORTS.find((s) => s.key === sortKey)?.label ?? 'Composer'
+  return (
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-7 mb-9 border-b border-rule-soft">
+      <div className="flex flex-wrap gap-1">
+        {FILTER_ORDER.map((id) => (
+          <button
+            key={id}
+            type="button"
+            className="filter-btn"
+            data-active={active === id}
+            onClick={() => setActive(id)}
+          >
+            {FILTER_LABEL[id]}
+            <span className="count">/ {counts[id] ?? 0}</span>
+          </button>
+        ))}
+      </div>
+      <div className="flex items-center gap-3.5 font-mono text-[11px] tracking-[0.18em] uppercase text-ink-faint">
+        <span>
+          <span className="text-ink">{total}</span> editions
+        </span>
+        <button type="button" className="sort-btn" onClick={cycleSort}>
+          Sort: {sortLabel} <IconCaret />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function ScoreCoverFeatured({ score }: { score: Score }) {
+  return (
+    <div className="score-cover">
+      <div className="font-mono text-[9.5px] tracking-[0.32em] uppercase text-ink-faint text-center">
+        {fmtEdition(score.editionNumber)}
+      </div>
+      <div className="flex flex-col gap-3.5 items-center text-center -mt-3">
+        <div className="font-serif italic font-normal text-lg text-ink-soft">{score.composer}</div>
+        <div className="font-serif font-normal text-[26px] leading-[1.15] text-ink text-balance">
+          {score.work}
+        </div>
+        <div className="flex items-center gap-2 text-ink-faint">
+          <span className="w-6 h-px bg-current opacity-60" />
+          <span className="w-1 h-1 rounded-full bg-accent" />
+          <span className="w-6 h-px bg-current opacity-60" />
+        </div>
+        {score.catalog && (
+          <div className="font-serif italic font-normal text-lg text-ink-soft">
+            {score.catalog}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col items-center gap-1.5 font-mono text-[9px] tracking-[0.22em] uppercase text-ink-faint">
+        <span
+          className="w-[38px] h-[38px] rounded-full flex items-center justify-center text-[11px]"
+          style={{ border: '1px solid var(--color-ink-faint)' }}
+        >
+          B<span className="opacity-50">·</span>W
+        </span>
+        {score.forInstrument && <span>{score.forInstrument}</span>}
+      </div>
+    </div>
+  )
+}
+
+function Featured({ score }: { score: Score }) {
+  const composerAttr = dataAttr({ id: score._id, type: 'score', path: 'composer' }).toString()
+  const workAttr = dataAttr({ id: score._id, type: 'score', path: 'work' }).toString()
+  const blurbAttr = dataAttr({ id: score._id, type: 'score', path: 'blurb' }).toString()
+
+  const periodLabel = [eraLabel(score.era), score.year ? `ca. ${score.year}` : null]
+    .filter(Boolean)
+    .join(' · ')
+
+  return (
+    <section
+      className="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-14 pt-2 pb-16 mb-16 border-b border-rule-soft"
+      data-screen-label="featured"
+    >
+      <ScoreCoverFeatured score={score} />
+      <div className="pt-2">
+        <p className="font-mono text-[10.5px] tracking-[0.32em] uppercase text-accent m-0 mb-[18px] flex items-center gap-3">
+          <span className="w-7 h-px bg-current opacity-60" />
+          Featured edition · No. {String(score.editionNumber).padStart(2, '0')}
+        </p>
+        <h2
+          className="font-serif font-light text-balance m-0 mb-5"
+          style={{
+            fontSize: 'clamp(34px, 3.4vw, 46px)',
+            lineHeight: 1.08,
+            letterSpacing: '-0.008em',
+          }}
+        >
+          <span data-sanity={composerAttr}>{score.composer}</span> —{' '}
+          <em data-sanity={workAttr} className="italic font-normal">
+            {score.work}
+          </em>
+          .
+        </h2>
+        {score.blurb && (
+          <p
+            data-sanity={blurbAttr}
+            className="text-[16.5px] leading-[1.7] text-ink-soft m-0 mb-7 max-w-[60ch] text-pretty"
+          >
+            {score.blurb}
+          </p>
+        )}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-[18px] gap-x-9 mb-7 pb-5 border-b border-rule-soft">
+          {(
+            [
+              ['Catalog', score.catalog],
+              ['Period', periodLabel || null],
+              ['Pages', score.pages ? String(score.pages) : null],
+              ['Edition', score.edition],
+            ] as const
+          ).map(([k, v]) =>
+            v ? (
+              <div key={k} className="flex flex-col">
+                <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ink-faint mb-1">
+                  {k}
+                </span>
+                <span className="font-serif italic text-lg text-ink">{v}</span>
+              </div>
+            ) : null,
+          )}
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {score.pdfUrl ? (
+            <a
+              href={score.pdfUrl}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="action-btn no-underline"
+            >
+              <IconDownload /> Download PDF
+            </a>
+          ) : (
+            <span className="action-btn ghost opacity-60 cursor-not-allowed">
+              <IconDownload /> No PDF yet
+            </span>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ScoreCard({ score }: { score: Score }) {
+  return (
+    <a
+      href={score.pdfUrl ?? undefined}
+      download={score.pdfUrl ? '' : undefined}
+      target={score.pdfUrl ? '_blank' : undefined}
+      rel={score.pdfUrl ? 'noopener noreferrer' : undefined}
+      onClick={(e) => {
+        if (!score.pdfUrl) e.preventDefault()
+      }}
+      className={`score-card flex flex-col gap-[18px] no-underline ${
+        score.pdfUrl ? 'cursor-pointer' : 'cursor-default'
+      }`}
+    >
+      <div className="mini-cover">
+        <div className="font-mono text-[8.5px] tracking-[0.28em] uppercase text-ink-faint">
+          {fmtEditionShort(score.editionNumber)}
+        </div>
+        <div className="flex flex-col gap-2 items-center -mt-1.5">
+          <div className="font-serif italic font-normal text-[13px] text-ink-soft">
+            {score.composer}
+          </div>
+          <div className="font-serif font-normal text-base leading-[1.15] text-ink text-balance max-w-[18ch]">
+            {score.work}
+          </div>
+          <span className="w-1 h-1 rounded-full bg-accent" />
+          {score.catalog && (
+            <div className="font-mono text-[8.5px] tracking-[0.22em] uppercase text-ink-faint">
+              {score.catalog}
+            </div>
+          )}
+        </div>
+        {score.forInstrument && (
+          <div className="font-mono text-[8.5px] tracking-[0.22em] uppercase text-ink-faint">
+            {score.forInstrument}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col gap-1.5 px-0.5">
+        <div className="flex items-baseline justify-between gap-3 font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint">
+          <span className="text-accent">{eraLabel(score.era)}</span>
+          {score.year && <span>{score.year}</span>}
+        </div>
+        <h4 className="font-serif font-normal text-[22px] leading-[1.18] m-0 text-ink text-balance">
+          {score.work}
+        </h4>
+        <p className="font-serif italic text-[15px] text-ink-soft m-0">{score.composer}</p>
+        <div className="mt-1.5 pt-2.5 flex items-center justify-between font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint border-t border-rule-soft">
+          <span>
+            {score.pages ? `${score.pages} pp` : '—'}
+            {score.catalog ? ` · ${score.catalog}` : ''}
+          </span>
+          <span className="text-ink inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-accent">
+            <IconDownload /> {score.pdfUrl ? 'PDF' : 'soon'}
+          </span>
+        </div>
+      </div>
+    </a>
+  )
+}
+
+function Grid({ scores, total }: { scores: Score[]; total: number }) {
+  return (
+    <section data-screen-label="grid">
+      <div className="flex items-baseline justify-between gap-6 mb-7">
+        <h3 className="font-serif font-normal text-3xl m-0" style={{ letterSpacing: '-0.005em' }}>
+          The <em className="italic">library</em>
+        </h3>
+        <span className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
+          Showing {scores.length} of {total}
+        </span>
+      </div>
+      {scores.length === 0 ? (
+        <p className="font-serif italic text-ink-faint text-lg pb-24">
+          Nothing in this category yet — try another filter.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-9 gap-x-8 pb-24">
+          {scores.map((s) => (
+            <ScoreCard key={s._id} score={s} />
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function Notice() {
+  return (
+    <section
+      className="mx-6 md:mx-12 mt-8 mb-20 max-w-[1240px] xl:mx-auto px-8 py-7 bg-paper rounded grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-6 items-center"
+      style={{ border: '1px solid var(--color-rule-soft)' }}
+      data-screen-label="notice"
+    >
+      <div
+        className="w-11 h-11 rounded-full flex items-center justify-center font-serif italic text-[22px] text-accent"
+        style={{ border: '1px solid var(--color-accent)' }}
+      >
+        §
+      </div>
+      <div>
+        <p className="m-0 font-serif italic text-[17px] leading-[1.5] text-ink text-pretty">
+          These scores are shared for personal study and church use. If you&apos;d like to perform
+          or record one, a short email is appreciated — and please credit the edition.
+        </p>
+        <small className="block mt-1 font-mono text-[10px] tracking-[0.22em] uppercase text-ink-faint not-italic">
+          Edition Webbink · {new Date().getFullYear()}
+        </small>
+      </div>
+      <a className="action-btn ghost not-italic no-underline" href="mailto:bert@webbink.nl">
+        Write to me
+      </a>
+    </section>
+  )
+}
+
+function EmptyLibrary() {
+  return (
+    <section className="pt-2 pb-24 text-center">
+      <p className="font-serif italic text-2xl text-ink-soft m-0 mb-4 max-w-[40ch] mx-auto">
+        The library is just being set up.
+      </p>
+      <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
+        Editions will appear here as I prepare them. Check back, or write to me below.
+      </p>
+    </section>
+  )
+}
+
+export function Scores({ scores }: ScoresProps) {
+  const [active, setActive] = useState<FilterKey>('all')
+  const [sortIdx, setSortIdx] = useState(0)
+  const sortKey = SORTS[sortIdx].key
+
+  const counts = useMemo(() => {
+    const out: Record<FilterKey, number> = {
+      all: scores.length,
+      baroque: 0,
+      dutch: 0,
+      romantic: 0,
+      modern: 0,
+      arrangement: 0,
+    }
+    for (const s of scores) {
+      const k = s.era as EraKey | null
+      if (k && k in out) out[k] += 1
+    }
+    return out
+  }, [scores])
+
+  const featured = scores.find((s) => s.isFeatured) ?? null
+
+  const visible = useMemo(() => {
+    const filtered = active === 'all' ? scores : scores.filter((s) => s.era === active)
+    return [...filtered].sort((a, b) => {
+      switch (sortKey) {
+        case 'composer':
+          return a.composer.localeCompare(b.composer)
+        case 'year':
+          return (a.year ?? 0) - (b.year ?? 0)
+        case 'edition':
+          return (b.editionNumber ?? 0) - (a.editionNumber ?? 0)
+      }
+    })
+  }, [scores, active, sortKey])
+
+  const cycleSort = () => setSortIdx((i) => (i + 1) % SORTS.length)
+
+  return (
+    <>
+      <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8" data-screen-label="scores">
+        <Header />
+        {scores.length === 0 ? (
+          <EmptyLibrary />
+        ) : (
+          <>
+            <Toolbar
+              active={active}
+              setActive={setActive}
+              counts={counts}
+              total={scores.length}
+              sortKey={sortKey}
+              cycleSort={cycleSort}
+            />
+            {featured && <Featured score={featured} />}
+            <Grid scores={visible} total={scores.length} />
+          </>
+        )}
+      </main>
+      <Notice />
+    </>
+  )
+}
