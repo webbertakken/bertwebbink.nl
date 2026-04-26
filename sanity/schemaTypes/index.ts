@@ -1,4 +1,3 @@
-import { person } from './documents/person'
 import { page } from './documents/page'
 import { post } from './documents/post'
 import { score } from './documents/score'
@@ -20,7 +19,6 @@ export const schemaTypes = [
   page,
   post,
   score,
-  person,
   // Objects
   blockContent,
   infoSection,

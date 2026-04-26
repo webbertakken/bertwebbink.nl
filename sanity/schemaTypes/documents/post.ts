@@ -84,12 +84,6 @@ export const post = defineType({
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
-      name: 'author',
-      title: 'Author',
-      type: 'reference',
-      to: [{ type: 'person' }],
-    }),
-    defineField({
       name: 'location',
       title: 'Location',
       description:
@@ -322,18 +316,12 @@ export const post = defineType({
   preview: {
     select: {
       title: 'title',
-      authorFirstName: 'author.firstName',
-      authorLastName: 'author.lastName',
       date: 'date',
       media: 'coverImage',
     },
-    prepare({ title, media, authorFirstName, authorLastName, date }) {
-      const subtitles = [
-        authorFirstName && authorLastName && `by ${authorFirstName} ${authorLastName}`,
-        date && `on ${format(parseISO(date), 'LLL d, yyyy')}`,
-      ].filter(Boolean)
-
-      return { title, media, subtitle: subtitles.join(' ') }
+    prepare({ title, media, date }) {
+      const subtitle = date ? `on ${format(parseISO(date), 'LLL d, yyyy')}` : ''
+      return { title, media, subtitle }
     },
   },
 })

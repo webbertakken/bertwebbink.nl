@@ -10,7 +10,6 @@ const postFields = /* groq */ `
   excerpt,
   coverImage,
   "date": coalesce(date, _updatedAt),
-  "author": author->{firstName, lastName, picture},
   location,
   builder,
   year,
@@ -63,18 +62,6 @@ export const sitemapData = defineQuery(`
     "slug": slug.current,
     _type,
     _updatedAt,
-  }
-`)
-
-export const allPostsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
-    ${postFields}
-  }
-`)
-
-export const morePostsQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
-    ${postFields}
   }
 `)
 

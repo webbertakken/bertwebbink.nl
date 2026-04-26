@@ -465,12 +465,6 @@ export type Post = {
     _type: 'image'
   }
   date?: string
-  author?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'person'
-  }
   location?: {
     city: string
     country: string
@@ -510,29 +504,6 @@ export type Post = {
       _type: 'register'
       _key: string
     }>
-  }
-}
-
-export type Person = {
-  _id: string
-  _type: 'person'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  firstName: string
-  lastName: string
-  picture: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    _type: 'image'
   }
 }
 
@@ -810,7 +781,6 @@ export type AllSanitySchemaTypes =
   | Settings
   | Page
   | Post
-  | Person
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -1035,108 +1005,8 @@ export type SitemapDataResult = Array<
       _updatedAt: string
     }
 >
-// Variable: allPostsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
-export type AllPostsQueryResult = Array<{
-  _id: string
-  status: 'draft' | 'published'
-  title: string
-  slug: string
-  excerpt: string | null
-  coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    caption?: string
-    _type: 'image'
-  } | null
-  date: string
-  author: {
-    firstName: string
-    lastName: string
-    picture: {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      alt?: string
-      _type: 'image'
-    }
-  } | null
-  location: {
-    city: string
-    country: string
-    building: string
-  } | null
-  builder: string | null
-  year: number | null
-  hasAudio: boolean | null
-  hasVideo: boolean | null
-}>
-// Variable: morePostsQuery
-// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
-export type MorePostsQueryResult = Array<{
-  _id: string
-  status: 'draft' | 'published'
-  title: string
-  slug: string
-  excerpt: string | null
-  coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    caption?: string
-    _type: 'image'
-  } | null
-  date: string
-  author: {
-    firstName: string
-    lastName: string
-    picture: {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      alt?: string
-      _type: 'image'
-    }
-  } | null
-  location: {
-    city: string
-    country: string
-    building: string
-  } | null
-  builder: string | null
-  year: number | null
-  hasAudio: boolean | null
-  hasVideo: boolean | null
-}>
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,    disposition,    "position": count(*[_type == "post" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "post" && defined(slug.current)]),    "prev": *[_type == "post" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    },    "next": *[_type == "post" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    }  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,    disposition,    "position": count(*[_type == "post" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "post" && defined(slug.current)]),    "prev": *[_type == "post" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    },    "next": *[_type == "post" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    }  }
 export type PostQueryResult = {
   content: Array<
     | {
@@ -1253,23 +1123,6 @@ export type PostQueryResult = {
     _type: 'image'
   } | null
   date: string
-  author: {
-    firstName: string
-    lastName: string
-    picture: {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      alt?: string
-      _type: 'image'
-    }
-  } | null
   location: {
     city: string
     country: string
@@ -1346,7 +1199,7 @@ export type PagesSlugsResult = Array<{
   slug: string
 }>
 // Variable: landingPostsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
+// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
 export type LandingPostsQueryResult = Array<{
   _id: string
   status: 'draft' | 'published'
@@ -1368,23 +1221,6 @@ export type LandingPostsQueryResult = Array<{
     _type: 'image'
   } | null
   date: string
-  author: {
-    firstName: string
-    lastName: string
-    picture: {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      alt?: string
-      _type: 'image'
-    }
-  } | null
   location: {
     city: string
     country: string
@@ -1512,12 +1348,10 @@ declare module '@sanity/client' {
     '*[_type == "settings"][0]': SettingsQueryResult
     '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n,\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n    },\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
-    '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': AllPostsQueryResult
-    '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': MorePostsQueryResult
-    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n    disposition,\n    "position": count(*[_type == "post" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "post" && defined(slug.current)]),\n    "prev": *[_type == "post" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    },\n    "next": *[_type == "post" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    }\n  }\n': PostQueryResult
+    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n    disposition,\n    "position": count(*[_type == "post" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "post" && defined(slug.current)]),\n    "prev": *[_type == "post" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    },\n    "next": *[_type == "post" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    }\n  }\n': PostQueryResult
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
-    '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': LandingPostsQueryResult
+    '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': LandingPostsQueryResult
     '\n  {\n    "totalCount": count(*[_type == "post" && defined(slug.current)]),\n    "firstDate": *[_type == "post" && defined(slug.current)] | order(date asc) [0].date,\n    "latestDate": *[_type == "post" && defined(slug.current)] | order(date desc) [0].date\n  }\n': LandingStatsQueryResult
     '\n  *[_type == "post" && defined(slug.current) && defined(location.city)]{\n    "city": location.city\n  }\n': LandingCitiesQueryResult
     '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    eyebrow,\n    title,\n    letter,\n    signoffName,\n    signoffLocation,\n    portraitImage,\n    portraitCaption,\n    portraitPlate,\n    secondaryImage,\n    secondaryCaption,\n    secondaryPlate,\n    quickFacts[]{ _key, label, value },\n    timelineSummary,\n    timeline[]{ _key, year, what, where },\n    repertoireIntro,\n    repertoire[]{ _key, era, title, pieces },\n    contactTitle,\n    contactLede,\n    contactRows[]{ _key, label, value, italic, href }\n  }\n': AboutQueryResult
