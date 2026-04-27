@@ -1,22 +1,35 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { LAUNCH_AT_MS } from '@/core/launch'
+
 /**
  * Site-wide "under construction" gate.
  *
- * Toggled by the `UNDER_CONSTRUCTION` env var (server-only — not
- * NEXT_PUBLIC_, the public site shouldn't reveal whether the gate is on).
- * When enabled, every public route is rewritten to /under-construction
+ * The gate is active when EITHER:
+ *   - `UNDER_CONSTRUCTION === 'true'` (manual override), OR
+ *   - the hardcoded `LAUNCH_AT_MS` is still in the future (auto-lift gate
+ *     that disables itself once the moment arrives — no redeploy needed).
+ *
+ * `UNDER_CONSTRUCTION` is server-only (not `NEXT_PUBLIC_`) so the public
+ * site doesn't reveal whether the gate is manually flipped on. The launch
+ * timestamp is hardcoded in `core/launch.ts` and shared with the
+ * `/under-construction` page, which intentionally surfaces the countdown.
+ *
+ * When active, every public route is rewritten to /under-construction
  * unless the visitor has the bypass cookie or arrives with the secret
  * query parameter.
  *
- * Bypass: visit any URL with `?bypass=happy birthday` once. Middleware
- * sets a 30-day cookie and redirects back to the same URL minus the
- * query string. All subsequent requests skip the gate.
+ * Bypass options:
+ *   - Visit any URL with `?bypass=happy birthday` once. Middleware sets
+ *     a 30-day cookie and redirects back to the same URL minus the query
+ *     string.
+ *   - Submit the same code via the form on `/under-construction` (POST
+ *     to `/api/bypass`).
  *
  * Always allowed regardless of the gate:
  *   - /under-construction  (the gate page itself; otherwise infinite rewrite)
  *   - /admin/**            (Sanity Studio — editors must keep working)
- *   - /api/**              (draft-mode toggle, server actions, etc.)
+ *   - /api/**              (draft-mode toggle, bypass form, etc.)
  *   - /_next/**            (Next.js assets and HMR)
  *   - /favicon.ico, /sitemap.xml, /robots.txt
  *
@@ -39,9 +52,14 @@ const ALWAYS_ALLOW = [
   '/robots.txt',
 ]
 
+function gateIsActive(): boolean {
+  if (process.env.UNDER_CONSTRUCTION === 'true') return true
+  if (Number.isFinite(LAUNCH_AT_MS) && Date.now() < LAUNCH_AT_MS) return true
+  return false
+}
+
 export function middleware(request: NextRequest) {
-  const enabled = process.env.UNDER_CONSTRUCTION === 'true'
-  if (!enabled) return NextResponse.next()
+  if (!gateIsActive()) return NextResponse.next()
 
   const { pathname, searchParams } = request.nextUrl
 
