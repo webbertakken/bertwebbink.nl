@@ -13,114 +13,15 @@
  */
 
 // Source: schema.json
-export type CallToAction = {
-  _type: 'callToAction'
-  heading: string
-  text?: string
-  buttonText?: string
-  link?: Link
+export type Embed = {
+  _type: 'embed'
+  url: string
+  caption?: string
 }
 
-export type Link = {
-  _type: 'link'
-  linkType?: 'href' | 'page' | 'post'
-  href?: string
-  page?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'page'
-  }
-  post?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'post'
-  }
-  openInNewTab?: boolean
-}
-
-export type InfoSection = {
-  _type: 'infoSection'
-  heading?: string
-  subheading?: string
-  content?: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>
-          text?: string
-          _type: 'span'
-          _key: string
-        }>
-        style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
-        listItem?: 'bullet' | 'number'
-        markDefs?: Array<{
-          linkType?: 'href' | 'page' | 'post'
-          href?: string
-          page?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'page'
-          }
-          post?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'post'
-          }
-          openInNewTab?: boolean
-          _type: 'link'
-          _key: string
-        }>
-        level?: number
-        _type: 'block'
-        _key: string
-      }
-    | {
-        asset?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-        }
-        media?: unknown
-        hotspot?: SanityImageHotspot
-        crop?: SanityImageCrop
-        alt?: string
-        caption?: string
-        _type: 'image'
-        _key: string
-      }
-    | {
-        videoType?: 'youtube' | 'vimeo' | 'url'
-        url: string
-        title?: string
-        description?: string
-        aspectRatio?: '16:9' | '4:3' | '1:1' | '9:16'
-        _type: 'video'
-        _key: string
-      }
-    | {
-        audioFile: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-          }
-          media?: unknown
-          _type: 'file'
-        }
-        title?: string
-        description?: string
-        duration?: string
-        showControls?: boolean
-        autoplay?: boolean
-        _type: 'audio'
-        _key: string
-      }
-  >
+export type Divider = {
+  _type: 'divider'
+  style?: 'default'
 }
 
 export type BlockContent = Array<
@@ -134,19 +35,13 @@ export type BlockContent = Array<
       style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
       listItem?: 'bullet' | 'number'
       markDefs?: Array<{
-        linkType?: 'href' | 'page' | 'post'
+        linkType?: 'href' | 'organ'
         href?: string
-        page?: {
+        organ?: {
           _ref: string
           _type: 'reference'
           _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'page'
-        }
-        post?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'post'
+          [internalGroqTypeReferenceTo]?: 'organ'
         }
         openInNewTab?: boolean
         _type: 'link'
@@ -168,12 +63,23 @@ export type BlockContent = Array<
       crop?: SanityImageCrop
       alt?: string
       caption?: string
+      alignment?: 'left' | 'center' | 'right'
       _type: 'image'
       _key: string
     }
   | {
       videoType?: 'youtube' | 'vimeo' | 'url'
-      url: string
+      url?: string
+      videoFile?: {
+        asset?: {
+          _ref: string
+          _type: 'reference'
+          _weak?: boolean
+          [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+        }
+        media?: unknown
+        _type: 'file'
+      }
       title?: string
       description?: string
       aspectRatio?: '16:9' | '4:3' | '1:1' | '9:16'
@@ -192,6 +98,7 @@ export type BlockContent = Array<
         _type: 'file'
       }
       title?: string
+      kind?: string
       description?: string
       duration?: string
       showControls?: boolean
@@ -199,7 +106,260 @@ export type BlockContent = Array<
       _type: 'audio'
       _key: string
     }
+  | ({
+      _key: string
+    } & Divider)
+  | ({
+      _key: string
+    } & Embed)
 >
+
+export type Score = {
+  _id: string
+  _type: 'score'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  composer: string
+  work: string
+  catalog?: string
+  era: 'baroque' | 'dutch' | 'romantic' | 'modern' | 'arrangement'
+  year?: number
+  pages?: number
+  editionNumber: number
+  forInstrument?: string
+  edition?: string
+  blurb?: string
+  pdfFile?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+    }
+    media?: unknown
+    _type: 'file'
+  }
+  isFeatured?: boolean
+}
+
+export type Journal = {
+  _id: string
+  _type: 'journal'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  category:
+    | 'travelogue'
+    | 'workshop'
+    | 'memorial'
+    | 'home-organ'
+    | 'biography'
+    | 'news'
+    | 'collection'
+    | 'other'
+  excerpt?: string
+  coverImage?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    caption?: string
+    _type: 'image'
+  }
+  date?: string
+  content?: BlockContent
+}
+
+export type Privacy = {
+  _id: string
+  _type: 'privacy'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  eyebrow?: string
+  title: string
+  intro?: string
+  lastUpdated?: string
+  sections?: Array<{
+    heading: string
+    body: string
+    _type: 'section'
+    _key: string
+  }>
+  contactLine?: string
+}
+
+export type Elsewhere = {
+  _id: string
+  _type: 'elsewhere'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
+  eyebrow?: string
+  intro?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: null
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  groups?: Array<{
+    title: string
+    links?: Array<{
+      label: string
+      href: string
+      description?: string
+      _type: 'link'
+      _key: string
+    }>
+    _type: 'group'
+    _key: string
+  }>
+}
+
+export type About = {
+  _id: string
+  _type: 'about'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  eyebrow?: string
+  title: string
+  letter?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal' | 'lede'
+    listItem?: never
+    markDefs?: null
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  signoffName?: string
+  signoffLocation?: string
+  portraitImage?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  portraitCaption?: string
+  portraitPlate?: string
+  secondaryImage?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  secondaryCaption?: string
+  secondaryPlate?: string
+  quickFacts?: Array<{
+    label: string
+    value: string
+    _type: 'fact'
+    _key: string
+  }>
+  timelineSummary?: string
+  timeline?: Array<{
+    year?: string
+    what: string
+    where?: string
+    _type: 'entry'
+    _key: string
+  }>
+  repertoireIntro?: string
+  repertoire?: Array<{
+    era: string
+    title: string
+    pieces?: Array<string>
+    _type: 'card'
+    _key: string
+  }>
+  contactTitle?: string
+  contactLede?: string
+  contactRows?: Array<{
+    label: string
+    value: string
+    italic?: boolean
+    href?: string
+    _type: 'row'
+    _key: string
+  }>
+}
+
+export type ScoresPage = {
+  _id: string
+  _type: 'scoresPage'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  kicker?: string
+  heading: string
+  tagline?: string
+}
+
+export type OrgansPage = {
+  _id: string
+  _type: 'organsPage'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  kickerLeft?: string
+  kickerRight?: string
+  heading: string
+  tagline?: string
+  cornerLeftSub?: string
+  cornerRightSub?: string
+}
+
+export type JournalPage = {
+  _id: string
+  _type: 'journalPage'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  kickerLeft?: string
+  kickerRight?: string
+  heading: string
+  tagline?: string
+  cornerLeftSub?: string
+  cornerRightSub?: string
+}
 
 export type Settings = {
   _id: string
@@ -208,6 +368,10 @@ export type Settings = {
   _updatedAt: string
   _rev: string
   title: string
+  wordmark?: string
+  tagline?: string
+  scoresNoticeBody?: string
+  scoresEditionLine?: string
   description?: Array<{
     children?: Array<{
       marks?: Array<string>
@@ -218,19 +382,13 @@ export type Settings = {
     style?: 'normal'
     listItem?: never
     markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'post'
+      linkType?: 'href' | 'organ'
       href?: string
-      page?: {
+      organ?: {
         _ref: string
         _type: 'reference'
         _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'page'
-      }
-      post?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'post'
+        [internalGroqTypeReferenceTo]?: 'organ'
       }
       openInNewTab?: boolean
       _type: 'link'
@@ -254,31 +412,13 @@ export type Settings = {
     metadataBase?: string
     _type: 'image'
   }
+  aiSummary?: string
+  aiCrawlPolicy: 'allow-all' | 'citation-only' | 'disallow-all'
 }
 
-export type Page = {
+export type Organ = {
   _id: string
-  _type: 'page'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  name: string
-  slug: Slug
-  heading: string
-  subheading?: string
-  pageBuilder?: Array<
-    | ({
-        _key: string
-      } & CallToAction)
-    | ({
-        _key: string
-      } & InfoSection)
-  >
-}
-
-export type Post = {
-  _id: string
-  _type: 'post'
+  _type: 'organ'
   _createdAt: string
   _updatedAt: string
   _rev: string
@@ -286,7 +426,7 @@ export type Post = {
   slug: Slug
   content?: BlockContent
   excerpt?: string
-  coverImage: {
+  coverImage?: {
     asset?: {
       _ref: string
       _type: 'reference'
@@ -297,37 +437,49 @@ export type Post = {
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
     alt?: string
+    caption?: string
     _type: 'image'
   }
   date?: string
-  author?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'person'
+  location?: {
+    city: string
+    country: string
+    building: string
   }
-}
-
-export type Person = {
-  _id: string
-  _type: 'person'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  firstName: string
-  lastName: string
-  picture: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    _type: 'image'
+  builder?: string
+  year?: number
+  disposition?: {
+    manuals?: number
+    stops?: number
+    pitch?: string
+    temperament?: string
+    action?: string
+    restoredYear?: number
+    couplings?: Array<{
+      name: string
+      note?: string
+      _type: 'coupling'
+      _key: string
+    }>
+    accessories?: Array<{
+      name: string
+      note?: string
+      _type: 'accessory'
+      _key: string
+    }>
+    registers?: Array<{
+      name: string
+      range?: string
+      stops?: Array<{
+        name: string
+        pitch?: string
+        note?: string
+        _type: 'stop'
+        _key: string
+      }>
+      _type: 'register'
+      _key: string
+    }>
   }
 }
 
@@ -594,14 +746,19 @@ export type SanityAssetSourceData = {
 }
 
 export type AllSanitySchemaTypes =
-  | CallToAction
-  | Link
-  | InfoSection
+  | Embed
+  | Divider
   | BlockContent
+  | Score
+  | Journal
+  | Privacy
+  | Elsewhere
+  | About
+  | ScoresPage
+  | OrgansPage
+  | JournalPage
   | Settings
-  | Page
-  | Post
-  | Person
+  | Organ
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -637,6 +794,10 @@ export type SettingsQueryResult = {
   _updatedAt: string
   _rev: string
   title: string
+  wordmark?: string
+  tagline?: string
+  scoresNoticeBody?: string
+  scoresEditionLine?: string
   description?: Array<{
     children?: Array<{
       marks?: Array<string>
@@ -647,19 +808,13 @@ export type SettingsQueryResult = {
     style?: 'normal'
     listItem?: never
     markDefs?: Array<{
-      linkType?: 'href' | 'page' | 'post'
+      linkType?: 'href' | 'organ'
       href?: string
-      page?: {
+      organ?: {
         _ref: string
         _type: 'reference'
         _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'page'
-      }
-      post?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'post'
+        [internalGroqTypeReferenceTo]?: 'organ'
       }
       openInNewTab?: boolean
       _type: 'link'
@@ -683,207 +838,37 @@ export type SettingsQueryResult = {
     metadataBase?: string
     _type: 'image'
   }
+  aiSummary?: string
+  aiCrawlPolicy: 'allow-all' | 'citation-only' | 'disallow-all'
 } | null
-// Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {          link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      },      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },    },  }
-export type GetPageQueryResult = {
-  _id: string
-  _type: 'page'
-  name: string
-  slug: Slug
-  heading: string
-  subheading: string | null
-  pageBuilder: Array<
-    | {
-        _key: string
-        _type: 'callToAction'
-        heading: string
-        text?: string
-        buttonText?: string
-        link: {
-          _type: 'link'
-          linkType?: 'href' | 'page' | 'post'
-          href?: string
-          page: string | null
-          post: string | null
-          openInNewTab?: boolean
-        } | null
-      }
-    | {
-        _key: string
-        _type: 'infoSection'
-        heading?: string
-        subheading?: string
-        content: Array<
-          | {
-              audioFile: {
-                asset?: {
-                  _ref: string
-                  _type: 'reference'
-                  _weak?: boolean
-                  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-                }
-                media?: unknown
-                _type: 'file'
-              }
-              title?: string
-              description?: string
-              duration?: string
-              showControls?: boolean
-              autoplay?: boolean
-              _type: 'audio'
-              _key: string
-              markDefs: null
-            }
-          | {
-              children?: Array<{
-                marks?: Array<string>
-                text?: string
-                _type: 'span'
-                _key: string
-              }>
-              style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
-              listItem?: 'bullet' | 'number'
-              markDefs: Array<{
-                linkType?: 'href' | 'page' | 'post'
-                href?: string
-                page: string | null
-                post: string | null
-                openInNewTab?: boolean
-                _type: 'link'
-                _key: string
-              }> | null
-              level?: number
-              _type: 'block'
-              _key: string
-            }
-          | {
-              asset?: {
-                _ref: string
-                _type: 'reference'
-                _weak?: boolean
-                [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-              }
-              media?: unknown
-              hotspot?: SanityImageHotspot
-              crop?: SanityImageCrop
-              alt?: string
-              caption?: string
-              _type: 'image'
-              _key: string
-              markDefs: null
-            }
-          | {
-              videoType?: 'url' | 'vimeo' | 'youtube'
-              url: string
-              title?: string
-              description?: string
-              aspectRatio?: '1:1' | '16:9' | '4:3' | '9:16'
-              _type: 'video'
-              _key: string
-              markDefs: null
-            }
-        > | null
-      }
-  > | null
+// Variable: navSettingsQuery
+// Query: *[_type == "settings" && _id == "siteSettings"][0] {    wordmark,    tagline  }
+export type NavSettingsQueryResult = {
+  wordmark: string | null
+  tagline: string | null
+} | null
+// Variable: footerContactQuery
+// Query: *[_type == "about" && _id == "siteAbout"][0] {    "href": contactRows[href match "mailto:*"][0].href  }
+export type FooterContactQueryResult = {
+  href: string | null
 } | null
 // Variable: sitemapData
-// Query: *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
+// Query: *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
 export type SitemapDataResult = Array<
   | {
       slug: string
-      _type: 'page'
+      _type: 'journal'
       _updatedAt: string
     }
   | {
       slug: string
-      _type: 'post'
+      _type: 'organ'
       _updatedAt: string
     }
 >
-// Variable: allPostsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
-export type AllPostsQueryResult = Array<{
-  _id: string
-  status: 'draft' | 'published'
-  title: string
-  slug: string
-  excerpt: string | null
-  coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    _type: 'image'
-  }
-  date: string
-  author: {
-    firstName: string
-    lastName: string
-    picture: {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      alt?: string
-      _type: 'image'
-    }
-  } | null
-}>
-// Variable: morePostsQuery
-// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
-export type MorePostsQueryResult = Array<{
-  _id: string
-  status: 'draft' | 'published'
-  title: string
-  slug: string
-  excerpt: string | null
-  coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    alt?: string
-    _type: 'image'
-  }
-  date: string
-  author: {
-    firstName: string
-    lastName: string
-    picture: {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      alt?: string
-      _type: 'image'
-    }
-  } | null
-}>
-// Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
-export type PostQueryResult = {
+// Variable: organQuery
+// Query: *[_type == "organ" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,    disposition,    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "organ" && defined(slug.current)]),    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    },    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    }  }
+export type OrganQueryResult = {
   content: Array<
     | {
         audioFile: {
@@ -897,6 +882,7 @@ export type PostQueryResult = {
           _type: 'file'
         }
         title?: string
+        kind?: string
         description?: string
         duration?: string
         showControls?: boolean
@@ -915,10 +901,9 @@ export type PostQueryResult = {
         style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
         listItem?: 'bullet' | 'number'
         markDefs: Array<{
-          linkType?: 'href' | 'page' | 'post'
+          linkType?: 'href' | 'organ'
           href?: string
-          page: string | null
-          post: string | null
+          organ: string | null
           openInNewTab?: boolean
           _type: 'link'
           _key: string
@@ -926,6 +911,19 @@ export type PostQueryResult = {
         level?: number
         _type: 'block'
         _key: string
+      }
+    | {
+        _key: string
+        _type: 'divider'
+        style?: 'default'
+        markDefs: null
+      }
+    | {
+        _key: string
+        _type: 'embed'
+        url: string
+        caption?: string
+        markDefs: null
       }
     | {
         asset?: {
@@ -939,13 +937,24 @@ export type PostQueryResult = {
         crop?: SanityImageCrop
         alt?: string
         caption?: string
+        alignment?: 'center' | 'left' | 'right'
         _type: 'image'
         _key: string
         markDefs: null
       }
     | {
         videoType?: 'url' | 'vimeo' | 'youtube'
-        url: string
+        url?: string
+        videoFile?: {
+          asset?: {
+            _ref: string
+            _type: 'reference'
+            _weak?: boolean
+            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+          }
+          media?: unknown
+          _type: 'file'
+        }
         title?: string
         description?: string
         aspectRatio?: '1:1' | '16:9' | '4:3' | '9:16'
@@ -970,36 +979,521 @@ export type PostQueryResult = {
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
     alt?: string
+    caption?: string
     _type: 'image'
-  }
+  } | null
   date: string
-  author: {
-    firstName: string
-    lastName: string
-    picture: {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
-      media?: unknown
-      hotspot?: SanityImageHotspot
-      crop?: SanityImageCrop
-      alt?: string
-      _type: 'image'
-    }
+  location: {
+    city: string
+    country: string
+    building: string
+  } | null
+  builder: string | null
+  year: number | null
+  hasAudio: boolean | null
+  hasVideo: boolean | null
+  disposition: {
+    manuals?: number
+    stops?: number
+    pitch?: string
+    temperament?: string
+    action?: string
+    restoredYear?: number
+    couplings?: Array<{
+      name: string
+      note?: string
+      _type: 'coupling'
+      _key: string
+    }>
+    accessories?: Array<{
+      name: string
+      note?: string
+      _type: 'accessory'
+      _key: string
+    }>
+    registers?: Array<{
+      name: string
+      range?: string
+      stops?: Array<{
+        name: string
+        pitch?: string
+        note?: string
+        _type: 'stop'
+        _key: string
+      }>
+      _type: 'register'
+      _key: string
+    }>
+  } | null
+  position: number
+  totalCount: number
+  prev: {
+    title: string
+    slug: string
+    date: string
+    location: {
+      city: string
+      country: string
+      building: string
+    } | null
+  } | null
+  next: {
+    title: string
+    slug: string
+    date: string
+    location: {
+      city: string
+      country: string
+      building: string
+    } | null
   } | null
 } | null
-// Variable: postPagesSlugs
-// Query: *[_type == "post" && defined(slug.current)]  {"slug": slug.current}
-export type PostPagesSlugsResult = Array<{
+// Variable: organPagesSlugs
+// Query: *[_type == "organ" && defined(slug.current)]  {"slug": slug.current}
+export type OrganPagesSlugsResult = Array<{
   slug: string
 }>
-// Variable: pagesSlugs
-// Query: *[_type == "page" && defined(slug.current)]  {"slug": slug.current}
-export type PagesSlugsResult = Array<{
+// Variable: landingOrgansQuery
+// Query: *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
+export type LandingOrgansQueryResult = Array<{
+  _id: string
+  status: 'draft' | 'published'
+  title: string
   slug: string
+  excerpt: string | null
+  coverImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    caption?: string
+    _type: 'image'
+  } | null
+  date: string
+  location: {
+    city: string
+    country: string
+    building: string
+  } | null
+  builder: string | null
+  year: number | null
+  hasAudio: boolean | null
+  hasVideo: boolean | null
+}>
+// Variable: landingStatsQuery
+// Query: {    "totalCount": count(*[_type == "organ" && defined(slug.current)]),    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date  }
+export type LandingStatsQueryResult = {
+  totalCount: number
+  firstDate: string | null
+  latestDate: string | null
+}
+// Variable: landingCitiesQuery
+// Query: *[_type == "organ" && defined(slug.current) && defined(location.city)]{    "city": location.city  }
+export type LandingCitiesQueryResult = Array<{
+  city: string | null
+}>
+// Variable: aboutQuery
+// Query: *[_type == "about" && _id == "siteAbout"][0] {    eyebrow,    title,    letter,    signoffName,    signoffLocation,    portraitImage,    portraitCaption,    portraitPlate,    secondaryImage,    secondaryCaption,    secondaryPlate,    quickFacts[]{ _key, label, value },    timelineSummary,    timeline[]{ _key, year, what, where },    repertoireIntro,    repertoire[]{ _key, era, title, pieces },    contactTitle,    contactLede,    contactRows[]{ _key, label, value, italic, href }  }
+export type AboutQueryResult = {
+  eyebrow: string | null
+  title: string
+  letter: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'lede' | 'normal'
+    listItem?: never
+    markDefs?: null
+    level?: number
+    _type: 'block'
+    _key: string
+  }> | null
+  signoffName: string | null
+  signoffLocation: string | null
+  portraitImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  } | null
+  portraitCaption: string | null
+  portraitPlate: string | null
+  secondaryImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  } | null
+  secondaryCaption: string | null
+  secondaryPlate: string | null
+  quickFacts: Array<{
+    _key: string
+    label: string
+    value: string
+  }> | null
+  timelineSummary: string | null
+  timeline: Array<{
+    _key: string
+    year: string | null
+    what: string
+    where: string | null
+  }> | null
+  repertoireIntro: string | null
+  repertoire: Array<{
+    _key: string
+    era: string
+    title: string
+    pieces: Array<string> | null
+  }> | null
+  contactTitle: string | null
+  contactLede: string | null
+  contactRows: Array<{
+    _key: string
+    label: string
+    value: string
+    italic: boolean | null
+    href: string | null
+  }> | null
+} | null
+// Variable: journalQuery
+// Query: *[_type == "journal" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  category,  coverImage,  "date": coalesce(date, _updatedAt),    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "journal" && defined(slug.current)]),    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    },    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    }  }
+export type JournalQueryResult = {
+  content: Array<
+    | {
+        audioFile: {
+          asset?: {
+            _ref: string
+            _type: 'reference'
+            _weak?: boolean
+            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+          }
+          media?: unknown
+          _type: 'file'
+        }
+        title?: string
+        kind?: string
+        description?: string
+        duration?: string
+        showControls?: boolean
+        autoplay?: boolean
+        _type: 'audio'
+        _key: string
+        markDefs: null
+      }
+    | {
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+        listItem?: 'bullet' | 'number'
+        markDefs: Array<{
+          linkType?: 'href' | 'organ'
+          href?: string
+          organ: string | null
+          openInNewTab?: boolean
+          _type: 'link'
+          _key: string
+        }> | null
+        level?: number
+        _type: 'block'
+        _key: string
+      }
+    | {
+        _key: string
+        _type: 'divider'
+        style?: 'default'
+        markDefs: null
+      }
+    | {
+        _key: string
+        _type: 'embed'
+        url: string
+        caption?: string
+        markDefs: null
+      }
+    | {
+        asset?: {
+          _ref: string
+          _type: 'reference'
+          _weak?: boolean
+          [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+        }
+        media?: unknown
+        hotspot?: SanityImageHotspot
+        crop?: SanityImageCrop
+        alt?: string
+        caption?: string
+        alignment?: 'center' | 'left' | 'right'
+        _type: 'image'
+        _key: string
+        markDefs: null
+      }
+    | {
+        videoType?: 'url' | 'vimeo' | 'youtube'
+        url?: string
+        videoFile?: {
+          asset?: {
+            _ref: string
+            _type: 'reference'
+            _weak?: boolean
+            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+          }
+          media?: unknown
+          _type: 'file'
+        }
+        title?: string
+        description?: string
+        aspectRatio?: '1:1' | '16:9' | '4:3' | '9:16'
+        _type: 'video'
+        _key: string
+        markDefs: null
+      }
+  > | null
+  _id: string
+  status: 'draft' | 'published'
+  title: string
+  slug: string
+  excerpt: string | null
+  category:
+    | 'biography'
+    | 'collection'
+    | 'home-organ'
+    | 'memorial'
+    | 'news'
+    | 'other'
+    | 'travelogue'
+    | 'workshop'
+  coverImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    caption?: string
+    _type: 'image'
+  } | null
+  date: string
+  position: number
+  totalCount: number
+  prev: {
+    title: string
+    slug: string
+    date: string
+    category:
+      | 'biography'
+      | 'collection'
+      | 'home-organ'
+      | 'memorial'
+      | 'news'
+      | 'other'
+      | 'travelogue'
+      | 'workshop'
+  } | null
+  next: {
+    title: string
+    slug: string
+    date: string
+    category:
+      | 'biography'
+      | 'collection'
+      | 'home-organ'
+      | 'memorial'
+      | 'news'
+      | 'other'
+      | 'travelogue'
+      | 'workshop'
+  } | null
+} | null
+// Variable: journalPagesSlugs
+// Query: *[_type == "journal" && defined(slug.current)]  {"slug": slug.current}
+export type JournalPagesSlugsResult = Array<{
+  slug: string
+}>
+// Variable: journalEntriesQuery
+// Query: *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    category,    "hasAudio": count(content[_type == "audio"]) > 0,  }
+export type JournalEntriesQueryResult = Array<{
+  _id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  coverImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    caption?: string
+    _type: 'image'
+  } | null
+  date: string
+  category:
+    | 'biography'
+    | 'collection'
+    | 'home-organ'
+    | 'memorial'
+    | 'news'
+    | 'other'
+    | 'travelogue'
+    | 'workshop'
+  hasAudio: boolean | null
+}>
+// Variable: journalStatsQuery
+// Query: {    "totalCount": count(*[_type == "journal" && defined(slug.current)]),    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date  }
+export type JournalStatsQueryResult = {
+  totalCount: number
+  firstDate: string | null
+}
+// Variable: journalPageQuery
+// Query: *[_type == "journalPage" && _id == "siteJournalPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
+export type JournalPageQueryResult = {
+  kickerLeft: string | null
+  kickerRight: string | null
+  heading: string
+  tagline: string | null
+  cornerLeftSub: string | null
+  cornerRightSub: string | null
+} | null
+// Variable: organsPageQuery
+// Query: *[_type == "organsPage" && _id == "siteOrgansPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
+export type OrgansPageQueryResult = {
+  kickerLeft: string | null
+  kickerRight: string | null
+  heading: string
+  tagline: string | null
+  cornerLeftSub: string | null
+  cornerRightSub: string | null
+} | null
+// Variable: scoresPageQuery
+// Query: *[_type == "scoresPage" && _id == "siteScoresPage"][0] {    kicker,    heading,    tagline,    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href  }
+export type ScoresPageQueryResult = {
+  kicker: string | null
+  heading: string
+  tagline: string | null
+  noticeBody: string | null
+  editionLine: string | null
+  contactHref: string | null
+} | null
+// Variable: llmsTxtIndexQuery
+// Query: {    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      "date": coalesce(date, _updatedAt)    },    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      category,      "date": coalesce(date, _updatedAt)    }  }
+export type LlmsTxtIndexQueryResult = {
+  organs: Array<{
+    slug: string
+    title: string
+    excerpt: string | null
+    date: string
+  }>
+  journal: Array<{
+    slug: string
+    title: string
+    excerpt: string | null
+    category:
+      | 'biography'
+      | 'collection'
+      | 'home-organ'
+      | 'memorial'
+      | 'news'
+      | 'other'
+      | 'travelogue'
+      | 'workshop'
+    date: string
+  }>
+}
+// Variable: elsewhereQuery
+// Query: *[_type == "elsewhere" && _id == "siteElsewhere"][0] {    title,    eyebrow,    intro,    groups[]{      _key,      title,      links[]{ _key, label, href, description }    }  }
+export type ElsewhereQueryResult = {
+  title: string | null
+  eyebrow: string | null
+  intro: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: null
+    level?: number
+    _type: 'block'
+    _key: string
+  }> | null
+  groups: Array<{
+    _key: string
+    title: string
+    links: Array<{
+      _key: string
+      label: string
+      href: string
+      description: string | null
+    }> | null
+  }> | null
+} | null
+// Variable: privacyQuery
+// Query: *[_type == "privacy" && _id == "sitePrivacy"][0] {    eyebrow,    title,    intro,    lastUpdated,    sections[]{ _key, heading, body },    contactLine  }
+export type PrivacyQueryResult = {
+  eyebrow: string | null
+  title: string
+  intro: string | null
+  lastUpdated: string | null
+  sections: Array<{
+    _key: string
+    heading: string
+    body: string
+  }> | null
+  contactLine: string | null
+} | null
+// Variable: scoresQuery
+// Query: *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {    _id,    composer,    work,    catalog,    era,    year,    pages,    editionNumber,    forInstrument,    edition,    blurb,    "pdfUrl": pdfFile.asset->url,    isFeatured,  }
+export type ScoresQueryResult = Array<{
+  _id: string
+  composer: string
+  work: string
+  catalog: string | null
+  era: 'arrangement' | 'baroque' | 'dutch' | 'modern' | 'romantic'
+  year: number | null
+  pages: number | null
+  editionNumber: number
+  forInstrument: string | null
+  edition: string | null
+  blurb: string | null
+  pdfUrl: string | null
+  isFeatured: boolean | null
 }>
 
 // Query TypeMap
@@ -1007,12 +1501,25 @@ import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
     '*[_type == "settings"][0]': SettingsQueryResult
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n,\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n    },\n  }\n': GetPageQueryResult
-    '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
-    '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
-    '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult
-    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
-    '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
-    '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
+    '\n  *[_type == "settings" && _id == "siteSettings"][0] {\n    wordmark,\n    tagline\n  }\n': NavSettingsQueryResult
+    '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    "href": contactRows[href match "mailto:*"][0].href\n  }\n': FooterContactQueryResult
+    '\n  *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
+    '\n  *[_type == "organ" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n    disposition,\n    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    },\n    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    }\n  }\n': OrganQueryResult
+    '\n  *[_type == "organ" && defined(slug.current)]\n  {"slug": slug.current}\n': OrganPagesSlugsResult
+    '\n  *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': LandingOrgansQueryResult
+    '\n  {\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,\n    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date\n  }\n': LandingStatsQueryResult
+    '\n  *[_type == "organ" && defined(slug.current) && defined(location.city)]{\n    "city": location.city\n  }\n': LandingCitiesQueryResult
+    '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    eyebrow,\n    title,\n    letter,\n    signoffName,\n    signoffLocation,\n    portraitImage,\n    portraitCaption,\n    portraitPlate,\n    secondaryImage,\n    secondaryCaption,\n    secondaryPlate,\n    quickFacts[]{ _key, label, value },\n    timelineSummary,\n    timeline[]{ _key, year, what, where },\n    repertoireIntro,\n    repertoire[]{ _key, era, title, pieces },\n    contactTitle,\n    contactLede,\n    contactRows[]{ _key, label, value, italic, href }\n  }\n': AboutQueryResult
+    '\n  *[_type == "journal" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  category,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n\n    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "journal" && defined(slug.current)]),\n    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    },\n    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    }\n  }\n': JournalQueryResult
+    '\n  *[_type == "journal" && defined(slug.current)]\n  {"slug": slug.current}\n': JournalPagesSlugsResult
+    '\n  *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    "date": coalesce(date, _updatedAt),\n    category,\n    "hasAudio": count(content[_type == "audio"]) > 0,\n  }\n': JournalEntriesQueryResult
+    '\n  {\n    "totalCount": count(*[_type == "journal" && defined(slug.current)]),\n    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date\n  }\n': JournalStatsQueryResult
+    '\n  *[_type == "journalPage" && _id == "siteJournalPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': JournalPageQueryResult
+    '\n  *[_type == "organsPage" && _id == "siteOrgansPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': OrgansPageQueryResult
+    '\n  *[_type == "scoresPage" && _id == "siteScoresPage"][0] {\n    kicker,\n    heading,\n    tagline,\n    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,\n    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,\n    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href\n  }\n': ScoresPageQueryResult
+    '\n  {\n    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      "date": coalesce(date, _updatedAt)\n    },\n    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      category,\n      "date": coalesce(date, _updatedAt)\n    }\n  }\n': LlmsTxtIndexQueryResult
+    '\n  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {\n    title,\n    eyebrow,\n    intro,\n    groups[]{\n      _key,\n      title,\n      links[]{ _key, label, href, description }\n    }\n  }\n': ElsewhereQueryResult
+    '\n  *[_type == "privacy" && _id == "sitePrivacy"][0] {\n    eyebrow,\n    title,\n    intro,\n    lastUpdated,\n    sections[]{ _key, heading, body },\n    contactLine\n  }\n': PrivacyQueryResult
+    '\n  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {\n    _id,\n    composer,\n    work,\n    catalog,\n    era,\n    year,\n    pages,\n    editionNumber,\n    forInstrument,\n    edition,\n    blurb,\n    "pdfUrl": pdfFile.asset->url,\n    isFeatured,\n  }\n': ScoresQueryResult
   }
 }

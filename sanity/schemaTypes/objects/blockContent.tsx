@@ -34,8 +34,7 @@ export const blockContent = defineType({
                 options: {
                   list: [
                     {title: 'URL', value: 'href'},
-                    {title: 'Page', value: 'page'},
-                    {title: 'Post', value: 'post'},
+                    {title: 'Organ', value: 'organ'},
                   ],
                   layout: 'radio',
                 },
@@ -54,29 +53,15 @@ export const blockContent = defineType({
                   }),
               }),
               defineField({
-                name: 'page',
-                title: 'Page',
+                name: 'organ',
+                title: 'Organ',
                 type: 'reference',
-                to: [{type: 'page'}],
-                hidden: ({parent}) => parent?.linkType !== 'page',
+                to: [{type: 'organ'}],
+                hidden: ({parent}) => parent?.linkType !== 'organ',
                 validation: (Rule) =>
                   Rule.custom((value, context: any) => {
-                    if (context.parent?.linkType === 'page' && !value) {
-                      return 'Page reference is required when Link Type is Page'
-                    }
-                    return true
-                  }),
-              }),
-              defineField({
-                name: 'post',
-                title: 'Post',
-                type: 'reference',
-                to: [{type: 'post'}],
-                hidden: ({parent}) => parent?.linkType !== 'post',
-                validation: (Rule) =>
-                  Rule.custom((value, context: any) => {
-                    if (context.parent?.linkType === 'post' && !value) {
-                      return 'Post reference is required when Link Type is Post'
+                    if (context.parent?.linkType === 'organ' && !value) {
+                      return 'Organ reference is required when Link Type is Organ'
                     }
                     return true
                   }),
@@ -228,7 +213,15 @@ export const blockContent = defineType({
           name: 'title',
           title: 'Audio Title',
           type: 'string',
-          description: 'Title for the audio clip',
+          description: 'Title for the audio clip, e.g. "Praeludium in g — Buxtehude, BuxWV 149".',
+        }),
+        defineField({
+          name: 'kind',
+          title: 'Kind label',
+          type: 'string',
+          description:
+            'Short label shown next to the duration on the post page. Defaults to "Recording". Other useful values: "Live", "Field recording", "Improvisation", "Demo".',
+          initialValue: 'Recording',
         }),
         defineField({
           name: 'description',

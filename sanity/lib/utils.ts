@@ -1,5 +1,4 @@
 import createImageUrlBuilder from '@sanity/image-url'
-import { Link } from '@/sanity.types'
 import { dataset, projectId, studioUrl } from '@/sanity/lib/api'
 import { createDataAttribute, CreateDataAttributeProps } from 'next-sanity'
 import { getImageDimensions } from '@sanity/asset-utils'
@@ -45,8 +44,15 @@ export function resolveOpenGraphImage(image: any, width = 1200, height = 627) {
   return { url, alt: image?.alt as string, width, height }
 }
 
-// Depending on the type of link, we need to fetch the corresponding page, post, or URL.  Otherwise return null.
-export function linkResolver(link: Link | undefined) {
+type LinkLike = {
+  linkType?: 'href' | 'organ'
+  href?: string
+  organ?: string
+  openInNewTab?: boolean
+}
+
+// Depending on the type of link, we need to fetch the corresponding organ or URL. Otherwise return null.
+export function linkResolver(link: LinkLike | undefined) {
   if (!link) return null
 
   // If linkType is not set but href is, lets set linkType to "href".  This comes into play when pasting links into the portable text editor because a link type is not assumed.
@@ -57,14 +63,11 @@ export function linkResolver(link: Link | undefined) {
   switch (link.linkType) {
     case 'href':
       return link.href || null
-    case 'page':
-      if (link?.page && typeof link.page === 'string') {
-        return `/${link.page}`
+    case 'organ':
+      if (link?.organ && typeof link.organ === 'string') {
+        return `/organs/${link.organ}`
       }
-    case 'post':
-      if (link?.post && typeof link.post === 'string') {
-        return `/posts/${link.post}`
-      }
+      return null
     default:
       return null
   }

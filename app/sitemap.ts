@@ -36,17 +36,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let url: string
 
     for (const p of allPostsAndPages.data) {
-      switch (p._type) {
-        case 'page':
-          priority = 0.8
-          changeFrequency = 'monthly'
-          url = `${domain}/${p.slug}`
-          break
-        case 'post':
-          priority = 0.5
-          changeFrequency = 'never'
-          url = `${domain}/posts/${p.slug}`
-          break
+      if (p._type === 'organ') {
+        priority = 0.5
+        changeFrequency = 'never'
+        url = `${domain}/organs/${p.slug}`
+      } else if (p._type === 'journal') {
+        priority = 0.5
+        changeFrequency = 'never'
+        url = `${domain}/journal/${p.slug}`
+      } else {
+        continue
       }
       sitemap.push({
         lastModified: p._updatedAt || new Date(),

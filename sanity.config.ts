@@ -8,6 +8,7 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from '@/sanity/schemaTypes'
 import { structure } from '@/sanity/structure'
+import { StudioLayout } from '@/sanity/studio/StudioLayout'
 import { media } from 'sanity-plugin-media'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import {
@@ -42,10 +43,10 @@ const homeLocation = { title: 'Home', href: '/' } satisfies DocumentLocation
 // path for different document types and used in the presentation tool.
 function resolveHref(documentType?: string, slug?: string): string | undefined {
   switch (documentType) {
-    case 'post':
-      return slug ? `/posts/${slug}` : undefined
-    case 'page':
-      return slug ? `/${slug}` : undefined
+    case 'organ':
+      return slug ? `/organs/${slug}` : undefined
+    case 'journal':
+      return slug ? `/journal/${slug}` : undefined
     default:
       console.warn('Invalid document type:', documentType)
       return undefined
@@ -85,39 +86,64 @@ export default defineConfig({
         mainDocuments: defineDocuments([
           {
             route: '/',
-            filter: `_type == "settings" && _id == "siteSettings"`,
+            filter: `_type == "journalPage" && _id == "siteJournalPage"`,
           },
           {
-            route: '/:slug',
-            filter: `_type == "page" && slug.current == $slug || _id == $slug`,
+            route: '/organs',
+            filter: `_type == "organsPage" && _id == "siteOrgansPage"`,
           },
           {
-            route: '/posts/:slug',
-            filter: `_type == "post" && slug.current == $slug || _id == $slug`,
+            route: '/organs/:slug',
+            filter: `_type == "organ" && slug.current == $slug || _id == $slug`,
+          },
+          {
+            route: '/scores',
+            filter: `_type == "scoresPage" && _id == "siteScoresPage"`,
+          },
+          {
+            route: '/journal/:slug',
+            filter: `_type == "journal" && slug.current == $slug || _id == $slug`,
+          },
+          {
+            route: '/about',
+            filter: `_type == "about" && _id == "siteAbout"`,
+          },
+          {
+            route: '/elsewhere',
+            filter: `_type == "elsewhere" && _id == "siteElsewhere"`,
+          },
+          {
+            route: '/privacy',
+            filter: `_type == "privacy" && _id == "sitePrivacy"`,
           },
         ]),
         // Locations Resolver API allows you to define where data is being used in your application. https://www.sanity.io/docs/presentation-resolver-api#8d8bca7bfcd7
         locations: {
           settings: defineLocations({
             locations: [homeLocation],
-            message: 'This document is used on all pages',
+            message: 'Drives <head> metadata (title template, description, OG image) on every page.',
             tone: 'positive',
           }),
-          page: defineLocations({
-            select: {
-              name: 'name',
-              slug: 'slug.current',
-            },
-            resolve: (doc) => ({
-              locations: [
-                {
-                  title: doc?.name || 'Untitled',
-                  href: resolveHref('page', doc?.slug)!,
-                },
-              ],
-            }),
+          journalPage: defineLocations({
+            locations: [homeLocation],
+            message: 'Drives the homepage hero copy.',
+            tone: 'positive',
           }),
-          post: defineLocations({
+          organsPage: defineLocations({
+            locations: [
+              { title: 'Organs', href: '/organs' } satisfies DocumentLocation,
+            ],
+            message: 'Drives the /organs hero copy.',
+            tone: 'positive',
+          }),
+          scoresPage: defineLocations({
+            locations: [
+              { title: 'Scores', href: '/scores' } satisfies DocumentLocation,
+            ],
+            message: 'Drives the /scores hero copy.',
+            tone: 'positive',
+          }),
+          journal: defineLocations({
             select: {
               title: 'title',
               slug: 'slug.current',
@@ -126,7 +152,40 @@ export default defineConfig({
               locations: [
                 {
                   title: doc?.title || 'Untitled',
-                  href: resolveHref('post', doc?.slug)!,
+                  href: resolveHref('journal', doc?.slug)!,
+                },
+                { title: 'Home', href: '/' } satisfies DocumentLocation,
+              ].filter(Boolean) as DocumentLocation[],
+            }),
+          }),
+          about: defineLocations({
+            locations: [
+              { title: 'About me', href: '/about' } satisfies DocumentLocation,
+            ],
+            tone: 'positive',
+          }),
+          elsewhere: defineLocations({
+            locations: [
+              { title: 'Elsewhere', href: '/elsewhere' } satisfies DocumentLocation,
+            ],
+            tone: 'positive',
+          }),
+          privacy: defineLocations({
+            locations: [
+              { title: 'Privacy', href: '/privacy' } satisfies DocumentLocation,
+            ],
+            tone: 'positive',
+          }),
+          organ: defineLocations({
+            select: {
+              title: 'title',
+              slug: 'slug.current',
+            },
+            resolve: (doc) => ({
+              locations: [
+                {
+                  title: doc?.title || 'Untitled',
+                  href: resolveHref('organ', doc?.slug)!,
                 },
                 {
                   title: 'Home',
@@ -150,5 +209,13 @@ export default defineConfig({
   // Schema configuration, imported from ./src/schemaTypes/index.ts
   schema: {
     types: schemaTypes,
+  },
+
+  // Custom studio chrome: widens the document pane so the PortableText
+  // editor on long posts has room to breathe.
+  studio: {
+    components: {
+      layout: StudioLayout,
+    },
   },
 })

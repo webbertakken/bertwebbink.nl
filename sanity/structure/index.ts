@@ -1,29 +1,101 @@
-import {CogIcon} from '@sanity/icons'
-import type {StructureBuilder, StructureResolver} from 'sanity/structure'
+import {
+  BookIcon,
+  CogIcon,
+  ComposeIcon,
+  DocumentIcon,
+  DocumentTextIcon,
+  HomeIcon,
+  LinkIcon,
+  LockIcon,
+  MasterDetailIcon,
+  UserIcon,
+} from '@sanity/icons'
+import type { StructureBuilder, StructureResolver } from 'sanity/structure'
 import pluralize from 'pluralize-esm'
 
 /**
- * Structure builder is useful whenever you want to control how documents are grouped and
- * listed in the studio or for adding additional in-studio previews or content to documents.
- * Learn more: https://www.sanity.io/docs/structure-builder-introduction
+ * Studio sidebar (left column / "desk" structure).
+ *
+ * Grouped flat with dividers — small site, easier to scan than nested
+ * sub-panes. New document types added to the schema automatically appear
+ * at the bottom (see catch-all below) so we don't silently lose anything;
+ * promote them into one of the sections above when the time comes.
  */
 
-const DISABLED_TYPES = ['settings', 'assist.instruction.context']
+// Singletons get their own listItem with a fixed documentId; we don't
+// want them appearing again in the auto-discovered list.
+const SINGLETON_TYPES = new Set([
+  'settings',
+  'about',
+  'elsewhere',
+  'journalPage',
+  'organsPage',
+  'scoresPage',
+  'privacy',
+])
+
+// Document types managed elsewhere (Sanity AI, etc.) — hide entirely.
+const HIDDEN_TYPES = new Set(['assist.instruction.context'])
+
+// Document types we place explicitly in the sections below.
+const EXPLICIT_TYPES = new Set(['organ', 'journal', 'score'])
 
 export const structure: StructureResolver = (S: StructureBuilder) =>
   S.list()
     .title('Website Content')
     .items([
-      ...S.documentTypeListItems()
-        // Remove the "assist.instruction.context" and "settings" content  from the list of content types
-        .filter((listItem: any) => !DISABLED_TYPES.includes(listItem.getId()))
-        // Pluralize the title of each document type.  This is not required but just an option to consider.
-        .map((listItem) => {
-          return listItem.title(pluralize(listItem.getTitle() as string))
-        }),
-      // Settings Singleton in order to view/edit the one particular document for Settings.  Learn more about Singletons: https://www.sanity.io/docs/create-a-link-to-a-single-edit-page-in-your-main-document-type-list
+      // ─── Editorial ──────────────────────────────────────────
+      S.documentTypeListItem('organ').title('Organs').icon(DocumentTextIcon),
+      S.documentTypeListItem('journal').title('Journal').icon(ComposeIcon),
+      S.documentTypeListItem('score').title('Scores').icon(BookIcon),
+
+      S.divider(),
+
+      // ─── Pages ──────────────────────────────────────────────
+      S.listItem()
+        .title('Journal page')
+        .child(S.document().schemaType('journalPage').documentId('siteJournalPage'))
+        .icon(HomeIcon),
+      S.listItem()
+        .title('Organs page')
+        .child(S.document().schemaType('organsPage').documentId('siteOrgansPage'))
+        .icon(MasterDetailIcon),
+      S.listItem()
+        .title('Scores page')
+        .child(S.document().schemaType('scoresPage').documentId('siteScoresPage'))
+        .icon(BookIcon),
+      S.listItem()
+        .title('About page')
+        .child(S.document().schemaType('about').documentId('siteAbout'))
+        .icon(UserIcon),
+      S.listItem()
+        .title('Elsewhere page')
+        .child(S.document().schemaType('elsewhere').documentId('siteElsewhere'))
+        .icon(LinkIcon),
+      S.listItem()
+        .title('Privacy page')
+        .child(S.document().schemaType('privacy').documentId('sitePrivacy'))
+        .icon(LockIcon),
+
+      S.divider(),
+
+      // ─── Site ───────────────────────────────────────────────
       S.listItem()
         .title('Site Settings')
         .child(S.document().schemaType('settings').documentId('siteSettings'))
         .icon(CogIcon),
+
+      // ─── Catch-all — auto-discovered new document types ─────
+      // Anything we forget to place explicitly will land here so we
+      // can still find it. Move into a section above when categorised.
+      ...S.documentTypeListItems()
+        .filter((item) => {
+          const id = item.getId()
+          if (!id) return false
+          if (HIDDEN_TYPES.has(id)) return false
+          if (SINGLETON_TYPES.has(id)) return false
+          if (EXPLICIT_TYPES.has(id)) return false
+          return true
+        })
+        .map((item) => item.title(pluralize(item.getTitle() as string)).icon(DocumentIcon)),
     ])

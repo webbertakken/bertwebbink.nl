@@ -8,28 +8,231 @@
 }
 
 @theme {
-  --shadow-layer: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+  /* Landing design tokens — warm OKLCH neutrals */
+  --color-bg: oklch(0.975 0.005 85);
+  --color-bg-sunk: oklch(0.955 0.008 80);
+  --color-paper: oklch(0.99 0.004 85);
+  --color-ink: oklch(0.22 0.012 70);
+  --color-ink-soft: oklch(0.42 0.015 70);
+  --color-ink-faint: oklch(0.62 0.012 70);
+  --color-rule: oklch(0.86 0.012 75);
+  --color-rule-soft: oklch(0.93 0.01 75);
+  --color-accent: oklch(0.5 0.058 45);
 
-  --color-framework: #000;
+  /* Black / white kept for legacy starter components */
   --color-black: #0b0b0b;
   --color-white: #fff;
-  --color-brand: #f50;
-  --color-blue: #0052ff;
-  --color-yellow: #cdea19;
-  --color-gray-50: #f6f6f8;
-  --color-gray-100: #eeeef1;
-  --color-gray-200: #e3e4e8;
-  --color-gray-300: #bbbdc9;
-  --color-gray-400: #9499ad;
-  --color-gray-500: #727892;
-  --color-gray-600: #515870;
-  --color-gray-700: #383d51;
-  --color-gray-800: #252837;
-  --color-gray-900: #1b1d27;
-  --color-gray-950: #13141b;
 
-  --font-display: 'Inter', 'sans-serif';
-  --font-sans: 'Inter', 'sans-serif';
+  --font-display: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  --shadow-card:
+    0 1px 0 oklch(1 0 0 / 0.6) inset, 0 18px 40px -24px oklch(0.2 0.02 70 / 0.22),
+    0 2px 6px -2px oklch(0.2 0.02 70 / 0.06);
+  --shadow-card-hover:
+    0 1px 0 oklch(1 0 0 / 0.6) inset, 0 22px 48px -26px oklch(0.2 0.02 70 / 0.26),
+    0 3px 8px -3px oklch(0.2 0.02 70 / 0.07);
 
   --default-transition-duration: 250ms;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Landing base — selection + smoothing
+   ──────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    /* Reserve space for the scrollbar so layout doesn't shift between
+       pages with shorter vs taller content. */
+    scrollbar-gutter: stable;
+  }
+  html,
+  body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+  }
+  ::selection {
+    background: oklch(0.85 0.04 45 / 0.6);
+    color: var(--color-ink);
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Landing component classes — pseudo-elements, parallax CSS vars,
+   placeholder stripe, hero cap. Keep these here rather than in
+   per-component <style> tags so they compose with @apply.
+   ──────────────────────────────────────────────────────────────── */
+@layer components {
+  /* Nav link with the animated underline */
+  .nav-link {
+    @apply relative py-1.5 transition-colors duration-200;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  .nav-link:hover::after,
+  .nav-link[data-active='true']::after {
+    transform: scaleX(1);
+  }
+  .nav-link[data-active='true']::after {
+    background: var(--color-accent);
+  }
+
+  /* Stripey placeholder used when no cover image is provided.
+     Absolute-positioned so it fills its overflow-hidden parent
+     (mirroring how cover <img> elements use object-cover w-full h-full). */
+  .placeholder-stripe {
+    @apply absolute inset-0 w-full h-full flex items-end justify-start p-3.5;
+    background: repeating-linear-gradient(
+      135deg,
+      var(--stripe-a, oklch(0.85 0.018 72)) 0 18px,
+      var(--stripe-b, oklch(0.78 0.022 68)) 18px 36px
+    );
+  }
+  .placeholder-stripe > .label {
+    @apply font-mono text-[11px] tracking-[0.04em] rounded-sm;
+    color: oklch(0.3 0.012 70);
+    padding: 4px 8px;
+    background: oklch(0.99 0.004 85 / 0.85);
+  }
+
+  /* Hero gradient cap — fades the SVG horizon into the page bg */
+  .hero-cap {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      oklch(0.975 0.005 85 / 0.45) 50%,
+      var(--color-bg) 100%
+    );
+  }
+
+  /* "See all" link with letter-spacing nudge on hover */
+  .see-all-link {
+    @apply font-mono text-[11px] tracking-[0.22em] uppercase pb-2 transition-all duration-300;
+    color: var(--color-ink-soft);
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .see-all-link:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    letter-spacing: 0.26em;
+  }
+
+  /* ─── Scores page — typographic score "covers" + control pills ─── */
+
+  .score-cover {
+    @apply relative bg-paper rounded-[3px] overflow-hidden flex flex-col justify-between;
+    aspect-ratio: 5 / 7;
+    padding: 36px 30px;
+    border: 1px solid var(--color-rule-soft);
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.6) inset,
+      0 24px 60px -28px oklch(0.2 0.02 70 / 0.3),
+      0 4px 12px -4px oklch(0.2 0.02 70 / 0.08);
+  }
+  .score-cover::before {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    border: 1px solid var(--color-rule);
+    border-radius: 1px;
+    pointer-events: none;
+  }
+
+  .mini-cover {
+    @apply relative bg-paper rounded-[3px] overflow-hidden flex flex-col justify-between items-center text-center;
+    aspect-ratio: 5 / 7;
+    padding: 22px 18px;
+    border: 1px solid var(--color-rule-soft);
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.6) inset,
+      0 12px 32px -18px oklch(0.2 0.02 70 / 0.18),
+      0 2px 6px -2px oklch(0.2 0.02 70 / 0.06);
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.6, 0.2, 1),
+      box-shadow 0.35s ease;
+  }
+  .mini-cover::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--color-rule);
+    border-radius: 1px;
+    pointer-events: none;
+  }
+  .score-card:hover .mini-cover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.6) inset,
+      0 22px 44px -20px oklch(0.2 0.02 70 / 0.28),
+      0 4px 10px -4px oklch(0.2 0.02 70 / 0.1);
+  }
+
+  .filter-btn {
+    @apply font-mono text-[11px] uppercase cursor-pointer rounded-[2px] transition-colors duration-200;
+    letter-spacing: 0.18em;
+    padding: 8px 14px;
+    color: var(--color-ink-faint);
+    background: transparent;
+    border: none;
+  }
+  .filter-btn:hover {
+    color: var(--color-ink);
+  }
+  .filter-btn[data-active='true'] {
+    color: var(--color-paper);
+    background: var(--color-ink);
+  }
+  .filter-btn .count {
+    margin-left: 6px;
+    color: currentColor;
+    opacity: 0.5;
+  }
+
+  .sort-btn {
+    @apply font-mono text-[11px] uppercase cursor-pointer rounded-[2px] inline-flex items-center gap-1.5 transition-colors duration-200;
+    letter-spacing: 0.18em;
+    padding: 6px 10px;
+    background: transparent;
+    color: var(--color-ink-soft);
+    border: 1px solid var(--color-rule);
+  }
+  .sort-btn:hover {
+    color: var(--color-ink);
+    border-color: var(--color-ink-faint);
+  }
+
+  .action-btn {
+    @apply inline-flex items-center gap-2.5 font-mono text-[11px] uppercase cursor-pointer rounded-[2px] transition-all duration-200;
+    letter-spacing: 0.18em;
+    padding: 12px 20px;
+    border: 1px solid var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .action-btn:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+  }
+  .action-btn.ghost {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .action-btn.ghost:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
 }

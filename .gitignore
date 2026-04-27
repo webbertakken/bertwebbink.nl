@@ -19,6 +19,9 @@
 /.sanity/
 /dist/
 
+# designs
+/design/
+
 # misc
 .DS_Store
 *.pem

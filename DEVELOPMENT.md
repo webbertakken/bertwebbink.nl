@@ -59,7 +59,7 @@ npm run dev
 
 #### 3. Open the app and sign in to the Studio
 
-Open the app running locally in your browser on [http://localhost:3000](http://localhost:3000).
+Open the app running locally in your browser on [http://localhost:3090](http://localhost:3090).
 You should now see a screen prompting you to log in to the Studio. Use the same service (Google,
 GitHub, or email) that you used when you logged in to the CLI.
 
@@ -73,7 +73,7 @@ document types.
 From the Studio, click "+ Create" and select the `Post` document type. Go ahead and create and
 publish the document.
 
-Your content should now appear in your Next.js app ([http://localhost:3000](http://localhost:3000))
+Your content should now appear in your Next.js app ([http://localhost:3090](http://localhost:3090))
 as well as in the Studio on the "Presentation" Tab
 
 #### 2. Import Sample Data (optional)

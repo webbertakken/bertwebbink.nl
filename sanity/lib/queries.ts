@@ -2,7 +2,20 @@ import { defineQuery } from 'next-sanity'
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
 
-const postFields = /* groq */ `
+export const navSettingsQuery = defineQuery(`
+  *[_type == "settings" && _id == "siteSettings"][0] {
+    wordmark,
+    tagline
+  }
+`)
+
+export const footerContactQuery = defineQuery(`
+  *[_type == "about" && _id == "siteAbout"][0] {
+    "href": contactRows[href match "mailto:*"][0].href
+  }
+`)
+
+const organFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
@@ -10,88 +23,256 @@ const postFields = /* groq */ `
   excerpt,
   coverImage,
   "date": coalesce(date, _updatedAt),
-  "author": author->{firstName, lastName, picture},
+  location,
+  builder,
+  year,
+  "hasAudio": count(content[_type == "audio"]) > 0,
+  "hasVideo": count(content[_type == "video"]) > 0,
 `
 
 const linkReference = /* groq */ `
   _type == "link" => {
-    "page": page->slug.current,
-    "post": post->slug.current
+    "organ": organ->slug.current
   }
 `
-
-const linkFields = /* groq */ `
-  link {
-      ...,
-      ${linkReference}
-      }
-`
-
-export const getPageQuery = defineQuery(`
-  *[_type == 'page' && slug.current == $slug][0]{
-    _id,
-    _type,
-    name,
-    slug,
-    heading,
-    subheading,
-    "pageBuilder": pageBuilder[]{
-      ...,
-      _type == "callToAction" => {
-        ${linkFields},
-      },
-      _type == "infoSection" => {
-        content[]{
-          ...,
-          markDefs[]{
-            ...,
-            ${linkReference}
-          }
-        }
-      },
-    },
-  }
-`)
 
 export const sitemapData = defineQuery(`
-  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {
+  *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {
     "slug": slug.current,
     _type,
     _updatedAt,
   }
 `)
 
-export const allPostsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
-    ${postFields}
-  }
-`)
-
-export const morePostsQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
-    ${postFields}
-  }
-`)
-
-export const postQuery = defineQuery(`
-  *[_type == "post" && slug.current == $slug] [0] {
+export const organQuery = defineQuery(`
+  *[_type == "organ" && slug.current == $slug] [0] {
     content[]{
-    ...,
-    markDefs[]{
       ...,
-      ${linkReference}
+      markDefs[]{
+        ...,
+        ${linkReference}
+      }
+    },
+    ${organFields}
+    disposition,
+    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),
+    "totalCount": count(*[_type == "organ" && defined(slug.current)]),
+    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
+      "title": coalesce(title, "Untitled"),
+      "slug": slug.current,
+      "date": coalesce(date, _updatedAt),
+      location
+    },
+    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
+      "title": coalesce(title, "Untitled"),
+      "slug": slug.current,
+      "date": coalesce(date, _updatedAt),
+      location
     }
-  },
-    ${postFields}
   }
 `)
 
-export const postPagesSlugs = defineQuery(`
-  *[_type == "post" && defined(slug.current)]
+export const organPagesSlugs = defineQuery(`
+  *[_type == "organ" && defined(slug.current)]
   {"slug": slug.current}
 `)
 
-export const pagesSlugs = defineQuery(`
-  *[_type == "page" && defined(slug.current)]
+export const landingOrgansQuery = defineQuery(`
+  *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
+    ${organFields}
+  }
+`)
+
+export const landingStatsQuery = defineQuery(`
+  {
+    "totalCount": count(*[_type == "organ" && defined(slug.current)]),
+    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,
+    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date
+  }
+`)
+
+export const landingCitiesQuery = defineQuery(`
+  *[_type == "organ" && defined(slug.current) && defined(location.city)]{
+    "city": location.city
+  }
+`)
+
+export const aboutQuery = defineQuery(`
+  *[_type == "about" && _id == "siteAbout"][0] {
+    eyebrow,
+    title,
+    letter,
+    signoffName,
+    signoffLocation,
+    portraitImage,
+    portraitCaption,
+    portraitPlate,
+    secondaryImage,
+    secondaryCaption,
+    secondaryPlate,
+    quickFacts[]{ _key, label, value },
+    timelineSummary,
+    timeline[]{ _key, year, what, where },
+    repertoireIntro,
+    repertoire[]{ _key, era, title, pieces },
+    contactTitle,
+    contactLede,
+    contactRows[]{ _key, label, value, italic, href }
+  }
+`)
+
+const journalDetailFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  "title": coalesce(title, "Untitled"),
+  "slug": slug.current,
+  excerpt,
+  category,
+  coverImage,
+  "date": coalesce(date, _updatedAt),
+`
+
+export const journalQuery = defineQuery(`
+  *[_type == "journal" && slug.current == $slug] [0] {
+    content[]{
+      ...,
+      markDefs[]{
+        ...,
+        ${linkReference}
+      }
+    },
+    ${journalDetailFields}
+    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),
+    "totalCount": count(*[_type == "journal" && defined(slug.current)]),
+    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
+      "title": coalesce(title, "Untitled"),
+      "slug": slug.current,
+      "date": coalesce(date, _updatedAt),
+      category
+    },
+    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
+      "title": coalesce(title, "Untitled"),
+      "slug": slug.current,
+      "date": coalesce(date, _updatedAt),
+      category
+    }
+  }
+`)
+
+export const journalPagesSlugs = defineQuery(`
+  *[_type == "journal" && defined(slug.current)]
   {"slug": slug.current}
+`)
+
+export const journalEntriesQuery = defineQuery(`
+  *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+    _id,
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    excerpt,
+    coverImage,
+    "date": coalesce(date, _updatedAt),
+    category,
+    "hasAudio": count(content[_type == "audio"]) > 0,
+  }
+`)
+
+export const journalStatsQuery = defineQuery(`
+  {
+    "totalCount": count(*[_type == "journal" && defined(slug.current)]),
+    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date
+  }
+`)
+
+export const journalPageQuery = defineQuery(`
+  *[_type == "journalPage" && _id == "siteJournalPage"][0] {
+    kickerLeft,
+    kickerRight,
+    heading,
+    tagline,
+    cornerLeftSub,
+    cornerRightSub
+  }
+`)
+
+export const organsPageQuery = defineQuery(`
+  *[_type == "organsPage" && _id == "siteOrgansPage"][0] {
+    kickerLeft,
+    kickerRight,
+    heading,
+    tagline,
+    cornerLeftSub,
+    cornerRightSub
+  }
+`)
+
+export const scoresPageQuery = defineQuery(`
+  *[_type == "scoresPage" && _id == "siteScoresPage"][0] {
+    kicker,
+    heading,
+    tagline,
+    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,
+    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,
+    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href
+  }
+`)
+
+export const llmsTxtIndexQuery = defineQuery(`
+  {
+    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {
+      "slug": slug.current,
+      "title": coalesce(title, "Untitled"),
+      excerpt,
+      "date": coalesce(date, _updatedAt)
+    },
+    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {
+      "slug": slug.current,
+      "title": coalesce(title, "Untitled"),
+      excerpt,
+      category,
+      "date": coalesce(date, _updatedAt)
+    }
+  }
+`)
+
+export const elsewhereQuery = defineQuery(`
+  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {
+    title,
+    eyebrow,
+    intro,
+    groups[]{
+      _key,
+      title,
+      links[]{ _key, label, href, description }
+    }
+  }
+`)
+
+export const privacyQuery = defineQuery(`
+  *[_type == "privacy" && _id == "sitePrivacy"][0] {
+    eyebrow,
+    title,
+    intro,
+    lastUpdated,
+    sections[]{ _key, heading, body },
+    contactLine
+  }
+`)
+
+export const scoresQuery = defineQuery(`
+  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {
+    _id,
+    composer,
+    work,
+    catalog,
+    era,
+    year,
+    pages,
+    editionNumber,
+    forInstrument,
+    edition,
+    blurb,
+    "pdfUrl": pdfFile.asset->url,
+    isFeatured,
+  }
 `)
