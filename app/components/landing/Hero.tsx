@@ -1,10 +1,13 @@
 import { Horizon } from './Horizon'
+import { Crumbs, type CrumbItem } from './Crumbs'
 
 type HeroProps = {
   variant?: 'fields' | 'pipes' | 'plains'
   showSun?: boolean
   totalCount: number
   firstYear: number
+  /** Optional crumbs floated over the sky, top-centred. */
+  crumbs?: CrumbItem[]
 }
 
 /**
@@ -38,13 +41,30 @@ const WindmillSilhouette = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 )
 
-export function Hero({ variant = 'fields', showSun = true, totalCount, firstYear }: HeroProps) {
+export function Hero({
+  variant = 'fields',
+  showSun = true,
+  totalCount,
+  firstYear,
+  crumbs,
+}: HeroProps) {
   return (
     <section
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden -mt-20"
       style={{ height: 'clamp(780px, 92vh, 980px)' }}
     >
       <Horizon variant={variant} showSun={showSun} />
+
+      {/* Crumbs at the exact same page-y as the no-hero pages put them:
+          inside max-w-[1240px] + px-12, at pt-8 of main. Hero is -mt-20
+          (-80px), so we add 80px to land at page_top + nav_height + 32px. */}
+      {crumbs && crumbs.length > 0 && (
+        <div className="absolute inset-x-0 top-[112px] z-[3]">
+          <div className="max-w-[1240px] mx-auto px-6 md:px-12">
+            <Crumbs items={crumbs} bare />
+          </div>
+        </div>
+      )}
 
       {/* Distant silhouettes — anchored to viewport edges so they stay
           visible on mobile, where the SVG above crops them out. Bottom
@@ -71,13 +91,13 @@ export function Hero({ variant = 'fields', showSun = true, totalCount, firstYear
       )}
 
       {/* corner editorial meta — top left */}
-      <div className="hidden md:block absolute top-6 left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint pointer-events-none">
+      <div className="hidden md:block absolute top-[150px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint pointer-events-none">
         Since {firstYear} · {totalCount} organs
         <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
           A field journal
         </span>
       </div>
-      <div className="hidden md:block absolute top-6 right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right pointer-events-none">
+      <div className="hidden md:block absolute top-[150px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right pointer-events-none">
         N 52° 30′ · E 5° 55′
         <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
           The low countries
@@ -86,7 +106,7 @@ export function Hero({ variant = 'fields', showSun = true, totalCount, firstYear
 
       <div
         className="absolute inset-0 z-[3] flex flex-col items-center justify-start pointer-events-none"
-        style={{ paddingTop: 'clamp(70px, 10vh, 110px)' }}
+        style={{ paddingTop: 'clamp(150px, 17vh, 190px)' }}
       >
         <div className="inline-flex items-center gap-[18px] font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint mb-9">
           Field notes

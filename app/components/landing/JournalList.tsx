@@ -80,18 +80,6 @@ const figureLabelFor = (entry: JournalEntrySummary) => {
   return t.length > 36 ? t.slice(0, 33).trim() + '…' : t
 }
 
-function Crumbs() {
-  return (
-    <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-10">
-      <Link href="/" className="transition-colors hover:text-accent">
-        Home
-      </Link>
-      <span className="opacity-40">/</span>
-      <span className="text-ink">Journal</span>
-    </div>
-  )
-}
-
 function EntryFigure({ entry }: { entry: JournalEntrySummary }) {
   const url = entry.coverImage?.asset?._ref
     ? urlForImage(entry.coverImage)?.width(560).height(420).fit('crop').url()
@@ -223,9 +211,12 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
   const baseCount = activeCat === 'all' ? entries.length : counts[activeCat] ?? 0
 
   return (
-    <main className="max-w-[1240px] mx-auto px-6 md:px-12 pb-24" data-screen-label="journal">
-      <Crumbs />
-
+    <section
+      className="relative z-[4] pb-[120px]"
+      style={{ marginTop: '-340px' }}
+      data-screen-label="journal"
+    >
+      <div className="max-w-[1240px] mx-auto px-6 md:px-12">
       <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-y border-rule-soft py-3.5 mb-14">
         <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint mr-3">
           Filter
@@ -285,7 +276,8 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
           </button>
         </div>
       )}
-    </main>
+      </div>
+    </section>
   )
 }
 

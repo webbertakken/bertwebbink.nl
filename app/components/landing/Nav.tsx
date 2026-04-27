@@ -5,23 +5,25 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 type NavProps = {
-  active?: 'organs' | 'scores' | 'journal' | 'about' | 'elsewhere'
+  active?: 'organs' | 'scores' | 'about' | 'elsewhere'
 }
 
+// Journal lives at `/` and is reached via the wordmark/logo — no nav item.
 const ITEMS = [
-  { id: 'organs', label: 'Organs', href: '/' },
+  { id: 'organs', label: 'Organs', href: '/organs' },
   { id: 'scores', label: 'Scores', href: '/scores' },
-  { id: 'journal', label: 'Journal', href: '/journal' },
   { id: 'about', label: 'About me', href: '/about' },
   { id: 'elsewhere', label: 'Elsewhere', href: '/elsewhere' },
 ] as const
 
 function deriveActive(pathname: string): NavProps['active'] {
   if (pathname.startsWith('/scores')) return 'scores'
-  if (pathname.startsWith('/journal') || pathname.startsWith('/blog')) return 'journal'
+  if (pathname.startsWith('/organs') || pathname.startsWith('/posts')) return 'organs'
   if (pathname.startsWith('/about')) return 'about'
   if (pathname.startsWith('/elsewhere')) return 'elsewhere'
-  return 'organs'
+  // `/` (journal) and `/journal/*` show no nav-item highlight — the
+  // wordmark serves as the home anchor.
+  return undefined
 }
 
 export function Nav({ active }: NavProps) {

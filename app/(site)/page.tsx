@@ -1,20 +1,20 @@
-import { Hero } from '@/app/components/landing/Hero'
-import { Organs } from '@/app/components/landing/Organs'
-import type { LandingOrgan } from '@/app/components/landing/OrganCard'
-import {
-  landingCitiesQuery,
-  landingOrgansQuery,
-  landingStatsQuery,
-} from '@/sanity/lib/queries'
+import type { Metadata } from 'next'
+
+import { JournalHero } from '@/app/components/landing/JournalHero'
+import { JournalList, type JournalEntrySummary } from '@/app/components/landing/JournalList'
 import { sanityFetch } from '@/sanity/lib/live'
+import { journalEntriesQuery, journalStatsQuery } from '@/sanity/lib/queries'
 
-const LANDING_ORGAN_LIMIT = 4
+export const metadata: Metadata = {
+  title: 'Journal',
+  description:
+    'Essays, fragments, half-finished thoughts — published when there is something worth saying.',
+}
 
-export default async function Page() {
-  const [{ data: organs }, { data: stats }, { data: cities }] = await Promise.all([
-    sanityFetch({ query: landingOrgansQuery, params: { limit: LANDING_ORGAN_LIMIT } }),
-    sanityFetch({ query: landingStatsQuery }),
-    sanityFetch({ query: landingCitiesQuery }),
+export default async function JournalPage() {
+  const [{ data: entries }, { data: stats }] = await Promise.all([
+    sanityFetch({ query: journalEntriesQuery }),
+    sanityFetch({ query: journalStatsQuery }),
   ])
 
   const totalCount = stats?.totalCount ?? 0
@@ -22,18 +22,16 @@ export default async function Page() {
     ? new Date(stats.firstDate).getUTCFullYear()
     : new Date().getUTCFullYear()
 
-  const cityCounts: Record<string, number> = {}
-  for (const c of cities ?? []) {
-    if (c.city) cityCounts[c.city] = (cityCounts[c.city] ?? 0) + 1
-  }
-
   return (
     <>
-      <Hero totalCount={totalCount} firstYear={firstYear} />
-      <Organs
-        organs={(organs ?? []) as LandingOrgan[]}
+      <JournalHero
         totalCount={totalCount}
-        cityCounts={cityCounts}
+        firstYear={firstYear}
+        crumbs={[{ label: 'Home' }]}
+      />
+      <JournalList
+        entries={(entries ?? []) as JournalEntrySummary[]}
+        totalCount={totalCount}
       />
     </>
   )

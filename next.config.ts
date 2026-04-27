@@ -16,12 +16,17 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/blog',
-        destination: '/journal',
+        destination: '/',
         permanent: true,
       },
       {
         source: '/blog/:slug',
         destination: '/journal/:slug',
+        permanent: true,
+      },
+      {
+        source: '/journal',
+        destination: '/',
         permanent: true,
       },
     ]
