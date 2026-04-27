@@ -228,6 +228,17 @@ export const elsewhereQuery = defineQuery(`
   }
 `)
 
+export const privacyQuery = defineQuery(`
+  *[_type == "privacy" && _id == "sitePrivacy"][0] {
+    eyebrow,
+    title,
+    intro,
+    lastUpdated,
+    sections[]{ _key, heading, body },
+    contactLine
+  }
+`)
+
 export const scoresQuery = defineQuery(`
   *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {
     _id,

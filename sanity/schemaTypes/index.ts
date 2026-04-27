@@ -7,6 +7,7 @@ import { about } from './singletons/about'
 import { elsewhere } from './singletons/elsewhere'
 import { journalPage } from './singletons/journalPage'
 import { organsPage } from './singletons/organsPage'
+import { privacy } from './singletons/privacy'
 import { scoresPage } from './singletons/scoresPage'
 import { settings } from './singletons/settings'
 import { blockContent } from './objects/blockContent'
@@ -20,6 +21,7 @@ export const schemaTypes = [
   scoresPage,
   about,
   elsewhere,
+  privacy,
   // Documents
   organ,
   journal,

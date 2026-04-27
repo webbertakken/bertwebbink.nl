@@ -6,6 +6,7 @@ import {
   DocumentTextIcon,
   HomeIcon,
   LinkIcon,
+  LockIcon,
   MasterDetailIcon,
   UserIcon,
 } from '@sanity/icons'
@@ -30,6 +31,7 @@ const SINGLETON_TYPES = new Set([
   'journalPage',
   'organsPage',
   'scoresPage',
+  'privacy',
 ])
 
 // Document types managed elsewhere (Sanity AI, etc.) — hide entirely.
@@ -70,6 +72,10 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
         .title('Elsewhere page')
         .child(S.document().schemaType('elsewhere').documentId('siteElsewhere'))
         .icon(LinkIcon),
+      S.listItem()
+        .title('Privacy page')
+        .child(S.document().schemaType('privacy').documentId('sitePrivacy'))
+        .icon(LockIcon),
 
       S.divider(),
 

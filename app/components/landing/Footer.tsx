@@ -8,7 +8,7 @@ export function Footer() {
       >
         <div>© Bert Webbink, {year}</div>
         <div className="flex gap-7">
-          <a href="#" className="transition-colors hover:text-ink">
+          <a href="/privacy" className="transition-colors hover:text-ink">
             Privacy
           </a>
           <a href="/elsewhere" className="transition-colors hover:text-ink">

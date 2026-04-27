@@ -112,6 +112,10 @@ export default defineConfig({
             route: '/elsewhere',
             filter: `_type == "elsewhere" && _id == "siteElsewhere"`,
           },
+          {
+            route: '/privacy',
+            filter: `_type == "privacy" && _id == "sitePrivacy"`,
+          },
         ]),
         // Locations Resolver API allows you to define where data is being used in your application. https://www.sanity.io/docs/presentation-resolver-api#8d8bca7bfcd7
         locations: {
@@ -163,6 +167,12 @@ export default defineConfig({
           elsewhere: defineLocations({
             locations: [
               { title: 'Elsewhere', href: '/elsewhere' } satisfies DocumentLocation,
+            ],
+            tone: 'positive',
+          }),
+          privacy: defineLocations({
+            locations: [
+              { title: 'Privacy', href: '/privacy' } satisfies DocumentLocation,
             ],
             tone: 'positive',
           }),

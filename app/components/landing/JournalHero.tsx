@@ -62,7 +62,7 @@ export function JournalHero({ totalCount, firstYear, crumbs, copy }: JournalHero
         </span>
       </div>
       <div className="hidden md:block absolute top-[68px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right pointer-events-none">
-        N 52° 30′ · E 5° 55′
+        N 52° 25′ · E 6° 38′
         <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
           The low countries
         </span>

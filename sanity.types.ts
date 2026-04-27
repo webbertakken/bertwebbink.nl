@@ -179,6 +179,25 @@ export type Journal = {
   content?: BlockContent
 }
 
+export type Privacy = {
+  _id: string
+  _type: 'privacy'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  eyebrow?: string
+  title: string
+  intro?: string
+  lastUpdated?: string
+  sections?: Array<{
+    heading: string
+    body: string
+    _type: 'section'
+    _key: string
+  }>
+  contactLine?: string
+}
+
 export type Elsewhere = {
   _id: string
   _type: 'elsewhere'
@@ -724,6 +743,7 @@ export type AllSanitySchemaTypes =
   | BlockContent
   | Score
   | Journal
+  | Privacy
   | Elsewhere
   | About
   | ScoresPage
@@ -1414,6 +1434,20 @@ export type ElsewhereQueryResult = {
     }> | null
   }> | null
 } | null
+// Variable: privacyQuery
+// Query: *[_type == "privacy" && _id == "sitePrivacy"][0] {    eyebrow,    title,    intro,    lastUpdated,    sections[]{ _key, heading, body },    contactLine  }
+export type PrivacyQueryResult = {
+  eyebrow: string | null
+  title: string
+  intro: string | null
+  lastUpdated: string | null
+  sections: Array<{
+    _key: string
+    heading: string
+    body: string
+  }> | null
+  contactLine: string | null
+} | null
 // Variable: scoresQuery
 // Query: *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {    _id,    composer,    work,    catalog,    era,    year,    pages,    editionNumber,    forInstrument,    edition,    blurb,    "pdfUrl": pdfFile.asset->url,    isFeatured,  }
 export type ScoresQueryResult = Array<{
@@ -1453,6 +1487,7 @@ declare module '@sanity/client' {
     '\n  *[_type == "scoresPage" && _id == "siteScoresPage"][0] {\n    kicker,\n    heading,\n    tagline\n  }\n': ScoresPageQueryResult
     '\n  {\n    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      "date": coalesce(date, _updatedAt)\n    },\n    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      category,\n      "date": coalesce(date, _updatedAt)\n    }\n  }\n': LlmsTxtIndexQueryResult
     '\n  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {\n    title,\n    eyebrow,\n    intro,\n    groups[]{\n      _key,\n      title,\n      links[]{ _key, label, href, description }\n    }\n  }\n': ElsewhereQueryResult
+    '\n  *[_type == "privacy" && _id == "sitePrivacy"][0] {\n    eyebrow,\n    title,\n    intro,\n    lastUpdated,\n    sections[]{ _key, heading, body },\n    contactLine\n  }\n': PrivacyQueryResult
     '\n  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {\n    _id,\n    composer,\n    work,\n    catalog,\n    era,\n    year,\n    pages,\n    editionNumber,\n    forInstrument,\n    edition,\n    blurb,\n    "pdfUrl": pdfFile.asset->url,\n    isFeatured,\n  }\n': ScoresQueryResult
   }
 }
