@@ -1,6 +1,3 @@
-'use client'
-
-import { useRef } from 'react'
 import Link from 'next/link'
 import { Image } from 'next-sanity/image'
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
@@ -83,7 +80,6 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
   const padWidth = Math.max(2, String(totalCount ?? index).length)
   const hasAudio = organ.hasAudio
   const hasVideo = organ.hasVideo
-  const coverRef = useRef<HTMLDivElement>(null)
 
   const coverUrl = organ.coverImage?.asset?._ref
     ? urlForImage(organ.coverImage)?.width(800).height(600).fit('crop').url()
@@ -95,27 +91,6 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
     path: 'title',
   })
 
-  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
-    const cover = coverRef.current
-    if (!cover) return
-    const r = cover.getBoundingClientRect()
-    const nx = ((e.clientX - r.left) / r.width - 0.5) * 2
-    const ny = ((e.clientY - r.top) / r.height - 0.5) * 2
-    cover.style.setProperty('--px', `${-nx * 6}px`)
-    cover.style.setProperty('--py', `${-ny * 6}px`)
-    cover.style.setProperty('--ps', '1.025')
-    cover.dataset.active = 'true'
-  }
-
-  const handleLeave = () => {
-    const cover = coverRef.current
-    if (!cover) return
-    cover.style.setProperty('--px', '0px')
-    cover.style.setProperty('--py', '0px')
-    cover.style.setProperty('--ps', '1')
-    cover.dataset.active = 'false'
-  }
-
   const locationLabel = organ.location
     ? `${organ.location.city}, ${organ.location.country}`
     : null
@@ -126,10 +101,8 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
     <article
       data-sanity={titleAttr.toString()}
       className="group relative bg-paper border border-rule-soft rounded shadow-card overflow-hidden cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:scale-[1.012] hover:shadow-card-hover hover:border-[oklch(0.78_0.012_70)]"
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
     >
-      <div ref={coverRef} className="cover-frame relative aspect-[4/3] overflow-hidden bg-bg-sunk">
+      <div className="relative aspect-[4/3] overflow-hidden bg-bg-sunk">
         {coverUrl ? (
           <Image
             src={coverUrl}
@@ -137,14 +110,14 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
             width={800}
             height={600}
             sizes="(min-width: 1024px) 540px, (min-width: 640px) 50vw, 100vw"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] group-hover:scale-[1.02]"
           />
         ) : (
           <Placeholder label={placeholderLabel} />
         )}
       </div>
 
-      {/* Editorial badges — siblings of the cover frame so the parallax
-          transform (.cover-frame > img/.placeholder-stripe) doesn't reach them. */}
+      {/* Editorial badges */}
       <div className="absolute top-3.5 left-3.5 z-[2] font-mono text-[10px] tracking-[0.16em] text-[oklch(0.99_0.004_85)] bg-[oklch(0.22_0.012_70/0.6)] backdrop-blur-[6px] px-2.5 py-[5px] rounded-sm pointer-events-none">
         N° {String(index).padStart(padWidth, '0')}
       </div>
@@ -190,9 +163,9 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
           <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
             {builderLine || organ.location?.building || ''}
           </span>
-          <span className="text-ink inline-flex items-center gap-1.5 transition-all duration-300 font-sans tracking-[0.04em] text-xs whitespace-nowrap group-hover:gap-2.5 group-hover:text-accent">
+          <span className="text-ink inline-flex items-center gap-1.5 transition-colors duration-300 font-sans tracking-[0.04em] text-xs whitespace-nowrap group-hover:text-accent">
             Read&nbsp;more
-            <IconArrow className="w-[14px] h-[14px] transition-transform duration-[350ms] ease-[cubic-bezier(0.2,0.6,0.2,1)] group-hover:translate-x-0.5" />
+            <IconArrow className="w-[14px] h-[14px]" />
           </span>
         </div>
       </div>

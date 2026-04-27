@@ -103,9 +103,7 @@ function EntryFigure({ entry }: { entry: JournalEntrySummary }) {
           }}
         />
       )}
-      <span className="absolute left-3 bottom-3 font-mono text-[10px] tracking-[0.04em] text-[oklch(0.30_0.012_70)] bg-[oklch(0.99_0.004_85/0.85)] px-2 py-1 rounded-sm">
-        [ {figureLabelFor(entry)} ]
-      </span>
+      <span className="sr-only">{figureLabelFor(entry)}</span>
       {entry.hasAudio && (
         <span
           className="absolute right-3 top-3 w-7 h-7 bg-[oklch(0.99_0.004_85/0.92)] text-ink rounded-full flex items-center justify-center text-sm"
@@ -127,7 +125,7 @@ function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number 
     <Link
       href={`/journal/${entry.slug}`}
       data-sanity={titleAttr}
-      className="group grid grid-cols-1 md:grid-cols-[140px_minmax(0,1fr)_280px] gap-6 md:gap-14 items-start py-10 border-t border-rule-soft transition-[padding] duration-[350ms] ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:px-2"
+      className="group grid grid-cols-1 md:grid-cols-[140px_minmax(0,1fr)_280px] gap-6 md:gap-14 items-start py-10 border-t border-rule-soft transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:scale-[1.005]"
     >
       <div className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint leading-[1.6] md:pt-3">
         <span className="block text-ink text-[11px] mb-1.5">
@@ -153,7 +151,7 @@ function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number 
           </p>
         )}
         <div className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
-          <span className="text-ink inline-flex items-center gap-2 transition-[gap] duration-300 group-hover:gap-3.5">
+          <span className="text-ink inline-flex items-center gap-2 transition-colors duration-300 group-hover:text-accent">
             Read entry <span className="text-[11px]">→</span>
           </span>
         </div>

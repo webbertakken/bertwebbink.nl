@@ -109,32 +109,11 @@
     background: var(--color-accent);
   }
 
-  /* Card cover parallax — driven via CSS custom properties from JS.
-     Scoped to known cover children (img / placeholder) so absolutely
-     positioned siblings (badges, link overlay) aren't transformed. */
-  .cover-frame {
-    --px: 0px;
-    --py: 0px;
-    --ps: 1;
-  }
-  .cover-frame > img,
-  .cover-frame > .placeholder-stripe {
-    width: 102%;
-    height: 102%;
-    margin: -1% 0 0 -1%;
-    object-fit: cover;
-    transform: translate3d(var(--px), var(--py), 0) scale(var(--ps));
-    transition: transform 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
-    will-change: transform;
-  }
-  .cover-frame[data-active='true'] > img,
-  .cover-frame[data-active='true'] > .placeholder-stripe {
-    transition: transform 0.15s linear;
-  }
-
-  /* Stripey placeholder used when no cover image is provided */
+  /* Stripey placeholder used when no cover image is provided.
+     Absolute-positioned so it fills its overflow-hidden parent
+     (mirroring how cover <img> elements use object-cover w-full h-full). */
   .placeholder-stripe {
-    @apply flex items-end justify-start p-3.5;
+    @apply absolute inset-0 w-full h-full flex items-end justify-start p-3.5;
     background: repeating-linear-gradient(
       135deg,
       var(--stripe-a, oklch(0.85 0.018 72)) 0 18px,
