@@ -1,4 +1,9 @@
-export function Footer() {
+type FooterProps = {
+  /** mailto:/href used for the Contact link. Falls back to /about. */
+  contactHref?: string | null
+}
+
+export function Footer({ contactHref }: FooterProps = {}) {
   const year = new Date().getFullYear()
   return (
     <footer className="border-t border-rule-soft px-12 pt-9 pb-12 mt-8 bg-paper">
@@ -14,7 +19,7 @@ export function Footer() {
           <a href="/elsewhere" className="transition-colors hover:text-ink">
             Elsewhere
           </a>
-          <a href="/about" className="transition-colors hover:text-ink">
+          <a href={contactHref ?? '/about'} className="transition-colors hover:text-ink">
             Contact
           </a>
         </div>

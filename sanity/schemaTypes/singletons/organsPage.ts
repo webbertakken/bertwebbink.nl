@@ -54,6 +54,24 @@ export const organsPage = defineType({
       rows: 3,
       group: 'hero',
     }),
+    defineField({
+      name: 'cornerLeftSub',
+      title: 'Top-left subtitle',
+      description:
+        'Italic subtitle under the top-left meta line (which shows “Since {year} · {n} organs”).',
+      type: 'string',
+      group: 'hero',
+      initialValue: 'A field journal',
+    }),
+    defineField({
+      name: 'cornerRightSub',
+      title: 'Top-right subtitle',
+      description:
+        'Italic subtitle under the coordinates in the top-right meta line.',
+      type: 'string',
+      group: 'hero',
+      initialValue: 'The low countries',
+    }),
   ],
   preview: {
     prepare() {

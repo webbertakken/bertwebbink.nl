@@ -2,6 +2,19 @@ import { defineQuery } from 'next-sanity'
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
 
+export const navSettingsQuery = defineQuery(`
+  *[_type == "settings" && _id == "siteSettings"][0] {
+    wordmark,
+    tagline
+  }
+`)
+
+export const footerContactQuery = defineQuery(`
+  *[_type == "about" && _id == "siteAbout"][0] {
+    "href": contactRows[href match "mailto:*"][0].href
+  }
+`)
+
 const organFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
@@ -176,7 +189,9 @@ export const journalPageQuery = defineQuery(`
     kickerLeft,
     kickerRight,
     heading,
-    tagline
+    tagline,
+    cornerLeftSub,
+    cornerRightSub
   }
 `)
 
@@ -185,7 +200,9 @@ export const organsPageQuery = defineQuery(`
     kickerLeft,
     kickerRight,
     heading,
-    tagline
+    tagline,
+    cornerLeftSub,
+    cornerRightSub
   }
 `)
 

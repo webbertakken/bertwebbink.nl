@@ -343,6 +343,8 @@ export type OrgansPage = {
   kickerRight?: string
   heading: string
   tagline?: string
+  cornerLeftSub?: string
+  cornerRightSub?: string
 }
 
 export type JournalPage = {
@@ -355,6 +357,8 @@ export type JournalPage = {
   kickerRight?: string
   heading: string
   tagline?: string
+  cornerLeftSub?: string
+  cornerRightSub?: string
 }
 
 export type Settings = {
@@ -364,6 +368,8 @@ export type Settings = {
   _updatedAt: string
   _rev: string
   title: string
+  wordmark?: string
+  tagline?: string
   description?: Array<{
     children?: Array<{
       marks?: Array<string>
@@ -786,6 +792,8 @@ export type SettingsQueryResult = {
   _updatedAt: string
   _rev: string
   title: string
+  wordmark?: string
+  tagline?: string
   description?: Array<{
     children?: Array<{
       marks?: Array<string>
@@ -828,6 +836,17 @@ export type SettingsQueryResult = {
   }
   aiSummary?: string
   aiCrawlPolicy: 'allow-all' | 'citation-only' | 'disallow-all'
+} | null
+// Variable: navSettingsQuery
+// Query: *[_type == "settings" && _id == "siteSettings"][0] {    wordmark,    tagline  }
+export type NavSettingsQueryResult = {
+  wordmark: string | null
+  tagline: string | null
+} | null
+// Variable: footerContactQuery
+// Query: *[_type == "about" && _id == "siteAbout"][0] {    "href": contactRows[href match "mailto:*"][0].href  }
+export type FooterContactQueryResult = {
+  href: string | null
 } | null
 // Variable: sitemapData
 // Query: *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
@@ -1357,20 +1376,24 @@ export type JournalStatsQueryResult = {
   firstDate: string | null
 }
 // Variable: journalPageQuery
-// Query: *[_type == "journalPage" && _id == "siteJournalPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline  }
+// Query: *[_type == "journalPage" && _id == "siteJournalPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
 export type JournalPageQueryResult = {
   kickerLeft: string | null
   kickerRight: string | null
   heading: string
   tagline: string | null
+  cornerLeftSub: string | null
+  cornerRightSub: string | null
 } | null
 // Variable: organsPageQuery
-// Query: *[_type == "organsPage" && _id == "siteOrgansPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline  }
+// Query: *[_type == "organsPage" && _id == "siteOrgansPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
 export type OrgansPageQueryResult = {
   kickerLeft: string | null
   kickerRight: string | null
   heading: string
   tagline: string | null
+  cornerLeftSub: string | null
+  cornerRightSub: string | null
 } | null
 // Variable: scoresPageQuery
 // Query: *[_type == "scoresPage" && _id == "siteScoresPage"][0] {    kicker,    heading,    tagline  }
@@ -1471,6 +1494,8 @@ import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
     '*[_type == "settings"][0]': SettingsQueryResult
+    '\n  *[_type == "settings" && _id == "siteSettings"][0] {\n    wordmark,\n    tagline\n  }\n': NavSettingsQueryResult
+    '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    "href": contactRows[href match "mailto:*"][0].href\n  }\n': FooterContactQueryResult
     '\n  *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "organ" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n    disposition,\n    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    },\n    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    }\n  }\n': OrganQueryResult
     '\n  *[_type == "organ" && defined(slug.current)]\n  {"slug": slug.current}\n': OrganPagesSlugsResult
@@ -1482,8 +1507,8 @@ declare module '@sanity/client' {
     '\n  *[_type == "journal" && defined(slug.current)]\n  {"slug": slug.current}\n': JournalPagesSlugsResult
     '\n  *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    "date": coalesce(date, _updatedAt),\n    category,\n    "hasAudio": count(content[_type == "audio"]) > 0,\n  }\n': JournalEntriesQueryResult
     '\n  {\n    "totalCount": count(*[_type == "journal" && defined(slug.current)]),\n    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date\n  }\n': JournalStatsQueryResult
-    '\n  *[_type == "journalPage" && _id == "siteJournalPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline\n  }\n': JournalPageQueryResult
-    '\n  *[_type == "organsPage" && _id == "siteOrgansPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline\n  }\n': OrgansPageQueryResult
+    '\n  *[_type == "journalPage" && _id == "siteJournalPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': JournalPageQueryResult
+    '\n  *[_type == "organsPage" && _id == "siteOrgansPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': OrgansPageQueryResult
     '\n  *[_type == "scoresPage" && _id == "siteScoresPage"][0] {\n    kicker,\n    heading,\n    tagline\n  }\n': ScoresPageQueryResult
     '\n  {\n    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      "date": coalesce(date, _updatedAt)\n    },\n    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      category,\n      "date": coalesce(date, _updatedAt)\n    }\n  }\n': LlmsTxtIndexQueryResult
     '\n  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {\n    title,\n    eyebrow,\n    intro,\n    groups[]{\n      _key,\n      title,\n      links[]{ _key, label, href, description }\n    }\n  }\n': ElsewhereQueryResult

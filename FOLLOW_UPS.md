@@ -3,39 +3,19 @@
 Items deferred during the landing-page redesign. Tackle when ready; nothing here blocks the redesign itself.
 
 ## Editable-in-Sanity copy
-Currently hardcoded in `app/components/landing/*`. Candidates for a `landingPage` (or expanded `settings`) singleton:
+Still hardcoded in `app/components/landing/*`. Owner explicitly deferred these for now — only the highest-impact ones (nav wordmark + tagline, hero corner subtitles) were lifted into Sanity. The rest stays as design defaults until Bert needs to edit them:
 - Post detail: "Field note" eyebrow, "min read" suffix, "Plate I" caption tag, "— end of the journal —" prev/next end-state
 - Post detail: lead paragraph (currently rendered as a regular paragraph). Could be a custom block style "lead" added to `blockContent`, opt-in by editor
 - Post detail crumbs: "All organs" label
-- Top-left editorial meta: "Vol. {year - 2017} · No. 6" + "A field journal"
-- Top-right editorial meta: "N 52° 30′ · E 5° 55′" + "The low countries"
-- Nav site title + "Organist" tagline
-- Nav items (`Organs`, `Scores`, `About me`)
-- "Recent visits" section title
-- "{n} of {total} · updated weekly" copy
-- "By city" sidebar heading
-- "All organ posts →" link label
-- Footer link labels (Privacy, Links, Contact)
-
-## About page
-- Repertoire cards (3 cards × 4 pieces) are educated guesses based on Dutch organ tradition. Replace with Bert's real repertoire focus when known.
-- Timeline has placeholder years (`—`) for several entries; refine with real dates as they're confirmed.
-- Quick facts "Opleiding" / "Organist" rows truncate visually on narrow viewports — consider splitting into more rows or shortening values.
-- Portrait image is empty (placeholder stripe). Upload a real portrait via Studio when one is available.
-- Postal address row reads only "Bert Webbink, Vriezenveen" — add street + postcode if Bert wants postal contact public.
-- Press quotes section was intentionally omitted (no real reviews on file). Add a `pressQuotes` array to the `about` schema and a section in `<About />` if/when there are real quotes.
+- Top-right editorial meta coordinates ("N 52° 25′ · E 6° 38′") — hardcoded by request
+- Nav item labels (`Organs`, `Scores`, `About me`, `Elsewhere`)
+- Organs landing: "Recent visits", "{n} of {total} · updated weekly", "By city", "All organs →"
+- Footer link labels (Privacy, Elsewhere, Contact)
 
 ## Scores page
 - Italic key portions in work titles (e.g. *g-moll*, *E-flat*) currently render as plain text. Could swap `work` to a small portable-text field with italic mark, or accept a Markdown-like syntax.
 - "Preview" button is intentionally dropped — add back when an in-browser PDF viewer is wired (PDF.js / react-pdf).
-- Notice copy and "Edition Webbink · {year}" hardcoded — candidate for `settings` once we have a singleton.
-- Wire `data-sanity` on more score fields if useful (catalog, era, edition, year).
-
-## Footer links
-Currently placeholders (`#`):
-- Privacy → real privacy policy page
-- Links → curated outbound links page (or remove)
-- Contact → real contact page or `mailto:`
+- Notice copy and "Edition Webbink · {year}" hardcoded — candidate for the `settings.chrome` group.
 
 ## Sanity content backfill
 After deploying the extended `post` schema, existing posts will fail validation on the new required `location` field. Backfill:
@@ -54,9 +34,8 @@ Site copy is currently English. Audience is presumably Dutch.
 
 ## Design system extensions
 Likely-needed additions surfacing from the design:
-- `tone: warm | cool | sage | stone` on `post` to drive `Placeholder` color when no `coverImage`
-- Per-post `placeholderLabel` override (defaults to title fragment)
-- Make Nav active state derive from current route instead of hardcoded `active="organs"`
+- `tone: warm | cool | sage | stone` on `organ` to drive `Placeholder` color when no `coverImage`
+- Per-organ `placeholderLabel` override (defaults to building name)
 
 ## Cleanup once admin / studio routes get restyled
 Existing palette tokens (`--color-brand`, cyan scale) and starter components (`GetStartedCode`, `SideBySideIcons`, `Onboarding`) remain in the codebase but are unused on the new landing. Remove when no surface uses them.

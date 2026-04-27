@@ -14,6 +14,7 @@ export const settings = defineType({
   icon: CogIcon,
   groups: [
     { name: 'general', title: 'General', default: true },
+    { name: 'chrome', title: 'Site chrome' },
     { name: 'seo', title: 'Search engine optimisation' },
     { name: 'aeo', title: 'Agentic engine optimisation' },
   ],
@@ -26,6 +27,25 @@ export const settings = defineType({
       group: 'general',
       initialValue: demo.title,
       validation: (rule) => rule.required(),
+    }),
+
+    // ─── Site chrome (nav wordmark + tagline) ───
+    defineField({
+      name: 'wordmark',
+      title: 'Nav wordmark',
+      description: 'The name shown in the top-left of the navigation, e.g. "Bert Webbink".',
+      type: 'string',
+      group: 'chrome',
+      initialValue: 'Bert Webbink',
+    }),
+    defineField({
+      name: 'tagline',
+      title: 'Nav tagline',
+      description:
+        'Small mono-caps line shown next to the wordmark, e.g. "Organist". Keep it short — one or two words.',
+      type: 'string',
+      group: 'chrome',
+      initialValue: 'Organist',
     }),
     defineField({
       name: 'description',

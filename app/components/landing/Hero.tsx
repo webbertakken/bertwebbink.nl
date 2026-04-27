@@ -21,6 +21,8 @@ type HeroProps = {
     kickerRight?: string | null
     heading?: string | null
     tagline?: string | null
+    cornerLeftSub?: string | null
+    cornerRightSub?: string | null
   } | null
 }
 
@@ -69,6 +71,8 @@ export function Hero({
   const tagline =
     copy?.tagline ??
     'Recordings, photographs and registers from one Saturday at a time, gathered in the Netherlands and beyond.'
+  const cornerLeftSub = copy?.cornerLeftSub ?? 'A field journal'
+  const cornerRightSub = copy?.cornerRightSub ?? 'The low countries'
 
   return (
     <section
@@ -113,16 +117,22 @@ export function Hero({
       )}
 
       {/* corner editorial meta — top left */}
-      <div className="hidden md:block absolute top-[68px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint pointer-events-none">
+      <div className="hidden md:block absolute top-[68px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint">
         Since {firstYear} · {totalCount} organs
-        <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
-          A field journal
+        <span
+          data-sanity={organsAttr('cornerLeftSub')}
+          className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink"
+        >
+          {cornerLeftSub}
         </span>
       </div>
-      <div className="hidden md:block absolute top-[68px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right pointer-events-none">
+      <div className="hidden md:block absolute top-[68px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right">
         N 52° 25′ · E 6° 38′
-        <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
-          The low countries
+        <span
+          data-sanity={organsAttr('cornerRightSub')}
+          className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink"
+        >
+          {cornerRightSub}
         </span>
       </div>
 

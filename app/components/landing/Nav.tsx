@@ -4,8 +4,16 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
+import { dataAttr } from '@/sanity/lib/utils'
+
+const SETTINGS_ID = 'siteSettings'
+const settingsAttr = (path: string) =>
+  dataAttr({ id: SETTINGS_ID, type: 'settings', path }).toString()
+
 type NavProps = {
   active?: 'organs' | 'scores' | 'about' | 'elsewhere'
+  wordmark?: string | null
+  tagline?: string | null
 }
 
 // Journal lives at `/` and is reached via the wordmark/logo — no nav item.
@@ -26,7 +34,7 @@ function deriveActive(pathname: string): NavProps['active'] {
   return undefined
 }
 
-export function Nav({ active }: NavProps) {
+export function Nav({ active, wordmark, tagline }: NavProps) {
   const [open, setOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -65,9 +73,12 @@ export function Nav({ active }: NavProps) {
         className="font-serif text-2xl font-medium text-ink whitespace-nowrap inline-flex items-baseline gap-2.5"
         style={{ letterSpacing: '0.005em' }}
       >
-        Bert Webbink
-        <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint border-l border-rule pl-2.5 ml-0.5 font-normal">
-          Organist
+        <span data-sanity={settingsAttr('wordmark')}>{wordmark || 'Bert Webbink'}</span>
+        <span
+          data-sanity={settingsAttr('tagline')}
+          className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint border-l border-rule pl-2.5 ml-0.5 font-normal"
+        >
+          {tagline || 'Organist'}
         </span>
       </Link>
 

@@ -19,6 +19,8 @@ type JournalHeroProps = {
     kickerRight?: string | null
     heading?: string | null
     tagline?: string | null
+    cornerLeftSub?: string | null
+    cornerRightSub?: string | null
   } | null
 }
 
@@ -35,6 +37,8 @@ export function JournalHero({ totalCount, firstYear, crumbs, copy }: JournalHero
   const tagline =
     copy?.tagline ??
     'Essays, fragments, half-finished thoughts — published when there is something worth saying, usually after a bench has changed my mind about something.'
+  const cornerLeftSub = copy?.cornerLeftSub ?? 'Notes between visits'
+  const cornerRightSub = copy?.cornerRightSub ?? 'The low countries'
 
   return (
     <section
@@ -55,16 +59,22 @@ export function JournalHero({ totalCount, firstYear, crumbs, copy }: JournalHero
       )}
 
       {/* corner editorial meta — top left */}
-      <div className="hidden md:block absolute top-[68px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint pointer-events-none">
+      <div className="hidden md:block absolute top-[68px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint">
         Since {firstYear} · {totalCount} entries
-        <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
-          Notes between visits
+        <span
+          data-sanity={journalAttr('cornerLeftSub')}
+          className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink"
+        >
+          {cornerLeftSub}
         </span>
       </div>
-      <div className="hidden md:block absolute top-[68px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right pointer-events-none">
+      <div className="hidden md:block absolute top-[68px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right">
         N 52° 25′ · E 6° 38′
-        <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
-          The low countries
+        <span
+          data-sanity={journalAttr('cornerRightSub')}
+          className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink"
+        >
+          {cornerRightSub}
         </span>
       </div>
 

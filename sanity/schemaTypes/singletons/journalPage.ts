@@ -53,6 +53,24 @@ export const journalPage = defineType({
       rows: 3,
       group: 'hero',
     }),
+    defineField({
+      name: 'cornerLeftSub',
+      title: 'Top-left subtitle',
+      description:
+        'Italic subtitle under the top-left meta line (which shows “Since {year} · {n} entries”).',
+      type: 'string',
+      group: 'hero',
+      initialValue: 'Notes between visits',
+    }),
+    defineField({
+      name: 'cornerRightSub',
+      title: 'Top-right subtitle',
+      description:
+        'Italic subtitle under the coordinates in the top-right meta line.',
+      type: 'string',
+      group: 'hero',
+      initialValue: 'The low countries',
+    }),
   ],
   preview: {
     prepare() {
