@@ -12,20 +12,27 @@ export const settings = defineType({
   title: 'Settings',
   type: 'document',
   icon: CogIcon,
+  groups: [
+    { name: 'general', title: 'General', default: true },
+    { name: 'seo', title: 'Search engine optimisation' },
+    { name: 'aeo', title: 'Agentic engine optimisation' },
+  ],
   fields: [
     defineField({
       name: 'title',
-      description: 'This field is the title of your blog.',
+      description: 'Site name. Used in the browser tab title ("%s | Site name") and as the default page title.',
       title: 'Title',
       type: 'string',
+      group: 'general',
       initialValue: demo.title,
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'description',
-      description: 'Used on the Homepage',
+      description: 'Site-wide meta description. Used in the homepage <meta name="description"> tag and as a fallback for pages that don\u2019t set their own.',
       title: 'Description',
       type: 'array',
+      group: 'seo',
       initialValue: demo.description,
       of: [
         // Define a minified block content field for the description. https://www.sanity.io/docs/block-content
@@ -99,6 +106,7 @@ export const settings = defineType({
       name: 'ogImage',
       title: 'Open Graph Image',
       type: 'image',
+      group: 'seo',
       description: 'Displayed on social cards and search engine results.',
       options: {
         hotspot: true,
@@ -134,6 +142,44 @@ export const settings = defineType({
           ),
         }),
       ],
+    }),
+
+    // ─── Agentic Engine Optimisation ───
+    // Drives `app/llms.txt/route.ts` and `app/robots.ts`.
+    defineField({
+      name: 'aiSummary',
+      title: 'Site summary for AI agents',
+      group: 'aeo',
+      description:
+        'One or two sentences describing what this site is and who it is for, optimised for ingestion by LLMs (used in the generated /llms.txt). Plain prose, no marketing slogans.',
+      type: 'text',
+      rows: 4,
+      initialValue:
+        'Field notes, recordings and photographs from one organist’s visits to old organs in the Netherlands and beyond — plus working editions of the scores he prepares along the way.',
+    }),
+    defineField({
+      name: 'aiCrawlPolicy',
+      title: 'AI crawl policy',
+      group: 'aeo',
+      description:
+        'Controls which AI crawlers may access the site. “Citation only” is the recommended default — it lets your work appear as a cited source in tools like ChatGPT and Perplexity, while blocking the training crawlers (GPTBot, ClaudeBot, CCBot, Google-Extended, etc.) that absorb content into commercial AI products without attribution.',
+      type: 'string',
+      options: {
+        list: [
+          {
+            title: 'Allow all crawlers (training + citation)',
+            value: 'allow-all',
+          },
+          {
+            title: 'Citation only — block training crawlers (recommended)',
+            value: 'citation-only',
+          },
+          { title: 'Disallow all AI crawlers', value: 'disallow-all' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'citation-only',
+      validation: (rule) => rule.required(),
     }),
   ],
   preview: {

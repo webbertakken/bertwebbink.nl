@@ -3,7 +3,11 @@ import type { Metadata } from 'next'
 import { JournalHero } from '@/app/components/landing/JournalHero'
 import { JournalList, type JournalEntrySummary } from '@/app/components/landing/JournalList'
 import { sanityFetch } from '@/sanity/lib/live'
-import { journalEntriesQuery, journalStatsQuery } from '@/sanity/lib/queries'
+import {
+  journalEntriesQuery,
+  journalPageQuery,
+  journalStatsQuery,
+} from '@/sanity/lib/queries'
 
 export const metadata: Metadata = {
   title: 'Journal',
@@ -12,9 +16,10 @@ export const metadata: Metadata = {
 }
 
 export default async function JournalPage() {
-  const [{ data: entries }, { data: stats }] = await Promise.all([
+  const [{ data: entries }, { data: stats }, { data: page }] = await Promise.all([
     sanityFetch({ query: journalEntriesQuery }),
     sanityFetch({ query: journalStatsQuery }),
+    sanityFetch({ query: journalPageQuery }),
   ])
 
   const totalCount = stats?.totalCount ?? 0
@@ -28,6 +33,7 @@ export default async function JournalPage() {
         totalCount={totalCount}
         firstYear={firstYear}
         crumbs={[{ label: 'Home' }]}
+        copy={page}
       />
       <JournalList
         entries={(entries ?? []) as JournalEntrySummary[]}

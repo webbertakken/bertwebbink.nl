@@ -24,7 +24,7 @@ const linkReference = /* groq */ `
 `
 
 export const sitemapData = defineQuery(`
-  *[_type == "organ" && defined(slug.current)] | order(_type asc) {
+  *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {
     "slug": slug.current,
     _type,
     _updatedAt,
@@ -108,6 +108,49 @@ export const aboutQuery = defineQuery(`
   }
 `)
 
+const journalDetailFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  "title": coalesce(title, "Untitled"),
+  "slug": slug.current,
+  excerpt,
+  category,
+  coverImage,
+  "date": coalesce(date, _updatedAt),
+`
+
+export const journalQuery = defineQuery(`
+  *[_type == "journal" && slug.current == $slug] [0] {
+    content[]{
+      ...,
+      markDefs[]{
+        ...,
+        ${linkReference}
+      }
+    },
+    ${journalDetailFields}
+    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),
+    "totalCount": count(*[_type == "journal" && defined(slug.current)]),
+    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
+      "title": coalesce(title, "Untitled"),
+      "slug": slug.current,
+      "date": coalesce(date, _updatedAt),
+      category
+    },
+    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
+      "title": coalesce(title, "Untitled"),
+      "slug": slug.current,
+      "date": coalesce(date, _updatedAt),
+      category
+    }
+  }
+`)
+
+export const journalPagesSlugs = defineQuery(`
+  *[_type == "journal" && defined(slug.current)]
+  {"slug": slug.current}
+`)
+
 export const journalEntriesQuery = defineQuery(`
   *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {
     _id,
@@ -125,6 +168,50 @@ export const journalStatsQuery = defineQuery(`
   {
     "totalCount": count(*[_type == "journal" && defined(slug.current)]),
     "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date
+  }
+`)
+
+export const journalPageQuery = defineQuery(`
+  *[_type == "journalPage" && _id == "siteJournalPage"][0] {
+    kickerLeft,
+    kickerRight,
+    heading,
+    tagline
+  }
+`)
+
+export const organsPageQuery = defineQuery(`
+  *[_type == "organsPage" && _id == "siteOrgansPage"][0] {
+    kickerLeft,
+    kickerRight,
+    heading,
+    tagline
+  }
+`)
+
+export const scoresPageQuery = defineQuery(`
+  *[_type == "scoresPage" && _id == "siteScoresPage"][0] {
+    kicker,
+    heading,
+    tagline
+  }
+`)
+
+export const llmsTxtIndexQuery = defineQuery(`
+  {
+    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {
+      "slug": slug.current,
+      "title": coalesce(title, "Untitled"),
+      excerpt,
+      "date": coalesce(date, _updatedAt)
+    },
+    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {
+      "slug": slug.current,
+      "title": coalesce(title, "Untitled"),
+      excerpt,
+      category,
+      "date": coalesce(date, _updatedAt)
+    }
   }
 `)
 

@@ -5,17 +5,20 @@ import {
   landingCitiesQuery,
   landingOrgansQuery,
   landingStatsQuery,
+  organsPageQuery,
 } from '@/sanity/lib/queries'
 import { sanityFetch } from '@/sanity/lib/live'
 
 const LANDING_ORGAN_LIMIT = 4
 
 export default async function Page() {
-  const [{ data: organs }, { data: stats }, { data: cities }] = await Promise.all([
-    sanityFetch({ query: landingOrgansQuery, params: { limit: LANDING_ORGAN_LIMIT } }),
-    sanityFetch({ query: landingStatsQuery }),
-    sanityFetch({ query: landingCitiesQuery }),
-  ])
+  const [{ data: organs }, { data: stats }, { data: cities }, { data: page }] =
+    await Promise.all([
+      sanityFetch({ query: landingOrgansQuery, params: { limit: LANDING_ORGAN_LIMIT } }),
+      sanityFetch({ query: landingStatsQuery }),
+      sanityFetch({ query: landingCitiesQuery }),
+      sanityFetch({ query: organsPageQuery }),
+    ])
 
   const totalCount = stats?.totalCount ?? 0
   const firstYear = stats?.firstDate
@@ -33,6 +36,7 @@ export default async function Page() {
         totalCount={totalCount}
         firstYear={firstYear}
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Organs' }]}
+        copy={page}
       />
       <Organs
         organs={(organs ?? []) as LandingOrgan[]}

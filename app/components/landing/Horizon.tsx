@@ -18,10 +18,7 @@ export function Horizon({ variant = 'fields', showSun = true }: HorizonProps) {
     >
       <defs>
         <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1">
-          {/* Top stop is intentionally darker than the page bg (0.975) so
-              the hero is visibly distinct from the page when it tucks
-              behind the transparent nav. */}
-          <stop offset="0%" stopColor="oklch(0.93 0.014 72)" />
+          <stop offset="0%" stopColor="oklch(0.97 0.006 80)" />
           <stop offset="55%" stopColor="oklch(0.945 0.010 78)" />
           <stop offset="100%" stopColor="oklch(0.91 0.014 75)" />
         </linearGradient>

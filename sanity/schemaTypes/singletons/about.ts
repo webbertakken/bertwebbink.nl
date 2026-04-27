@@ -94,7 +94,7 @@ export const about = defineType({
       name: 'secondaryImage',
       title: 'Secondary photo',
       description:
-        'Optional second photo, shown beneath the quick-facts panel as "Plate III". Same asset-sharing best practice applies.',
+        'Optional second photo, shown as an inline plate between the Trajectory and Repertoire sections. Same asset-sharing best practice applies.',
       type: 'image',
       options: { hotspot: true },
       fields: [

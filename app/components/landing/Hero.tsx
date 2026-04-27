@@ -1,5 +1,12 @@
 import { Horizon } from './Horizon'
 import { Crumbs, type CrumbItem } from './Crumbs'
+import { renderEmphasised } from './renderEmphasised'
+import { dataAttr } from '@/sanity/lib/utils'
+
+const ORGANS_PAGE_ID = 'siteOrgansPage'
+const ORGANS_PAGE_TYPE = 'organsPage'
+const organsAttr = (path: string) =>
+  dataAttr({ id: ORGANS_PAGE_ID, type: ORGANS_PAGE_TYPE, path }).toString()
 
 type HeroProps = {
   variant?: 'fields' | 'pipes' | 'plains'
@@ -8,6 +15,13 @@ type HeroProps = {
   firstYear: number
   /** Optional crumbs floated over the sky, top-centred. */
   crumbs?: CrumbItem[]
+  /** Editable hero copy. All fields fall back to design defaults. */
+  copy?: {
+    kickerLeft?: string | null
+    kickerRight?: string | null
+    heading?: string | null
+    tagline?: string | null
+  } | null
 }
 
 /**
@@ -47,19 +61,27 @@ export function Hero({
   totalCount,
   firstYear,
   crumbs,
+  copy,
 }: HeroProps) {
+  const kickerLeft = copy?.kickerLeft ?? 'Field notes'
+  const kickerRight = copy?.kickerRight ?? 'From the organ loft'
+  const heading = copy?.heading ?? 'Visits to {{old organs}}'
+  const tagline =
+    copy?.tagline ??
+    'Recordings, photographs and registers from one Saturday at a time, gathered in the Netherlands and beyond.'
+
   return (
     <section
-      className="relative w-full overflow-hidden -mt-20"
+      className="relative w-full overflow-hidden"
       style={{ height: 'clamp(780px, 92vh, 980px)' }}
     >
       <Horizon variant={variant} showSun={showSun} />
 
-      {/* Crumbs at the exact same page-y as the no-hero pages put them:
-          inside max-w-[1240px] + px-12, at pt-8 of main. Hero is -mt-20
-          (-80px), so we add 80px to land at page_top + nav_height + 32px. */}
+      {/* Crumbs sit at pt-8 of the hero so they line up with the
+          pt-8 crumbs on the no-hero pages (Nav lives above the hero,
+          contributing the same vertical offset on every route). */}
       {crumbs && crumbs.length > 0 && (
-        <div className="absolute inset-x-0 top-[112px] z-[3]">
+        <div className="absolute inset-x-0 top-8 z-[3]">
           <div className="max-w-[1240px] mx-auto px-6 md:px-12">
             <Crumbs items={crumbs} bare />
           </div>
@@ -91,13 +113,13 @@ export function Hero({
       )}
 
       {/* corner editorial meta — top left */}
-      <div className="hidden md:block absolute top-[150px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint pointer-events-none">
+      <div className="hidden md:block absolute top-[68px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint pointer-events-none">
         Since {firstYear} · {totalCount} organs
         <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
           A field journal
         </span>
       </div>
-      <div className="hidden md:block absolute top-[150px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right pointer-events-none">
+      <div className="hidden md:block absolute top-[68px] right-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint text-right pointer-events-none">
         N 52° 30′ · E 5° 55′
         <span className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink">
           The low countries
@@ -106,22 +128,23 @@ export function Hero({
 
       <div
         className="absolute inset-0 z-[3] flex flex-col items-center justify-start pointer-events-none"
-        style={{ paddingTop: 'clamp(150px, 17vh, 190px)' }}
+        style={{ paddingTop: 'clamp(120px, 13vh, 160px)' }}
       >
-        <div className="inline-flex items-center gap-[18px] font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint mb-9">
-          Field notes
+        <div className="inline-flex items-center gap-[18px] font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint mb-9 pointer-events-auto">
+          <span data-sanity={organsAttr('kickerLeft')}>{kickerLeft}</span>
           <span className="text-accent text-[10px] -translate-y-px">✦</span>
-          From the organ loft
+          <span data-sanity={organsAttr('kickerRight')}>{kickerRight}</span>
         </div>
 
         <h1
-          className="font-serif font-light leading-[0.96] text-ink text-center whitespace-nowrap m-0"
+          data-sanity={organsAttr('heading')}
+          className="font-serif font-light leading-[0.96] text-ink text-center whitespace-nowrap m-0 pointer-events-auto"
           style={{
             fontSize: 'clamp(48px, 7.4vw, 108px)',
             letterSpacing: '-0.012em',
           }}
         >
-          Visits to <em className="font-normal italic">old&nbsp;organs</em>
+          {renderEmphasised(heading)}
         </h1>
 
         <div className="mt-7 flex items-center justify-center gap-3.5 text-ink-faint">
@@ -131,14 +154,14 @@ export function Hero({
         </div>
 
         <p
-          className="mt-[22px] text-center text-ink-soft font-serif italic font-light max-w-[560px] leading-[1.45] px-6"
+          data-sanity={organsAttr('tagline')}
+          className="mt-[22px] text-center text-ink-soft font-serif italic font-light max-w-[560px] leading-[1.45] px-6 pointer-events-auto"
           style={{
             fontSize: 'clamp(16px, 1.5vw, 21px)',
             letterSpacing: '0.01em',
           }}
         >
-          Recordings, photographs and registers from one Saturday at a time, gathered in the
-          Netherlands and beyond.
+          {tagline}
         </p>
       </div>
 

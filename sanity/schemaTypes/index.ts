@@ -5,6 +5,9 @@ import { divider } from './objects/divider'
 import { embed } from './objects/embed'
 import { about } from './singletons/about'
 import { elsewhere } from './singletons/elsewhere'
+import { journalPage } from './singletons/journalPage'
+import { organsPage } from './singletons/organsPage'
+import { scoresPage } from './singletons/scoresPage'
 import { settings } from './singletons/settings'
 import { blockContent } from './objects/blockContent'
 
@@ -12,6 +15,9 @@ import { blockContent } from './objects/blockContent'
 export const schemaTypes = [
   // Singletons
   settings,
+  journalPage,
+  organsPage,
+  scoresPage,
   about,
   elsewhere,
   // Documents

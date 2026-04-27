@@ -4,7 +4,9 @@ import {
   ComposeIcon,
   DocumentIcon,
   DocumentTextIcon,
+  HomeIcon,
   LinkIcon,
+  MasterDetailIcon,
   UserIcon,
 } from '@sanity/icons'
 import type { StructureBuilder, StructureResolver } from 'sanity/structure'
@@ -21,7 +23,14 @@ import pluralize from 'pluralize-esm'
 
 // Singletons get their own listItem with a fixed documentId; we don't
 // want them appearing again in the auto-discovered list.
-const SINGLETON_TYPES = new Set(['settings', 'about', 'elsewhere'])
+const SINGLETON_TYPES = new Set([
+  'settings',
+  'about',
+  'elsewhere',
+  'journalPage',
+  'organsPage',
+  'scoresPage',
+])
 
 // Document types managed elsewhere (Sanity AI, etc.) — hide entirely.
 const HIDDEN_TYPES = new Set(['assist.instruction.context'])
@@ -41,6 +50,18 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
       S.divider(),
 
       // ─── Pages ──────────────────────────────────────────────
+      S.listItem()
+        .title('Journal page')
+        .child(S.document().schemaType('journalPage').documentId('siteJournalPage'))
+        .icon(HomeIcon),
+      S.listItem()
+        .title('Organs page')
+        .child(S.document().schemaType('organsPage').documentId('siteOrgansPage'))
+        .icon(MasterDetailIcon),
+      S.listItem()
+        .title('Scores page')
+        .child(S.document().schemaType('scoresPage').documentId('siteScoresPage'))
+        .icon(BookIcon),
       S.listItem()
         .title('About page')
         .child(S.document().schemaType('about').documentId('siteAbout'))

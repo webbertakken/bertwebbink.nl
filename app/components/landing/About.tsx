@@ -5,6 +5,7 @@ import { getImageDimensions } from '@sanity/asset-utils'
 import { stegaClean } from '@sanity/client/stega'
 
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
+import { renderEmphasised } from './renderEmphasised'
 
 type Fact = { _key: string; label: string; value: string }
 type TimelineEntry = { _key: string; year: string | null; what: string; where: string | null }
@@ -50,22 +51,8 @@ export type AboutContent = {
 }
 
 const ABOUT_ID = 'siteAbout'
-
-/** Replace `{{...}}` segments with <em>...</em>. Keeps surrounding text plain. */
-function renderEmphasised(text: string | null | undefined) {
-  if (!text) return null
-  const parts = text.split(/(\{\{[^}]+\}\})/g)
-  return parts.map((part, i) => {
-    if (part.startsWith('{{') && part.endsWith('}}')) {
-      return (
-        <em key={i} className="italic font-normal">
-          {part.slice(2, -2)}
-        </em>
-      )
-    }
-    return <span key={i}>{part}</span>
-  })
-}
+const aboutAttr = (path: string) =>
+  dataAttr({ id: ABOUT_ID, type: 'about', path }).toString()
 
 const letterComponents = {
   block: {
@@ -103,17 +90,16 @@ function Crumbs() {
 }
 
 function Header({ eyebrow, title }: { eyebrow: string | null; title: string }) {
-  const titleAttr = dataAttr({ id: ABOUT_ID, type: 'about', path: 'title' }).toString()
   return (
     <>
       <Crumbs />
       <div className="flex items-center gap-3.5 font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint mb-[22px]">
         <span className="w-7 h-px bg-current opacity-50" />
         <span className="text-accent">✦</span>
-        {eyebrow ?? 'A few words about me'}
+        <span data-sanity={aboutAttr('eyebrow')}>{eyebrow ?? 'A few words about me'}</span>
       </div>
       <h1
-        data-sanity={titleAttr}
+        data-sanity={aboutAttr('title')}
         className="font-serif font-light leading-none m-0 mb-8 max-w-[16ch] text-balance"
         style={{
           fontSize: 'clamp(48px, 6vw, 84px)',
@@ -135,21 +121,28 @@ function Letter({
   signoffName: string | null
   signoffLocation: string | null
 }) {
-  const letterAttr = dataAttr({ id: ABOUT_ID, type: 'about', path: 'letter' }).toString()
   return (
-    <div data-sanity={letterAttr} className="text-ink">
+    <div className="text-ink">
       {letter && letter.length > 0 && (
-        <PortableText value={letter} components={letterComponents} />
+        <div data-sanity={aboutAttr('letter')}>
+          <PortableText value={letter} components={letterComponents} />
+        </div>
       )}
       {(signoffName || signoffLocation) && (
         <div className="mt-9 flex flex-col gap-1">
           {signoffName && (
-            <div className="font-serif italic font-normal text-[32px] leading-none text-ink -rotate-3 origin-left mb-2">
+            <div
+              data-sanity={aboutAttr('signoffName')}
+              className="font-serif italic font-normal text-[32px] leading-none text-ink -rotate-3 origin-left mb-2"
+            >
               {signoffName}
             </div>
           )}
           {signoffLocation && (
-            <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
+            <div
+              data-sanity={aboutAttr('signoffLocation')}
+              className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint"
+            >
               {signoffLocation}
             </div>
           )}
@@ -164,15 +157,19 @@ function PhotoCard({
   caption,
   plate,
   fieldName,
+  captionField,
+  plateField,
   fallbackLabel,
 }: {
   image: SanityImage
   caption: string | null
   plate: string | null
   fieldName: string
+  captionField: string
+  plateField: string
   fallbackLabel: string
 }) {
-  const fieldAttr = dataAttr({ id: ABOUT_ID, type: 'about', path: fieldName }).toString()
+  const fieldAttr = aboutAttr(fieldName)
 
   let media: React.ReactNode
   if (image?.asset?._ref) {
@@ -214,9 +211,14 @@ function PhotoCard({
       </div>
       {(caption || plate) && (
         <div className="mt-3.5 flex justify-between gap-3 font-serif italic text-ink-soft text-sm leading-[1.5]">
-          {caption && <span>{caption}</span>}
+          {caption && (
+            <span data-sanity={aboutAttr(captionField)}>{caption}</span>
+          )}
           {plate && (
-            <span className="font-mono not-italic text-[10.5px] tracking-[0.18em] uppercase text-ink-faint self-end">
+            <span
+              data-sanity={aboutAttr(plateField)}
+              className="font-mono not-italic text-[10.5px] tracking-[0.18em] uppercase text-ink-faint self-end"
+            >
               {plate}
             </span>
           )}
@@ -230,22 +232,13 @@ function Portrait({
   image,
   caption,
   plate,
-  secondaryImage,
-  secondaryCaption,
-  secondaryPlate,
   facts,
 }: {
   image: SanityImage
   caption: string | null
   plate: string | null
-  secondaryImage: SanityImage
-  secondaryCaption: string | null
-  secondaryPlate: string | null
   facts: Fact[] | null
 }) {
-  const factsAttr = dataAttr({ id: ABOUT_ID, type: 'about', path: 'quickFacts' }).toString()
-  const hasSecondary = Boolean(secondaryImage?.asset?._ref)
-
   return (
     <aside className="lg:sticky lg:top-8 flex flex-col gap-7">
       <PhotoCard
@@ -253,14 +246,20 @@ function Portrait({
         caption={caption}
         plate={plate}
         fieldName="portraitImage"
+        captionField="portraitCaption"
+        plateField="portraitPlate"
         fallbackLabel="portret bij het orgel — Vriezenveen"
       />
 
       {facts && facts.length > 0 && (
-        <div data-sanity={factsAttr} className="pt-[18px] border-t border-rule-soft grid gap-3">
+        <div
+          data-sanity={aboutAttr('quickFacts')}
+          className="pt-[18px] border-t border-rule-soft grid gap-3"
+        >
           {facts.map((f, i) => (
             <div
               key={f._key}
+              data-sanity={aboutAttr(`quickFacts[_key=="${f._key}"]`)}
               className={`grid grid-cols-[90px_1fr] gap-3.5 items-baseline pb-2.5 text-[13px] ${
                 i < facts.length - 1 ? 'border-b border-rule-soft' : ''
               }`}
@@ -275,17 +274,76 @@ function Portrait({
           ))}
         </div>
       )}
-
-      {hasSecondary && (
-        <PhotoCard
-          image={secondaryImage}
-          caption={secondaryCaption}
-          plate={secondaryPlate}
-          fieldName="secondaryImage"
-          fallbackLabel="tweede portret"
-        />
-      )}
     </aside>
+  )
+}
+
+/**
+ * Editorial plate sitting between the Trajectory and Repertoire sections.
+ * Spans the full content width (max-w-[1240px], same envelope as every
+ * other section) at a cinematic 16:9 crop served by Sanity (hotspot-aware),
+ * framed by hairline rules, with a small line·dot·line ornament + caption
+ * row beneath in the page's 220-rail editorial grid. Renders nothing if
+ * the editor hasn't supplied an image.
+ */
+function SecondaryPlate({
+  image,
+  caption,
+  plate,
+}: {
+  image: SanityImage
+  caption: string | null
+  plate: string | null
+}) {
+  if (!image?.asset?._ref) return null
+
+  const src = image as { asset: { _ref: string; _type: 'reference' }; alt?: string }
+  const url = urlForImage(src)?.width(2400).height(1600).fit('crop').url() as string
+  const fieldAttr = aboutAttr('secondaryImage')
+
+  return (
+    <section
+      className="max-w-[1240px] mx-auto px-6 md:px-12 pt-32"
+      data-screen-label="secondary-plate"
+    >
+      {/* Section opener — mirrors SecHead's hairline + small-caps marker so
+          the plate reads as a peer of Trajectory / Repertoire rather than
+          a tail of the previous section. */}
+      <div className="mb-11 pb-[22px] border-b border-rule-soft flex items-center gap-3 font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint">
+        <span className="text-accent text-[11px]">✦</span>
+        <span data-sanity={aboutAttr('secondaryPlate')}>{plate || 'Plate'}</span>
+      </div>
+
+      <div
+        data-sanity={fieldAttr}
+        className="relative w-full overflow-hidden bg-bg-sunk border-y border-rule-soft"
+      >
+        <Image
+          className="w-full h-auto block"
+          src={url}
+          alt={stegaClean(image.alt) || 'Bert Webbink'}
+          width={2400}
+          height={1600}
+          sizes="(min-width: 1240px) 1192px, 100vw"
+        />
+      </div>
+
+      {caption && (
+        <div className="mt-7">
+          <div className="flex items-center justify-center gap-3 text-ink-faint mb-5">
+            <span className="w-9 h-px bg-current opacity-50" />
+            <span className="w-[5px] h-[5px] rounded-full bg-accent" />
+            <span className="w-9 h-px bg-current opacity-50" />
+          </div>
+          <p
+            data-sanity={aboutAttr('secondaryCaption')}
+            className="font-serif italic text-[18px] text-ink-soft m-0 max-w-[60ch] mx-auto text-center"
+          >
+            {caption}
+          </p>
+        </div>
+      )}
+    </section>
   )
 }
 
@@ -326,16 +384,20 @@ function Timeline({
       </SecHead>
       <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 lg:gap-16 items-start">
         {summaryLines.length > 0 && (
-          <div className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint leading-[1.6] lg:sticky lg:top-8">
+          <div
+            data-sanity={aboutAttr('timelineSummary')}
+            className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint leading-[1.6] lg:sticky lg:top-8"
+          >
             {summaryLines.map((line, i) => (
               <div key={i}>{line}</div>
             ))}
           </div>
         )}
-        <ul className="list-none m-0 p-0">
+        <ul data-sanity={aboutAttr('timeline')} className="list-none m-0 p-0">
           {entries.map((entry, i) => (
             <li
               key={entry._key}
+              data-sanity={aboutAttr(`timeline[_key=="${entry._key}"]`)}
               className={`grid grid-cols-1 sm:grid-cols-[110px_minmax(0,1fr)_auto] gap-3 sm:gap-8 items-baseline py-[22px] ${
                 i < entries.length - 1 ? 'border-b border-rule-soft' : ''
               }`}
@@ -374,14 +436,18 @@ function Repertoire({
       </SecHead>
       <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 lg:gap-16">
         {intro && (
-          <p className="font-serif italic text-[19px] leading-[1.5] text-ink-soft m-0 text-pretty">
+          <p
+            data-sanity={aboutAttr('repertoireIntro')}
+            className="font-serif italic text-[19px] leading-[1.5] text-ink-soft m-0 text-pretty"
+          >
             {intro}
           </p>
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div data-sanity={aboutAttr('repertoire')} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {cards.map((c) => (
             <article
               key={c._key}
+              data-sanity={aboutAttr(`repertoire[_key=="${c._key}"]`)}
               className="bg-paper border border-rule-soft rounded p-6 flex flex-col gap-3.5 min-h-[220px] shadow-[inset_0_1px_0_oklch(1_0_0/0.6)]"
             >
               <div className="font-mono text-[10px] tracking-[0.22em] uppercase text-accent">
@@ -432,6 +498,7 @@ function Contact({
         <div>
           {title && (
             <h2
+              data-sanity={aboutAttr('contactTitle')}
               className="font-serif font-light leading-[1.05] m-0 mb-[18px] text-balance"
               style={{
                 fontSize: 'clamp(36px, 4.6vw, 60px)',
@@ -442,13 +509,19 @@ function Contact({
             </h2>
           )}
           {lede && (
-            <p className="font-serif italic text-[19px] leading-[1.55] text-ink-soft m-0 max-w-[44ch]">
+            <p
+              data-sanity={aboutAttr('contactLede')}
+              className="font-serif italic text-[19px] leading-[1.55] text-ink-soft m-0 max-w-[44ch]"
+            >
               {lede}
             </p>
           )}
         </div>
         {rows && rows.length > 0 && (
-          <div className="bg-bg border border-rule-soft rounded p-8 flex flex-col gap-[18px]">
+          <div
+            data-sanity={aboutAttr('contactRows')}
+            className="bg-bg border border-rule-soft rounded p-8 flex flex-col gap-[18px]"
+          >
             {rows.map((row, i) => {
               const last = i === rows.length - 1
               const valueClasses = `font-serif text-[19px] text-ink leading-[1.3] ${
@@ -464,6 +537,7 @@ function Contact({
               return (
                 <div
                   key={row._key}
+                  data-sanity={aboutAttr(`contactRows[_key=="${row._key}"]`)}
                   className={`grid grid-cols-[80px_minmax(0,1fr)] gap-[18px] items-baseline ${
                     last ? '' : 'pb-3.5 border-b border-rule-soft'
                   }`}
@@ -519,14 +593,16 @@ export function About({ data }: { data: AboutContent | null }) {
             image={data.portraitImage}
             caption={data.portraitCaption}
             plate={data.portraitPlate}
-            secondaryImage={data.secondaryImage}
-            secondaryCaption={data.secondaryCaption}
-            secondaryPlate={data.secondaryPlate}
             facts={data.quickFacts}
           />
         </div>
       </main>
       <Timeline summary={data.timelineSummary} entries={data.timeline} />
+      <SecondaryPlate
+        image={data.secondaryImage}
+        caption={data.secondaryCaption}
+        plate={data.secondaryPlate}
+      />
       <Repertoire intro={data.repertoireIntro} cards={data.repertoire} />
       <Contact title={data.contactTitle} lede={data.contactLede} rows={data.contactRows} />
     </>

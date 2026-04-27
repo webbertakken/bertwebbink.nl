@@ -7,9 +7,6 @@ Currently hardcoded in `app/components/landing/*`. Candidates for a `landingPage
 - Post detail: "Field note" eyebrow, "min read" suffix, "Plate I" caption tag, "— end of the journal —" prev/next end-state
 - Post detail: lead paragraph (currently rendered as a regular paragraph). Could be a custom block style "lead" added to `blockContent`, opt-in by editor
 - Post detail crumbs: "All organs" label
-- Hero title: "Visits to old organs"
-- Hero strapline: "Recordings, photographs and registers from one Saturday at a time, gathered in the Netherlands and beyond."
-- Hero eyebrow: "Field notes" · "From the organ loft"
 - Top-left editorial meta: "Vol. {year - 2017} · No. 6" + "A field journal"
 - Top-right editorial meta: "N 52° 30′ · E 5° 55′" + "The low countries"
 - Nav site title + "Organist" tagline
@@ -19,10 +16,6 @@ Currently hardcoded in `app/components/landing/*`. Candidates for a `landingPage
 - "By city" sidebar heading
 - "All organ posts →" link label
 - Footer link labels (Privacy, Links, Contact)
-
-## Missing routes (referenced by Nav / Posts)
-- `/organs` — post index page with anchored city sections (`#city-{name}`); currently 404
-- Eventually migrate post detail from `/posts/[slug]` → `/organs/[slug]` so URLs match the editorial language
 
 ## About page
 - Repertoire cards (3 cards × 4 pieces) are educated guesses based on Dutch organ tradition. Replace with Bert's real repertoire focus when known.

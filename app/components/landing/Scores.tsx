@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 
 import { dataAttr } from '@/sanity/lib/utils'
+import { renderEmphasised } from './renderEmphasised'
 
 export type Score = {
   _id: string
@@ -23,6 +24,12 @@ export type Score = {
 
 type ScoresProps = {
   scores: Score[]
+  /** Editable hero copy. All fields fall back to design defaults. */
+  copy?: {
+    kicker?: string | null
+    heading?: string | null
+    tagline?: string | null
+  } | null
 }
 
 const ERA_LABELS = {
@@ -80,6 +87,13 @@ const IconCaret = () => (
   </svg>
 )
 
+const SCORES_PAGE_ID = 'siteScoresPage'
+const SCORES_PAGE_TYPE = 'scoresPage'
+const scoresPageAttr = (path: string) =>
+  dataAttr({ id: SCORES_PAGE_ID, type: SCORES_PAGE_TYPE, path }).toString()
+const scoreAttr = (id: string, path: string) =>
+  dataAttr({ id, type: 'score', path }).toString()
+
 const fmtEdition = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
 const fmtEditionShort = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
 const eraLabel = (era: string | null) =>
@@ -97,25 +111,32 @@ function Crumbs() {
   )
 }
 
-function Header() {
+function Header({ copy }: { copy?: ScoresProps['copy'] }) {
+  const kicker = copy?.kicker ?? 'A small library'
+  const heading = copy?.heading ?? 'Editions, fingerings, {{working scores}}.'
+  const tagline =
+    copy?.tagline ??
+    "Working editions I've prepared for my own use — most for specific instruments visited in the field notes. Fingerings and registrations are suggestions, not prescriptions. All scores are free to download for non-commercial study."
   return (
     <>
       <Crumbs />
       <div className="flex items-center gap-3.5 font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint mb-[22px]">
         <span className="w-7 h-px bg-current opacity-50" />
         <span className="text-accent">✦</span>
-        A small library
+        <span data-sanity={scoresPageAttr('kicker')}>{kicker}</span>
       </div>
       <h1
+        data-sanity={scoresPageAttr('heading')}
         className="font-serif font-light leading-[1.0] m-0 mb-7 text-balance max-w-[18ch]"
         style={{ fontSize: 'clamp(48px, 6vw, 84px)', letterSpacing: '-0.012em' }}
       >
-        Editions, fingerings, <em className="italic font-normal">working scores</em>.
+        {renderEmphasised(heading)}
       </h1>
-      <p className="font-serif italic text-[21px] leading-[1.5] text-ink-soft m-0 mb-14 max-w-[60ch] text-pretty">
-        Working editions I&apos;ve prepared for my own use — most for specific instruments visited
-        in the field notes. Fingerings and registrations are suggestions, not prescriptions. All
-        scores are free to download for non-commercial study.
+      <p
+        data-sanity={scoresPageAttr('tagline')}
+        className="font-serif italic text-[21px] leading-[1.5] text-ink-soft m-0 mb-14 max-w-[60ch] text-pretty"
+      >
+        {tagline}
       </p>
     </>
   )
@@ -201,9 +222,11 @@ function ScoreCoverFeatured({ score }: { score: Score }) {
 }
 
 function Featured({ score }: { score: Score }) {
-  const composerAttr = dataAttr({ id: score._id, type: 'score', path: 'composer' }).toString()
-  const workAttr = dataAttr({ id: score._id, type: 'score', path: 'work' }).toString()
-  const blurbAttr = dataAttr({ id: score._id, type: 'score', path: 'blurb' }).toString()
+  const composerAttr = scoreAttr(score._id, 'composer')
+  const workAttr = scoreAttr(score._id, 'work')
+  const blurbAttr = scoreAttr(score._id, 'blurb')
+  const featuredFlagAttr = scoreAttr(score._id, 'isFeatured')
+  const editionNumAttr = scoreAttr(score._id, 'editionNumber')
 
   const periodLabel = [eraLabel(score.era), score.year ? `ca. ${score.year}` : null]
     .filter(Boolean)
@@ -216,9 +239,12 @@ function Featured({ score }: { score: Score }) {
     >
       <ScoreCoverFeatured score={score} />
       <div className="pt-2">
-        <p className="font-mono text-[10.5px] tracking-[0.32em] uppercase text-accent m-0 mb-[18px] flex items-center gap-3">
+        <p
+          data-sanity={featuredFlagAttr}
+          className="font-mono text-[10.5px] tracking-[0.32em] uppercase text-accent m-0 mb-[18px] flex items-center gap-3"
+        >
           <span className="w-7 h-px bg-current opacity-60" />
-          Featured edition · No. {String(score.editionNumber).padStart(2, '0')}
+          Featured edition · <span data-sanity={editionNumAttr}>No. {String(score.editionNumber).padStart(2, '0')}</span>
         </p>
         <h2
           className="font-serif font-light text-balance m-0 mb-5"
@@ -245,14 +271,14 @@ function Featured({ score }: { score: Score }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-[18px] gap-x-9 mb-7 pb-5 border-b border-rule-soft">
           {(
             [
-              ['Catalog', score.catalog],
-              ['Period', periodLabel || null],
-              ['Pages', score.pages ? String(score.pages) : null],
-              ['Edition', score.edition],
+              ['Catalog', score.catalog, 'catalog'],
+              ['Period', periodLabel || null, 'era'],
+              ['Pages', score.pages ? String(score.pages) : null, 'pages'],
+              ['Edition', score.edition, 'edition'],
             ] as const
-          ).map(([k, v]) =>
+          ).map(([k, v, field]) =>
             v ? (
-              <div key={k} className="flex flex-col">
+              <div key={k} data-sanity={scoreAttr(score._id, field)} className="flex flex-col">
                 <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ink-faint mb-1">
                   {k}
                 </span>
@@ -261,7 +287,7 @@ function Featured({ score }: { score: Score }) {
             ) : null,
           )}
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div data-sanity={scoreAttr(score._id, 'pdfFile')} className="flex flex-wrap gap-3">
           {score.pdfUrl ? (
             <a
               href={score.pdfUrl}
@@ -293,49 +319,90 @@ function ScoreCard({ score }: { score: Score }) {
       onClick={(e) => {
         if (!score.pdfUrl) e.preventDefault()
       }}
+      data-sanity={scoreAttr(score._id, 'work')}
       className={`score-card flex flex-col gap-[18px] no-underline ${
         score.pdfUrl ? 'cursor-pointer' : 'cursor-default'
       }`}
     >
       <div className="mini-cover">
-        <div className="font-mono text-[8.5px] tracking-[0.28em] uppercase text-ink-faint">
+        <div
+          data-sanity={scoreAttr(score._id, 'editionNumber')}
+          className="font-mono text-[8.5px] tracking-[0.28em] uppercase text-ink-faint"
+        >
           {fmtEditionShort(score.editionNumber)}
         </div>
         <div className="flex flex-col gap-2 items-center -mt-1.5">
-          <div className="font-serif italic font-normal text-[13px] text-ink-soft">
+          <div
+            data-sanity={scoreAttr(score._id, 'composer')}
+            className="font-serif italic font-normal text-[13px] text-ink-soft"
+          >
             {score.composer}
           </div>
-          <div className="font-serif font-normal text-base leading-[1.15] text-ink text-balance max-w-[18ch]">
+          <div
+            data-sanity={scoreAttr(score._id, 'work')}
+            className="font-serif font-normal text-base leading-[1.15] text-ink text-balance max-w-[18ch]"
+          >
             {score.work}
           </div>
           <span className="w-1 h-1 rounded-full bg-accent" />
           {score.catalog && (
-            <div className="font-mono text-[8.5px] tracking-[0.22em] uppercase text-ink-faint">
+            <div
+              data-sanity={scoreAttr(score._id, 'catalog')}
+              className="font-mono text-[8.5px] tracking-[0.22em] uppercase text-ink-faint"
+            >
               {score.catalog}
             </div>
           )}
         </div>
         {score.forInstrument && (
-          <div className="font-mono text-[8.5px] tracking-[0.22em] uppercase text-ink-faint">
+          <div
+            data-sanity={scoreAttr(score._id, 'forInstrument')}
+            className="font-mono text-[8.5px] tracking-[0.22em] uppercase text-ink-faint"
+          >
             {score.forInstrument}
           </div>
         )}
       </div>
       <div className="flex flex-col gap-1.5 px-0.5">
         <div className="flex items-baseline justify-between gap-3 font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint">
-          <span className="text-accent">{eraLabel(score.era)}</span>
-          {score.year && <span>{score.year}</span>}
+          <span data-sanity={scoreAttr(score._id, 'era')} className="text-accent">
+            {eraLabel(score.era)}
+          </span>
+          {score.year && (
+            <span data-sanity={scoreAttr(score._id, 'year')}>{score.year}</span>
+          )}
         </div>
-        <h4 className="font-serif font-normal text-[22px] leading-[1.18] m-0 text-ink text-balance">
+        <h4
+          data-sanity={scoreAttr(score._id, 'work')}
+          className="font-serif font-normal text-[22px] leading-[1.18] m-0 text-ink text-balance"
+        >
           {score.work}
         </h4>
-        <p className="font-serif italic text-[15px] text-ink-soft m-0">{score.composer}</p>
+        <p
+          data-sanity={scoreAttr(score._id, 'composer')}
+          className="font-serif italic text-[15px] text-ink-soft m-0"
+        >
+          {score.composer}
+        </p>
         <div className="mt-1.5 pt-2.5 flex items-center justify-between font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint border-t border-rule-soft">
           <span>
-            {score.pages ? `${score.pages} pp` : '—'}
-            {score.catalog ? ` · ${score.catalog}` : ''}
+            {score.pages != null && (
+              <span data-sanity={scoreAttr(score._id, 'pages')}>
+                {`${score.pages} pp`}
+              </span>
+            )}
+            {score.pages == null && '—'}
+            {score.catalog && (
+              <>
+                {' · '}
+                <span data-sanity={scoreAttr(score._id, 'catalog')}>{score.catalog}</span>
+              </>
+            )}
           </span>
-          <span className="text-ink inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-accent">
+          <span
+            data-sanity={scoreAttr(score._id, 'pdfFile')}
+            className="text-ink inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-accent"
+          >
             <IconDownload /> {score.pdfUrl ? 'PDF' : 'soon'}
           </span>
         </div>
@@ -412,7 +479,7 @@ function EmptyLibrary() {
   )
 }
 
-export function Scores({ scores }: ScoresProps) {
+export function Scores({ scores, copy }: ScoresProps) {
   const [active, setActive] = useState<FilterKey>('all')
   const [sortIdx, setSortIdx] = useState(0)
   const sortKey = SORTS[sortIdx].key
@@ -454,7 +521,7 @@ export function Scores({ scores }: ScoresProps) {
   return (
     <>
       <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8" data-screen-label="scores">
-        <Header />
+        <Header copy={copy} />
         {scores.length === 0 ? (
           <EmptyLibrary />
         ) : (
