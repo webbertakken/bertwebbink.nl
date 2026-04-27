@@ -8,8 +8,7 @@ import { dataAttr, urlForImage } from '@/sanity/lib/utils'
 import { Placeholder } from './Placeholder'
 import { OrganBody } from './OrganBody'
 
-const journalAttr = (id: string, path: string) =>
-  dataAttr({ id, type: 'journal', path }).toString()
+const journalAttr = (id: string, path: string) => dataAttr({ id, type: 'journal', path }).toString()
 
 export type JournalCategory =
   | 'travelogue'
@@ -152,10 +151,12 @@ function Cover({
   entryId,
   coverImage,
   title,
+  seed,
 }: {
   entryId: string
   coverImage: JournalDetail['coverImage']
   title: string
+  seed?: string
 }) {
   if (coverImage?.asset?._ref) {
     const imageSource = coverImage as {
@@ -198,18 +199,12 @@ function Cover({
       data-sanity={journalAttr(entryId, 'coverImage')}
       className="relative mx-auto max-w-[1240px] aspect-[16/9] bg-bg-sunk rounded overflow-hidden border border-rule-soft shadow-card"
     >
-      <Placeholder label={title || 'journal entry'} />
+      <Placeholder label={title || 'journal entry'} seed={seed} />
     </div>
   )
 }
 
-function NeighborLink({
-  side,
-  entry,
-}: {
-  side: 'prev' | 'next'
-  entry: JournalNeighbor
-}) {
+function NeighborLink({ side, entry }: { side: 'prev' | 'next'; entry: JournalNeighbor }) {
   if (!entry) {
     return (
       <div className={side === 'next' ? 'md:text-right' : ''}>
@@ -273,7 +268,12 @@ export function JournalArticle({ entry }: { entry: JournalDetail }) {
           date={entry.date}
           readMin={readMin}
         />
-        <Cover entryId={entry._id} coverImage={entry.coverImage} title={entry.title} />
+        <Cover
+          entryId={entry._id}
+          coverImage={entry.coverImage}
+          title={entry.title}
+          seed={entry.slug}
+        />
       </main>
       <div className="max-w-[1240px] mx-auto mt-20 px-6 md:px-12 pb-[100px] grid grid-cols-1 gap-20 items-start">
         {entry.content && entry.content.length > 0 && (

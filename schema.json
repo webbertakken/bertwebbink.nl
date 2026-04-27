@@ -2798,38 +2798,6 @@
         },
         "optional": true
       },
-      "tone": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "warm"
-            },
-            {
-              "type": "string",
-              "value": "cool"
-            },
-            {
-              "type": "string",
-              "value": "sage"
-            },
-            {
-              "type": "string",
-              "value": "stone"
-            }
-          ]
-        },
-        "optional": true
-      },
-      "placeholderLabel": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "location": {
         "type": "objectAttribute",
         "value": {

@@ -70,8 +70,7 @@ export const organ = defineType({
           name: 'caption',
           type: 'string',
           title: 'Caption',
-          description:
-            'Italic figure caption shown beneath the cover image on the post page.',
+          description: 'Italic figure caption shown beneath the cover image on the post page.',
         },
       ],
       // No required validation: bulk-imported posts may not have a source
@@ -82,29 +81,6 @@ export const organ = defineType({
       title: 'Date',
       type: 'datetime',
       initialValue: () => new Date().toISOString(),
-    }),
-    defineField({
-      name: 'tone',
-      title: 'Placeholder tone',
-      description:
-        'Colour palette for the striped placeholder shown when no cover image is set. Defaults to warm.',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Warm (default)', value: 'warm' },
-          { title: 'Cool', value: 'cool' },
-          { title: 'Sage', value: 'sage' },
-          { title: 'Stone', value: 'stone' },
-        ],
-        layout: 'radio',
-      },
-    }),
-    defineField({
-      name: 'placeholderLabel',
-      title: 'Placeholder label',
-      description:
-        'Override for the small caption inside the placeholder card. Defaults to the building name.',
-      type: 'string',
     }),
     defineField({
       name: 'location',
@@ -194,8 +170,7 @@ export const organ = defineType({
           title: 'Year of restoration',
           description: 'Last major restoration year, if any.',
           type: 'number',
-          validation: (rule) =>
-            rule.integer().min(1300).max(new Date().getFullYear()),
+          validation: (rule) => rule.integer().min(1300).max(new Date().getFullYear()),
         }),
         defineField({
           name: 'couplings',
@@ -301,8 +276,7 @@ export const organ = defineType({
                         defineField({
                           name: 'pitch',
                           title: 'Pitch',
-                          description:
-                            'e.g. "8\u2032", "16\u2032", "II", "III–IV", "V (vanaf a)".',
+                          description: 'e.g. "8\u2032", "16\u2032", "II", "III–IV", "V (vanaf a)".',
                           type: 'string',
                         }),
                         defineField({

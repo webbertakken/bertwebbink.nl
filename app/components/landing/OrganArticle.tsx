@@ -9,8 +9,7 @@ import { Placeholder } from './Placeholder'
 import { OrganBody } from './OrganBody'
 import { Specs, hasSpecs } from './Specs'
 
-const organAttr = (id: string, path: string) =>
-  dataAttr({ id, type: 'organ', path }).toString()
+const organAttr = (id: string, path: string) => dataAttr({ id, type: 'organ', path }).toString()
 
 type Location = { city: string; country: string; building: string } | null
 
@@ -35,8 +34,6 @@ export type OrganDetail = {
   location: Location
   builder: string | null
   year: number | null
-  tone: 'warm' | 'cool' | 'sage' | 'stone' | string | null
-  placeholderLabel: string | null
   disposition: {
     manuals?: number | null
     stops?: number | null
@@ -141,7 +138,10 @@ function Header({
         {building ? (
           <>
             {title.replace(building, '').trim() || title}{' '}
-            <em data-sanity={organAttr(organId, 'location.building')} className="italic font-normal">
+            <em
+              data-sanity={organAttr(organId, 'location.building')}
+              className="italic font-normal"
+            >
               {building}
             </em>
           </>
@@ -150,12 +150,8 @@ function Header({
         )}
       </h1>
       <div className="inline-flex items-center justify-center flex-wrap gap-3.5 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-faint">
-        {locLabel && (
-          <span data-sanity={organAttr(organId, 'location.city')}>{locLabel}</span>
-        )}
-        {locLabel && (
-          <span className="w-[3px] h-[3px] bg-ink-faint rounded-full opacity-60" />
-        )}
+        {locLabel && <span data-sanity={organAttr(organId, 'location.city')}>{locLabel}</span>}
+        {locLabel && <span className="w-[3px] h-[3px] bg-ink-faint rounded-full opacity-60" />}
         <span data-sanity={organAttr(organId, 'date')}>{fmtLong(date)}</span>
         {readMin > 0 && (
           <>
@@ -178,18 +174,15 @@ function Cover({
   coverImage,
   building,
   city,
-  tone,
-  labelOverride,
+  seed,
 }: {
   organId: string
   coverImage: OrganDetail['coverImage']
   building?: string
   city?: string
-  tone?: 'warm' | 'cool' | 'sage' | 'stone'
-  labelOverride?: string | null
+  seed?: string
 }) {
-  const placeholderLabel =
-    labelOverride || [building, city].filter(Boolean).join(' — ') || 'organ photograph'
+  const placeholderLabel = [building, city].filter(Boolean).join(' — ') || 'organ photograph'
   if (coverImage?.asset?._ref) {
     const imageSource = coverImage as { asset: { _ref: string; _type: 'reference' }; alt?: string }
     const dim = getImageDimensions(imageSource)
@@ -212,9 +205,7 @@ function Cover({
         </div>
         {coverImage.caption && (
           <div className="mt-4 mx-auto max-w-[1240px] px-1 flex justify-between gap-6 font-serif italic text-ink-soft text-[14.5px] leading-[1.5]">
-            <span data-sanity={organAttr(organId, 'coverImage.caption')}>
-              {coverImage.caption}
-            </span>
+            <span data-sanity={organAttr(organId, 'coverImage.caption')}>{coverImage.caption}</span>
             <span className="font-mono not-italic text-[10.5px] tracking-[0.18em] uppercase text-ink-faint whitespace-nowrap self-end">
               Plate I
             </span>
@@ -228,18 +219,12 @@ function Cover({
       data-sanity={organAttr(organId, 'coverImage')}
       className="relative mx-auto max-w-[1240px] aspect-[16/9] bg-bg-sunk rounded overflow-hidden border border-rule-soft shadow-card"
     >
-      <Placeholder label={placeholderLabel} tone={tone} />
+      <Placeholder label={placeholderLabel} seed={seed} />
     </div>
   )
 }
 
-function NeighborLink({
-  side,
-  organ,
-}: {
-  side: 'prev' | 'next'
-  organ: NeighborOrgan
-}) {
+function NeighborLink({ side, organ }: { side: 'prev' | 'next'; organ: NeighborOrgan }) {
   if (!organ) {
     return (
       <div className={side === 'next' ? 'md:text-right' : ''}>
@@ -315,8 +300,7 @@ export function OrganArticle({ organ }: { organ: OrganDetail }) {
           coverImage={organ.coverImage}
           building={organ.location?.building}
           city={organ.location?.city}
-          tone={(organ.tone as 'warm' | 'cool' | 'sage' | 'stone' | null) ?? undefined}
-          labelOverride={organ.placeholderLabel}
+          seed={organ.slug}
         />
       </main>
       <div

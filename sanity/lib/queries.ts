@@ -26,8 +26,6 @@ const organFields = /* groq */ `
   location,
   builder,
   year,
-  tone,
-  placeholderLabel,
   "hasAudio": count(content[_type == "audio"]) > 0,
   "hasVideo": count(content[_type == "video"]) > 0,
 `
