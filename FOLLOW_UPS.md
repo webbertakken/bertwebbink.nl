@@ -53,3 +53,35 @@ Site copy is currently English. Audience is presumably Dutch.
 - Add a translation strategy (next-intl, or duplicate Sanity fields per locale)
 - Translate hardcoded landing copy
 - Translate Sanity `post` content fields (title, excerpt, content)
+
+## Launch countdown gate
+
+Prod should stay behind the under-construction gate until **30 April, 12:00 CET**, then auto-lift
+with no manual flip required.
+
+Current state: `middleware.ts` gates everything when `UNDER_CONSTRUCTION` is set, with a bypass
+cookie (`?bypass=happy birthday`). Manual on/off only.
+
+Desired: time-based auto-lift. Either
+
+- replace the env var with a `LAUNCH_AT` ISO timestamp (gate active while `Date.now() < launchAt`),
+  or
+- keep `UNDER_CONSTRUCTION` and add `LAUNCH_AT` as an additional auto-disable rule.
+
+The `/under-construction` page itself should show a live countdown to the launch moment so editors
+and testers see exactly when it lifts.
+
+## Image lightbox
+
+Every image on every public page should be clickable to open a full-screen modal viewer (with
+close-on-Escape, close-on-backdrop, swipe/arrow-key navigation between images on the same page).
+
+Touchpoints:
+
+- Cover images: `OrganArticle` + `JournalArticle`
+- In-body images: the `image` block in `OrganBody`'s portable-text renderer
+- Card / list thumbnails: `OrganCard`, `JournalList`, `About`
+
+Keep the implementation accessible (focus trap, `aria-label`, restore focus on close) and SSR-safe
+(don't ship a heavyweight library client-only without weighing the bundle cost — a small hand-rolled
+dialog is probably fine).
