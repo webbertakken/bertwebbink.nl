@@ -1,4 +1,4 @@
-import { post } from './documents/post'
+import { organ } from './documents/organ'
 import { score } from './documents/score'
 import { divider } from './objects/divider'
 import { embed } from './objects/embed'
@@ -12,7 +12,7 @@ export const schemaTypes = [
   settings,
   about,
   // Documents
-  post,
+  organ,
   score,
   // Objects
   blockContent,

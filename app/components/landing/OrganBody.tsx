@@ -31,7 +31,7 @@ function buildFileUrl(ref?: string): string | null {
   return buildAudioUrl(ref)
 }
 
-function buildComponents(postId: string): PortableTextComponents {
+function buildComponents(organId: string): PortableTextComponents {
   return {
   block: {
     normal: ({ children }) => (
@@ -110,7 +110,7 @@ function buildComponents(postId: string): PortableTextComponents {
           kind={value.kind}
           description={value.description}
           duration={value.duration}
-          postId={postId}
+          organId={organId}
           blockKey={value._key}
         />
       )
@@ -156,14 +156,14 @@ function buildComponents(postId: string): PortableTextComponents {
   }
 }
 
-export function PostBody({
+export function OrganBody({
   value,
-  postId,
+  organId,
 }: {
   value: PortableTextBlock[]
-  postId: string
+  organId: string
 }) {
-  const components = buildComponents(postId)
+  const components = buildComponents(organId)
   return (
     <article className="max-w-[640px] mx-auto text-ink">
       <PortableText value={value} components={components} />

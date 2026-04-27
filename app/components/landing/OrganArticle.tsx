@@ -6,19 +6,19 @@ import { stegaClean } from '@sanity/client/stega'
 
 import { urlForImage } from '@/sanity/lib/utils'
 import { Placeholder } from './Placeholder'
-import { PostBody } from './PostBody'
+import { OrganBody } from './OrganBody'
 import { Specs, hasSpecs } from './Specs'
 
 type Location = { city: string; country: string; building: string } | null
 
-type NeighborPost = {
+type NeighborOrgan = {
   title: string
   slug: string
   date: string
   location: Location
 } | null
 
-export type PostDetail = {
+export type OrganDetail = {
   _id: string
   title: string
   slug: string
@@ -47,8 +47,8 @@ export type PostDetail = {
   } | null
   position: number
   totalCount: number
-  prev: NeighborPost
-  next: NeighborPost
+  prev: NeighborOrgan
+  next: NeighborOrgan
   content: PortableTextBlock[] | null
 }
 
@@ -166,7 +166,7 @@ function Cover({
   building,
   city,
 }: {
-  coverImage: PostDetail['coverImage']
+  coverImage: OrganDetail['coverImage']
   building?: string
   city?: string
 }) {
@@ -208,12 +208,12 @@ function Cover({
 
 function NeighborLink({
   side,
-  post,
+  organ,
 }: {
   side: 'prev' | 'next'
-  post: NeighborPost
+  organ: NeighborOrgan
 }) {
-  if (!post) {
+  if (!organ) {
     return (
       <div className={side === 'next' ? 'md:text-right' : ''}>
         <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-3.5">
@@ -223,20 +223,20 @@ function NeighborLink({
       </div>
     )
   }
-  const meta = [post.location?.city, fmtLong(post.date)].filter(Boolean).join(' · ')
+  const meta = [organ.location?.city, fmtLong(organ.date)].filter(Boolean).join(' · ')
   return (
     <div className={side === 'next' ? 'md:text-right' : ''}>
       <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-3.5">
         {side === 'prev' ? '← Previous visit' : 'Next visit →'}
       </p>
       <Link
-        href={`/posts/${post.slug}`}
+        href={`/organs/${organ.slug}`}
         className={`block transition-all duration-300 hover:text-accent ${
           side === 'next' ? 'md:hover:pr-1.5' : 'hover:pl-1.5'
         }`}
       >
         <h4 className="font-serif font-normal text-[28px] leading-[1.18] m-0 mb-2 text-balance">
-          {post.title}
+          {organ.title}
         </h4>
         <p className="m-0 font-mono text-[11px] text-ink-faint tracking-[0.12em] uppercase">
           {meta}
@@ -246,7 +246,7 @@ function NeighborLink({
   )
 }
 
-function NextPrev({ prev, next }: { prev: NeighborPost; next: NeighborPost }) {
+function NextPrev({ prev, next }: { prev: NeighborOrgan; next: NeighborOrgan }) {
   if (!prev && !next) return null
   return (
     <section
@@ -254,38 +254,38 @@ function NextPrev({ prev, next }: { prev: NeighborPost; next: NeighborPost }) {
       data-screen-label="next-prev"
     >
       <div className="max-w-[1240px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
-        <NeighborLink side="prev" post={prev} />
-        <NeighborLink side="next" post={next} />
+        <NeighborLink side="prev" organ={prev} />
+        <NeighborLink side="next" organ={next} />
       </div>
     </section>
   )
 }
 
-export function PostArticle({ post }: { post: PostDetail }) {
-  const readMin = readMinutes(post.content)
+export function OrganArticle({ organ }: { organ: OrganDetail }) {
+  const readMin = readMinutes(organ.content)
   const showSpecs = hasSpecs({
-    builder: post.builder,
-    year: post.year,
-    disposition: post.disposition,
+    builder: organ.builder,
+    year: organ.year,
+    disposition: organ.disposition,
   })
 
   return (
     <>
       <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8" data-screen-label="article">
-        <Crumbs city={post.location?.city} />
+        <Crumbs city={organ.location?.city} />
         <Header
-          title={post.title}
-          building={post.location?.building}
-          position={post.position}
-          totalCount={post.totalCount}
-          location={post.location}
-          date={post.date}
+          title={organ.title}
+          building={organ.location?.building}
+          position={organ.position}
+          totalCount={organ.totalCount}
+          location={organ.location}
+          date={organ.date}
           readMin={readMin}
         />
         <Cover
-          coverImage={post.coverImage}
-          building={post.location?.building}
-          city={post.location?.city}
+          coverImage={organ.coverImage}
+          building={organ.location?.building}
+          city={organ.location?.city}
         />
       </main>
       <div
@@ -293,18 +293,18 @@ export function PostArticle({ post }: { post: PostDetail }) {
           showSpecs ? 'lg:grid-cols-[minmax(0,1fr)_280px]' : ''
         }`}
       >
-        {post.content && post.content.length > 0 && (
-          <PostBody value={post.content} postId={post._id} />
+        {organ.content && organ.content.length > 0 && (
+          <OrganBody value={organ.content} organId={organ._id} />
         )}
         {showSpecs && (
           <Specs
-            builder={post.builder}
-            year={post.year}
-            disposition={post.disposition}
+            builder={organ.builder}
+            year={organ.year}
+            disposition={organ.disposition}
           />
         )}
       </div>
-      <NextPrev prev={post.prev} next={post.next} />
+      <NextPrev prev={organ.prev} next={organ.next} />
     </>
   )
 }

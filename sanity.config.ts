@@ -43,8 +43,8 @@ const homeLocation = { title: 'Home', href: '/' } satisfies DocumentLocation
 // path for different document types and used in the presentation tool.
 function resolveHref(documentType?: string, slug?: string): string | undefined {
   switch (documentType) {
-    case 'post':
-      return slug ? `/posts/${slug}` : undefined
+    case 'organ':
+      return slug ? `/organs/${slug}` : undefined
     default:
       console.warn('Invalid document type:', documentType)
       return undefined
@@ -87,8 +87,8 @@ export default defineConfig({
             filter: `_type == "settings" && _id == "siteSettings"`,
           },
           {
-            route: '/posts/:slug',
-            filter: `_type == "post" && slug.current == $slug || _id == $slug`,
+            route: '/organs/:slug',
+            filter: `_type == "organ" && slug.current == $slug || _id == $slug`,
           },
           {
             route: '/about',
@@ -102,7 +102,7 @@ export default defineConfig({
             message: 'This document is used on all pages',
             tone: 'positive',
           }),
-          post: defineLocations({
+          organ: defineLocations({
             select: {
               title: 'title',
               slug: 'slug.current',
@@ -111,7 +111,7 @@ export default defineConfig({
               locations: [
                 {
                   title: doc?.title || 'Untitled',
-                  href: resolveHref('post', doc?.slug)!,
+                  href: resolveHref('organ', doc?.slug)!,
                 },
                 {
                   title: 'Home',

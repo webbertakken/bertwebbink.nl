@@ -25,14 +25,14 @@ const SINGLETON_TYPES = new Set(['settings', 'about'])
 const HIDDEN_TYPES = new Set(['assist.instruction.context'])
 
 // Document types we place explicitly in the sections below.
-const EXPLICIT_TYPES = new Set(['post', 'score'])
+const EXPLICIT_TYPES = new Set(['organ', 'score'])
 
 export const structure: StructureResolver = (S: StructureBuilder) =>
   S.list()
     .title('Website Content')
     .items([
       // ─── Editorial ──────────────────────────────────────────
-      S.documentTypeListItem('post').title('Posts').icon(DocumentTextIcon),
+      S.documentTypeListItem('organ').title('Organs').icon(DocumentTextIcon),
       S.documentTypeListItem('score').title('Scores').icon(BookIcon),
 
       S.divider(),

@@ -1,24 +1,26 @@
 import { Hero } from '@/app/components/landing/Hero'
-import { Posts } from '@/app/components/landing/Posts'
-import type { LandingPost } from '@/app/components/landing/PostCard'
+import { Organs } from '@/app/components/landing/Organs'
+import type { LandingOrgan } from '@/app/components/landing/OrganCard'
 import {
-  landingPostsQuery,
-  landingStatsQuery,
   landingCitiesQuery,
+  landingOrgansQuery,
+  landingStatsQuery,
 } from '@/sanity/lib/queries'
 import { sanityFetch } from '@/sanity/lib/live'
 
-const LANDING_POST_LIMIT = 4
+const LANDING_ORGAN_LIMIT = 4
 
 export default async function Page() {
-  const [{ data: posts }, { data: stats }, { data: cities }] = await Promise.all([
-    sanityFetch({ query: landingPostsQuery, params: { limit: LANDING_POST_LIMIT } }),
+  const [{ data: organs }, { data: stats }, { data: cities }] = await Promise.all([
+    sanityFetch({ query: landingOrgansQuery, params: { limit: LANDING_ORGAN_LIMIT } }),
     sanityFetch({ query: landingStatsQuery }),
     sanityFetch({ query: landingCitiesQuery }),
   ])
 
   const totalCount = stats?.totalCount ?? 0
-  const firstYear = stats?.firstDate ? new Date(stats.firstDate).getUTCFullYear() : new Date().getUTCFullYear()
+  const firstYear = stats?.firstDate
+    ? new Date(stats.firstDate).getUTCFullYear()
+    : new Date().getUTCFullYear()
 
   const cityCounts: Record<string, number> = {}
   for (const c of cities ?? []) {
@@ -28,8 +30,8 @@ export default async function Page() {
   return (
     <>
       <Hero totalCount={totalCount} firstYear={firstYear} />
-      <Posts
-        posts={(posts ?? []) as LandingPost[]}
+      <Organs
+        organs={(organs ?? []) as LandingOrgan[]}
         totalCount={totalCount}
         cityCounts={cityCounts}
       />

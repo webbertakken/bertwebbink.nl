@@ -1,21 +1,21 @@
 import Link from 'next/link'
 
-import { PostCard, type LandingPost } from './PostCard'
+import { OrganCard, type LandingOrgan } from './OrganCard'
 
-type PostsProps = {
-  posts: LandingPost[]
+type OrgansProps = {
+  organs: LandingOrgan[]
   totalCount: number
   cityCounts: Record<string, number>
 }
 
-export function Posts({ posts, totalCount, cityCounts }: PostsProps) {
+export function Organs({ organs, totalCount, cityCounts }: OrgansProps) {
   const cities = Object.keys(cityCounts).sort((a, b) => a.localeCompare(b))
 
   return (
     <section
       className="relative z-[4] pb-[120px]"
       style={{ marginTop: '-340px' }}
-      data-screen-label="latest-posts"
+      data-screen-label="latest-organs"
     >
       <div className="max-w-[1320px] mx-auto px-12 grid gap-14 items-baseline grid-cols-1 lg:grid-cols-[minmax(0,1fr)_220px]">
         <div className="min-w-0">
@@ -27,14 +27,14 @@ export function Posts({ posts, totalCount, cityCounts }: PostsProps) {
               Recent visits
             </h2>
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-faint">
-              {posts.length} of {totalCount} · updated weekly
+              {organs.length} of {totalCount} · updated weekly
             </span>
           </div>
           <div className="grid gap-8 grid-cols-1 sm:grid-cols-2">
-            {posts.map((p, i) => (
-              <PostCard
-                key={p._id}
-                post={p}
+            {organs.map((o, i) => (
+              <OrganCard
+                key={o._id}
+                organ={o}
                 index={totalCount - i}
                 totalCount={totalCount}
               />
@@ -42,7 +42,7 @@ export function Posts({ posts, totalCount, cityCounts }: PostsProps) {
           </div>
           <div className="mt-16 flex justify-center">
             <Link href="/organs" className="see-all-link">
-              All organ posts &nbsp;→
+              All organs &nbsp;→
             </Link>
           </div>
         </div>

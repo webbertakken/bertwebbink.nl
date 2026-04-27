@@ -6,7 +6,7 @@ import { Image } from 'next-sanity/image'
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
 import { Placeholder } from './Placeholder'
 
-export type LandingPost = {
+export type LandingOrgan = {
   _id: string
   title: string
   slug: string
@@ -23,8 +23,8 @@ export type LandingPost = {
   hasVideo: boolean
 }
 
-type PostCardProps = {
-  post: LandingPost
+type OrganCardProps = {
+  organ: LandingOrgan
   index?: number
   totalCount?: number
 }
@@ -79,19 +79,19 @@ const IconArrow = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 )
 
-export function PostCard({ post, index = 1, totalCount }: PostCardProps) {
+export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
   const padWidth = Math.max(2, String(totalCount ?? index).length)
-  const hasAudio = post.hasAudio
-  const hasVideo = post.hasVideo
+  const hasAudio = organ.hasAudio
+  const hasVideo = organ.hasVideo
   const coverRef = useRef<HTMLDivElement>(null)
 
-  const coverUrl = post.coverImage?.asset?._ref
-    ? urlForImage(post.coverImage)?.width(800).height(600).fit('crop').url()
+  const coverUrl = organ.coverImage?.asset?._ref
+    ? urlForImage(organ.coverImage)?.width(800).height(600).fit('crop').url()
     : undefined
 
   const titleAttr = dataAttr({
-    id: post._id,
-    type: 'post',
+    id: organ._id,
+    type: 'organ',
     path: 'title',
   })
 
@@ -116,9 +116,11 @@ export function PostCard({ post, index = 1, totalCount }: PostCardProps) {
     cover.dataset.active = 'false'
   }
 
-  const locationLabel = post.location ? `${post.location.city}, ${post.location.country}` : null
-  const placeholderLabel = post.location?.building ?? 'organ photograph'
-  const builderLine = [post.builder, post.year].filter(Boolean).join(' · ')
+  const locationLabel = organ.location
+    ? `${organ.location.city}, ${organ.location.country}`
+    : null
+  const placeholderLabel = organ.location?.building ?? 'organ photograph'
+  const builderLine = [organ.builder, organ.year].filter(Boolean).join(' · ')
 
   return (
     <article
@@ -131,7 +133,7 @@ export function PostCard({ post, index = 1, totalCount }: PostCardProps) {
         {coverUrl ? (
           <Image
             src={coverUrl}
-            alt={post.coverImage?.alt || post.title}
+            alt={organ.coverImage?.alt || organ.title}
             width={800}
             height={600}
             sizes="(min-width: 1024px) 540px, (min-width: 640px) 50vw, 100vw"
@@ -173,23 +175,23 @@ export function PostCard({ post, index = 1, totalCount }: PostCardProps) {
               <span className="w-[3px] h-[3px] bg-ink-faint rounded-full opacity-70" />
             </>
           )}
-          <span>{fmtDate(post.date)}</span>
+          <span>{fmtDate(organ.date)}</span>
         </div>
         <h3
           className="font-serif font-medium text-[27px] leading-[1.16] m-0 mb-2.5 text-ink text-balance"
           style={{ letterSpacing: '0.002em' }}
         >
-          {post.title}
+          {organ.title}
         </h3>
-        {post.excerpt && (
-          <p className="text-ink-soft text-sm leading-[1.6] m-0 line-clamp-2">{post.excerpt}</p>
+        {organ.excerpt && (
+          <p className="text-ink-soft text-sm leading-[1.6] m-0 line-clamp-2">{organ.excerpt}</p>
         )}
         <div className="mt-5 pt-4 border-t border-rule-soft flex items-center justify-between gap-4 font-mono text-[11px] text-ink-faint tracking-[0.06em]">
           <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-            {builderLine || post.location?.building || ''}
+            {builderLine || organ.location?.building || ''}
           </span>
           <span className="text-ink inline-flex items-center gap-1.5 transition-all duration-300 font-sans tracking-[0.04em] text-xs whitespace-nowrap group-hover:gap-2.5 group-hover:text-accent">
-            Read&nbsp;post
+            Read&nbsp;more
             <IconArrow className="w-[14px] h-[14px] transition-transform duration-[350ms] ease-[cubic-bezier(0.2,0.6,0.2,1)] group-hover:translate-x-0.5" />
           </span>
         </div>
@@ -197,11 +199,11 @@ export function PostCard({ post, index = 1, totalCount }: PostCardProps) {
 
       {/* Stretched link — sits above visuals, below pointer-events-none badges. */}
       <Link
-        href={`/posts/${post.slug}`}
+        href={`/organs/${organ.slug}`}
         className="absolute inset-0 z-[1]"
-        aria-label={post.title}
+        aria-label={organ.title}
       >
-        <span className="sr-only">{post.title}</span>
+        <span className="sr-only">{organ.title}</span>
       </Link>
     </article>
   )

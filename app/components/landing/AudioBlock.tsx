@@ -14,7 +14,7 @@ type AudioBlockProps = {
    * attributes so editors can click the title / kind label in draft mode
    * to jump straight to the field in Sanity Studio.
    */
-  postId?: string
+  organId?: string
   blockKey?: string
 }
 
@@ -63,17 +63,17 @@ export function AudioBlock({
   kind,
   description,
   duration,
-  postId,
+  organId,
   blockKey,
 }: AudioBlockProps) {
   const editAttrs = useMemo(() => {
-    if (!postId || !blockKey) return { title: undefined, kind: undefined }
+    if (!organId || !blockKey) return { title: undefined, kind: undefined }
     const path = (field: string) => `content[_key=="${blockKey}"].${field}`
     return {
-      title: dataAttr({ id: postId, type: 'post', path: path('title') }).toString(),
-      kind: dataAttr({ id: postId, type: 'post', path: path('kind') }).toString(),
+      title: dataAttr({ id: organId, type: 'organ', path: path('title') }).toString(),
+      kind: dataAttr({ id: organId, type: 'organ', path: path('kind') }).toString(),
     }
-  }, [postId, blockKey])
+  }, [organId, blockKey])
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [playing, setPlaying] = useState(false)
   const [progress, setProgress] = useState(0) // 0..1

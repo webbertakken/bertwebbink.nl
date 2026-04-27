@@ -2,7 +2,7 @@ import { defineQuery } from 'next-sanity'
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
 
-const postFields = /* groq */ `
+const organFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
@@ -19,20 +19,20 @@ const postFields = /* groq */ `
 
 const linkReference = /* groq */ `
   _type == "link" => {
-    "post": post->slug.current
+    "organ": organ->slug.current
   }
 `
 
 export const sitemapData = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(_type asc) {
+  *[_type == "organ" && defined(slug.current)] | order(_type asc) {
     "slug": slug.current,
     _type,
     _updatedAt,
   }
 `)
 
-export const postQuery = defineQuery(`
-  *[_type == "post" && slug.current == $slug] [0] {
+export const organQuery = defineQuery(`
+  *[_type == "organ" && slug.current == $slug] [0] {
     content[]{
       ...,
       markDefs[]{
@@ -40,17 +40,17 @@ export const postQuery = defineQuery(`
         ${linkReference}
       }
     },
-    ${postFields}
+    ${organFields}
     disposition,
-    "position": count(*[_type == "post" && defined(slug.current) && date <= ^.date]),
-    "totalCount": count(*[_type == "post" && defined(slug.current)]),
-    "prev": *[_type == "post" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
+    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),
+    "totalCount": count(*[_type == "organ" && defined(slug.current)]),
+    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
       "title": coalesce(title, "Untitled"),
       "slug": slug.current,
       "date": coalesce(date, _updatedAt),
       location
     },
-    "next": *[_type == "post" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
+    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
       "title": coalesce(title, "Untitled"),
       "slug": slug.current,
       "date": coalesce(date, _updatedAt),
@@ -59,27 +59,27 @@ export const postQuery = defineQuery(`
   }
 `)
 
-export const postPagesSlugs = defineQuery(`
-  *[_type == "post" && defined(slug.current)]
+export const organPagesSlugs = defineQuery(`
+  *[_type == "organ" && defined(slug.current)]
   {"slug": slug.current}
 `)
 
-export const landingPostsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
-    ${postFields}
+export const landingOrgansQuery = defineQuery(`
+  *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
+    ${organFields}
   }
 `)
 
 export const landingStatsQuery = defineQuery(`
   {
-    "totalCount": count(*[_type == "post" && defined(slug.current)]),
-    "firstDate": *[_type == "post" && defined(slug.current)] | order(date asc) [0].date,
-    "latestDate": *[_type == "post" && defined(slug.current)] | order(date desc) [0].date
+    "totalCount": count(*[_type == "organ" && defined(slug.current)]),
+    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,
+    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date
   }
 `)
 
 export const landingCitiesQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current) && defined(location.city)]{
+  *[_type == "organ" && defined(slug.current) && defined(location.city)]{
     "city": location.city
   }
 `)

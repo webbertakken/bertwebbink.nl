@@ -6,9 +6,9 @@ import { defineArrayMember, defineField, defineType } from 'sanity'
  * Post schema. Define and edit the fields for the 'post' content type.
  * Learn more: https://www.sanity.io/docs/schema-types
  */
-export const post = defineType({
-  name: 'post',
-  title: 'Post',
+export const organ = defineType({
+  name: 'organ',
+  title: 'Organ',
   icon: DocumentTextIcon,
   type: 'document',
   fields: [

@@ -45,13 +45,13 @@ export function resolveOpenGraphImage(image: any, width = 1200, height = 627) {
 }
 
 type LinkLike = {
-  linkType?: 'href' | 'post'
+  linkType?: 'href' | 'organ'
   href?: string
-  post?: string
+  organ?: string
   openInNewTab?: boolean
 }
 
-// Depending on the type of link, we need to fetch the corresponding post or URL. Otherwise return null.
+// Depending on the type of link, we need to fetch the corresponding organ or URL. Otherwise return null.
 export function linkResolver(link: LinkLike | undefined) {
   if (!link) return null
 
@@ -63,9 +63,9 @@ export function linkResolver(link: LinkLike | undefined) {
   switch (link.linkType) {
     case 'href':
       return link.href || null
-    case 'post':
-      if (link?.post && typeof link.post === 'string') {
-        return `/posts/${link.post}`
+    case 'organ':
+      if (link?.organ && typeof link.organ === 'string') {
+        return `/organs/${link.organ}`
       }
       return null
     default:

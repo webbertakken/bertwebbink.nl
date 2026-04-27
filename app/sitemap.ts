@@ -36,10 +36,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let url: string
 
     for (const p of allPostsAndPages.data) {
-      if (p._type !== 'post') continue
+      if (p._type !== 'organ') continue
       priority = 0.5
       changeFrequency = 'never'
-      url = `${domain}/posts/${p.slug}`
+      url = `${domain}/organs/${p.slug}`
       sitemap.push({
         lastModified: p._updatedAt || new Date(),
         priority,
