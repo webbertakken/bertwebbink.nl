@@ -97,6 +97,19 @@ export const landingCitiesQuery = defineQuery(`
   }
 `)
 
+// `$city` is an empty string for "no filter" or a city name for filtered.
+// `$end` is the (exclusive) slice end — caller passes offset + limit.
+export const archiveOrgansQuery = defineQuery(`
+  *[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)]
+    | order(date desc, _updatedAt desc) [$offset...$end] {
+    ${organFields}
+  }
+`)
+
+export const archiveOrgansCountQuery = defineQuery(`
+  count(*[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)])
+`)
+
 export const aboutQuery = defineQuery(`
   *[_type == "about" && _id == "siteAbout"][0] {
     eyebrow,

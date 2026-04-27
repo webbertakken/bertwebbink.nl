@@ -215,7 +215,11 @@ function matchKeyboard(line: string): { name: string; range?: string; rest: stri
 
 // Heuristic: a line that looks like the trailing tail of the previous keyboard's
 // stop list — i.e. a comma-separated stop sequence ending with a period or comma.
+// The early-out checks against matchKeyboard / isKoppelingenLine / isSpeelhulpenLine
+// are defensive: the only caller already ruled those out before invoking, so
+// those branches are not reachable in practice.
 function looksLikeStopContinuation(line: string): boolean {
+  /* v8 ignore next 2 */
   if (matchKeyboard(line)) return false
   if (isKoppelingenLine(line) || isSpeelhulpenLine(line)) return false
   // Must contain at least one pitch-shaped token (e.g. "8'", "III sterk").
@@ -225,8 +229,12 @@ function looksLikeStopContinuation(line: string): boolean {
 }
 
 // Heuristic: a line that looks like coupling continuation (e.g.
-// "Pedaal - Hoofdwerk, Pedaal - Nevenwerk.")
+// "Pedaal - Hoofdwerk, Pedaal - Nevenwerk."). The early-out checks against
+// matchKeyboard / isKoppelingenLine / isSpeelhulpenLine are defensive: the
+// only caller already ruled those out before invoking, so those branches are
+// not reachable in practice.
 function looksLikeCouplingContinuation(line: string): boolean {
+  /* v8 ignore next 2 */
   if (matchKeyboard(line)) return false
   if (isKoppelingenLine(line) || isSpeelhulpenLine(line)) return false
   return /^[A-Z][A-Za-z]+\s+[-–]\s+[A-Z]/.test(line) && /\.\s*$/.test(line)
@@ -352,6 +360,9 @@ export function parseTabularDisposition(
     const row = lines[i]
     if (!row.trim()) continue
     const cells = splitTabularRow(row)
+    // splitTabularRow only returns 0 cells for whitespace-only rows, which the
+    // earlier !row.trim() guard already skipped — defensive only.
+    /* v8 ignore next */
     if (cells.length === 0) continue
 
     // Could be a *second* header band (e.g. Vriezenveen "Pedaal: ... Koppelingen:")
@@ -431,6 +442,8 @@ export function parseTabularDisposition(
     // Multi-cell data row — each cell goes into the column at the same ordinal index.
     for (let ci = 0; ci < cells.length; ci++) {
       const cell = cells[ci]
+      // splitTabularRow already filters empty cells; this guard is defensive only.
+      /* v8 ignore next */
       if (!cell) continue
       const col = columns[ci]
       if (!col) {
@@ -441,6 +454,9 @@ export function parseTabularDisposition(
       }
       if (col.kind === 'register') {
         const kb = registerByCol.get(ci)
+        // ensureRegister always populates registerByCol for register columns;
+        // this guard is defensive against future refactors.
+        /* v8 ignore next */
         if (!kb) continue
         const normalised = addPitchApostrophe(normaliseVoet(cell))
         const stop = parseStop(normalised)
