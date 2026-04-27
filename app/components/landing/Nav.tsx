@@ -5,18 +5,20 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 type NavProps = {
-  active?: 'organs' | 'scores' | 'about' | 'elsewhere'
+  active?: 'organs' | 'scores' | 'journal' | 'about' | 'elsewhere'
 }
 
 const ITEMS = [
   { id: 'organs', label: 'Organs', href: '/' },
   { id: 'scores', label: 'Scores', href: '/scores' },
+  { id: 'journal', label: 'Journal', href: '/journal' },
   { id: 'about', label: 'About me', href: '/about' },
   { id: 'elsewhere', label: 'Elsewhere', href: '/elsewhere' },
 ] as const
 
 function deriveActive(pathname: string): NavProps['active'] {
   if (pathname.startsWith('/scores')) return 'scores'
+  if (pathname.startsWith('/journal') || pathname.startsWith('/blog')) return 'journal'
   if (pathname.startsWith('/about')) return 'about'
   if (pathname.startsWith('/elsewhere')) return 'elsewhere'
   return 'organs'
@@ -54,7 +56,8 @@ export function Nav({ active }: NavProps) {
   }, [open])
 
   return (
-    <nav className="relative z-[5] max-w-[1320px] mx-auto px-6 md:px-12 pt-8 pb-3.5 flex items-center justify-between gap-6 md:gap-10">
+    <nav className="relative z-[5] w-full">
+      <div className="max-w-[1320px] mx-auto px-6 md:px-12 pt-8 pb-3.5 flex items-center justify-between gap-6 md:gap-10">
       <Link
         href="/"
         className="font-serif text-2xl font-medium text-ink whitespace-nowrap inline-flex items-baseline gap-2.5"
@@ -141,6 +144,7 @@ export function Nav({ active }: NavProps) {
           </ul>
         </div>
       )}
+      </div>
     </nav>
   )
 }

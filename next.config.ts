@@ -14,6 +14,16 @@ const nextConfig: NextConfig = {
         destination: '/organs/:slug',
         permanent: true,
       },
+      {
+        source: '/blog',
+        destination: '/journal',
+        permanent: true,
+      },
+      {
+        source: '/blog/:slug',
+        destination: '/journal/:slug',
+        permanent: true,
+      },
     ]
   },
 }

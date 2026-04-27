@@ -888,7 +888,7 @@
     }
   },
   {
-    "name": "blog",
+    "name": "journal",
     "type": "document",
     "attributes": {
       "_id": {
@@ -901,7 +901,7 @@
         "type": "objectAttribute",
         "value": {
           "type": "string",
-          "value": "blog"
+          "value": "journal"
         }
       },
       "_createdAt": {

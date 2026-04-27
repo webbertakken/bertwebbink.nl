@@ -1,5 +1,5 @@
 type HorizonProps = {
-  variant?: 'fields' | 'pipes' | 'plains'
+  variant?: 'fields' | 'pipes' | 'plains' | 'trees'
   showSun?: boolean
 }
 
@@ -232,6 +232,101 @@ export function Horizon({ variant = 'fields', showSun = true }: HorizonProps) {
             fill="url(#g-near-hill)"
             opacity="0.55"
           />
+        </g>
+      )}
+
+      {variant === 'trees' && (
+        <g>
+          {/* Far hills — same shape as 'fields' so the world reads continuous. */}
+          <path
+            d="M0 430 C 180 420, 360 426, 540 422 S 900 432, 1100 424 S 1400 428, 1600 422 L 1600 470 L 0 470 Z"
+            fill="url(#g-far-hill)"
+            opacity="0.6"
+          />
+
+          {/* Tiny far-hill tree marks */}
+          {(
+            [
+              [200, 426, 7],
+              [212, 426, 5],
+              [222, 426, 8],
+              [340, 425, 6],
+              [352, 425, 9],
+              [364, 425, 6],
+              [950, 425, 6],
+              [962, 425, 9],
+              [974, 425, 6],
+              [1320, 423, 8],
+              [1332, 423, 5],
+            ] as const
+          ).map(([x, y, h], i) => (
+            <line
+              key={`far-${i}`}
+              x1={x}
+              y1={y}
+              x2={x}
+              y2={y - h}
+              stroke="oklch(0.54 0.020 60)"
+              strokeWidth="0.7"
+              opacity="0.6"
+            />
+          ))}
+
+          {/* Foreground grove — left of centre, balancing the sun on the right. */}
+          <g opacity="0.78">
+            {/* tree 1 — tall poplar */}
+            <line x1="446" y1="430" x2="446" y2="364" stroke="oklch(0.36 0.022 58)" strokeWidth="2" />
+            <ellipse cx="446" cy="378" rx="14" ry="32" fill="oklch(0.42 0.024 58)" />
+            <ellipse cx="446" cy="368" rx="9" ry="20" fill="oklch(0.38 0.024 56)" opacity="0.85" />
+
+            {/* tree 2 — broad oak, foreground of the cluster */}
+            <line x1="478" y1="430" x2="478" y2="392" stroke="oklch(0.36 0.022 58)" strokeWidth="2" />
+            <ellipse cx="478" cy="394" rx="22" ry="18" fill="oklch(0.42 0.024 58)" />
+            <ellipse cx="472" cy="390" rx="10" ry="9" fill="oklch(0.38 0.024 56)" opacity="0.85" />
+            <ellipse cx="486" cy="392" rx="9" ry="8" fill="oklch(0.38 0.024 56)" opacity="0.8" />
+
+            {/* tree 3 — second poplar */}
+            <line x1="514" y1="430" x2="514" y2="372" stroke="oklch(0.36 0.022 58)" strokeWidth="2" />
+            <ellipse cx="514" cy="386" rx="12" ry="28" fill="oklch(0.42 0.024 58)" />
+            <ellipse cx="514" cy="378" rx="7" ry="17" fill="oklch(0.38 0.024 56)" opacity="0.85" />
+
+            {/* low fence ticks tying the grove to the ground */}
+            <g stroke="oklch(0.50 0.022 60)" strokeWidth="0.7" opacity="0.55">
+              <line x1="430" y1="430" x2="430" y2="424" />
+              <line x1="436" y1="430" x2="436" y2="424" />
+              <line x1="430" y1="426" x2="540" y2="426" />
+              <line x1="540" y1="430" x2="540" y2="424" />
+              <line x1="546" y1="430" x2="546" y2="424" />
+            </g>
+          </g>
+
+          {/* Smaller pair on the far right — balances the sun if shown. */}
+          <g opacity="0.6">
+            <line x1="1330" y1="430" x2="1330" y2="404" stroke="oklch(0.46 0.022 60)" strokeWidth="1.4" />
+            <ellipse cx="1330" cy="408" rx="6" ry="10" fill="oklch(0.46 0.022 60)" />
+            <line x1="1346" y1="430" x2="1346" y2="412" stroke="oklch(0.46 0.022 60)" strokeWidth="1.4" />
+            <ellipse cx="1346" cy="416" rx="5" ry="8" fill="oklch(0.46 0.022 60)" />
+          </g>
+
+          {/* Mid + near hills — same as 'fields' for landscape continuity. */}
+          <path
+            d="M0 458 C 220 436, 440 472, 660 452 S 1080 476, 1300 450 S 1520 466, 1600 458 L 1600 580 L 0 580 Z"
+            fill="url(#g-mid-hill)"
+            opacity="0.85"
+          />
+          <path
+            d="M0 510 C 240 492, 480 524, 740 504 S 1180 532, 1420 512 C 1500 504, 1560 510, 1600 514 L 1600 720 L 0 720 Z"
+            fill="url(#g-near-hill)"
+            opacity="0.85"
+          />
+
+          <g stroke="oklch(0.58 0.022 65)" strokeWidth="0.4">
+            {Array.from({ length: 30 }).map((_, i) => {
+              const y = 580 + i * 4
+              const ramp = Math.min(1, i / 10)
+              return <line key={i} x1="0" y1={y} x2="1600" y2={y - 2} opacity={0.18 * ramp} />
+            })}
+          </g>
         </g>
       )}
 

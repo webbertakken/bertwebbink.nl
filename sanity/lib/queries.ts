@@ -108,6 +108,26 @@ export const aboutQuery = defineQuery(`
   }
 `)
 
+export const journalEntriesQuery = defineQuery(`
+  *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+    _id,
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    excerpt,
+    coverImage,
+    "date": coalesce(date, _updatedAt),
+    category,
+    "hasAudio": count(content[_type == "audio"]) > 0,
+  }
+`)
+
+export const journalStatsQuery = defineQuery(`
+  {
+    "totalCount": count(*[_type == "journal" && defined(slug.current)]),
+    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date
+  }
+`)
+
 export const elsewhereQuery = defineQuery(`
   *[_type == "elsewhere" && _id == "siteElsewhere"][0] {
     title,

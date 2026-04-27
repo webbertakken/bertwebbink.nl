@@ -143,9 +143,9 @@ export type Score = {
   isFeatured?: boolean
 }
 
-export type Blog = {
+export type Journal = {
   _id: string
-  _type: 'blog'
+  _type: 'journal'
   _createdAt: string
   _updatedAt: string
   _rev: string
@@ -686,7 +686,7 @@ export type AllSanitySchemaTypes =
   | Divider
   | BlockContent
   | Score
-  | Blog
+  | Journal
   | Elsewhere
   | About
   | Settings
@@ -1086,6 +1086,45 @@ export type AboutQueryResult = {
     href: string | null
   }> | null
 } | null
+// Variable: journalEntriesQuery
+// Query: *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    category,    "hasAudio": count(content[_type == "audio"]) > 0,  }
+export type JournalEntriesQueryResult = Array<{
+  _id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  coverImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    caption?: string
+    _type: 'image'
+  } | null
+  date: string
+  category:
+    | 'biography'
+    | 'collection'
+    | 'home-organ'
+    | 'memorial'
+    | 'news'
+    | 'other'
+    | 'travelogue'
+    | 'workshop'
+  hasAudio: boolean | null
+}>
+// Variable: journalStatsQuery
+// Query: {    "totalCount": count(*[_type == "journal" && defined(slug.current)]),    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date  }
+export type JournalStatsQueryResult = {
+  totalCount: number
+  firstDate: string | null
+}
 // Variable: elsewhereQuery
 // Query: *[_type == "elsewhere" && _id == "siteElsewhere"][0] {    title,    eyebrow,    intro,    groups[]{      _key,      title,      links[]{ _key, label, href, description }    }  }
 export type ElsewhereQueryResult = {
@@ -1146,6 +1185,8 @@ declare module '@sanity/client' {
     '\n  {\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,\n    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date\n  }\n': LandingStatsQueryResult
     '\n  *[_type == "organ" && defined(slug.current) && defined(location.city)]{\n    "city": location.city\n  }\n': LandingCitiesQueryResult
     '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    eyebrow,\n    title,\n    letter,\n    signoffName,\n    signoffLocation,\n    portraitImage,\n    portraitCaption,\n    portraitPlate,\n    secondaryImage,\n    secondaryCaption,\n    secondaryPlate,\n    quickFacts[]{ _key, label, value },\n    timelineSummary,\n    timeline[]{ _key, year, what, where },\n    repertoireIntro,\n    repertoire[]{ _key, era, title, pieces },\n    contactTitle,\n    contactLede,\n    contactRows[]{ _key, label, value, italic, href }\n  }\n': AboutQueryResult
+    '\n  *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    "date": coalesce(date, _updatedAt),\n    category,\n    "hasAudio": count(content[_type == "audio"]) > 0,\n  }\n': JournalEntriesQueryResult
+    '\n  {\n    "totalCount": count(*[_type == "journal" && defined(slug.current)]),\n    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date\n  }\n': JournalStatsQueryResult
     '\n  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {\n    title,\n    eyebrow,\n    intro,\n    groups[]{\n      _key,\n      title,\n      links[]{ _key, label, href, description }\n    }\n  }\n': ElsewhereQueryResult
     '\n  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {\n    _id,\n    composer,\n    work,\n    catalog,\n    era,\n    year,\n    pages,\n    editionNumber,\n    forInstrument,\n    edition,\n    blurb,\n    "pdfUrl": pdfFile.asset->url,\n    isFeatured,\n  }\n': ScoresQueryResult
   }

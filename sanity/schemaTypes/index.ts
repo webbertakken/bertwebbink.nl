@@ -1,4 +1,4 @@
-import { blog } from './documents/blog'
+import { journal } from './documents/journal'
 import { organ } from './documents/organ'
 import { score } from './documents/score'
 import { divider } from './objects/divider'
@@ -16,7 +16,7 @@ export const schemaTypes = [
   elsewhere,
   // Documents
   organ,
-  blog,
+  journal,
   score,
   // Objects
   blockContent,

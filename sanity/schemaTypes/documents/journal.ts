@@ -3,7 +3,7 @@ import { format, parseISO } from 'date-fns'
 import { defineField, defineType } from 'sanity'
 
 /**
- * Blog post — for editorial content that isn't a single-organ visit.
+ * Journal entry — for editorial content that isn't a single-organ visit.
  *
  * Travelogues (orgelpaden, multi-stop trips), workshop/museum visits,
  * memorials, biographies of others, news / announcements / milestones,
@@ -13,9 +13,9 @@ import { defineField, defineType } from 'sanity'
  * Lighter than `organ`: no location object, no disposition, no
  * builder/year. Same rich block content (audio/video/image embeds).
  */
-export const blog = defineType({
-  name: 'blog',
-  title: 'Blog post',
+export const journal = defineType({
+  name: 'journal',
+  title: 'Journal entry',
   icon: ComposeIcon,
   type: 'document',
   fields: [
