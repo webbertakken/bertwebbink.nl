@@ -11,10 +11,10 @@ export function Footer() {
           <a href="#" className="transition-colors hover:text-ink">
             Privacy
           </a>
-          <a href="#" className="transition-colors hover:text-ink">
-            Links
+          <a href="/elsewhere" className="transition-colors hover:text-ink">
+            Elsewhere
           </a>
-          <a href="#" className="transition-colors hover:text-ink">
+          <a href="/about" className="transition-colors hover:text-ink">
             Contact
           </a>
         </div>

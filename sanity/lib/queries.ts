@@ -108,6 +108,19 @@ export const aboutQuery = defineQuery(`
   }
 `)
 
+export const elsewhereQuery = defineQuery(`
+  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {
+    title,
+    eyebrow,
+    intro,
+    groups[]{
+      _key,
+      title,
+      links[]{ _key, label, href, description }
+    }
+  }
+`)
+
 export const scoresQuery = defineQuery(`
   *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {
     _id,

@@ -143,6 +143,78 @@ export type Score = {
   isFeatured?: boolean
 }
 
+export type Blog = {
+  _id: string
+  _type: 'blog'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  category:
+    | 'travelogue'
+    | 'workshop'
+    | 'memorial'
+    | 'home-organ'
+    | 'biography'
+    | 'news'
+    | 'collection'
+    | 'other'
+  excerpt?: string
+  coverImage?: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    caption?: string
+    _type: 'image'
+  }
+  date?: string
+  content?: BlockContent
+}
+
+export type Elsewhere = {
+  _id: string
+  _type: 'elsewhere'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
+  eyebrow?: string
+  intro?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: null
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  groups?: Array<{
+    title: string
+    links?: Array<{
+      label: string
+      href: string
+      description?: string
+      _type: 'link'
+      _key: string
+    }>
+    _type: 'group'
+    _key: string
+  }>
+}
+
 export type About = {
   _id: string
   _type: 'about'
@@ -614,6 +686,8 @@ export type AllSanitySchemaTypes =
   | Divider
   | BlockContent
   | Score
+  | Blog
+  | Elsewhere
   | About
   | Settings
   | Organ
@@ -1012,6 +1086,36 @@ export type AboutQueryResult = {
     href: string | null
   }> | null
 } | null
+// Variable: elsewhereQuery
+// Query: *[_type == "elsewhere" && _id == "siteElsewhere"][0] {    title,    eyebrow,    intro,    groups[]{      _key,      title,      links[]{ _key, label, href, description }    }  }
+export type ElsewhereQueryResult = {
+  title: string | null
+  eyebrow: string | null
+  intro: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: null
+    level?: number
+    _type: 'block'
+    _key: string
+  }> | null
+  groups: Array<{
+    _key: string
+    title: string
+    links: Array<{
+      _key: string
+      label: string
+      href: string
+      description: string | null
+    }> | null
+  }> | null
+} | null
 // Variable: scoresQuery
 // Query: *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {    _id,    composer,    work,    catalog,    era,    year,    pages,    editionNumber,    forInstrument,    edition,    blurb,    "pdfUrl": pdfFile.asset->url,    isFeatured,  }
 export type ScoresQueryResult = Array<{
@@ -1042,6 +1146,7 @@ declare module '@sanity/client' {
     '\n  {\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,\n    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date\n  }\n': LandingStatsQueryResult
     '\n  *[_type == "organ" && defined(slug.current) && defined(location.city)]{\n    "city": location.city\n  }\n': LandingCitiesQueryResult
     '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    eyebrow,\n    title,\n    letter,\n    signoffName,\n    signoffLocation,\n    portraitImage,\n    portraitCaption,\n    portraitPlate,\n    secondaryImage,\n    secondaryCaption,\n    secondaryPlate,\n    quickFacts[]{ _key, label, value },\n    timelineSummary,\n    timeline[]{ _key, year, what, where },\n    repertoireIntro,\n    repertoire[]{ _key, era, title, pieces },\n    contactTitle,\n    contactLede,\n    contactRows[]{ _key, label, value, italic, href }\n  }\n': AboutQueryResult
+    '\n  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {\n    title,\n    eyebrow,\n    intro,\n    groups[]{\n      _key,\n      title,\n      links[]{ _key, label, href, description }\n    }\n  }\n': ElsewhereQueryResult
     '\n  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {\n    _id,\n    composer,\n    work,\n    catalog,\n    era,\n    year,\n    pages,\n    editionNumber,\n    forInstrument,\n    edition,\n    blurb,\n    "pdfUrl": pdfFile.asset->url,\n    isFeatured,\n  }\n': ScoresQueryResult
   }
 }

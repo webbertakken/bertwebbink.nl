@@ -5,18 +5,20 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 type NavProps = {
-  active?: 'organs' | 'scores' | 'about'
+  active?: 'organs' | 'scores' | 'about' | 'elsewhere'
 }
 
 const ITEMS = [
   { id: 'organs', label: 'Organs', href: '/' },
   { id: 'scores', label: 'Scores', href: '/scores' },
   { id: 'about', label: 'About me', href: '/about' },
+  { id: 'elsewhere', label: 'Elsewhere', href: '/elsewhere' },
 ] as const
 
 function deriveActive(pathname: string): NavProps['active'] {
   if (pathname.startsWith('/scores')) return 'scores'
   if (pathname.startsWith('/about')) return 'about'
+  if (pathname.startsWith('/elsewhere')) return 'elsewhere'
   return 'organs'
 }
 
