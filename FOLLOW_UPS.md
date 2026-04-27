@@ -3,22 +3,6 @@
 Items deferred during the landing-page redesign. Tackle when ready; nothing here blocks the redesign
 itself.
 
-## Editable-in-Sanity copy
-
-Still hardcoded in `app/components/landing/*`. Owner explicitly deferred these for now — only the
-highest-impact ones (nav wordmark + tagline, hero corner subtitles) were lifted into Sanity. The
-rest stays as design defaults until Bert needs to edit them:
-
-- Post detail: "Field note" eyebrow, "min read" suffix, "Plate I" caption tag, "— end of the journal
-  —" prev/next end-state
-- Post detail: lead paragraph (currently rendered as a regular paragraph). Could be a custom block
-  style "lead" added to `blockContent`, opt-in by editor
-- Post detail crumbs: "All organs" label
-- Top-right editorial meta coordinates ("N 52° 25′ · E 6° 38′") — hardcoded by request
-- Nav item labels (`Organs`, `Scores`, `About me`, `Elsewhere`)
-- Organs landing: "Recent visits", "{n} of {total} · updated weekly", "By city", "All organs →"
-- Footer link labels (Privacy, Elsewhere, Contact)
-
 ## Scores page
 
 - Italic key portions in work titles (e.g. _g-moll_, _E-flat_) currently render as plain text. Could
