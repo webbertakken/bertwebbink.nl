@@ -35,6 +35,8 @@ export type OrganDetail = {
   location: Location
   builder: string | null
   year: number | null
+  tone: 'warm' | 'cool' | 'sage' | 'stone' | string | null
+  placeholderLabel: string | null
   disposition: {
     manuals?: number | null
     stops?: number | null
@@ -176,13 +178,18 @@ function Cover({
   coverImage,
   building,
   city,
+  tone,
+  labelOverride,
 }: {
   organId: string
   coverImage: OrganDetail['coverImage']
   building?: string
   city?: string
+  tone?: 'warm' | 'cool' | 'sage' | 'stone'
+  labelOverride?: string | null
 }) {
-  const placeholderLabel = [building, city].filter(Boolean).join(' — ') || 'organ photograph'
+  const placeholderLabel =
+    labelOverride || [building, city].filter(Boolean).join(' — ') || 'organ photograph'
   if (coverImage?.asset?._ref) {
     const imageSource = coverImage as { asset: { _ref: string; _type: 'reference' }; alt?: string }
     const dim = getImageDimensions(imageSource)
@@ -221,7 +228,7 @@ function Cover({
       data-sanity={organAttr(organId, 'coverImage')}
       className="relative mx-auto max-w-[1240px] aspect-[16/9] bg-bg-sunk rounded overflow-hidden border border-rule-soft shadow-card"
     >
-      <Placeholder label={placeholderLabel} />
+      <Placeholder label={placeholderLabel} tone={tone} />
     </div>
   )
 }
@@ -308,6 +315,8 @@ export function OrganArticle({ organ }: { organ: OrganDetail }) {
           coverImage={organ.coverImage}
           building={organ.location?.building}
           city={organ.location?.city}
+          tone={(organ.tone as 'warm' | 'cool' | 'sage' | 'stone' | null) ?? undefined}
+          labelOverride={organ.placeholderLabel}
         />
       </main>
       <div

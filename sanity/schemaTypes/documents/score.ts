@@ -17,7 +17,8 @@ export const score = defineType({
     defineField({
       name: 'work',
       title: 'Work title',
-      description: 'e.g. "Praeludium in g-moll", "Trio Sonata No. 1 in E-flat".',
+      description:
+        'e.g. "Praeludium in *g-moll*", "Trio Sonata No. 1 in *E-flat*". Wrap key terms in *single asterisks* to render them in italic.',
       type: 'string',
       validation: (rule) => rule.required(),
     }),

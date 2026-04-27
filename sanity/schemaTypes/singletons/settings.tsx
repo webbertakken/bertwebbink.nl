@@ -48,6 +48,26 @@ export const settings = defineType({
       initialValue: 'Organist',
     }),
     defineField({
+      name: 'scoresNoticeBody',
+      title: 'Scores: notice body',
+      description:
+        'Italic notice shown beneath the score grid. One or two sentences explaining how the scores may be used.',
+      type: 'text',
+      rows: 3,
+      group: 'chrome',
+      initialValue:
+        'These scores are shared for personal study and church use. If you would like to perform or record one, a short email is appreciated — and please credit the edition.',
+    }),
+    defineField({
+      name: 'scoresEditionLine',
+      title: 'Scores: edition prefix',
+      description:
+        'Small mono caps prefix shown above the notice. The current year is appended automatically.',
+      type: 'string',
+      group: 'chrome',
+      initialValue: 'Edition Webbink',
+    }),
+    defineField({
       name: 'description',
       description: 'Site-wide meta description. Used in the homepage <meta name="description"> tag and as a fallback for pages that don\u2019t set their own.',
       title: 'Description',

@@ -26,6 +26,8 @@ const organFields = /* groq */ `
   location,
   builder,
   year,
+  tone,
+  placeholderLabel,
   "hasAudio": count(content[_type == "audio"]) > 0,
   "hasVideo": count(content[_type == "video"]) > 0,
 `
@@ -210,7 +212,10 @@ export const scoresPageQuery = defineQuery(`
   *[_type == "scoresPage" && _id == "siteScoresPage"][0] {
     kicker,
     heading,
-    tagline
+    tagline,
+    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,
+    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,
+    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href
   }
 `)
 

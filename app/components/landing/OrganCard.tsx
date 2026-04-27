@@ -16,6 +16,8 @@ export type LandingOrgan = {
   location: { city: string; country: string; building: string } | null
   builder: string | null
   year: number | null
+  tone: 'warm' | 'cool' | 'sage' | 'stone' | string | null
+  placeholderLabel: string | null
   hasAudio: boolean
   hasVideo: boolean
 }
@@ -94,7 +96,9 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
   const locationLabel = organ.location
     ? `${organ.location.city}, ${organ.location.country}`
     : null
-  const placeholderLabel = organ.location?.building ?? 'organ photograph'
+  const placeholderLabel =
+    organ.placeholderLabel ?? organ.location?.building ?? 'organ photograph'
+  const placeholderTone = (organ.tone as 'warm' | 'cool' | 'sage' | 'stone' | null) ?? undefined
   const builderLine = [organ.builder, organ.year].filter(Boolean).join(' · ')
 
   return (
@@ -113,7 +117,7 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.2,0.6,0.2,1)] group-hover:scale-[1.02]"
           />
         ) : (
-          <Placeholder label={placeholderLabel} />
+          <Placeholder label={placeholderLabel} tone={placeholderTone} />
         )}
       </div>
 

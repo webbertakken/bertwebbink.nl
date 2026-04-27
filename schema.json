@@ -2320,6 +2320,20 @@
         },
         "optional": true
       },
+      "scoresNoticeBody": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "scoresEditionLine": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "description": {
         "type": "objectAttribute",
         "value": {
@@ -2778,6 +2792,38 @@
         "optional": true
       },
       "date": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "tone": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "warm"
+            },
+            {
+              "type": "string",
+              "value": "cool"
+            },
+            {
+              "type": "string",
+              "value": "sage"
+            },
+            {
+              "type": "string",
+              "value": "stone"
+            }
+          ]
+        },
+        "optional": true
+      },
+      "placeholderLabel": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

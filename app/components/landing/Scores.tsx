@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 
 import { dataAttr } from '@/sanity/lib/utils'
-import { renderEmphasised } from './renderEmphasised'
+import { renderEmphasised, renderInlineItalic } from './renderEmphasised'
 
 export type Score = {
   _id: string
@@ -29,6 +29,9 @@ type ScoresProps = {
     kicker?: string | null
     heading?: string | null
     tagline?: string | null
+    noticeBody?: string | null
+    editionLine?: string | null
+    contactHref?: string | null
   } | null
 }
 
@@ -195,7 +198,7 @@ function ScoreCoverFeatured({ score }: { score: Score }) {
       <div className="flex flex-col gap-3.5 items-center text-center -mt-3">
         <div className="font-serif italic font-normal text-lg text-ink-soft">{score.composer}</div>
         <div className="font-serif font-normal text-[26px] leading-[1.15] text-ink text-balance">
-          {score.work}
+          {renderInlineItalic(score.work)}
         </div>
         <div className="flex items-center gap-2 text-ink-faint">
           <span className="w-6 h-px bg-current opacity-60" />
@@ -256,7 +259,7 @@ function Featured({ score }: { score: Score }) {
         >
           <span data-sanity={composerAttr}>{score.composer}</span> —{' '}
           <em data-sanity={workAttr} className="italic font-normal">
-            {score.work}
+            {renderInlineItalic(score.work)}
           </em>
           .
         </h2>
@@ -342,7 +345,7 @@ function ScoreCard({ score }: { score: Score }) {
             data-sanity={scoreAttr(score._id, 'work')}
             className="font-serif font-normal text-base leading-[1.15] text-ink text-balance max-w-[18ch]"
           >
-            {score.work}
+            {renderInlineItalic(score.work)}
           </div>
           <span className="w-1 h-1 rounded-full bg-accent" />
           {score.catalog && (
@@ -376,7 +379,7 @@ function ScoreCard({ score }: { score: Score }) {
           data-sanity={scoreAttr(score._id, 'work')}
           className="font-serif font-normal text-[22px] leading-[1.18] m-0 text-ink text-balance"
         >
-          {score.work}
+          {renderInlineItalic(score.work)}
         </h4>
         <p
           data-sanity={scoreAttr(score._id, 'composer')}
@@ -437,7 +440,30 @@ function Grid({ scores, total }: { scores: Score[]; total: number }) {
   )
 }
 
-function Notice() {
+function Notice({
+  body,
+  editionLine,
+  contactHref,
+}: {
+  body?: string | null
+  editionLine?: string | null
+  contactHref?: string | null
+}) {
+  const noticeAttr = dataAttr({
+    id: 'siteSettings',
+    type: 'settings',
+    path: 'scoresNoticeBody',
+  }).toString()
+  const editionAttr = dataAttr({
+    id: 'siteSettings',
+    type: 'settings',
+    path: 'scoresEditionLine',
+  }).toString()
+  const text =
+    body ??
+    'These scores are shared for personal study and church use. If you would like to perform or record one, a short email is appreciated — and please credit the edition.'
+  const editionPrefix = editionLine ?? 'Edition Webbink'
+  const href = contactHref ?? 'mailto:bert@webbink.nl'
   return (
     <section
       className="mx-6 md:mx-12 mt-8 mb-20 max-w-[1240px] xl:mx-auto px-8 py-7 bg-paper rounded grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-6 items-center"
@@ -451,15 +477,17 @@ function Notice() {
         §
       </div>
       <div>
-        <p className="m-0 font-serif italic text-[17px] leading-[1.5] text-ink text-pretty">
-          These scores are shared for personal study and church use. If you&apos;d like to perform
-          or record one, a short email is appreciated — and please credit the edition.
+        <p
+          data-sanity={noticeAttr}
+          className="m-0 font-serif italic text-[17px] leading-[1.5] text-ink text-pretty"
+        >
+          {text}
         </p>
         <small className="block mt-1 font-mono text-[10px] tracking-[0.22em] uppercase text-ink-faint not-italic">
-          Edition Webbink · {new Date().getFullYear()}
+          <span data-sanity={editionAttr}>{editionPrefix}</span> · {new Date().getFullYear()}
         </small>
       </div>
-      <a className="action-btn ghost not-italic no-underline" href="mailto:bert@webbink.nl">
+      <a className="action-btn ghost not-italic no-underline" href={href}>
         Write to me
       </a>
     </section>
@@ -539,7 +567,11 @@ export function Scores({ scores, copy }: ScoresProps) {
           </>
         )}
       </main>
-      <Notice />
+      <Notice
+        body={copy?.noticeBody ?? null}
+        editionLine={copy?.editionLine ?? null}
+        contactHref={copy?.contactHref ?? null}
+      />
     </>
   )
 }

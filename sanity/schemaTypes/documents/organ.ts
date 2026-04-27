@@ -84,6 +84,29 @@ export const organ = defineType({
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
+      name: 'tone',
+      title: 'Placeholder tone',
+      description:
+        'Colour palette for the striped placeholder shown when no cover image is set. Defaults to warm.',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Warm (default)', value: 'warm' },
+          { title: 'Cool', value: 'cool' },
+          { title: 'Sage', value: 'sage' },
+          { title: 'Stone', value: 'stone' },
+        ],
+        layout: 'radio',
+      },
+    }),
+    defineField({
+      name: 'placeholderLabel',
+      title: 'Placeholder label',
+      description:
+        'Override for the small caption inside the placeholder card. Defaults to the building name.',
+      type: 'string',
+    }),
+    defineField({
       name: 'location',
       title: 'Location',
       description:

@@ -33,3 +33,25 @@ export function renderEmphasised(text: string | null | undefined) {
     return <span key={i}>{part}</span>
   })
 }
+
+/**
+ * Lightweight inline italic renderer using single-asterisk markdown
+ * (`*g-moll*`, `*E-flat*`). Designed for compact strings like score
+ * work titles where `{{double braces}}` would feel heavy. Same
+ * stega-cleaning rationale as `renderEmphasised`.
+ */
+export function renderInlineItalic(text: string | null | undefined) {
+  if (!text) return null
+  const clean = stegaClean(text) ?? ''
+  const parts = clean.split(/(\*[^*]+\*)/g)
+  return parts.map((part, i) => {
+    if (part.length >= 2 && part.startsWith('*') && part.endsWith('*')) {
+      return (
+        <em key={i} className="font-normal italic">
+          {part.slice(1, -1)}
+        </em>
+      )
+    }
+    return <span key={i}>{part}</span>
+  })
+}
