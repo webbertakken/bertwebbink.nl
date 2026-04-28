@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   cityHref,
+  countCitiesFromRows,
   normaliseCityParam,
   sortedCitiesForSidebar,
   withYearGroups,
@@ -131,6 +132,47 @@ describe('normaliseCityParam', () => {
 
   it('returns the empty string for non-string non-array input via type coercion', () => {
     expect(normaliseCityParam(123 as unknown as string)).toBe('')
+  })
+})
+
+describe('countCitiesFromRows', () => {
+  it('counts plain city values correctly', () => {
+    const out = countCitiesFromRows([
+      { city: 'Urk' },
+      { city: 'Urk' },
+      { city: 'Zwolle' },
+      { city: 'Urk' },
+    ])
+    expect(out).toEqual({ Urk: 3, Zwolle: 1 })
+  })
+
+  it('collapses stega-encoded copies of the same city into one entry', () => {
+    // Sanity Live appends a stega payload of zero-width chars to every fetched
+    // string so the Visual Editor can map a DOM node back to its source field.
+    // Two strings that read as "Urk" but carry different payloads must count
+    // as the same city.
+    const stegaA = 'Urk\u200B\u200C\u200B\u200C'
+    const stegaB = 'Urk\u200B\u200B\u200C\u200B\u200C\u200B\u200C\u200B'
+    const out = countCitiesFromRows([{ city: stegaA }, { city: stegaB }, { city: 'Urk' }])
+    expect(Object.keys(out)).toEqual(['Urk'])
+    expect(out.Urk).toBe(3)
+  })
+
+  it('skips rows with no city or with a city that cleans to empty', () => {
+    const out = countCitiesFromRows([
+      { city: 'Zwolle' },
+      { city: null },
+      { city: '' },
+      {},
+      // A pure stega-payload string that cleans to empty:
+      { city: '\u200B\u200C\u200B\u200C' },
+    ])
+    expect(out).toEqual({ Zwolle: 1 })
+  })
+
+  it('handles null/undefined input gracefully', () => {
+    expect(countCitiesFromRows(null)).toEqual({})
+    expect(countCitiesFromRows(undefined)).toEqual({})
   })
 })
 

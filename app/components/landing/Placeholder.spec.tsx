@@ -38,7 +38,7 @@ describe('Placeholder', () => {
       const el = container.querySelector('.placeholder-stripe') as HTMLElement
       seen.add(el.style.getPropertyValue('--stripe-a'))
     }
-    // Four tones \u2192 four distinct --stripe-a values.
+    // Four tones → four distinct --stripe-a values.
     expect(seen.size).toBe(4)
   })
 

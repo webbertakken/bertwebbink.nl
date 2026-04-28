@@ -1,3 +1,5 @@
+import { stegaClean } from '@sanity/client/stega'
+
 import type { LandingOrgan } from './OrganCard'
 
 /**
@@ -76,4 +78,27 @@ export function sortedCitiesForSidebar(
   return Object.entries(cityCounts)
     .map(([city, count]) => ({ city, count }))
     .sort((a, b) => b.count - a.count || a.city.localeCompare(b.city))
+}
+
+/**
+ * Count cities from `landingCitiesQuery` rows, stega-cleaning each value.
+ *
+ * Sanity Live encodes invisible stega markers into every fetched string so
+ * the Visual Editor can map a rendered DOM node back to a source field.
+ * That makes two "Urk" strings sourced from different organ docs into
+ * different JavaScript values, which would otherwise collapse them into
+ * separate sidebar entries with `count: 1` each. Cleaning before keying
+ * gives us one entry per real city with the right total.
+ */
+export function countCitiesFromRows(
+  rows: Array<{ city?: string | null }> | null | undefined,
+): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const row of rows ?? []) {
+    if (!row.city) continue
+    const cleaned = stegaClean(row.city)
+    if (!cleaned) continue
+    out[cleaned] = (out[cleaned] ?? 0) + 1
+  }
+  return out
 }
