@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Hero } from '@/app/components/landing/Hero'
 import { OrgansArchive } from '@/app/components/landing/OrgansArchive'
 import type { LandingOrgan } from '@/app/components/landing/OrganCard'
-import { normaliseCityParam } from '@/app/components/landing/archiveUtil'
+import { countCitiesFromRows, normaliseCityParam } from '@/app/components/landing/archiveUtil'
 import {
   archiveOrgansCountQuery,
   archiveOrgansQuery,
@@ -51,10 +51,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
     ? new Date(stats.firstDate).getUTCFullYear()
     : new Date().getUTCFullYear()
 
-  const cityCounts: Record<string, number> = {}
-  for (const c of cities ?? []) {
-    if (c.city) cityCounts[c.city] = (cityCounts[c.city] ?? 0) + 1
-  }
+  const cityCounts = countCitiesFromRows(cities)
 
   const filtered = filteredCount ?? 0
 

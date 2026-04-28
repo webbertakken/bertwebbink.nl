@@ -88,7 +88,7 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
             shown={organs.length}
             total={totalCount}
           />
-          <div className="grid gap-x-8 gap-y-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-8 gap-y-10 grid-cols-1 sm:grid-cols-2">
             {grouped.map(({ organ, year, isYearStart }, i) => (
               <YearAwareCell
                 key={organ._id}
