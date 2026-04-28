@@ -13,7 +13,7 @@ type OrgansArchiveProps = {
   initialOrgans: LandingOrgan[]
   totalCount: number
   cityCounts: Record<string, number>
-  /** Active city filter \u2014 empty string when "all". */
+  /** Active city filter — empty string when "all". */
   city: string
 }
 
@@ -88,7 +88,7 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
             shown={organs.length}
             total={totalCount}
           />
-          <div className="grid gap-x-8 gap-y-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-8 gap-y-10 grid-cols-1 sm:grid-cols-2">
             {grouped.map(({ organ, year, isYearStart }, i) => (
               <YearAwareCell
                 key={organ._id}
@@ -104,13 +104,13 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
           {!exhausted && (
             <div ref={sentinelRef} className="mt-12 flex justify-center" aria-hidden="true">
               <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
-                {loading ? 'Loading\u2026' : ''}
+                {loading ? 'Loading…' : ''}
               </span>
             </div>
           )}
           {exhausted && organs.length > PAGE_SIZE && (
             <p className="mt-14 text-center font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
-              \u2014 end of the archive \u2014
+              — end of the archive —
             </p>
           )}
         </div>
@@ -146,7 +146,7 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
                 href={cityHref('')}
                 className="text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent"
               >
-                Browse all &nbsp;\u2192
+                Browse all &nbsp;→
               </Link>
             </div>
           </aside>
@@ -190,7 +190,7 @@ function ArchiveHeader({
             href={cityHref('')}
             className="text-ink-soft border-b border-rule pb-[2px] transition-colors duration-200 hover:text-accent hover:border-accent"
           >
-            clear filter \u2715
+            clear filter ✕
           </Link>
         )}
       </span>

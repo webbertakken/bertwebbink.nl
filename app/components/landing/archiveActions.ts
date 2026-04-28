@@ -9,7 +9,7 @@ import type { LandingOrgan } from './OrganCard'
  * intersection observer crosses the load-more sentinel. Returns the next
  * `limit` organs starting at `offset`, optionally filtered by `city`.
  *
- * `city` is an empty string for "no filter" \u2014 matches the GROQ sentinel.
+ * `city` is an empty string for "no filter" — matches the GROQ sentinel.
  */
 export async function loadMoreOrgans({
   offset,

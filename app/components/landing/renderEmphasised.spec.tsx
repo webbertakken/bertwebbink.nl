@@ -59,7 +59,7 @@ describe('renderInlineItalic', () => {
   })
 
   it('does not wrap a stray single asterisk', () => {
-    // No pair \u2192 the regex split keeps the string as one plain segment.
+    // No pair → the regex split keeps the string as one plain segment.
     const out = html(renderInlineItalic('A * stray asterisk'))
     expect(out).not.toContain('<em')
     expect(out).toContain('A * stray asterisk')
