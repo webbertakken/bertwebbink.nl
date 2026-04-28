@@ -20,6 +20,10 @@ import { stegaClean } from '@sanity/client/stega'
  */
 export function renderEmphasised(text: string | null | undefined) {
   if (!text) return null
+  // `stegaClean` is typed as possibly-undefined but for any string input it
+  // always returns a string — the `?? ''` is a defensive fallback that the
+  // unit tests can't reach without mocking the lib.
+  /* v8 ignore next */
   const clean = stegaClean(text) ?? ''
   const parts = clean.split(/(\{\{[^}]+\}\})/g)
   return parts.map((part, i) => {
@@ -42,6 +46,8 @@ export function renderEmphasised(text: string | null | undefined) {
  */
 export function renderInlineItalic(text: string | null | undefined) {
   if (!text) return null
+  // See `renderEmphasised` — same defensive nullish fallback.
+  /* v8 ignore next */
   const clean = stegaClean(text) ?? ''
   const parts = clean.split(/(\*[^*]+\*)/g)
   return parts.map((part, i) => {

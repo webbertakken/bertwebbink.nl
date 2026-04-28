@@ -1098,6 +1098,42 @@ export type LandingStatsQueryResult = {
 export type LandingCitiesQueryResult = Array<{
   city: string | null
 }>
+// Variable: archiveOrgansQuery
+// Query: *[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)]    | order(date desc, _updatedAt desc) [$offset...$end] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
+export type ArchiveOrgansQueryResult = Array<{
+  _id: string
+  status: 'draft' | 'published'
+  title: string
+  slug: string
+  excerpt: string | null
+  coverImage: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    caption?: string
+    _type: 'image'
+  } | null
+  date: string
+  location: {
+    city: string
+    country: string
+    building: string
+  } | null
+  builder: string | null
+  year: number | null
+  hasAudio: boolean | null
+  hasVideo: boolean | null
+}>
+// Variable: archiveOrgansCountQuery
+// Query: count(*[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)])
+export type ArchiveOrgansCountQueryResult = number
 // Variable: aboutQuery
 // Query: *[_type == "about" && _id == "siteAbout"][0] {    eyebrow,    title,    letter,    signoffName,    signoffLocation,    portraitImage,    portraitCaption,    portraitPlate,    secondaryImage,    secondaryCaption,    secondaryPlate,    quickFacts[]{ _key, label, value },    timelineSummary,    timeline[]{ _key, year, what, where },    repertoireIntro,    repertoire[]{ _key, era, title, pieces },    contactTitle,    contactLede,    contactRows[]{ _key, label, value, italic, href }  }
 export type AboutQueryResult = {
@@ -1509,6 +1545,8 @@ declare module '@sanity/client' {
     '\n  *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': LandingOrgansQueryResult
     '\n  {\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,\n    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date\n  }\n': LandingStatsQueryResult
     '\n  *[_type == "organ" && defined(slug.current) && defined(location.city)]{\n    "city": location.city\n  }\n': LandingCitiesQueryResult
+    '\n  *[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)]\n    | order(date desc, _updatedAt desc) [$offset...$end] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': ArchiveOrgansQueryResult
+    '\n  count(*[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)])\n': ArchiveOrgansCountQueryResult
     '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    eyebrow,\n    title,\n    letter,\n    signoffName,\n    signoffLocation,\n    portraitImage,\n    portraitCaption,\n    portraitPlate,\n    secondaryImage,\n    secondaryCaption,\n    secondaryPlate,\n    quickFacts[]{ _key, label, value },\n    timelineSummary,\n    timeline[]{ _key, year, what, where },\n    repertoireIntro,\n    repertoire[]{ _key, era, title, pieces },\n    contactTitle,\n    contactLede,\n    contactRows[]{ _key, label, value, italic, href }\n  }\n': AboutQueryResult
     '\n  *[_type == "journal" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  category,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n\n    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "journal" && defined(slug.current)]),\n    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    },\n    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    }\n  }\n': JournalQueryResult
     '\n  *[_type == "journal" && defined(slug.current)]\n  {"slug": slug.current}\n': JournalPagesSlugsResult
