@@ -17,7 +17,8 @@ search covers the long tail.
 | Query mechanism | GROQ `match` operator with `score()` boosting. Prefix matching via trailing `*`. |
 | Freshness | Inherited from existing `<SanityLive />` — search results update in real time when content is published, no webhooks, no revalidation routes. |
 | Route | `/{locale}/search?q=...`. Server component, dynamic rendering. No `/api/search` route. |
-| Locale scope | Document-level types use `language == $locale`; `score` is field-level i18n with no `language` field, so the filter is `(_type == "score" || language == $locale)`. Score's localised fields (`forInstrument`, `edition`, `blurb`) read via `field[_key == $locale][0].value` with Dutch (`nl`) fallback per AGENTS.md. |
+| Locale scope | Document-level types use `language == $locale`; `score` is field-level i18n with no `language` field, so the filter is `(_type == "score" || language == $locale)`. Score's localised fields (`forInstrument`, `edition`, `blurb`) read via `field[language == $locale][0].value` with Dutch (`nl`) fallback. **Note:** field key is `language`, not `_key` — this project's convention, mirrored in `scoresQuery`. |
+| Slug filter | Add `defined(slug.current)` for `journal` and `organ` (mirrors all existing list queries). Singletons resolve by `_id`, score has no slug — no slug filter needed for those. |
 | Searchable types | `journal`, `organ`, `score`, `about`, `elsewhere`, `privacy`. **Excluded:** `journalPage`, `organsPage`, `scoresPage`, `settings` (UI chrome, no human content). |
 | Result shape | `{ _id, _type, title, slug, snippet, _score }`. URL building stays in TS (`core/search/url.ts`) for testability. |
 | Result URLs | `journal/{slug}`, `organs/{slug}`, `about`, `elsewhere`, `privacy` use `/{locale}/{path}`. Score has **no detail page** — link is `/{locale}/scores#ed-{editionNumber}`; the scores page adds matching ids on each row. |
@@ -31,7 +32,7 @@ search covers the long tail.
 | Search box placement | **Magnifying-glass icon in `Nav`**, expanding inline to an input on click. Submitting navigates to `/{locale}/search?q=...`. Rationale: discoverable, matches the site's restrained aesthetic, no command-palette weirdness. |
 | Highlighting | Yes, simple word-boundary `<mark>` wrap on the matched tokens in title + snippet. No fancy ranking display. |
 | Fuzzy / typo tolerance | **Out of scope.** GROQ `match` is prefix-only. Upgrade path (MiniSearch / Algolia) documented under "Future" — defer until search analytics show it actually matters. |
-| i18n | Strings in `messages/{locale}.json` under a `search.*` namespace. English authored, other 10 locales seeded by the existing translations pipeline. |
+| i18n | Strings in `messages/{locale}.json` under PascalCase namespaces: `Search.*` (page UI), `Metadata.search.{title,description}` (matches existing Metadata convention), `Nav.openSearch` (aria-label for the icon button). English authored, other 10 locales seeded by `yarn translate:ui`. |
 
 ## Open questions
 
@@ -57,7 +58,9 @@ core/search/sanitise.spec.ts
 core/search/url.ts                          ← pure: (result, locale) → href
 core/search/url.spec.ts
 sanity/lib/queries.ts                       ← add `searchQuery` defineQuery export
-messages/en.json                            ← add search.* namespace; pipeline propagates
+messages/en.json                            ← add Search.*, Metadata.search.*, Nav.openSearch
+app/components/landing/Nav.tsx              ← slot SearchBox next to LanguagePicker
+app/components/landing/Scores.tsx           ← add id="ed-{NN}" anchors to score rows
 ```
 
 ### Query shape (sketch)
@@ -65,7 +68,11 @@ messages/en.json                            ← add search.* namespace; pipeline
 ```groq
 *[
   _type in ["journal", "organ", "score", "about", "elsewhere", "privacy"] &&
-  (_type == "score" || language == $locale) &&
+  (
+    (_type == "score") ||
+    (_type in ["about", "elsewhere", "privacy"] && language == $locale) ||
+    (_type in ["journal", "organ"] && language == $locale && defined(slug.current))
+  ) &&
   (
     title match $q ||
     pt::text(content) match $q ||
@@ -79,9 +86,9 @@ messages/en.json                            ← add search.* namespace; pipeline
     location.city match $q ||
     location.country match $q ||
     location.building match $q ||
-    forInstrument[_key == $locale][0].value match $q ||
-    edition[_key == $locale][0].value match $q ||
-    blurb[_key == $locale][0].value match $q
+    forInstrument[language == $locale][0].value match $q ||
+    edition[language == $locale][0].value match $q ||
+    blurb[language == $locale][0].value match $q
   )
 ]
 | score(
@@ -89,7 +96,7 @@ messages/en.json                            ← add search.* namespace; pipeline
     boost(work match $q, 5),
     boost(composer match $q, 4),
     boost(excerpt match $q, 2),
-    boost(blurb[_key == $locale][0].value match $q, 2)
+    boost(blurb[language == $locale][0].value match $q, 2)
   )
 | order(_score desc, _updatedAt desc)
 [0...50]
@@ -106,7 +113,7 @@ messages/en.json                            ← add search.* namespace; pipeline
     pt::text(letter)[0...200],
     pt::text(intro)[0...200],
     excerpt,
-    coalesce(blurb[_key == $locale][0].value, blurb[_key == "nl"][0].value)
+    coalesce(blurb[language == $locale][0].value, blurb[language == "nl"][0].value)
   )
 }
 ```
@@ -181,10 +188,11 @@ TDD throughout: write the failing test, make it pass, tick the box, move on.
       needed). Renders one `<li>` per result with: type badge (translated), highlighted title,
       highlighted snippet, anchor to the URL from `searchResultUrl`. Filter out any result where
       `searchResultUrl` returns `null` (defensive — drafts or malformed docs).
-- [ ] **6.2** Add `id="ed-{editionNumber}"` (zero-padded to 2 digits) to each row in the existing
-      scores list page if not already present. Required for `score` result anchors to actually
-      land on the right entry. Audit `app/[locale]/(site)/scores/page.tsx` (and its row component)
-      first; only change if missing.
+- [ ] **6.2** Add `id="ed-{editionNumber}"` (zero-padded to 2 digits) to each score row in
+      `app/components/landing/Scores.tsx`. **Audit confirmed missing as of plan rebase — must be
+      added.** The component renders `<ScoreCard>` items; the anchor id goes on the outermost
+      element of each card (audit the `ScoreCard` and `Featured` sub-components on lines ~140
+      onwards). Smooth-scroll behaviour from `:target` is fine — no JS needed.
 - [ ] **6.3** Empty state copy: "Try a search" (translated). No-results copy: "No matches for
       'xyz'" with the query echoed (HTML-escaped). Translations follow next-intl conventions.
 
@@ -192,20 +200,31 @@ TDD throughout: write the failing test, make it pass, tick the box, move on.
 
 - [ ] **7.1** Create `app/components/landing/SearchBox.tsx` as a small client component:
       magnifying-glass button → click expands inline input → submit navigates to
-      `/{locale}/search?q=...` via the next-intl-aware router. Press `Esc` to close, `/` shortcut
-      to focus (optional, skip if it complicates the component).
-- [ ] **7.2** Slot into `Nav.tsx` near the existing language picker (right side). Match existing
-      typography and spacing.
-- [ ] **7.3** Accessibility: `<form role="search">`, label translated, button has `aria-label`,
-      icon is `aria-hidden`, focus-visible style matches site convention.
+      `/{locale}/search?q=...` via the next-intl-aware router. Press `Esc` to close. `/` shortcut
+      to focus is **out of scope** — keeps the component simpler, can add later.
+- [ ] **7.2** Slot into `Nav.tsx` adjacent to `LanguagePicker`: desktop at lines 106-107
+      (`<div className="hidden md:block">` block), mobile inside the drawer near line 168
+      (`<div className="border-t border-rule-soft px-3 py-3">`). Match the same visibility
+      breakpoint pattern (`hidden md:block` for desktop, in-drawer for mobile).
+- [ ] **7.3** Accessibility: `<form role="search">`, input has translated `aria-label` (or visible
+      label), icon button has `aria-label={t('Nav.openSearch')}`, icon is `aria-hidden`,
+      focus-visible style matches site convention (`focus-visible:outline-accent` or whatever the
+      project uses — grep for existing usage in `LanguagePicker`).
 
 ### 8. i18n strings
 
-- [ ] **8.1** Add `search.*` namespace to `messages/en.json`: `placeholder`, `submit`, `pageTitle`,
-      `empty`, `noResultsFor`, `typeLabels.journal`, `typeLabels.organ`, `typeLabels.score`,
-      `typeLabels.about`, `typeLabels.elsewhere`, `typeLabels.privacy`.
-- [ ] **8.2** Run the existing translations pipeline to seed the other 10 locales. Verify nl/de/ja
-      look reasonable; manual edit if a string reads oddly.
+- [ ] **8.1** Add to `messages/en.json` (PascalCase namespaces, matching project convention):
+      - `Search.heading` — page heading
+      - `Search.placeholder` — input placeholder
+      - `Search.submit` — submit button text/aria
+      - `Search.empty` — "Type to search" before any query
+      - `Search.noResultsFor` — ICU string with `{query}` variable
+      - `Search.typeLabels.journal|organ|score|about|elsewhere|privacy` — result type badges
+      - `Metadata.search.title` and `Metadata.search.description` — page `<head>` strings
+      - `Nav.openSearch` — aria-label for the magnifying-glass button
+- [ ] **8.2** Run `yarn translate:ui` to seed the other 10 locales (per the existing translations
+      pipeline). Verify nl/de/ja look reasonable; manual edit if a string reads oddly. The `.last-
+      seen-en.json` file will pick up the new keys automatically.
 
 ### 9. Visual + manual verification (do not skip)
 
