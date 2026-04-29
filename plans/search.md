@@ -21,13 +21,13 @@ search covers the long tail.
 | Slug filter | Add `defined(slug.current)` for `journal` and `organ` (mirrors all existing list queries). Singletons resolve by `_id`, score has no slug — no slug filter needed for those. |
 | Searchable types | `journal`, `organ`, `score`, `about`, `elsewhere`, `privacy`. **Excluded:** `journalPage`, `organsPage`, `scoresPage`, `settings` (UI chrome, no human content). |
 | Result shape | `{ _id, _type, title, slug, snippet, _score }`. URL building stays in TS (`core/search/url.ts`) for testability. |
-| Result URLs | `journal/{slug}`, `organs/{slug}`, `about`, `elsewhere`, `privacy` use `/{locale}/{path}`. Score has **no detail page** — link is `/{locale}/scores#ed-{editionNumber}`; the scores page adds matching ids on each row. |
+| Result URLs | Returned as **next-intl typed `Href` objects** — `{ pathname: '/journal/[slug]', params: { slug } }` etc. Rendered via `<Link>` from `@/i18n/navigation` so next-intl resolves to the per-locale URL automatically (`/de/blog/...`, `/ja/オルガン/...`). Score has **no detail page** — returns `{ pathname: '/scores', hash: 'ed-01' }`. Singletons (`about`, `elsewhere`, `privacy`) use their respective pathnames. **Same builder shape works pre- and post-localised-pathnames merge.** |
 | Title for score | Synthesised in GROQ as `composer + " — " + work` (matches the Studio preview). All other types use their own `title`. |
 | Snippet | First ~200 chars of flattened body (`pt::text(...)[0...200]`). Score's snippet is `blurb[_key == $locale][0].value` (no `pt::text` — `internationalizedArrayText.value` is a plain string). Matched terms wrapped in `<mark>` client-side. |
 | Stega | Search query fetched with `stega: false` (results are not a Visual Editing target; slugs must be stega-clean for URLs). `generateMetadata` also uses `stega: false`. |
 | Result limit | Top 50 by score, no pagination (revisit if it ever matters). |
 | Min query length | 2 characters. Below that, render the empty state, don't hit Sanity. |
-| Token sanitisation | Lowercase, strip punctuation, split on whitespace, append `*` to each token, join with space. `match` uses AND across tokens. |
+| Token sanitisation | NFC-normalise (matches the project's slug normalisation), lowercase, strip punctuation, split on whitespace, append `*` to each token, join with space. `match` uses AND across tokens. NFC matters for Devanagari/Arabic/Thai/CJK queries to align with stored content. |
 | Empty / no-results states | Distinct copy per state, translated via existing `next-intl` pipeline. |
 | Search box placement | **Magnifying-glass icon in `Nav`**, expanding inline to an input on click. Submitting navigates to `/{locale}/search?q=...`. Rationale: discoverable, matches the site's restrained aesthetic, no command-palette weirdness. |
 | Highlighting | Yes, simple word-boundary `<mark>` wrap on the matched tokens in title + snippet. No fancy ranking display. |
@@ -42,8 +42,22 @@ during implementation if any of the following surface:
 - Query latency at the Live Content API for cross-type unions on the free tier — measure during
   task 4 and revisit limits if needed.
 - Score result anchor links require the `/scores` page to render `id="ed-{editionNumber}"` on each
-  row. If that's not already there, add it as part of task 6 (small, local change to the existing
-  scores list).
+  row. Audit confirms missing in `app/components/landing/Scores.tsx` (task 6.2).
+
+## Cross-branch coordination
+
+This plan was rebased on `origin/main` after the translations + slug-translation work landed.
+`feat/translate-disposition` is in-flight with two commits relevant to this plan:
+
+- **Localised pathnames** (`a216bd6`) — introduces per-locale URL segments via
+  `i18n/routing.ts` + `i18n/pathnames.json`. The plan's URL builder uses next-intl typed `Href`
+  objects so it works **both before and after** that branch merges. Once it merges, add a
+  `/search` entry to `i18n/routing.ts` and `i18n/pathnames.json` (task 5.5) so the search route
+  itself is locale-translatable.
+- **Disposition translation** (`4630c6a`) — register names + stop notes translate in place
+  per-locale; organ doc-level i18n already covers it. **No search query change needed.**
+  Searching within `disposition.couplings[*].registers[*]` is parked under "Future / out of
+  scope" — organ enthusiasts may want to find specific stops, but it's not v1.
 
 ## Architecture
 
@@ -127,23 +141,39 @@ TDD throughout: write the failing test, make it pass, tick the box, move on.
 
 ### 1. Token sanitiser (pure function)
 
-- [ ] **1.1** Write `core/search/sanitise.spec.ts` covering: empty string → `null`; single token →
-      `"bach*"`; multi-token → `"bach* symphony*"`; punctuation strip → `"bach's & co."` →
-      `"bachs* co*"`; case-fold to lowercase; min-length 2 short-circuits to `null`; whitespace-only
-      input → `null`; CJK input passes through unchanged (per-char tokens, each with `*`); unicode
-      apostrophes (`’`) handled like ASCII.
+- [ ] **1.1** Write `core/search/sanitise.spec.ts` covering:
+      - empty string → `null`
+      - single token → `"bach*"`
+      - multi-token → `"bach* symphony*"`
+      - punctuation strip → `"bach's & co."` → `"bachs* co*"`
+      - case-fold to lowercase
+      - min-length 2 short-circuits to `null` (a single `"a"` returns null)
+      - whitespace-only input → `null`
+      - CJK input passes through (per-char tokens, each with `*`)
+      - unicode apostrophes (`’`) handled like ASCII
+      - **NFC normalisation**: NFD-input (e.g. `é` decomposed) is NFC-folded (é) before
+        tokenising. Mirrors the project's slug normalisation (`fix(slug): emit NFC` lesson).
 - [ ] **1.2** Implement `sanitiseQuery(input: string): string | null` in `core/search/sanitise.ts`
-      until tests pass.
+      until tests pass. Use `String.prototype.normalize('NFC')` for the normalisation step.
 
 ### 2. Result URL builder (pure function)
 
-- [ ] **2.1** Write `core/search/url.spec.ts` covering: `journal` → `/{locale}/journal/{slug}`;
-      `organ` → `/{locale}/organs/{slug}`; `score` → `/{locale}/scores#ed-{editionNumber}` (zero-
-      padded to 2 digits to match existing UI convention); singletons (`about`, `elsewhere`,
-      `privacy`) → `/{locale}/{type}`; missing slug on `journal`/`organ` → returns `null` (caller
-      filters out); missing `editionNumber` on `score` → falls back to `/{locale}/scores`; unknown
-      `_type` → returns `null`.
-- [ ] **2.2** Implement `searchResultUrl(result, locale)` in `core/search/url.ts`.
+Returns a next-intl typed `Href` object (or `null`), not a string. The result is rendered via
+`<Link>` from `@/i18n/navigation` which handles locale-prefix and per-locale path translation
+automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCard.tsx`).
+
+- [ ] **2.1** Write `core/search/url.spec.ts` covering:
+      - `journal` with slug → `{ pathname: '/journal/[slug]', params: { slug } }`
+      - `organ` with slug → `{ pathname: '/organs/[slug]', params: { slug } }`
+      - `score` with editionNumber → `{ pathname: '/scores', hash: 'ed-01' }` (zero-padded to 2)
+      - `score` without editionNumber → `{ pathname: '/scores' }` (no hash)
+      - singletons `about`/`elsewhere`/`privacy` → `{ pathname: '/about' }` etc.
+      - `journal`/`organ` missing slug → returns `null` (caller filters out)
+      - unknown `_type` → returns `null`
+      - **No `locale` parameter** — next-intl `<Link>` handles locale at render time.
+- [ ] **2.2** Implement `searchResultHref(result)` in `core/search/url.ts`. Type the return as
+      next-intl's `Href` (import from `next-intl/routing` or use the inferred type from
+      `@/i18n/routing`). Functions stays pure — no React, no next-intl runtime hooks.
 
 ### 3. Highlight wrapper (pure function)
 
@@ -175,19 +205,24 @@ TDD throughout: write the failing test, make it pass, tick the box, move on.
       into URL building are clean.
 - [ ] **5.2** Render via `<SearchResults>`: distinct empty (`q` missing/below min), no-results
       (`q` valid, zero hits), and results-list states.
-- [ ] **5.3** Set page metadata via `generateMetadata` using `sanityFetch({ ..., stega: false })`
-      if any Sanity-backed strings are used (otherwise plain next-intl). Title is locale-translated
-      `Search` + query echo; `robots: { index: false, follow: false }` — search results pages
-      must never be indexed.
+- [ ] **5.3** Set page metadata via `generateMetadata` using next-intl `getTranslations` (no
+      Sanity strings needed). Title is `Metadata.search.title` + query echo;
+      `robots: { index: false, follow: false }` — search results pages must never be indexed.
 - [ ] **5.4** Verify `<SanityLive />` is mounted in `app/layout.tsx` (it is — line 110). One-line
       check, no setup needed.
+- [ ] **5.5** **Conditional on `feat/translate-disposition` having merged**: add `/search` to
+      `i18n/routing.ts` `pathnames` and `i18n/pathnames.json`. Use locale-translated segments
+      (e.g. `/de/suche`, `/ja/検索`). Either run `yarn translate:pathnames` or hand-author the 11
+      strings (small enough). If localised pathnames haven't merged yet, `/search` works as a
+      literal route in every locale and this task is deferred to a follow-up.
 
 ### 6. Search results component
 
 - [ ] **6.1** Create `app/components/search/SearchResults.tsx` (server component, no client JS
       needed). Renders one `<li>` per result with: type badge (translated), highlighted title,
-      highlighted snippet, anchor to the URL from `searchResultUrl`. Filter out any result where
-      `searchResultUrl` returns `null` (defensive — drafts or malformed docs).
+      highlighted snippet, **`<Link>` from `@/i18n/navigation`** with the typed `Href` from
+      `searchResultHref(result)`. Filter out any result where `searchResultHref` returns `null`
+      (defensive — drafts or malformed docs).
 - [ ] **6.2** Add `id="ed-{editionNumber}"` (zero-padded to 2 digits) to each score row in
       `app/components/landing/Scores.tsx`. **Audit confirmed missing as of plan rebase — must be
       added.** The component renders `<ScoreCard>` items; the anchor id goes on the outermost
@@ -273,3 +308,7 @@ Document but do not build:
   user types, add a thin route handler returning JSON; the GROQ query and sanitiser are reused.
 - **Studio-side improvements for editors.** Sanity Studio already has its own search; out of
   scope for this plan.
+- **Disposition search.** Searching within `disposition.couplings[*].registers[*].stops[*].name`
+  (e.g. "Bordun", "Vox Celeste") would be valuable for organ enthusiasts. Defer until v1 has
+  shipped and we see real query patterns. Adding it expands the GROQ query surface
+  significantly — the simplicity rule wins for now.
