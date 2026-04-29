@@ -141,7 +141,7 @@ TDD throughout: write the failing test, make it pass, tick the box, move on.
 
 ### 1. Token sanitiser (pure function)
 
-- [ ] **1.1** Write `core/search/sanitise.spec.ts` covering:
+- [x] **1.1** Write `core/search/sanitise.spec.ts` covering:
       - empty string → `null`
       - single token → `"bach*"`
       - multi-token → `"bach* symphony*"`
@@ -153,7 +153,7 @@ TDD throughout: write the failing test, make it pass, tick the box, move on.
       - unicode apostrophes (`’`) handled like ASCII
       - **NFC normalisation**: NFD-input (e.g. `é` decomposed) is NFC-folded (é) before
         tokenising. Mirrors the project's slug normalisation (`fix(slug): emit NFC` lesson).
-- [ ] **1.2** Implement `sanitiseQuery(input: string): string | null` in `core/search/sanitise.ts`
+- [x] **1.2** Implement `sanitiseQuery(input: string): string | null` in `core/search/sanitise.ts`
       until tests pass. Use `String.prototype.normalize('NFC')` for the normalisation step.
 
 ### 2. Result URL builder (pure function)
