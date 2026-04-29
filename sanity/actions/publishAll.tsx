@@ -38,7 +38,7 @@ function usePublishAllLocalesAction(
 
   return {
     icon: PublishIcon,
-    label: busy ? 'Publishing\u2026' : 'Publish',
+    label: busy ? 'Publishing\u2026' : 'Publish (auto-translated)',
     onHandle: () => {
       setOpen(true)
       run()
