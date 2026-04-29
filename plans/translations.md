@@ -558,8 +558,8 @@ Output: `messages/en.json` (source) - flat namespaced keys, e.g.:
   - Preserves manual overrides (key-by-key check: if previous EN value matches what's stored in a `_lastSeenSource` sidecar, the translation is auto and can be replaced; otherwise it's manual and skipped)
   - Sidecar file `messages/.last-seen-en.json` tracks the EN version each translation was made from
 - [x] `package.json`: `"translate:ui": "tsx scripts/translate-ui-messages.ts"`
-- [ ] Initial run produces 10 starter files (deferred — needs live LLM API key)
-- [ ] Manual review pass for `nl` (since Dutch is not the UI source, the editor will likely want to fine-tune; deferred until seed runs)
+- [x] Initial run produces 10 starter files (Gemini 2.5 Pro, ~$0.30, 172 keys × 10 locales)
+- [ ] Manual review pass for `nl` (since Dutch is not the UI source, the editor will likely want to fine-tune; deferred until editor reviews)
 
 ### B5. Language picker
 
@@ -651,7 +651,7 @@ Phased to avoid a big-bang merge.
 2. [x] **Phase 2 — UI strings**: B1 (next-intl), B2 (middleware), B3 (extract). All visible component strings extracted into `messages/en.json`.
 3. [x] **Phase 3 — translator core**: A6 (interfaces + providers), A7 (walkers), A8 (diff-aware). 100% test coverage.
 4. [x] **Phase 4 — translate action**: A9 (API routes), A10 (Studio actions), A11 (stale indicator badge), A12 (glossary in settings + prompt), A13 (slug translation).
-5. [ ] **Phase 5 — UI seed**: B4 — deferred until a Gemini API key is provisioned in Vercel.
+5. [x] **Phase 5 — UI seed**: B4 — ran `yarn translate:ui` against Gemini 2.5 Pro. Cost: ~$0.30 (under the $0.45 plan estimate). 172 keys × 10 locales seeded; ICU placeholders preserved.
 6. [x] **Phase 6 — language picker + auto-detect**: B5, B6 wired (gated by `NEXT_PUBLIC_I18N_ENABLED`).
 7. [ ] **Phase 7 — bake**: monitor for issues, fix glossary entries, tune prompts. Pending real-world usage.
 8. [ ] **Phase 8 — plugin extraction**: Track D. Optional, after bake.
