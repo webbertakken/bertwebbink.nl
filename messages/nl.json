@@ -9,7 +9,8 @@
       "scores": "Bladmuziek",
       "about": "Over mij",
       "elsewhere": "Elders"
-    }
+    },
+    "openSearch": "Open zoekvenster"
   },
   "Footer": {
     "copyright": "© Bert Webbink, {year}",
@@ -56,6 +57,10 @@
     "privacy": {
       "title": "Privacy",
       "description": "Een korte, duidelijke notitie over wat er wordt gelogd wanneer u deze site bezoekt."
+    },
+    "search": {
+      "title": "Zoeken",
+      "description": "Zoek door journalberichten, orgels, partituren en pagina’s."
     }
   },
   "UnderConstruction": {
@@ -238,5 +243,20 @@
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
+  },
+  "Search": {
+    "heading": "Zoeken",
+    "placeholder": "Zoek op de site…",
+    "submit": "Zoek",
+    "empty": "Typ een zoekopdracht om journalberichten, orgels, partituren en pagina’s te doorzoeken.",
+    "noResultsFor": "Geen resultaten voor “{query}”.",
+    "typeLabels": {
+      "journal": "Journal",
+      "organ": "Orgel",
+      "score": "Partituur",
+      "about": "Over mij",
+      "elsewhere": "Elders",
+      "privacy": "Privacy"
+    }
   }
 }

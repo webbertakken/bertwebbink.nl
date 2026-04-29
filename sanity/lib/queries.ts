@@ -301,6 +301,74 @@ export const privacyQuery = defineQuery(`
 `)
 
 /**
+ * Site-wide search across journal, organ, score, and the long-form
+ * singletons. Document-level types filter by `language == $locale`;
+ * `score` is field-level so it is matched without a language filter
+ * and its localised fields are pulled out per-locale via the existing
+ * `[language == $locale][0].value` pattern.
+ *
+ * `pt::text(...)` flattens Portable Text inline so `match` can run on
+ * its plain-text projection. The query is fetched with `stega: false`
+ * — slugs flow into URL building and must be free of invisible chars.
+ *
+ * Score has no slug; results carry `editionNumber` instead so the
+ * frontend can build the `/scores#ed-NN` anchor.
+ */
+export const searchQuery = defineQuery(`
+  *[
+    _type in ["journal", "organ", "score", "about", "elsewhere", "privacy"] &&
+    (
+      (_type == "score") ||
+      (_type in ["about", "elsewhere", "privacy"] && language == $locale) ||
+      (_type in ["journal", "organ"] && language == $locale && defined(slug.current))
+    ) &&
+    (
+      title match $q ||
+      pt::text(content) match $q ||
+      pt::text(letter) match $q ||
+      pt::text(intro) match $q ||
+      excerpt match $q ||
+      work match $q ||
+      composer match $q ||
+      catalog match $q ||
+      builder match $q ||
+      location.city match $q ||
+      location.country match $q ||
+      location.building match $q ||
+      forInstrument[language == $locale][0].value match $q ||
+      edition[language == $locale][0].value match $q ||
+      blurb[language == $locale][0].value match $q
+    )
+  ]
+  | score(
+      boost(title match $q, 5),
+      boost(work match $q, 5),
+      boost(composer match $q, 4),
+      boost(excerpt match $q, 2)
+    )
+  | order(_score desc, _updatedAt desc)
+  [0...50]
+  {
+    _id,
+    _type,
+    _score,
+    "title": select(
+      _type == "score" => composer + " — " + work,
+      coalesce(title, "Untitled")
+    ),
+    "slug": slug.current,
+    "editionNumber": editionNumber,
+    "snippet": coalesce(
+      pt::text(content)[0...200],
+      pt::text(letter)[0...200],
+      pt::text(intro)[0...200],
+      excerpt,
+      coalesce(blurb[language == $locale][0].value, blurb[language == "nl"][0].value)
+    )
+  }
+`)
+
+/**
  * Scores: field-level locale via `internationalizedArrayString` /
  * `internationalizedArrayText`. We coalesce to the Dutch source as a
  * fallback when a locale entry is missing.

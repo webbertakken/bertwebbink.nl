@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { dataAttr } from '@/sanity/lib/utils'
 import { Link, usePathname } from '@/i18n/navigation'
 import { LanguagePicker } from './LanguagePicker'
+import { SearchBox } from './SearchBox'
 import type { Locale } from '@/core/i18n/locales'
 
 type NavProps = {
@@ -102,8 +103,9 @@ export function Nav({ locale, active, wordmark, tagline }: NavProps) {
         ))}
       </div>
 
-      {/* Language picker (desktop) */}
-      <div className="hidden md:block">
+      {/* Search + language picker (desktop) */}
+      <div className="hidden md:flex items-center gap-4">
+        <SearchBox />
         <LanguagePicker locale={locale} />
       </div>
 
@@ -165,7 +167,8 @@ export function Nav({ locale, active, wordmark, tagline }: NavProps) {
               )
             })}
           </ul>
-          <div className="border-t border-rule-soft px-3 py-3">
+          <div className="border-t border-rule-soft px-3 py-3 flex flex-col gap-3">
+            <SearchBox variant="expanded" />
             <LanguagePicker locale={locale} />
           </div>
         </div>

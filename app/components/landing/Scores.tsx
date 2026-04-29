@@ -227,6 +227,12 @@ function ScoreCoverFeatured({ score }: { score: Score }) {
   )
 }
 
+function editionAnchorId(editionNumber: number | null | undefined): string | undefined {
+  return editionNumber == null
+    ? undefined
+    : `ed-${String(editionNumber).padStart(2, '0')}`
+}
+
 function Featured({ score }: { score: Score }) {
   const t = useTranslations('Scores')
   const eraLabel = useEraLabel()
@@ -242,7 +248,8 @@ function Featured({ score }: { score: Score }) {
 
   return (
     <section
-      className="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-14 pt-2 pb-16 mb-16 border-b border-rule-soft"
+      id={editionAnchorId(score.editionNumber)}
+      className="grid grid-cols-1 md:grid-cols-[360px_1fr] gap-14 pt-2 pb-16 mb-16 border-b border-rule-soft scroll-mt-16"
       data-screen-label="featured"
     >
       <ScoreCoverFeatured score={score} />
@@ -325,6 +332,7 @@ function ScoreCard({ score }: { score: Score }) {
   const eraLabel = useEraLabel()
   return (
     <a
+      id={editionAnchorId(score.editionNumber)}
       href={score.pdfUrl ?? undefined}
       download={score.pdfUrl ? '' : undefined}
       target={score.pdfUrl ? '_blank' : undefined}
@@ -333,7 +341,7 @@ function ScoreCard({ score }: { score: Score }) {
         if (!score.pdfUrl) e.preventDefault()
       }}
       data-sanity={scoreAttr(score._id, 'work')}
-      className={`score-card flex flex-col gap-[18px] no-underline ${
+      className={`score-card flex flex-col gap-[18px] no-underline scroll-mt-16 ${
         score.pdfUrl ? 'cursor-pointer' : 'cursor-default'
       }`}
     >

@@ -9,7 +9,8 @@
       "scores": "Spartiti",
       "about": "Chi sono",
       "elsewhere": "Altrove"
-    }
+    },
+    "openSearch": "Open search"
   },
   "Footer": {
     "copyright": "© Bert Webbink, {year}",
@@ -56,6 +57,10 @@
     "privacy": {
       "title": "Privacy",
       "description": "Una breve nota in linguaggio semplice su cosa viene registrato quando visiti questo sito."
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search across journal entries, organs, scores, and pages."
     }
   },
   "UnderConstruction": {
@@ -238,5 +243,20 @@
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
+  },
+  "Search": {
+    "heading": "Search",
+    "placeholder": "Search the site…",
+    "submit": "Search",
+    "empty": "Type a query to search journal entries, organs, scores, and pages.",
+    "noResultsFor": "No matches for “{query}”.",
+    "typeLabels": {
+      "journal": "Journal",
+      "organ": "Organ",
+      "score": "Score",
+      "about": "About",
+      "elsewhere": "Elsewhere",
+      "privacy": "Privacy"
+    }
   }
 }
