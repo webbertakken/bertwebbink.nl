@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "フィールドノート",
     "kickerRightFallback": "オルガンロフトから",
-    "headingFallback": "{{古いオルガン}}への訪問",
+    "headingFallback": "<em>古いオルガン</em>を訪ねて",
     "taglineFallback": "オランダ国内外で、ある土曜日に一度に集められた録音、写真、レジスター。",
     "cornerLeftSubFallback": "フィールドジャーナル",
     "cornerRightSubFallback": "低地諸国",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "著作",
     "kickerRightFallback": "フィールドジャーナル",
-    "headingFallback": "{{ジャーナル}}",
+    "headingFallback": "<em>ジャーナル</em>",
     "taglineFallback": "エッセイ、断片、未完成の思考 — 語る価値のあるものがあるときに公開されます。通常、ベンチが何かについて私の考えを変えた後に。",
     "cornerLeftSubFallback": "訪問間のメモ",
     "cornerRightSubFallback": "低地諸国",
@@ -157,7 +157,7 @@
       "edition": "版番号"
     },
     "headerKickerFallback": "小さなライブラリ",
-    "headerHeadingFallback": "版、運指、{{作業用楽譜}}。",
+    "headerHeadingFallback": "版、運指、<em>実用譜</em>",
     "headerTaglineFallback": "私が個人的な使用のために作成した作業版 — そのほとんどはフィールドノートで訪れた特定の楽器用です。運指とレジストレーションは提案であり、指示ではありません。すべての楽譜は非営利学習のために無料でダウンロードできます。",
     "noticeBodyFallback": "これらの楽譜は個人的な学習および教会での使用のために共有されています。演奏または録音をご希望の場合は、短いメールをいただけると幸いです — そして、版を明記してください。",
     "noticeEditionLineFallback": "ウェビンク版",

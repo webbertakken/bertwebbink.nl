@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "फील्ड नोट्स",
     "kickerRightFallback": "ऑर्गन लॉफ्ट से",
-    "headingFallback": "Visits to {{old organs}}",
+    "headingFallback": "<em>पुराने अंगों</em> की यात्राएँ",
     "taglineFallback": "नीदरलैंड और उससे आगे से एक-एक शनिवार के रिकॉर्डिंग, तस्वीरें और रजिस्टर।",
     "cornerLeftSubFallback": "एक फील्ड जर्नल",
     "cornerRightSubFallback": "निचले देश",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "लेखन",
     "kickerRightFallback": "एक फील्ड जर्नल",
-    "headingFallback": "The {{Journal}}",
+    "headingFallback": "<em>पत्रिका</em>",
     "taglineFallback": "निबंध, अंश, अधूरे विचार — तभी प्रकाशित होते हैं जब कहने लायक कुछ होता है, आमतौर पर जब किसी बेंच ने किसी चीज़ के बारे में मेरा विचार बदल दिया हो।",
     "cornerLeftSubFallback": "यात्राओं के बीच नोट्स",
     "cornerRightSubFallback": "निचले देश",
@@ -157,7 +157,7 @@
       "edition": "संस्करण संख्या"
     },
     "headerKickerFallback": "एक छोटी लाइब्रेरी",
-    "headerHeadingFallback": "संस्करण, फिंगरिंग, {{कार्य स्कोर}}।",
+    "headerHeadingFallback": "संस्करण, फिंगरिंग, <em>कार्यशील स्कोर</em>।",
     "headerTaglineFallback": "मेरे अपने उपयोग के लिए तैयार किए गए कार्य संस्करण — अधिकांश फील्ड नोट्स में देखे गए विशिष्ट उपकरणों के लिए। फिंगरिंग और पंजीकरण सुझाव हैं, नुस्खे नहीं। सभी स्कोर गैर-व्यावसायिक अध्ययन के लिए मुफ्त डाउनलोड के लिए उपलब्ध हैं।",
     "noticeBodyFallback": "ये स्कोर व्यक्तिगत अध्ययन और चर्च के उपयोग के लिए साझा किए जाते हैं। यदि आप किसी एक को प्रस्तुत या रिकॉर्ड करना चाहते हैं, तो एक छोटा ईमेल सराहनीय है — और कृपया संस्करण को श्रेय दें।",
     "noticeEditionLineFallback": "संस्करण वेबिंक",

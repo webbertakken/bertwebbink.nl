@@ -117,7 +117,12 @@ function Header({
 }) {
   const t = useTranslations('Scores')
   const kicker = copy?.kicker ?? t('headerKickerFallback')
-  const heading = copy?.heading ?? t('headerHeadingFallback')
+  // Editor copy uses `{{...}}`; fallback uses ICU rich-text `<em>...</em>`.
+  const heading = copy?.heading
+    ? renderEmphasised(copy.heading)
+    : t.rich('headerHeadingFallback', {
+        em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+      })
   const tagline = copy?.tagline ?? t('headerTaglineFallback')
   return (
     <>
@@ -132,7 +137,7 @@ function Header({
         className="font-serif font-light leading-[1.0] m-0 mb-7 text-balance max-w-[18ch]"
         style={{ fontSize: 'clamp(48px, 6vw, 84px)', letterSpacing: '-0.012em' }}
       >
-        {renderEmphasised(heading)}
+        {heading}
       </h1>
       <p
         data-sanity={scoresPageAttr('tagline')}

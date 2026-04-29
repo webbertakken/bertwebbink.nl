@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "Appunti di viaggio",
     "kickerRightFallback": "Dalla cantoria",
-    "headingFallback": "Visite a {{vecchi organi}}",
+    "headingFallback": "Visite a <em>vecchi organi</em>",
     "taglineFallback": "Registrazioni, fotografie e registri da un sabato alla volta, raccolti nei Paesi Bassi e oltre.",
     "cornerLeftSubFallback": "Un diario di viaggio",
     "cornerRightSubFallback": "I Paesi Bassi",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "Scritti",
     "kickerRightFallback": "Un diario di viaggio",
-    "headingFallback": "Il {{Diario}}",
+    "headingFallback": "Il <em>Giornale</em>",
     "taglineFallback": "Saggi, frammenti, pensieri incompiuti — pubblicati quando c'è qualcosa che vale la pena dire, di solito dopo che una panca mi ha fatto cambiare idea su qualcosa.",
     "cornerLeftSubFallback": "Note tra una visita e l'altra",
     "cornerRightSubFallback": "I Paesi Bassi",
@@ -157,7 +157,7 @@
       "edition": "Edizione №"
     },
     "headerKickerFallback": "Una piccola biblioteca",
-    "headerHeadingFallback": "Edizioni, diteggiature, {{spartiti di lavoro}}.",
+    "headerHeadingFallback": "Edizioni, diteggiature, <em>spartiti di lavoro</em>.",
     "headerTaglineFallback": "Edizioni di lavoro che ho preparato per mio uso personale — la maggior parte per strumenti specifici visitati negli appunti di viaggio. Diteggiature e registrazioni sono suggerimenti, non prescrizioni. Tutti gli spartiti sono scaricabili gratuitamente per studio non commerciale.",
     "noticeBodyFallback": "Questi spartiti sono condivisi per studio personale e uso ecclesiastico. Se desideri eseguirne o registrarne uno, una breve email è gradita — e per favore cita l'edizione.",
     "noticeEditionLineFallback": "Edizione Webbink",

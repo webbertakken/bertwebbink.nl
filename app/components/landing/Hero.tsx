@@ -74,10 +74,17 @@ export function Hero({
     dataAttr({ id: ORGANS_PAGE_ID, type: ORGANS_PAGE_TYPE, path }).toString()
   const kickerLeft = copy?.kickerLeft ?? t('kickerLeftFallback')
   const kickerRight = copy?.kickerRight ?? t('kickerRightFallback')
-  const heading = copy?.heading ?? t('headingFallback')
   const tagline = copy?.tagline ?? t('taglineFallback')
   const cornerLeftSub = copy?.cornerLeftSub ?? t('cornerLeftSubFallback')
   const cornerRightSub = copy?.cornerRightSub ?? t('cornerRightSubFallback')
+  // Heading: editor-supplied copy uses the `{{...}}` Sanity convention
+  // for italic spans (handled by `renderEmphasised`); the fallback uses
+  // ICU rich-text `<em>...</em>` and renders via `t.rich`.
+  const heading = copy?.heading
+    ? renderEmphasised(copy.heading)
+    : t.rich('headingFallback', {
+        em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+      })
 
   return (
     <section
@@ -159,7 +166,7 @@ export function Hero({
             letterSpacing: '-0.012em',
           }}
         >
-          {renderEmphasised(heading)}
+          {heading}
         </h1>
 
         <div className="mt-7 flex items-center justify-center gap-3.5 text-ink-faint">

@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "Field notes",
     "kickerRightFallback": "From the organ loft",
-    "headingFallback": "Visits to {{old organs}}",
+    "headingFallback": "Visits to <em>old organs</em>",
     "taglineFallback": "Recordings, photographs and registers from one Saturday at a time, gathered in the Netherlands and beyond.",
     "cornerLeftSubFallback": "A field journal",
     "cornerRightSubFallback": "The low countries",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "Writings",
     "kickerRightFallback": "A field journal",
-    "headingFallback": "The {{Journal}}",
+    "headingFallback": "The <em>Journal</em>",
     "taglineFallback": "Essays, fragments, half-finished thoughts — published when there is something worth saying, usually after a bench has changed my mind about something.",
     "cornerLeftSubFallback": "Notes between visits",
     "cornerRightSubFallback": "The low countries",
@@ -157,7 +157,7 @@
       "edition": "Edition №"
     },
     "headerKickerFallback": "A small library",
-    "headerHeadingFallback": "Editions, fingerings, {{working scores}}.",
+    "headerHeadingFallback": "Editions, fingerings, <em>working scores</em>.",
     "headerTaglineFallback": "Working editions I've prepared for my own use — most for specific instruments visited in the field notes. Fingerings and registrations are suggestions, not prescriptions. All scores are free to download for non-commercial study.",
     "noticeBodyFallback": "These scores are shared for personal study and church use. If you would like to perform or record one, a short email is appreciated — and please credit the edition.",
     "noticeEditionLineFallback": "Edition Webbink",

@@ -39,7 +39,14 @@ export function JournalHero({ locale, totalCount, firstYear, crumbs, copy }: Jou
 
   const kickerLeft = copy?.kickerLeft ?? t('kickerLeftFallback')
   const kickerRight = copy?.kickerRight ?? t('kickerRightFallback')
-  const heading = copy?.heading ?? t('headingFallback')
+  // Heading: editor copy uses `{{...}}` (Sanity convention via
+  // renderEmphasised); fallback uses ICU rich-text `<em>...</em>` to
+  // sidestep the `{{}}`/ICU brace clash.
+  const heading = copy?.heading
+    ? renderEmphasised(copy.heading)
+    : t.rich('headingFallback', {
+        em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+      })
   const tagline = copy?.tagline ?? t('taglineFallback')
   const cornerLeftSub = copy?.cornerLeftSub ?? t('cornerLeftSubFallback')
   const cornerRightSub = copy?.cornerRightSub ?? t('cornerRightSubFallback')
@@ -100,7 +107,7 @@ export function JournalHero({ locale, totalCount, firstYear, crumbs, copy }: Jou
             letterSpacing: '-0.012em',
           }}
         >
-          {renderEmphasised(heading)}
+          {heading}
         </h1>
 
         <div className="mt-7 flex items-center justify-center gap-3.5 text-ink-faint">
