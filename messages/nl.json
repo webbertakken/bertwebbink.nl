@@ -6,7 +6,7 @@
     "taglineFallback": "Organist",
     "items": {
       "organs": "Orgels",
-      "scores": "Partituren",
+      "scores": "Bladmuziek",
       "about": "Over mij",
       "elsewhere": "Elders"
     }
@@ -23,7 +23,7 @@
     "home": "Home",
     "organs": "Orgels",
     "journal": "Journaal",
-    "scores": "Partituren",
+    "scores": "Bladmuziek",
     "about": "Over",
     "elsewhere": "Elders",
     "privacy": "Privacy"
@@ -42,7 +42,7 @@
       "description": "Veldnotities van orgels bezocht in Nederland en daarbuiten."
     },
     "scores": {
-      "title": "Partituren",
+      "title": "Bladmuziek",
       "description": "Werkedities van orgelpartituren voorbereid door Bert Webbink — vingerzettingen, registraties, gratis te downloaden voor niet-commerciële studie."
     },
     "about": {
