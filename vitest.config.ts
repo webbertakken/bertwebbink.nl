@@ -36,6 +36,8 @@ export default defineConfig({
         'app/components/landing/renderEmphasised.tsx',
         'app/components/landing/archiveUtil.ts',
         'app/components/landing/archiveActions.ts',
+        'sanity/badges/**/*.ts',
+        'sanity/actions/visibility.ts',
         'scripts/sanity-backfill/parsers.ts',
         'scripts/sanity-backfill/wp-html.ts',
       ],

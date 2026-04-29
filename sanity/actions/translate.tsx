@@ -2,10 +2,8 @@ import { TranslateIcon } from '@sanity/icons'
 import { useState } from 'react'
 import { useClient, type DocumentActionDescription, type DocumentActionProps } from 'sanity'
 
-import {
-  isTranslatableType,
-} from '@/core/translator/orchestrator'
-import { DEFAULT_LOCALE, LOCALES } from '@/core/i18n/locales'
+import { LOCALES } from '@/core/i18n/locales'
+import { shouldShowTranslateAction } from './visibility'
 
 /**
  * "Translate to all locales" \u2014 secondary action in the three-dot menu.
@@ -28,12 +26,9 @@ function useTranslateAllAction(
   const [open, setOpen] = useState(false)
   const [output, setOutput] = useState<string>('')
 
-  if (!isTranslatableType(type)) return null
-
   const doc = (draft ?? published) as { language?: string } | null
-  const docLang = doc?.language ?? DEFAULT_LOCALE
-  // Document-per-locale: only show on source-language doc.
-  if (type !== 'score' && docLang !== DEFAULT_LOCALE) return null
+  if (!shouldShowTranslateAction({ type, language: doc?.language ?? null })) return null
+  const docLang = doc?.language ?? 'nl'
 
   return {
     icon: TranslateIcon,

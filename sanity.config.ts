@@ -29,6 +29,7 @@ import {
 } from '@/core/i18n/locales'
 import { translateAllAction } from '@/sanity/actions/translate'
 import { publishAllLocalesAction } from '@/sanity/actions/publishAll'
+import { staleTranslationBadge } from '@/sanity/badges/staleTranslation'
 import { isTranslatableType } from '@/core/translator/orchestrator'
 
 /** Document types that use document-per-locale (one full document per language). */
@@ -311,6 +312,10 @@ export default defineConfig({
     actions: (prev, context) => {
       if (!isTranslatableType(context.schemaType)) return prev
       return [...prev, publishAllLocalesAction, translateAllAction]
+    },
+    badges: (prev, context) => {
+      if (!isTranslatableType(context.schemaType)) return prev
+      return [...prev, staleTranslationBadge]
     },
   },
 
