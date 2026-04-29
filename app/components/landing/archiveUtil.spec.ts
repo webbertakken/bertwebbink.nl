@@ -97,15 +97,21 @@ describe('yearTotals', () => {
 
 describe('cityHref', () => {
   it('returns the bare archive URL for the empty filter', () => {
-    expect(cityHref('')).toBe('/organs')
+    expect(cityHref('')).toEqual({ pathname: '/organs' })
   })
 
-  it('encodes a single-word city', () => {
-    expect(cityHref('Urk')).toBe('/organs?city=Urk')
+  it('returns a typed pathname + city query for a single-word city', () => {
+    expect(cityHref('Urk')).toEqual({
+      pathname: '/organs',
+      query: { city: 'Urk' },
+    })
   })
 
-  it('URL-encodes spaces and special characters', () => {
-    expect(cityHref('Den Burg (Texel)')).toBe('/organs?city=Den%20Burg%20(Texel)')
+  it('preserves spaces and special characters as-is for next-intl to encode', () => {
+    expect(cityHref('Den Burg (Texel)')).toEqual({
+      pathname: '/organs',
+      query: { city: 'Den Burg (Texel)' },
+    })
   })
 })
 

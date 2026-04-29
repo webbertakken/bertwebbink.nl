@@ -57,16 +57,74 @@ export function writePath(doc: AnyDoc, path: string, value: unknown): AnyDoc {
   return out
 }
 
-/** Extract translatable units for a list of dotted paths. Empty/missing values are skipped. */
+/**
+ * Extract translatable units for a list of dotted paths. Paths may
+ * include `[*]` segments to mean "every entry in this array"; those
+ * are expanded against the doc so the emitted unit ids are concrete
+ * `[_key=="..."]` paths that can later be matched on apply.
+ * Empty/missing values are skipped.
+ */
 export function extractStringFields(doc: AnyDoc, paths: string[]): TranslationUnit[] {
   const out: TranslationUnit[] = []
   for (const path of paths) {
-    const value = readPath(doc, path)
-    if (typeof value === 'string' && value.trim().length > 0) {
-      out.push({ id: path, sourceText: value })
+    const concretePaths = expandWildcards(doc, path)
+    for (const p of concretePaths) {
+      const value = readPath(doc, p)
+      if (typeof value === 'string' && value.trim().length > 0) {
+        out.push({ id: p, sourceText: value })
+      }
     }
   }
   return out
+}
+
+/**
+ * A derived field reads a value from `readPath` on the source and
+ * writes its translation to `writePath` on the target doc. Both paths
+ * may share `[*]` wildcards in the same positions; the wildcard keys
+ * resolved on the source are reused verbatim for the target path.
+ *
+ * This is how stop names work: the canonical name stays in `name`
+ * (cloned from source), while the LLM-generated translation lands in
+ * a dedicated `translation` field that the renderer shows in parens.
+ */
+export type DerivedFieldSpec = {
+  readPath: string
+  writePath: string
+  /** Optional context hint forwarded to the LLM. */
+  context?: string
+}
+
+export function extractDerivedFields(
+  doc: AnyDoc,
+  specs: DerivedFieldSpec[],
+): TranslationUnit[] {
+  const out: TranslationUnit[] = []
+  for (const spec of specs) {
+    const concrete = expandWildcardPair(doc, spec.readPath, spec.writePath)
+    for (const [readP, writeP] of concrete) {
+      const value = readPath(doc, readP)
+      if (typeof value === 'string' && value.trim().length > 0) {
+        const unit: TranslationUnit = { id: writeP, sourceText: value }
+        if (spec.context) unit.context = spec.context
+        out.push(unit)
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * True when `unitId` is a concrete instance of `specPath`. `specPath`
+ * may contain `[*]` segments that act as wildcards.
+ */
+export function specPathMatches(specPath: string, unitId: string): boolean {
+  if (!specPath.includes('[*]')) return unitId === specPath
+  const escaped = specPath
+    .split('[*]')
+    .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('\\[_key=="[^"]+"\\]')
+  return new RegExp('^' + escaped + '$').test(unitId)
 }
 
 /** Re-apply translated string units. Returns a deep-cloned doc. */
@@ -79,6 +137,66 @@ export function applyStringFields(
     result = writePath(result, unit.id, unit.sourceText)
   }
   return result
+}
+
+/**
+ * Walk `doc` along `path`, expanding any `[*]` segments to the
+ * matching `[_key=="..."]` paths against the doc's actual array
+ * contents. Items without an `_key` are skipped (Sanity always emits
+ * keys on array items). Returns the path verbatim if there's no `[*]`.
+ */
+export function expandWildcards(doc: AnyDoc, path: string): string[] {
+  if (!path.includes('[*]')) return [path]
+  const star = path.indexOf('[*]')
+  const prefix = path.slice(0, star)
+  const suffix = path.slice(star + '[*]'.length)
+  const arr = readPath(doc, prefix)
+  if (!Array.isArray(arr)) return []
+  const out: string[] = []
+  for (const item of arr) {
+    if (item == null || typeof item !== 'object') continue
+    const key = (item as { _key?: string })._key
+    if (typeof key !== 'string') continue
+    const concretePrefix = `${prefix}[_key=="${key}"]`
+    for (const expanded of expandWildcards(doc, concretePrefix + suffix)) {
+      out.push(expanded)
+    }
+  }
+  return out
+}
+
+/**
+ * Like `expandWildcards`, but expands `readPath` against the doc and
+ * mirrors each resolved key into the matching `[*]` slot of
+ * `writePath`. Returns `(concreteRead, concreteWrite)` pairs.
+ */
+export function expandWildcardPair(
+  doc: AnyDoc,
+  readPathTemplate: string,
+  writePathTemplate: string,
+): Array<[string, string]> {
+  const readStar = readPathTemplate.indexOf('[*]')
+  const writeStar = writePathTemplate.indexOf('[*]')
+  if (readStar === -1 || writeStar === -1) return [[readPathTemplate, writePathTemplate]]
+  const readPrefix = readPathTemplate.slice(0, readStar)
+  const readSuffix = readPathTemplate.slice(readStar + '[*]'.length)
+  const writePrefix = writePathTemplate.slice(0, writeStar)
+  const writeSuffix = writePathTemplate.slice(writeStar + '[*]'.length)
+  const arr = readPath(doc, readPrefix)
+  if (!Array.isArray(arr)) return []
+  const out: Array<[string, string]> = []
+  for (const item of arr) {
+    if (item == null || typeof item !== 'object') continue
+    const key = (item as { _key?: string })._key
+    if (typeof key !== 'string') continue
+    const concrete = `[_key=="${key}"]`
+    const nextRead = readPrefix + concrete + readSuffix
+    const nextWrite = writePrefix + concrete + writeSuffix
+    for (const pair of expandWildcardPair(doc, nextRead, nextWrite)) {
+      out.push(pair)
+    }
+  }
+  return out
 }
 
 type Segment =

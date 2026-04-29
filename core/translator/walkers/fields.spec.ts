@@ -2,8 +2,12 @@ import { describe, expect, it } from 'vitest'
 
 import {
   applyStringFields,
+  expandWildcardPair,
+  expandWildcards,
+  extractDerivedFields,
   extractStringFields,
   readPath,
+  specPathMatches,
   writePath,
 } from './fields'
 
@@ -119,6 +123,191 @@ describe('field walker', () => {
 
   it('readPath returns undefined for [_key==] on a non-array', () => {
     expect(readPath({ list: 'string' }, 'list[_key=="a"]')).toBeUndefined()
+  })
+
+  it('expandWildcards returns the path verbatim when there is no wildcard', () => {
+    expect(expandWildcards({}, 'foo.bar')).toEqual(['foo.bar'])
+  })
+
+  it('expandWildcards walks an array of keyed items', () => {
+    const doc = {
+      list: [
+        { _key: 'a', name: 'first' },
+        { _key: 'b', name: 'second' },
+      ],
+    }
+    expect(expandWildcards(doc, 'list[*].name')).toEqual([
+      'list[_key=="a"].name',
+      'list[_key=="b"].name',
+    ])
+  })
+
+  it('expandWildcards expands nested wildcards (e.g. registers[*].stops[*])', () => {
+    const doc = {
+      registers: [
+        {
+          _key: 'r1',
+          stops: [
+            { _key: 's1', name: 'Bordun' },
+            { _key: 's2', name: 'Principal' },
+          ],
+        },
+        { _key: 'r2', stops: [{ _key: 's3', name: 'Trompete' }] },
+      ],
+    }
+    expect(expandWildcards(doc, 'registers[*].stops[*].name')).toEqual([
+      'registers[_key=="r1"].stops[_key=="s1"].name',
+      'registers[_key=="r1"].stops[_key=="s2"].name',
+      'registers[_key=="r2"].stops[_key=="s3"].name',
+    ])
+  })
+
+  it('expandWildcards skips items without a string `_key` and yields nothing for non-array prefixes', () => {
+    const doc = {
+      list: [
+        { _key: 'a' }, // ok
+        { name: 'no-key' },
+        null,
+        'not-an-object',
+        { _key: 42 }, // numeric key, skipped
+      ],
+      nope: 'string-not-array',
+    }
+    expect(expandWildcards(doc as never, 'list[*].name')).toEqual([
+      'list[_key=="a"].name',
+    ])
+    expect(expandWildcards(doc as never, 'nope[*].x')).toEqual([])
+  })
+
+  it('extractStringFields skips empty values and expands wildcards', () => {
+    const doc = {
+      list: [
+        { _key: 'a', name: 'Alpha' },
+        { _key: 'b', name: '' },
+        { _key: 'c', name: 'Gamma' },
+      ],
+    }
+    expect(extractStringFields(doc, ['list[*].name'])).toEqual([
+      { id: 'list[_key=="a"].name', sourceText: 'Alpha' },
+      { id: 'list[_key=="c"].name', sourceText: 'Gamma' },
+    ])
+  })
+
+  it('specPathMatches matches concrete unit ids against wildcard spec paths', () => {
+    expect(specPathMatches('foo.bar', 'foo.bar')).toBe(true)
+    expect(specPathMatches('foo.bar', 'foo.baz')).toBe(false)
+    expect(
+      specPathMatches('list[*].name', 'list[_key=="abc"].name'),
+    ).toBe(true)
+    expect(
+      specPathMatches('list[*].name', 'list[_key=="abc"].label'),
+    ).toBe(false)
+    expect(
+      specPathMatches(
+        'registers[*].stops[*].translation',
+        'registers[_key=="r"].stops[_key=="s"].translation',
+      ),
+    ).toBe(true)
+  })
+
+  it('expandWildcardPair mirrors resolved keys into a write path', () => {
+    const doc = {
+      registers: [
+        {
+          _key: 'r1',
+          stops: [{ _key: 's1' }, { _key: 's2' }],
+        },
+      ],
+    }
+    expect(
+      expandWildcardPair(
+        doc,
+        'registers[*].stops[*].name',
+        'registers[*].stops[*].translation',
+      ),
+    ).toEqual([
+      [
+        'registers[_key=="r1"].stops[_key=="s1"].name',
+        'registers[_key=="r1"].stops[_key=="s1"].translation',
+      ],
+      [
+        'registers[_key=="r1"].stops[_key=="s2"].name',
+        'registers[_key=="r1"].stops[_key=="s2"].translation',
+      ],
+    ])
+  })
+
+  it('expandWildcardPair returns the templates verbatim when neither has a wildcard', () => {
+    expect(expandWildcardPair({}, 'foo.name', 'foo.translation')).toEqual([
+      ['foo.name', 'foo.translation'],
+    ])
+  })
+
+  it('expandWildcardPair yields nothing when the read prefix is not an array', () => {
+    expect(
+      expandWildcardPair({ x: 'string' }, 'x[*].name', 'x[*].translation'),
+    ).toEqual([])
+  })
+
+  it('expandWildcardPair skips items with no string `_key`', () => {
+    const doc = {
+      list: [
+        { _key: 'a' },
+        { name: 'no-key' },
+        null,
+      ],
+    }
+    expect(
+      expandWildcardPair(
+        doc as never,
+        'list[*].name',
+        'list[*].translation',
+      ),
+    ).toEqual([
+      [
+        'list[_key=="a"].name',
+        'list[_key=="a"].translation',
+      ],
+    ])
+  })
+
+  it('extractDerivedFields emits units keyed by the write path', () => {
+    const doc = {
+      stops: [
+        { _key: 's1', name: 'Bordun' },
+        { _key: 's2', name: '   ' }, // whitespace -> skipped
+        { _key: 's3', name: 'Vox Celeste' },
+      ],
+    }
+    const units = extractDerivedFields(doc, [
+      {
+        readPath: 'stops[*].name',
+        writePath: 'stops[*].translation',
+        context: 'Organ stop name.',
+      },
+    ])
+    expect(units).toEqual([
+      {
+        id: 'stops[_key=="s1"].translation',
+        sourceText: 'Bordun',
+        context: 'Organ stop name.',
+      },
+      {
+        id: 'stops[_key=="s3"].translation',
+        sourceText: 'Vox Celeste',
+        context: 'Organ stop name.',
+      },
+    ])
+  })
+
+  it('extractDerivedFields omits the context property when no context is configured', () => {
+    const doc = { stops: [{ _key: 's1', name: 'Bordun' }] }
+    const units = extractDerivedFields(doc, [
+      { readPath: 'stops[*].name', writePath: 'stops[*].translation' },
+    ])
+    expect(units).toEqual([
+      { id: 'stops[_key=="s1"].translation', sourceText: 'Bordun' },
+    ])
   })
 
   it('writePath bails when intermediate keyMatch lookup returns undefined', () => {

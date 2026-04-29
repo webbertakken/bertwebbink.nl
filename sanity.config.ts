@@ -31,6 +31,7 @@ import { publishAllLocalesAction } from '@/sanity/actions/publishAll'
 import { relabelSingleLocalePublish } from '@/sanity/actions/relabelPublish'
 import { staleTranslationBadge } from '@/sanity/badges/staleTranslation'
 import { isTranslatableType } from '@/core/translator/orchestrator'
+import { pathnames } from '@/i18n/routing'
 
 /** Document types that use document-per-locale (one full document per language). */
 const LOCALIZED_DOC_TYPES = [
@@ -66,6 +67,15 @@ const sanityStudioPreviewUrl = assertValue(
 // Define the home location for the presentation tool
 const homeLocation = { title: 'Home', href: '/' } satisfies DocumentLocation
 
+/** Resolve a canonical pathnames key (`/organs`) to the locale-specific segment. */
+function localisedSegment(canonical: string, locale: Locale): string {
+  const map = pathnames as Record<string, string | Record<Locale, string>>
+  const entry = map[canonical]
+  if (typeof entry === 'string') return entry
+  if (entry && entry[locale]) return entry[locale] as string
+  return canonical
+}
+
 // resolveHref() is a convenience function that resolves the URL
 // path for different document types and used in the presentation tool.
 function resolveHref(
@@ -75,9 +85,13 @@ function resolveHref(
 ): string | undefined {
   switch (documentType) {
     case 'organ':
-      return slug ? `/${locale}/organs/${slug}` : undefined
+      return slug
+        ? `/${locale}${localisedSegment('/organs/[slug]', locale).replace('[slug]', slug)}`
+        : undefined
     case 'journal':
-      return slug ? `/${locale}/journal/${slug}` : undefined
+      return slug
+        ? `/${locale}${localisedSegment('/journal/[slug]', locale).replace('[slug]', slug)}`
+        : undefined
     default:
       console.warn('Invalid document type:', documentType)
       return undefined
@@ -95,37 +109,38 @@ function localizedMainDocuments() {
   const entries: Array<{ route: string; filter: string }> = []
   for (const locale of LOCALES) {
     const localePrefix = `/${locale}`
+    const seg = (canonical: string) => localisedSegment(canonical, locale)
     entries.push(
       {
         route: `${localePrefix}`,
         filter: `_type == "journalPage" && _id == "journalPage-${locale}"`,
       },
       {
-        route: `${localePrefix}/organs`,
+        route: `${localePrefix}${seg('/organs')}`,
         filter: `_type == "organsPage" && _id == "organsPage-${locale}"`,
       },
       {
-        route: `${localePrefix}/organs/:slug`,
+        route: `${localePrefix}${seg('/organs/[slug]').replace('[slug]', ':slug')}`,
         filter: `_type == "organ" && language == "${locale}" && (slug.current == $slug || _id == $slug)`,
       },
       {
-        route: `${localePrefix}/scores`,
+        route: `${localePrefix}${seg('/scores')}`,
         filter: `_type == "scoresPage" && _id == "scoresPage-${locale}"`,
       },
       {
-        route: `${localePrefix}/journal/:slug`,
+        route: `${localePrefix}${seg('/journal/[slug]').replace('[slug]', ':slug')}`,
         filter: `_type == "journal" && language == "${locale}" && (slug.current == $slug || _id == $slug)`,
       },
       {
-        route: `${localePrefix}/about`,
+        route: `${localePrefix}${seg('/about')}`,
         filter: `_type == "about" && _id == "about-${locale}"`,
       },
       {
-        route: `${localePrefix}/elsewhere`,
+        route: `${localePrefix}${seg('/elsewhere')}`,
         filter: `_type == "elsewhere" && _id == "elsewhere-${locale}"`,
       },
       {
-        route: `${localePrefix}/privacy`,
+        route: `${localePrefix}${seg('/privacy')}`,
         filter: `_type == "privacy" && _id == "privacy-${locale}"`,
       },
     )

@@ -10,14 +10,29 @@ const SLUG_PATHS = ['slug.current'] as const
  * default slugifier closely enough for our purposes.
  */
 export function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .normalize('NFKD')
-    // Strip combining diacritics (CJK left intact; transliteration is best-effort).
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^\p{L}\p{N}]+/gu, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 96)
+  return (
+    input
+      .toLowerCase()
+      // Decompose so we can strip combining diacritics from Latin scripts.
+      .normalize('NFKD')
+      // Strip combining marks in the Latin diacritic range only. Marks
+      // outside this range are part of the script (Devanagari
+      // anusvara, Arabic harakat, etc.) and must stay so the slug
+      // remains the actual word.
+      .replace(/[\u0300-\u036f]/g, '')
+      // Replace non-letter / non-digit / non-mark runs with a single
+      // dash. Including \p{M} preserves combining marks used by
+      // Devanagari, Hebrew, Arabic, Thai, etc.
+      .replace(/[^\p{L}\p{N}\p{M}]+/gu, '-')
+      .replace(/^-+|-+$/g, '')
+      // Re-compose to NFC so non-Latin scripts (Hangul, etc.) end up in
+      // the canonical web form. Browsers and search engines compare
+      // URL paths byte-strictly, and NFC is what they emit; storing NFD
+      // would 404 every visit because the stored slug differs from the
+      // browser's normalized URL.
+      .normalize('NFC')
+      .slice(0, 96)
+  )
 }
 
 /**

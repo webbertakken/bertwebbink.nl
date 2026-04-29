@@ -112,7 +112,7 @@ function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number 
     : entry.category ?? 'other'
   return (
     <Link
-      href={`/journal/${entry.slug}`}
+      href={{ pathname: '/journal/[slug]', params: { slug: entry.slug } }}
       data-sanity={titleAttr}
       className="group grid grid-cols-1 md:grid-cols-[140px_minmax(0,1fr)_280px] gap-6 md:gap-14 items-start py-10 border-t border-rule-soft transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:scale-[1.005]"
     >

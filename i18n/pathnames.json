@@ -1,0 +1,80 @@
+{
+  "organs": {
+    "en": "organs",
+    "nl": "orgels",
+    "de": "orgeln",
+    "fr": "orgues",
+    "es": "organos",
+    "it": "organi",
+    "pt": "orgaos",
+    "hi": "ऑर्गन",
+    "ja": "オルガン",
+    "zh": "管风琴",
+    "ko": "오르간"
+  },
+  "about": {
+    "en": "about",
+    "nl": "over-mij",
+    "de": "ueber-mich",
+    "fr": "bio",
+    "es": "sobre-mi",
+    "it": "chi-sono",
+    "pt": "sobre-mim",
+    "hi": "परिचय",
+    "ja": "自己紹介",
+    "zh": "简介",
+    "ko": "소개"
+  },
+  "elsewhere": {
+    "en": "elsewhere",
+    "nl": "elders",
+    "de": "externe-links",
+    "fr": "ailleurs",
+    "es": "externos",
+    "it": "altrove",
+    "pt": "externos",
+    "hi": "अन्यत्र",
+    "ja": "外部",
+    "zh": "站外",
+    "ko": "외부"
+  },
+  "scores": {
+    "en": "scores",
+    "nl": "partituren",
+    "de": "noten",
+    "fr": "partitions",
+    "es": "partituras",
+    "it": "spartiti",
+    "pt": "partituras",
+    "hi": "स्वरलिपि",
+    "ja": "楽譜",
+    "zh": "乐谱",
+    "ko": "악보"
+  },
+  "privacy": {
+    "en": "privacy",
+    "nl": "privacy",
+    "de": "datenschutz",
+    "fr": "confidentialite",
+    "es": "privacidad",
+    "it": "privacy",
+    "pt": "privacidade",
+    "hi": "गोपनीयता",
+    "ja": "プライバシー",
+    "zh": "隐私",
+    "ko": "개인정보"
+  },
+  "journal": {
+    "en": "journal",
+    "nl": "blog",
+    "de": "blog",
+    "fr": "blog",
+    "es": "blog",
+    "it": "blog",
+    "pt": "blog",
+    "hi": "ब्लॉग",
+    "ja": "ブログ",
+    "zh": "博客",
+    "ko": "일기"
+  }
+}

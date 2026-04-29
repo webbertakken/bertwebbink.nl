@@ -6,7 +6,14 @@ const organAttr = (id: string, path: string) =>
   dataAttr({ id, type: 'organ', path }).toString()
 
 type NamedItem = { _key?: string; name: string; note?: string | null }
-type Stop = { _key?: string; name: string; pitch?: string | null; note?: string | null }
+type Stop = {
+  _key?: string
+  name: string
+  pitch?: string | null
+  note?: string | null
+  /** Localised gloss; rendered in parens when set and different from `name`. */
+  translation?: string | null
+}
 type Register = {
   _key?: string
   name: string
@@ -208,6 +215,13 @@ export function Specs({ organId, builder, year, disposition }: SpecsProps) {
                         >
                           <span>
                             {s.name}
+                            {s.translation &&
+                              s.translation.trim() !== '' &&
+                              s.translation.trim() !== s.name.trim() && (
+                                <span className="text-ink-faint font-light text-[13px] ml-1.5">
+                                  ({s.translation})
+                                </span>
+                              )}
                             {s.note && (
                               <span className="text-ink-faint italic font-light text-[13px] ml-1.5">
                                 {s.note}

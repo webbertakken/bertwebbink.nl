@@ -32,8 +32,19 @@ export function diffUnits(
   for (const unit of current) {
     const prevSrc = prevSrcById.get(unit.id)
     const prevTrans = prevTransById.get(unit.id)
-    if (prevSrc != null && prevTrans != null && prevSrc === unit.sourceText) {
-      // Source text identical to previous \u2014 reuse the previous translation.
+    if (
+      prevSrc != null &&
+      prevTrans != null &&
+      prevSrc === unit.sourceText &&
+      prevTrans !== prevSrc
+    ) {
+      // Source matches the previous extraction and there's a real
+      // translation stored (not just a deep-clone of the source).
+      // Reuse the previous translation verbatim. Deep-clone matches
+      // happen for fields that were never sent to the LLM — typical
+      // when the walker spec was expanded after the sibling was
+      // first written — those drop into `changed` instead so they
+      // get re-translated.
       reuseTranslated.push({ id: unit.id, sourceText: prevTrans })
     } else {
       changed.push(unit)

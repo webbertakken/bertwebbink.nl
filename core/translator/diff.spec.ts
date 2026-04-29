@@ -56,6 +56,25 @@ describe('diff-aware updates', () => {
     expect(result.removedIds).toEqual(['block[1]'])
   })
 
+  it('marks fields as changed when the previous translation is identical to the previous source (deep-clone, never translated)', () => {
+    // Typical after a walker-spec expansion: the sibling has a field
+    // that was deep-cloned from the source and never sent to the LLM.
+    // Without the deep-clone check, the diff would happily "reuse"
+    // the un-translated value forever.
+    const current = [
+      { id: 'disposition.registers[_key=="r1"].name', sourceText: 'Hoofdwerk' },
+    ]
+    const previousSource = [
+      { id: 'disposition.registers[_key=="r1"].name', sourceText: 'Hoofdwerk' },
+    ]
+    const previousTranslation = [
+      { id: 'disposition.registers[_key=="r1"].name', sourceText: 'Hoofdwerk' },
+    ]
+    const result = diffUnits(current, previousSource, previousTranslation)
+    expect(result.changed).toEqual(current)
+    expect(result.reuseTranslated).toEqual([])
+  })
+
   it('falls back to fresh translation when no previous data', () => {
     const current = [{ id: 'title', sourceText: 'Hello' }]
     const result = diffUnits(current, undefined, undefined)

@@ -270,6 +270,8 @@ export const organ = defineType({
                         defineField({
                           name: 'name',
                           title: 'Name',
+                          description:
+                            'Canonical stop name; kept verbatim across every locale (e.g. "Bordun", "Vox Celeste").',
                           type: 'string',
                           validation: (rule) => rule.required(),
                         }),
@@ -283,6 +285,13 @@ export const organ = defineType({
                           name: 'note',
                           title: 'Note',
                           description: 'Optional, e.g. "discant", "1841/1974".',
+                          type: 'string',
+                        }),
+                        defineField({
+                          name: 'translation',
+                          title: 'Localised gloss',
+                          description:
+                            'Auto-filled by the translator. Rendered in parentheses next to the canonical name on non-source locales ("Vox Celeste (天の声)"). Leave blank on the Dutch source and on any locale where the canonical name is already idiomatic; the renderer hides the parens when the gloss matches the name.',
                           type: 'string',
                         }),
                       ],

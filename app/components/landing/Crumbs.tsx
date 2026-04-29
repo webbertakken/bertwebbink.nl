@@ -1,7 +1,10 @@
-import { Fragment } from 'react'
+import { Fragment, type ComponentProps } from 'react'
 import { Link } from '@/i18n/navigation'
 
-export type CrumbItem = { label: string; href?: string }
+/** Same Href shape next-intl's typed Link accepts. */
+type LinkHref = ComponentProps<typeof Link>['href']
+
+export type CrumbItem = { label: string; href?: LinkHref }
 
 type CrumbsProps = {
   items: CrumbItem[]

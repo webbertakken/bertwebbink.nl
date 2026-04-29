@@ -36,10 +36,12 @@
   **"Publish to all locales"** action does: validate source → publish source → translate
   stale/missing siblings (diff-aware) → publish each translated sibling. Translated siblings are
   **auto-published** by default; a config flag exists to flip to drafts-only without code changes.
-- LLM provider for translations: **Google Gemini 2.5 Pro** by default, behind a `Translator`
+- LLM provider for translations: **Google Gemini 2.5 Flash** by default, behind a `Translator`
   interface with `GeminiTranslator`, `AnthropicTranslator`, and `OpenAITranslator` implementations.
-  Provider chosen via `TRANSLATOR_PROVIDER` env var (default `gemini`). Gemini via Google AI Studio
-  key; Anthropic via API key (no subscription path); OpenAI via API key.
+  Provider chosen via `TRANSLATOR_PROVIDER` env var (default `gemini`); model overridable via
+  `GEMINI_MODEL`. Never default to Pro — Flash is ~33× cheaper on output tokens and quality is
+  fine for our shape of work. Gemini via Google AI Studio key; Anthropic via API key (no
+  subscription path); OpenAI via API key.
 - Sanity content model: **document‑per‑locale** (`@sanity/document-internationalization`) for
   `journal`, `organ`, and every singleton. **Field‑level** (`sanity-plugin-internationalized-array`)
   for `score` only.
