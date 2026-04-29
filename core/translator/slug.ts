@@ -44,22 +44,57 @@ export function slugify(input: string): string {
  *    treat it as machine-generated and refresh from the new title.
  * 3. Otherwise treat it as a manual override and keep it untouched.
  *
+ * If `siblingSlugs` is provided, the candidate slug is suffixed with
+ * `-2`, `-3`, ... as needed to avoid colliding with another sibling
+ * in the same (type, locale) bucket. The caller is expected to pass
+ * a set that EXCLUDES this doc's own previous slug.
+ *
  * Returns the new slug to write, or `null` to leave the existing slug alone.
  */
 export function nextSlugForTranslation(args: {
   newTranslatedTitle: string
   previousTranslatedTitle?: string | null
   existingSlug?: string | null
+  /** Slugs already used by *other* siblings in the same (type, locale). */
+  siblingSlugs?: ReadonlySet<string>
 }): string | null {
-  const { newTranslatedTitle, previousTranslatedTitle, existingSlug } = args
+  const { newTranslatedTitle, previousTranslatedTitle, existingSlug, siblingSlugs } = args
   const generated = slugify(newTranslatedTitle)
-  if (!existingSlug) return generated || null
-  if (!previousTranslatedTitle) return null // can't tell if manual; keep
-  const previouslyGenerated = slugify(previousTranslatedTitle)
-  if (existingSlug === previouslyGenerated) {
-    return generated || null
+  let candidate: string | null = null
+  if (!existingSlug) {
+    candidate = generated || null
+  } else if (!previousTranslatedTitle) {
+    return null // can't tell if manual; keep
+  } else {
+    const previouslyGenerated = slugify(previousTranslatedTitle)
+    if (existingSlug === previouslyGenerated) {
+      candidate = generated || null
+    } else {
+      return null
+    }
   }
-  return null
+  if (candidate == null) return null
+  if (!siblingSlugs || siblingSlugs.size === 0) return candidate
+  return makeUniqueSlug(candidate, siblingSlugs)
+}
+
+/**
+ * Suffix a slug with `-2`, `-3`, ... so it doesn't collide with any
+ * entry in `taken`. The 999 cap is purely a paranoia rail; if it
+ * ever fires (would need almost a thousand colliding slugs in one
+ * (type, locale) bucket) the caller surfaces a duplicate, which is
+ * better than silently erasing data.
+ */
+export function makeUniqueSlug(
+  base: string,
+  taken: ReadonlySet<string>,
+): string {
+  if (!taken.has(base)) return base
+  for (let n = 2; n < 1000; n++) {
+    const suffixed = `${base}-${n}`
+    if (!taken.has(suffixed)) return suffixed
+  }
+  return base
 }
 
 /**
@@ -71,6 +106,7 @@ export function applyTranslatedSlug(
   doc: AnyDoc,
   previousSibling: AnyDoc | undefined,
   units: TranslationUnit[],
+  siblingSlugs?: ReadonlySet<string>,
 ): AnyDoc {
   const titleUnit = units.find((u) => u.id === 'title')
   if (!titleUnit) return doc
@@ -84,6 +120,7 @@ export function applyTranslatedSlug(
     newTranslatedTitle: titleUnit.sourceText,
     previousTranslatedTitle: previousTitle,
     existingSlug: previousSlug ?? null,
+    siblingSlugs,
   })
   if (!next) return doc
   return {

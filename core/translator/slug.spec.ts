@@ -101,4 +101,61 @@ describe('applyTranslatedSlug', () => {
     ])
     expect((result as { slug?: { current?: string } }).slug).toBeUndefined()
   })
+
+  it('appends `-2` when the candidate slug already belongs to another sibling', () => {
+    const doc = { title: 'Daarle Reformed Church' }
+    const result = applyTranslatedSlug(
+      doc,
+      undefined,
+      [{ id: 'title', sourceText: 'Daarle Reformed Church' }],
+      new Set(['daarle-reformed-church']),
+    )
+    expect((result as { slug: { current: string } }).slug.current).toBe(
+      'daarle-reformed-church-2',
+    )
+  })
+
+  it('skips occupied numeric suffixes until it finds a free one', () => {
+    const doc = { title: 'X' }
+    const result = applyTranslatedSlug(
+      doc,
+      undefined,
+      [{ id: 'title', sourceText: 'X' }],
+      new Set(['x', 'x-2', 'x-3']),
+    )
+    expect((result as { slug: { current: string } }).slug.current).toBe('x-4')
+  })
+
+  it('keeps the candidate verbatim when no sibling slugs collide', () => {
+    const doc = { title: 'Y' }
+    const result = applyTranslatedSlug(
+      doc,
+      undefined,
+      [{ id: 'title', sourceText: 'Y' }],
+      new Set(['something-else']),
+    )
+    expect((result as { slug: { current: string } }).slug.current).toBe('y')
+  })
+
+  it('treats an empty siblingSlugs set as no-collision', () => {
+    const doc = { title: 'Z' }
+    const result = applyTranslatedSlug(
+      doc,
+      undefined,
+      [{ id: 'title', sourceText: 'Z' }],
+      new Set(),
+    )
+    expect((result as { slug: { current: string } }).slug.current).toBe('z')
+  })
+})
+
+describe('makeUniqueSlug', () => {
+  it('falls back to the base slug when the entire 1…999 suffix space is taken', async () => {
+    // Cheap exhaustive test: occupy `x`, `x-2`, ..., `x-999` so the
+    // loop walks the full range and returns the base via the cap.
+    const { makeUniqueSlug } = await import('./slug')
+    const taken = new Set<string>(['x'])
+    for (let n = 2; n < 1000; n++) taken.add(`x-${n}`)
+    expect(makeUniqueSlug('x', taken)).toBe('x')
+  })
 })

@@ -33,6 +33,16 @@ export function buildSystemPrompt(req: TranslateRequest): string {
       'The source units mix paragraph prose and short labels; translate each unit on its own merits.',
     )
   }
+
+  // Domain-specific guidance for organ documents. The site is a
+  // catalog of pipe organs and these terms appear constantly; the
+  // LLM kept them as Dutch proper nouns by default which left the
+  // disposition section partially untranslated.
+  if (req.documentContext?.type === 'organ' || req.documentContext?.type === 'journal') {
+    lines.push(
+      'Organ-domain note: when you encounter Dutch keyboard-division names — Hoofdwerk, Bovenwerk, Rugwerk, Borstwerk, Zwelwerk, Pedaal, Onderpositief, Manuaal (I/II/III), Hoofdmanuaal — translate them to the standard target-language equivalent (German: Hauptwerk, Oberwerk, Rückpositiv, Brustwerk, Schwellwerk, Pedal; English: Great, Swell, Choir / Positive, Brustwerk, Pedal; French: Grand-Orgue, Récit, Positif, Pédale; Italian: Organo Maggiore, Eco, Positivo, Pedaliera; Japanese: 主鍵盤 / オーバーワーク / ポジティフ / ペダル; Chinese: 主键盘 / 上键盘 / 背键盘 / 脚键盘; Korean: ጌ주 건반 / 상부 / 들부 / 페달). Do NOT keep them as Dutch proper nouns. Stop names (Bordun, Principal, Vox Celeste, etc.) are different — those are universal organ-stop terminology and should generally be reproduced verbatim, only translated when the per-unit `context` says so.',
+    )
+  }
   lines.push(
     'Return one translated unit per source unit, keyed by the same `id`. Do not add extra units, drop any, or merge them.',
   )

@@ -341,12 +341,26 @@ async function translateDocPerLocale(
     ? `${sourceType}-${target}`
     : (previousSiblingId ?? `${sourceType}-${target}-${cryptoRandomShort()}`)
 
+  // For journal/organ, gather every other sibling's slug in this
+  // (type, locale) bucket so the slug derivation can dodge
+  // collisions (e.g. two distinct nl sources translating to the
+  // same English title).
+  let siblingSlugs: Set<string> | undefined
+  if (sourceType === 'journal' || sourceType === 'organ') {
+    siblingSlugs = await loadSiblingSlugsForLocale(
+      client,
+      sourceType,
+      target,
+      targetId,
+    )
+  }
+
   // Build the target doc body: start from a deep clone of the source,
   // apply translations, swap language + id + provenance, derive slug.
   const baseDoc = applyAll(sourceDoc, sourceType, finalUnits, target) as Record<string, unknown>
   const slugged =
     sourceType === 'journal' || sourceType === 'organ'
-      ? applyTranslatedSlug(baseDoc, previousSibling, finalUnits)
+      ? applyTranslatedSlug(baseDoc, previousSibling, finalUnits, siblingSlugs)
       : baseDoc
   const targetDoc: Record<string, unknown> = stripSystemFields(slugged)
   targetDoc._id = targetId
@@ -378,13 +392,22 @@ async function translateScoreInPlace(
   target: Locale,
   options: TranslateOptions,
 ): Promise<PerLocaleResult> {
-  const { units } = extractAll(ctx.doc, ctx.type, ctx.sourceLocale)
+  // Re-fetch the score on every iteration so the apply step stacks
+  // each locale's i18n-array entry on top of the previous run's
+  // writes. Without this, every iteration restarts from the original
+  // `ctx.doc` snapshot and overwrites earlier locales' entries
+  // (last-locale-wins, the bug that left scores nl+ko-only).
+  const docId = ctx.doc._id as string
+  const latest = (await client.getDocument(docId)) as Record<string, unknown> | undefined
+  /* v8 ignore next */
+  const baseDoc = latest ?? ctx.doc
+  const { units } = extractAll(baseDoc, ctx.type, ctx.sourceLocale)
   if (units.length === 0) {
-    return { locale: target, docId: ctx.doc._id as string, status: 'skipped' }
+    return { locale: target, docId, status: 'skipped' }
   }
-  const sourceRev = ctx.doc._rev as string
+  const sourceRev = baseDoc._rev as string
   const provenanceMap =
-    (ctx.doc._translationProvenance as Record<string, { sourceRev?: string }>) ?? {}
+    (baseDoc._translationProvenance as Record<string, { sourceRev?: string }>) ?? {}
   const previousProvenance = provenanceMap[target]
   // We used to early-exit here when `previousProvenance.sourceRev`
   // matched `sourceRev`, but that short-circuit hides walker-spec
@@ -407,20 +430,20 @@ async function translateScoreInPlace(
     tokens: result.usage?.totalTokens,
   })
 
-  const next = applyAll(ctx.doc, ctx.type, result.units, target) as Record<string, unknown>
+  const next = applyAll(baseDoc, ctx.type, result.units, target) as Record<string, unknown>
   const provenance =
-    (ctx.doc._translationProvenance as Record<string, unknown> | undefined) ?? {}
+    (baseDoc._translationProvenance as Record<string, unknown> | undefined) ?? {}
   next._translationProvenance = {
     ...provenance,
     [target]: {
       sourceRev,
-      updatedAt: ctx.doc._updatedAt ?? new Date().toISOString(),
+      updatedAt: baseDoc._updatedAt ?? new Date().toISOString(),
     },
   }
-  await client.createOrReplace({ ...next, _id: ctx.doc._id as string } as never)
+  await client.createOrReplace({ ...next, _id: docId } as never)
   return {
     locale: target,
-    docId: ctx.doc._id as string,
+    docId,
     status: previousProvenance ? 'updated' : 'created',
   }
 }
@@ -466,6 +489,25 @@ function listSiblingIds(siblings: Map<Locale, Record<string, unknown>>): string[
     if (id) ids.push(id)
   }
   return ids
+}
+
+/**
+ * Fetch every slug currently in use by other (type, locale) siblings
+ * so a fresh translation can dodge collisions. Excludes the sibling
+ * we're about to write so the slug-collision check doesn't fight
+ * against this doc's own existing slug.
+ */
+async function loadSiblingSlugsForLocale(
+  client: SanityClient,
+  type: string,
+  locale: Locale,
+  excludeId: string,
+): Promise<Set<string>> {
+  const slugs = await client.fetch<string[]>(
+    `*[_type == $type && language == $lang && _id != $exclId && defined(slug.current) && !(_id in path("drafts.**"))].slug.current`,
+    { type, lang: locale, exclId: excludeId },
+  )
+  return new Set(slugs)
 }
 
 /**
