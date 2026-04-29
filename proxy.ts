@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 
-import { LAUNCH_AT_MS } from '@/core/launch'
 import { routing } from '@/i18n/routing'
+import { gateIsActive, isAlwaysAllowed } from './proxy.helpers'
 
 /**
  * Composed middleware:
@@ -24,29 +24,6 @@ import { routing } from '@/i18n/routing'
 const BYPASS_COOKIE = 'bw_bypass'
 const BYPASS_CODE = 'happy birthday'
 const BYPASS_TTL_SECONDS = 60 * 60 * 24 * 30 // 30 days
-
-const ALWAYS_ALLOW = [
-  '/under-construction',
-  '/admin',
-  '/api',
-  '/_next',
-  '/favicon',
-  '/sitemap.xml',
-  '/robots.txt',
-]
-
-function isAlwaysAllowed(pathname: string): boolean {
-  if (ALWAYS_ALLOW.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return true
-  // /llms.txt and /llms.{locale}.txt should bypass the gate too.
-  if (/^\/llms(\.[a-z]{2})?\.txt$/.test(pathname)) return true
-  return false
-}
-
-function gateIsActive(): boolean {
-  if (process.env.UNDER_CONSTRUCTION === 'true') return true
-  if (Number.isFinite(LAUNCH_AT_MS) && Date.now() < LAUNCH_AT_MS) return true
-  return false
-}
 
 const intlMiddleware = createMiddleware(routing)
 

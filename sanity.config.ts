@@ -276,6 +276,35 @@ export default defineConfig({
   // Schema configuration, imported from ./src/schemaTypes/index.ts
   schema: {
     types: schemaTypes,
+        // Per (translatable type, locale) Initial Value Template so the
+        // "Create new" menu seeds the correct `language` field. Singletons
+        // also pin their id to the symmetric `{type}-{locale}` pattern.
+    templates: (prev) => {
+      const SINGLETON_TYPES = new Set([
+        'about',
+        'elsewhere',
+        'journalPage',
+        'organsPage',
+        'privacy',
+        'scoresPage',
+        'settings',
+      ])
+      const docTypes: string[] = ['journal', 'organ', ...SINGLETON_TYPES]
+      const out = [...prev]
+      for (const type of docTypes) {
+        for (const locale of LOCALES) {
+          out.push({
+            id: `${type}-${locale}`,
+            title: `${type} (${locale})`,
+            schemaType: type,
+            value: SINGLETON_TYPES.has(type)
+              ? { _id: `${type}-${locale}`, language: locale }
+              : { language: locale },
+          })
+        }
+      }
+      return out
+    },
   },
 
   document: {
