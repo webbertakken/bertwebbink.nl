@@ -26,8 +26,11 @@ export async function generateMetadata(
   props: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const { locale: raw, slug } = await props.params
+  const { locale: raw, slug: rawSlug } = await props.params
   const locale: Locale = isLocale(raw) ? raw : 'en'
+  // NFC-normalise so non-Latin scripts (e.g. Hangul) match the stored
+  // slug regardless of whether the browser emitted NFC or NFD bytes.
+  const slug = decodeURIComponent(rawSlug).normalize('NFC')
   const { data: organ } = await sanityFetch({
     query: organQuery,
     params: { locale, slug },
@@ -46,9 +49,10 @@ export async function generateMetadata(
 }
 
 export default async function OrganPage(props: Props) {
-  const { locale: raw, slug } = await props.params
+  const { locale: raw, slug: rawSlug } = await props.params
   const locale: Locale = isLocale(raw) ? raw : 'en'
   setRequestLocale(locale)
+  const slug = decodeURIComponent(rawSlug).normalize('NFC')
   const { data: organ } = await sanityFetch({ query: organQuery, params: { locale, slug } })
 
   if (!organ?._id) {

@@ -25,8 +25,9 @@ export async function generateMetadata(
   props: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const { locale: raw, slug } = await props.params
+  const { locale: raw, slug: rawSlug } = await props.params
   const locale: Locale = isLocale(raw) ? raw : 'en'
+  const slug = decodeURIComponent(rawSlug).normalize('NFC')
   const { data: entry } = await sanityFetch({
     query: journalQuery,
     params: { locale, slug },
@@ -45,9 +46,10 @@ export async function generateMetadata(
 }
 
 export default async function JournalEntryPage(props: Props) {
-  const { locale: raw, slug } = await props.params
+  const { locale: raw, slug: rawSlug } = await props.params
   const locale: Locale = isLocale(raw) ? raw : 'en'
   setRequestLocale(locale)
+  const slug = decodeURIComponent(rawSlug).normalize('NFC')
   const { data: entry } = await sanityFetch({ query: journalQuery, params: { locale, slug } })
 
   if (!entry?._id) {
