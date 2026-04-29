@@ -526,6 +526,45 @@ describe('runTranslation \u2014 score (field-level)', () => {
     expect(provenance.en.sourceRev).toBe('rev-s-1')
   })
 
+  it('stacks i18n-array entries from every target locale rather than last-locale-wins', async () => {
+    // Regression: `translateScoreInPlace` used to call applyAll on a
+    // frozen `ctx.doc` snapshot, so each iteration overwrote the doc
+    // with original arrays + just one locale's new entry. Result:
+    // only the final locale (plus the source) survived. Now we
+    // re-fetch the doc each iteration, so entries accumulate.
+    const client = makeClient([
+      {
+        _id: 'score-stack',
+        _rev: 'rev-1',
+        _type: 'score',
+        composer: 'Buxtehude',
+        forInstrument: [
+          {
+            _key: 'k-nl',
+            _type: 'internationalizedArrayStringValue',
+            language: 'nl',
+            value: 'Voor orgel',
+          },
+        ],
+      },
+    ])
+    const results = await runTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'score-stack',
+      { targetLocales: ['en', 'de', 'fr'] },
+    )
+    expect(results.map((r) => r.status)).toEqual(['created', 'created', 'created'])
+    const stored = client.__store.get('score-stack')!
+    const inst = stored.forInstrument as Array<{ language: string; value: string }>
+    const langs = inst.map((e) => e.language).sort()
+    // All three target locales survive AND the source.
+    expect(langs).toEqual(['de', 'en', 'fr', 'nl'])
+    expect(inst.find((e) => e.language === 'en')?.value).toBe('[en] Voor orgel')
+    expect(inst.find((e) => e.language === 'de')?.value).toBe('[de] Voor orgel')
+    expect(inst.find((e) => e.language === 'fr')?.value).toBe('[fr] Voor orgel')
+  })
+
   it('always re-translates a score even when provenance.sourceRev matches', async () => {
     // The early-exit on `_translationProvenance[target].sourceRev`
     // was removed because it hid walker-spec expansions — score

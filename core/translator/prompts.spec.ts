@@ -62,6 +62,33 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toMatch(/coupler/)
   })
 
+  it('adds organ-domain guidance when the doc type is organ or journal', () => {
+    const organPrompt = buildSystemPrompt({
+      ...baseReq,
+      documentContext: { type: 'organ', shape: 'mixed' },
+    })
+    expect(organPrompt).toMatch(/Organ-domain note/)
+    expect(organPrompt).toMatch(/Hoofdwerk/)
+    expect(organPrompt).toMatch(/Hauptwerk/)
+    expect(organPrompt).toMatch(/Stop names/)
+
+    const journalPrompt = buildSystemPrompt({
+      ...baseReq,
+      documentContext: { type: 'journal', shape: 'portable-text' },
+    })
+    expect(journalPrompt).toMatch(/Organ-domain note/)
+  })
+
+  it('omits organ-domain guidance for non-organ doc types', () => {
+    const aboutPrompt = buildSystemPrompt({
+      ...baseReq,
+      documentContext: { type: 'about', shape: 'mixed' },
+    })
+    expect(aboutPrompt).not.toMatch(/Organ-domain note/)
+    const noContextPrompt = buildSystemPrompt(baseReq)
+    expect(noContextPrompt).not.toMatch(/Organ-domain note/)
+  })
+
   it('asks the LLM to reuse previous translations when provided', () => {
     const prompt = buildSystemPrompt({
       ...baseReq,
