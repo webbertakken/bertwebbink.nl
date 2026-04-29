@@ -89,6 +89,14 @@ describe('buildSystemPrompt', () => {
     expect(noContextPrompt).not.toMatch(/Organ-domain note/)
   })
 
+  it('explains both <mN> and {{...}} marker syntaxes and forbids introducing them', () => {
+    const prompt = buildSystemPrompt(baseReq)
+    expect(prompt).toMatch(/<m1>\.\.\.<\/m1>/)
+    expect(prompt).toMatch(/\{\{\.\.\.\}\}/)
+    expect(prompt).toMatch(/MUST NOT invent/)
+    expect(prompt).toMatch(/Do NOT convert \{\{\.\.\.\}\} to <m1>/)
+  })
+
   it('asks the LLM to reuse previous translations when provided', () => {
     const prompt = buildSystemPrompt({
       ...baseReq,

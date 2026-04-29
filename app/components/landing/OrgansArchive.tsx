@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
+import type { Locale } from '@/core/i18n/locales'
 import { Link } from '@/i18n/navigation'
 
 import { OrganCard, type LandingOrgan } from './OrganCard'
@@ -20,6 +21,7 @@ type OrgansArchiveProps = {
 
 export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: OrgansArchiveProps) {
   const t = useTranslations('OrgansArchive')
+  const locale = useLocale() as Locale
   const [organs, setOrgans] = useState<LandingOrgan[]>(initialOrgans)
   const [loading, setLoading] = useState(false)
   const [exhausted, setExhausted] = useState(initialOrgans.length >= totalCount)
@@ -39,6 +41,7 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
         offset: organs.length,
         limit: PAGE_SIZE,
         city,
+        locale,
       })
       if (more.length === 0) {
         setExhausted(true)
@@ -52,7 +55,7 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
     } finally {
       setLoading(false)
     }
-  }, [loading, exhausted, organs.length, city, totalCount])
+  }, [loading, exhausted, organs.length, city, locale, totalCount])
 
   useEffect(() => {
     const node = sentinelRef.current
