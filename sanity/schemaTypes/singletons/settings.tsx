@@ -2,6 +2,7 @@ import { CogIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import * as demo from '../../lib/initialValues'
+import { languageField } from '../fields/language'
 
 /**
  * Settings schema Singleton. Singletons are single documents that are displayed not in a collection, handy for things like site settings and other global configurations.
@@ -19,6 +20,7 @@ export const settings = defineType({
     { name: 'aeo', title: 'Agentic engine optimisation' },
   ],
   fields: [
+    languageField,
     defineField({
       name: 'title',
       description: 'Site name. Used in the browser tab title ("%s | Site name") and as the default page title.',
@@ -150,9 +152,6 @@ export const settings = defineType({
       description: 'Displayed on social cards and search engine results.',
       options: {
         hotspot: true,
-        aiAssist: {
-          imageDescriptionField: 'alt',
-        },
       },
       fields: [
         defineField({

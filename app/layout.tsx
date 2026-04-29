@@ -14,15 +14,37 @@ import { sanityFetch, SanityLive } from '@/sanity/lib/live'
 import { settingsQuery } from '@/sanity/lib/queries'
 import { resolveOpenGraphImage } from '@/sanity/lib/utils'
 import { handleError } from './client-utils'
+import { isLocale, UI_DEFAULT_LOCALE, type Locale } from '@/core/i18n/locales'
 
 /**
- * Generate metadata for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
+ * Resolve the active locale for the root layout. We can't use route
+ * params here (root layout has none), so we read the request pathname
+ * from `next/headers` — `next-intl`'s middleware adds the prefixed path
+ * to every request, and we parse the first segment.
+ */
+async function resolveRootLocale(): Promise<Locale> {
+  const { headers } = await import('next/headers')
+  const list = await headers()
+  // next-intl middleware sets `x-next-intl-locale` when localePrefix is 'always'.
+  const fromHeader = list.get('x-next-intl-locale')
+  if (fromHeader && isLocale(fromHeader)) return fromHeader
+  // Fallback: derive from request URL when middleware hasn't run (e.g. /admin).
+  const url = list.get('x-pathname') ?? list.get('referer') ?? ''
+  const match = url.match(/\/([a-z]{2})(?:[/?]|$)/)
+  if (match && isLocale(match[1])) return match[1] as Locale
+  return UI_DEFAULT_LOCALE
+}
+
+/**
+ * Generate metadata for the page. Per-locale title/description come from
+ * the `[locale]` layout's metadata; this is a global fallback for
+ * non-localised routes (admin, under-construction).
  */
 export async function generateMetadata(): Promise<Metadata> {
+  const locale = await resolveRootLocale()
   const { data: settings } = await sanityFetch({
     query: settingsQuery,
-    // Metadata should never contain stega
+    params: { locale },
     stega: false,
   })
   const title = settings?.title || demo.title
@@ -66,10 +88,11 @@ const cormorant = Cormorant_Garamond({
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled: isDraftMode } = await draftMode()
+  const locale = await resolveRootLocale()
 
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${inter.variable} ${cormorant.variable} bg-bg text-ink`}
       suppressHydrationWarning
     >

@@ -1,6 +1,8 @@
 import { MasterDetailIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * Organs page singleton (_id: "siteOrgansPage").
  *
@@ -19,6 +21,7 @@ export const organsPage = defineType({
   icon: MasterDetailIcon,
   groups: [{ name: 'hero', title: 'Hero', default: true }],
   fields: [
+    languageField,
     defineField({
       name: 'kickerLeft',
       title: 'Kicker — left',

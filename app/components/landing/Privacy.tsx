@@ -1,6 +1,7 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
-import { dataAttr } from '@/sanity/lib/utils'
+import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
+import type { Locale } from '@/core/i18n/locales'
 
 type Section = {
   _key: string
@@ -9,6 +10,7 @@ type Section = {
 }
 
 export type PrivacyContent = {
+  _id?: string
   eyebrow: string | null
   title: string
   intro: string | null
@@ -16,10 +18,6 @@ export type PrivacyContent = {
   sections: Section[] | null
   contactLine: string | null
 }
-
-const ID = 'sitePrivacy'
-const privacyAttr = (path: string) =>
-  dataAttr({ id: ID, type: 'privacy', path }).toString()
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', {
@@ -61,8 +59,16 @@ function EmptyState() {
   )
 }
 
-export function Privacy({ data }: { data: PrivacyContent | null }) {
+export function Privacy({
+  locale,
+  data,
+}: {
+  locale: Locale
+  data: PrivacyContent | null
+}) {
   if (!data) return <EmptyState />
+  const privacyId = data._id ?? `privacy-${locale}`
+  const privacyAttr = stegaAttrFor(privacyId, 'privacy')
 
   return (
     <main

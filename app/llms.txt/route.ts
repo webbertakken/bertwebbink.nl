@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import { sanityFetch } from '@/sanity/lib/live'
 import { llmsTxtIndexQuery, settingsQuery } from '@/sanity/lib/queries'
 import { toPlainText } from 'next-sanity'
+import { UI_DEFAULT_LOCALE } from '@/core/i18n/locales'
 
 /**
  * /llms.txt — runtime context for AI agents.
@@ -13,9 +14,10 @@ import { toPlainText } from 'next-sanity'
  * user questions in real time.
  */
 export async function GET() {
+  const locale = UI_DEFAULT_LOCALE
   const [{ data: settings }, { data: index }] = await Promise.all([
-    sanityFetch({ query: settingsQuery, stega: false }),
-    sanityFetch({ query: llmsTxtIndexQuery, stega: false }),
+    sanityFetch({ query: settingsQuery, params: { locale }, stega: false }),
+    sanityFetch({ query: llmsTxtIndexQuery, params: { locale }, stega: false }),
   ])
 
   const headersList = await headers()

@@ -15,6 +15,25 @@
 export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: schema.json
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+}
+
+export type VideoFile = {
+  asset?: SanityFileAssetReference
+  media?: unknown // Unable to locate the referenced type "videoFile.media" in schema
+  _type: 'file'
+}
+
+export type AudioFile = {
+  asset?: SanityFileAssetReference
+  media?: unknown // Unable to locate the referenced type "audioFile.media" in schema
+  _type: 'file'
+}
+
 export type Embed = {
   _type: 'embed'
   url: string
@@ -24,6 +43,20 @@ export type Embed = {
 export type Divider = {
   _type: 'divider'
   style?: 'default'
+}
+
+export type OrganReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'organ'
+}
+
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
 export type BlockContent = Array<
@@ -39,12 +72,7 @@ export type BlockContent = Array<
       markDefs?: Array<{
         linkType?: 'href' | 'organ'
         href?: string
-        organ?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'organ'
-        }
+        organ?: OrganReference
         openInNewTab?: boolean
         _type: 'link'
         _key: string
@@ -54,12 +82,7 @@ export type BlockContent = Array<
       _key: string
     }
   | {
-      asset?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-      }
+      asset?: SanityImageAssetReference
       media?: unknown
       hotspot?: SanityImageHotspot
       crop?: SanityImageCrop
@@ -72,16 +95,7 @@ export type BlockContent = Array<
   | {
       videoType?: 'youtube' | 'vimeo' | 'url'
       url?: string
-      videoFile?: {
-        asset?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-        }
-        media?: unknown
-        _type: 'file'
-      }
+      videoFile?: VideoFile
       title?: string
       description?: string
       aspectRatio?: '16:9' | '4:3' | '1:1' | '9:16'
@@ -89,16 +103,7 @@ export type BlockContent = Array<
       _key: string
     }
   | {
-      audioFile: {
-        asset?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-        }
-        media?: unknown
-        _type: 'file'
-      }
+      audioFile: AudioFile
       title?: string
       kind?: string
       description?: string
@@ -129,56 +134,188 @@ export type Score = {
   year?: number
   pages?: number
   editionNumber: number
-  forInstrument?: string
-  edition?: string
-  blurb?: string
+  forInstrument?: InternationalizedArrayString
+  edition?: InternationalizedArrayString
+  blurb?: InternationalizedArrayText
   pdfFile?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-    }
+    asset?: SanityFileAssetReference
     media?: unknown
     _type: 'file'
   }
   isFeatured?: boolean
 }
 
-export type Journal = {
+export type InternationalizedArrayText = Array<
+  {
+    _key: string
+  } & InternationalizedArrayTextValue
+>
+
+export type InternationalizedArrayString = Array<
+  {
+    _key: string
+  } & InternationalizedArrayStringValue
+>
+
+export type InternationalizedArrayTextValue = {
+  _type: 'internationalizedArrayTextValue'
+  value?: string
+  language: string
+}
+
+export type InternationalizedArrayStringValue = {
+  _type: 'internationalizedArrayStringValue'
+  value?: string
+  language: string
+}
+
+export type TranslationMetadata = {
   _id: string
-  _type: 'journal'
+  _type: 'translation.metadata'
   _createdAt: string
   _updatedAt: string
   _rev: string
+  translations?: InternationalizedArrayReference
+  schemaTypes?: Array<string>
+}
+
+export type InternationalizedArrayReference = Array<
+  {
+    _key: string
+  } & InternationalizedArrayReferenceValue
+>
+
+export type JournalReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'journal'
+}
+
+export type JournalPageReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'journalPage'
+}
+
+export type OrgansPageReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'organsPage'
+}
+
+export type ScoresPageReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'scoresPage'
+}
+
+export type AboutReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'about'
+}
+
+export type ElsewhereReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'elsewhere'
+}
+
+export type PrivacyReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'privacy'
+}
+
+export type SettingsReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'settings'
+}
+
+export type InternationalizedArrayReferenceValue = {
+  _type: 'internationalizedArrayReferenceValue'
+  value?:
+    | JournalReference
+    | OrganReference
+    | JournalPageReference
+    | OrgansPageReference
+    | ScoresPageReference
+    | AboutReference
+    | ElsewhereReference
+    | PrivacyReference
+    | SettingsReference
+  language: string
+}
+
+export type Settings = {
+  _id: string
+  _type: 'settings'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  language?: string
   title: string
-  slug: Slug
-  category:
-    | 'travelogue'
-    | 'workshop'
-    | 'memorial'
-    | 'home-organ'
-    | 'biography'
-    | 'news'
-    | 'collection'
-    | 'other'
-  excerpt?: string
-  coverImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+  wordmark?: string
+  tagline?: string
+  scoresNoticeBody?: string
+  scoresEditionLine?: string
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal'
+    listItem?: never
+    markDefs?: Array<{
+      linkType?: 'href' | 'organ'
+      href?: string
+      organ?: OrganReference
+      openInNewTab?: boolean
+      _type: 'link'
+      _key: string
+    }>
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  ogImage?: {
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
     alt?: string
-    caption?: string
+    metadataBase?: string
     _type: 'image'
   }
-  date?: string
-  content?: BlockContent
+  aiSummary?: string
+  aiCrawlPolicy: 'allow-all' | 'citation-only' | 'disallow-all'
+}
+
+export type SanityImageCrop = {
+  _type: 'sanity.imageCrop'
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+export type SanityImageHotspot = {
+  _type: 'sanity.imageHotspot'
+  x: number
+  y: number
+  height: number
+  width: number
 }
 
 export type Privacy = {
@@ -187,6 +324,7 @@ export type Privacy = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   eyebrow?: string
   title: string
   intro?: string
@@ -206,6 +344,7 @@ export type Elsewhere = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   title?: string
   eyebrow?: string
   intro?: Array<{
@@ -242,6 +381,7 @@ export type About = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   eyebrow?: string
   title: string
   letter?: Array<{
@@ -261,12 +401,7 @@ export type About = {
   signoffName?: string
   signoffLocation?: string
   portraitImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -276,12 +411,7 @@ export type About = {
   portraitCaption?: string
   portraitPlate?: string
   secondaryImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -330,6 +460,7 @@ export type ScoresPage = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   kicker?: string
   heading: string
   tagline?: string
@@ -341,6 +472,7 @@ export type OrgansPage = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   kickerLeft?: string
   kickerRight?: string
   heading: string
@@ -355,6 +487,7 @@ export type JournalPage = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   kickerLeft?: string
   kickerRight?: string
   heading: string
@@ -363,59 +496,36 @@ export type JournalPage = {
   cornerRightSub?: string
 }
 
-export type Settings = {
+export type Journal = {
   _id: string
-  _type: 'settings'
+  _type: 'journal'
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   title: string
-  wordmark?: string
-  tagline?: string
-  scoresNoticeBody?: string
-  scoresEditionLine?: string
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal'
-    listItem?: never
-    markDefs?: Array<{
-      linkType?: 'href' | 'organ'
-      href?: string
-      organ?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'organ'
-      }
-      openInNewTab?: boolean
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-  ogImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+  slug: Slug
+  category:
+    | 'travelogue'
+    | 'workshop'
+    | 'memorial'
+    | 'home-organ'
+    | 'biography'
+    | 'news'
+    | 'collection'
+    | 'other'
+  excerpt?: string
+  coverImage?: {
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
     alt?: string
-    metadataBase?: string
+    caption?: string
     _type: 'image'
   }
-  aiSummary?: string
-  aiCrawlPolicy: 'allow-all' | 'citation-only' | 'disallow-all'
+  date?: string
+  content?: BlockContent
 }
 
 export type Organ = {
@@ -424,17 +534,13 @@ export type Organ = {
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   title: string
   slug: Slug
   content?: BlockContent
   excerpt?: string
   coverImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -485,139 +591,10 @@ export type Organ = {
   }
 }
 
-export type SanityAssistInstructionTask = {
-  _type: 'sanity.assist.instructionTask'
-  path?: string
-  instructionKey?: string
-  started?: string
-  updated?: string
-  info?: string
-}
-
-export type SanityAssistTaskStatus = {
-  _type: 'sanity.assist.task.status'
-  tasks?: Array<
-    {
-      _key: string
-    } & SanityAssistInstructionTask
-  >
-}
-
-export type SanityAssistSchemaTypeAnnotations = {
-  _type: 'sanity.assist.schemaType.annotations'
-  title?: string
-  fields?: Array<
-    {
-      _key: string
-    } & SanityAssistSchemaTypeField
-  >
-}
-
-export type SanityAssistOutputType = {
-  _type: 'sanity.assist.output.type'
-  type?: string
-}
-
-export type SanityAssistOutputField = {
-  _type: 'sanity.assist.output.field'
-  path?: string
-}
-
-export type SanityAssistInstructionContext = {
-  _type: 'sanity.assist.instruction.context'
-  reference: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'assist.instruction.context'
-  }
-}
-
-export type AssistInstructionContext = {
-  _id: string
-  _type: 'assist.instruction.context'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  title?: string
-  context?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal'
-    listItem?: never
-    markDefs?: null
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-}
-
-export type SanityAssistInstructionUserInput = {
-  _type: 'sanity.assist.instruction.userInput'
-  message: string
-  description?: string
-}
-
-export type SanityAssistInstructionPrompt = Array<{
-  children?: Array<
-    | {
-        marks?: Array<string>
-        text?: string
-        _type: 'span'
-        _key: string
-      }
-    | ({
-        _key: string
-      } & SanityAssistInstructionFieldRef)
-    | ({
-        _key: string
-      } & SanityAssistInstructionContext)
-    | ({
-        _key: string
-      } & SanityAssistInstructionUserInput)
-  >
-  style?: 'normal'
-  listItem?: never
-  markDefs?: null
-  level?: number
-  _type: 'block'
-  _key: string
-}>
-
-export type SanityAssistInstructionFieldRef = {
-  _type: 'sanity.assist.instruction.fieldRef'
-  path?: string
-}
-
-export type SanityAssistInstruction = {
-  _type: 'sanity.assist.instruction'
-  prompt?: SanityAssistInstructionPrompt
-  icon?: string
-  title?: string
-  userId?: string
-  createdById?: string
-  output?: Array<
-    | ({
-        _key: string
-      } & SanityAssistOutputField)
-    | ({
-        _key: string
-      } & SanityAssistOutputType)
-  >
-}
-
-export type SanityAssistSchemaTypeField = {
-  _type: 'sanity.assist.schemaType.field'
-  path?: string
-  instructions?: Array<
-    {
-      _key: string
-    } & SanityAssistInstruction
-  >
+export type Slug = {
+  _type: 'slug'
+  current: string
+  source?: string
 }
 
 export type MediaTag = {
@@ -650,25 +627,21 @@ export type SanityImagePalette = {
 
 export type SanityImageDimensions = {
   _type: 'sanity.imageDimensions'
-  height?: number
-  width?: number
-  aspectRatio?: number
+  height: number
+  width: number
+  aspectRatio: number
 }
 
-export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot'
-  x?: number
-  y?: number
-  height?: number
-  width?: number
-}
-
-export type SanityImageCrop = {
-  _type: 'sanity.imageCrop'
-  top?: number
-  bottom?: number
-  left?: number
-  right?: number
+export type SanityImageMetadata = {
+  _type: 'sanity.imageMetadata'
+  location?: Geopoint
+  dimensions?: SanityImageDimensions
+  palette?: SanityImagePalette
+  lqip?: string
+  blurHash?: string
+  thumbHash?: string
+  hasAlpha?: boolean
+  isOpaque?: boolean
 }
 
 export type SanityFileAsset = {
@@ -682,15 +655,22 @@ export type SanityFileAsset = {
   title?: string
   description?: string
   altText?: string
-  sha1hash?: string
-  extension?: string
-  mimeType?: string
-  size?: number
-  assetId?: string
+  sha1hash: string
+  extension: string
+  mimeType: string
+  size: number
+  assetId: string
   uploadId?: string
-  path?: string
-  url?: string
+  path: string
+  url: string
   source?: SanityAssetSourceData
+}
+
+export type SanityAssetSourceData = {
+  _type: 'sanity.assetSourceData'
+  name?: string
+  id?: string
+  url?: string
 }
 
 export type SanityImageAsset = {
@@ -704,27 +684,16 @@ export type SanityImageAsset = {
   title?: string
   description?: string
   altText?: string
-  sha1hash?: string
-  extension?: string
-  mimeType?: string
-  size?: number
-  assetId?: string
+  sha1hash: string
+  extension: string
+  mimeType: string
+  size: number
+  assetId: string
   uploadId?: string
-  path?: string
-  url?: string
+  path: string
+  url: string
   metadata?: SanityImageMetadata
   source?: SanityAssetSourceData
-}
-
-export type SanityImageMetadata = {
-  _type: 'sanity.imageMetadata'
-  location?: Geopoint
-  dimensions?: SanityImageDimensions
-  palette?: SanityImagePalette
-  lqip?: string
-  blurHash?: string
-  hasAlpha?: boolean
-  isOpaque?: boolean
 }
 
 export type Geopoint = {
@@ -734,67 +703,63 @@ export type Geopoint = {
   alt?: number
 }
 
-export type Slug = {
-  _type: 'slug'
-  current: string
-  source?: string
-}
-
-export type SanityAssetSourceData = {
-  _type: 'sanity.assetSourceData'
-  name?: string
-  id?: string
-  url?: string
-}
-
 export type AllSanitySchemaTypes =
+  | SanityFileAssetReference
+  | VideoFile
+  | AudioFile
   | Embed
   | Divider
+  | OrganReference
+  | SanityImageAssetReference
   | BlockContent
   | Score
-  | Journal
+  | InternationalizedArrayText
+  | InternationalizedArrayString
+  | InternationalizedArrayTextValue
+  | InternationalizedArrayStringValue
+  | TranslationMetadata
+  | InternationalizedArrayReference
+  | JournalReference
+  | JournalPageReference
+  | OrgansPageReference
+  | ScoresPageReference
+  | AboutReference
+  | ElsewhereReference
+  | PrivacyReference
+  | SettingsReference
+  | InternationalizedArrayReferenceValue
+  | Settings
+  | SanityImageCrop
+  | SanityImageHotspot
   | Privacy
   | Elsewhere
   | About
   | ScoresPage
   | OrgansPage
   | JournalPage
-  | Settings
+  | Journal
   | Organ
-  | SanityAssistInstructionTask
-  | SanityAssistTaskStatus
-  | SanityAssistSchemaTypeAnnotations
-  | SanityAssistOutputType
-  | SanityAssistOutputField
-  | SanityAssistInstructionContext
-  | AssistInstructionContext
-  | SanityAssistInstructionUserInput
-  | SanityAssistInstructionPrompt
-  | SanityAssistInstructionFieldRef
-  | SanityAssistInstruction
-  | SanityAssistSchemaTypeField
+  | Slug
   | MediaTag
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
-  | SanityImageHotspot
-  | SanityImageCrop
-  | SanityFileAsset
-  | SanityImageAsset
   | SanityImageMetadata
-  | Geopoint
-  | Slug
+  | SanityFileAsset
   | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint
 
 // Source: sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings"][0]
+// Query: *[_type == "settings" && _id == "settings-" + $locale][0]
 export type SettingsQueryResult = {
   _id: string
   _type: 'settings'
   _createdAt: string
   _updatedAt: string
   _rev: string
+  language?: string
   title: string
   wordmark?: string
   tagline?: string
@@ -812,12 +777,7 @@ export type SettingsQueryResult = {
     markDefs?: Array<{
       linkType?: 'href' | 'organ'
       href?: string
-      organ?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'organ'
-      }
+      organ?: OrganReference
       openInNewTab?: boolean
       _type: 'link'
       _key: string
@@ -827,12 +787,7 @@ export type SettingsQueryResult = {
     _key: string
   }>
   ogImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -846,51 +801,45 @@ export type SettingsQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: navSettingsQuery
-// Query: *[_type == "settings" && _id == "siteSettings"][0] {    wordmark,    tagline  }
+// Query: *[_type == "settings" && _id == "settings-" + $locale][0] {    _id,    wordmark,    tagline  }
 export type NavSettingsQueryResult = {
+  _id: string
   wordmark: string | null
   tagline: string | null
 } | null
 
 // Source: sanity/lib/queries.ts
 // Variable: footerContactQuery
-// Query: *[_type == "about" && _id == "siteAbout"][0] {    "href": contactRows[href match "mailto:*"][0].href  }
+// Query: *[_type == "about" && _id == "about-" + $locale][0] {    "href": contactRows[href match "mailto:*"][0].href  }
 export type FooterContactQueryResult = {
   href: string | null
 } | null
 
 // Source: sanity/lib/queries.ts
 // Variable: sitemapData
-// Query: *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
+// Query: *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,    language,  }
 export type SitemapDataResult = Array<
   | {
       slug: string
       _type: 'journal'
       _updatedAt: string
+      language: string | null
     }
   | {
       slug: string
       _type: 'organ'
       _updatedAt: string
+      language: string | null
     }
 >
 
 // Source: sanity/lib/queries.ts
 // Variable: organQuery
-// Query: *[_type == "organ" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,    disposition,    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "organ" && defined(slug.current)]),    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    },    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    }  }
+// Query: *[_type == "organ" && language == $locale && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,    disposition,    "position": count(*[_type == "organ" && language == $locale && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "organ" && language == $locale && defined(slug.current)]),    "prev": *[_type == "organ" && language == $locale && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    },    "next": *[_type == "organ" && language == $locale && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    }  }
 export type OrganQueryResult = {
   content: Array<
     | {
-        audioFile: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-          }
-          media?: unknown
-          _type: 'file'
-        }
+        audioFile: AudioFile
         title?: string
         kind?: string
         description?: string
@@ -936,12 +885,7 @@ export type OrganQueryResult = {
         markDefs: null
       }
     | {
-        asset?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-        }
+        asset?: SanityImageAssetReference
         media?: unknown
         hotspot?: SanityImageHotspot
         crop?: SanityImageCrop
@@ -955,16 +899,7 @@ export type OrganQueryResult = {
     | {
         videoType?: 'url' | 'vimeo' | 'youtube'
         url?: string
-        videoFile?: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-          }
-          media?: unknown
-          _type: 'file'
-        }
+        videoFile?: VideoFile
         title?: string
         description?: string
         aspectRatio?: '1:1' | '16:9' | '4:3' | '9:16'
@@ -979,12 +914,7 @@ export type OrganQueryResult = {
   slug: string
   excerpt: string | null
   coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -1061,14 +991,15 @@ export type OrganQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: organPagesSlugs
-// Query: *[_type == "organ" && defined(slug.current)]  {"slug": slug.current}
+// Query: *[_type == "organ" && defined(slug.current) && defined(language)]  { "slug": slug.current, "locale": language }
 export type OrganPagesSlugsResult = Array<{
   slug: string
+  locale: string
 }>
 
 // Source: sanity/lib/queries.ts
 // Variable: landingOrgansQuery
-// Query: *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
+// Query: *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
 export type LandingOrgansQueryResult = Array<{
   _id: string
   status: 'draft' | 'published'
@@ -1076,12 +1007,7 @@ export type LandingOrgansQueryResult = Array<{
   slug: string
   excerpt: string | null
   coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -1103,7 +1029,7 @@ export type LandingOrgansQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: landingStatsQuery
-// Query: {    "totalCount": count(*[_type == "organ" && defined(slug.current)]),    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date  }
+// Query: {    "totalCount": count(*[_type == "organ" && language == $locale && defined(slug.current)]),    "firstDate": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date asc) [0].date,    "latestDate": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc) [0].date  }
 export type LandingStatsQueryResult = {
   totalCount: number
   firstDate: string | null
@@ -1112,14 +1038,14 @@ export type LandingStatsQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: landingCitiesQuery
-// Query: *[_type == "organ" && defined(slug.current) && defined(location.city)]{    "city": location.city  }
+// Query: *[_type == "organ" && language == $locale && defined(slug.current) && defined(location.city)]{    "city": location.city  }
 export type LandingCitiesQueryResult = Array<{
-  city: string
+  city: string | null
 }>
 
 // Source: sanity/lib/queries.ts
 // Variable: archiveOrgansQuery
-// Query: *[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)]    | order(date desc, _updatedAt desc) [$offset...$end] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
+// Query: *[_type == "organ" && language == $locale && defined(slug.current) && ($city == "" || location.city == $city)]    | order(date desc, _updatedAt desc) [$offset...$end] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
 export type ArchiveOrgansQueryResult = Array<{
   _id: string
   status: 'draft' | 'published'
@@ -1127,12 +1053,7 @@ export type ArchiveOrgansQueryResult = Array<{
   slug: string
   excerpt: string | null
   coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -1154,13 +1075,14 @@ export type ArchiveOrgansQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: archiveOrgansCountQuery
-// Query: count(*[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)])
+// Query: count(*[_type == "organ" && language == $locale && defined(slug.current) && ($city == "" || location.city == $city)])
 export type ArchiveOrgansCountQueryResult = number
 
 // Source: sanity/lib/queries.ts
 // Variable: aboutQuery
-// Query: *[_type == "about" && _id == "siteAbout"][0] {    eyebrow,    title,    letter,    signoffName,    signoffLocation,    portraitImage,    portraitCaption,    portraitPlate,    secondaryImage,    secondaryCaption,    secondaryPlate,    quickFacts[]{ _key, label, value },    timelineSummary,    timeline[]{ _key, year, what, where },    repertoireIntro,    repertoire[]{ _key, era, title, pieces },    contactTitle,    contactLede,    contactRows[]{ _key, label, value, italic, href }  }
+// Query: *[_type == "about" && _id == "about-" + $locale][0] {    _id,    eyebrow,    title,    letter,    signoffName,    signoffLocation,    portraitImage,    portraitCaption,    portraitPlate,    secondaryImage,    secondaryCaption,    secondaryPlate,    quickFacts[]{ _key, label, value },    timelineSummary,    timeline[]{ _key, year, what, where },    repertoireIntro,    repertoire[]{ _key, era, title, pieces },    contactTitle,    contactLede,    contactRows[]{ _key, label, value, italic, href }  }
 export type AboutQueryResult = {
+  _id: string
   eyebrow: string | null
   title: string
   letter: Array<{
@@ -1180,12 +1102,7 @@ export type AboutQueryResult = {
   signoffName: string | null
   signoffLocation: string | null
   portraitImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -1195,12 +1112,7 @@ export type AboutQueryResult = {
   portraitCaption: string | null
   portraitPlate: string | null
   secondaryImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -1241,20 +1153,11 @@ export type AboutQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: journalQuery
-// Query: *[_type == "journal" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  category,  coverImage,  "date": coalesce(date, _updatedAt),    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "journal" && defined(slug.current)]),    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    },    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    }  }
+// Query: *[_type == "journal" && language == $locale && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  category,  coverImage,  "date": coalesce(date, _updatedAt),    "position": count(*[_type == "journal" && language == $locale && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "journal" && language == $locale && defined(slug.current)]),    "prev": *[_type == "journal" && language == $locale && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    },    "next": *[_type == "journal" && language == $locale && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    }  }
 export type JournalQueryResult = {
   content: Array<
     | {
-        audioFile: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-          }
-          media?: unknown
-          _type: 'file'
-        }
+        audioFile: AudioFile
         title?: string
         kind?: string
         description?: string
@@ -1300,12 +1203,7 @@ export type JournalQueryResult = {
         markDefs: null
       }
     | {
-        asset?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-        }
+        asset?: SanityImageAssetReference
         media?: unknown
         hotspot?: SanityImageHotspot
         crop?: SanityImageCrop
@@ -1319,16 +1217,7 @@ export type JournalQueryResult = {
     | {
         videoType?: 'url' | 'vimeo' | 'youtube'
         url?: string
-        videoFile?: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
-          }
-          media?: unknown
-          _type: 'file'
-        }
+        videoFile?: VideoFile
         title?: string
         description?: string
         aspectRatio?: '1:1' | '16:9' | '4:3' | '9:16'
@@ -1352,12 +1241,7 @@ export type JournalQueryResult = {
     | 'travelogue'
     | 'workshop'
   coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -1400,26 +1284,22 @@ export type JournalQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: journalPagesSlugs
-// Query: *[_type == "journal" && defined(slug.current)]  {"slug": slug.current}
+// Query: *[_type == "journal" && defined(slug.current) && defined(language)]  { "slug": slug.current, "locale": language }
 export type JournalPagesSlugsResult = Array<{
   slug: string
+  locale: string
 }>
 
 // Source: sanity/lib/queries.ts
 // Variable: journalEntriesQuery
-// Query: *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    category,    "hasAudio": count(content[_type == "audio"]) > 0,  }
+// Query: *[_type == "journal" && language == $locale && defined(slug.current)] | order(date desc, _updatedAt desc) {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    category,    "hasAudio": count(content[_type == "audio"]) > 0,  }
 export type JournalEntriesQueryResult = Array<{
   _id: string
   title: string
   slug: string
   excerpt: string | null
   coverImage: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
@@ -1442,7 +1322,7 @@ export type JournalEntriesQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: journalStatsQuery
-// Query: {    "totalCount": count(*[_type == "journal" && defined(slug.current)]),    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date  }
+// Query: {    "totalCount": count(*[_type == "journal" && language == $locale && defined(slug.current)]),    "firstDate": *[_type == "journal" && language == $locale && defined(slug.current)] | order(date asc) [0].date  }
 export type JournalStatsQueryResult = {
   totalCount: number
   firstDate: string | null
@@ -1450,8 +1330,9 @@ export type JournalStatsQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: journalPageQuery
-// Query: *[_type == "journalPage" && _id == "siteJournalPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
+// Query: *[_type == "journalPage" && _id == "journalPage-" + $locale][0] {    _id,    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
 export type JournalPageQueryResult = {
+  _id: string
   kickerLeft: string | null
   kickerRight: string | null
   heading: string
@@ -1462,8 +1343,9 @@ export type JournalPageQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: organsPageQuery
-// Query: *[_type == "organsPage" && _id == "siteOrgansPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
+// Query: *[_type == "organsPage" && _id == "organsPage-" + $locale][0] {    _id,    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
 export type OrgansPageQueryResult = {
+  _id: string
   kickerLeft: string | null
   kickerRight: string | null
   heading: string
@@ -1474,8 +1356,9 @@ export type OrgansPageQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: scoresPageQuery
-// Query: *[_type == "scoresPage" && _id == "siteScoresPage"][0] {    kicker,    heading,    tagline,    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href  }
+// Query: *[_type == "scoresPage" && _id == "scoresPage-" + $locale][0] {    _id,    kicker,    heading,    tagline,    "noticeBody": *[_type == "settings" && _id == "settings-" + $locale][0].scoresNoticeBody,    "editionLine": *[_type == "settings" && _id == "settings-" + $locale][0].scoresEditionLine,    "contactHref": *[_type == "about" && _id == "about-" + $locale][0].contactRows[href match "mailto:*"][0].href  }
 export type ScoresPageQueryResult = {
+  _id: string
   kicker: string | null
   heading: string
   tagline: string | null
@@ -1486,7 +1369,7 @@ export type ScoresPageQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: llmsTxtIndexQuery
-// Query: {    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      "date": coalesce(date, _updatedAt)    },    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      category,      "date": coalesce(date, _updatedAt)    }  }
+// Query: {    "organs": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      "date": coalesce(date, _updatedAt)    },    "journal": *[_type == "journal" && language == $locale && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      category,      "date": coalesce(date, _updatedAt)    }  }
 export type LlmsTxtIndexQueryResult = {
   organs: Array<{
     slug: string
@@ -1513,8 +1396,9 @@ export type LlmsTxtIndexQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: elsewhereQuery
-// Query: *[_type == "elsewhere" && _id == "siteElsewhere"][0] {    title,    eyebrow,    intro,    groups[]{      _key,      title,      links[]{ _key, label, href, description }    }  }
+// Query: *[_type == "elsewhere" && _id == "elsewhere-" + $locale][0] {    _id,    title,    eyebrow,    intro,    groups[]{      _key,      title,      links[]{ _key, label, href, description }    }  }
 export type ElsewhereQueryResult = {
+  _id: string
   title: string | null
   eyebrow: string | null
   intro: Array<{
@@ -1545,8 +1429,9 @@ export type ElsewhereQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: privacyQuery
-// Query: *[_type == "privacy" && _id == "sitePrivacy"][0] {    eyebrow,    title,    intro,    lastUpdated,    sections[]{ _key, heading, body },    contactLine  }
+// Query: *[_type == "privacy" && _id == "privacy-" + $locale][0] {    _id,    eyebrow,    title,    intro,    lastUpdated,    sections[]{ _key, heading, body },    contactLine  }
 export type PrivacyQueryResult = {
+  _id: string
   eyebrow: string | null
   title: string
   intro: string | null
@@ -1561,7 +1446,7 @@ export type PrivacyQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: scoresQuery
-// Query: *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {    _id,    composer,    work,    catalog,    era,    year,    pages,    editionNumber,    forInstrument,    edition,    blurb,    "pdfUrl": pdfFile.asset->url,    isFeatured,  }
+// Query: *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {    _id,    composer,    work,    catalog,    era,    year,    pages,    editionNumber,    "forInstrument": coalesce(forInstrument[language == $locale][0].value, forInstrument[language == "nl"][0].value),    "edition": coalesce(edition[language == $locale][0].value, edition[language == "nl"][0].value),    "blurb": coalesce(blurb[language == $locale][0].value, blurb[language == "nl"][0].value),    "pdfUrl": pdfFile.asset->url,    isFeatured,  }
 export type ScoresQueryResult = Array<{
   _id: string
   composer: string
@@ -1582,28 +1467,28 @@ export type ScoresQueryResult = Array<{
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
-    '*[_type == "settings"][0]': SettingsQueryResult
-    '\n  *[_type == "settings" && _id == "siteSettings"][0] {\n    wordmark,\n    tagline\n  }\n': NavSettingsQueryResult
-    '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    "href": contactRows[href match "mailto:*"][0].href\n  }\n': FooterContactQueryResult
-    '\n  *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
-    '\n  *[_type == "organ" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n    disposition,\n    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    },\n    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    }\n  }\n': OrganQueryResult
-    '\n  *[_type == "organ" && defined(slug.current)]\n  {"slug": slug.current}\n': OrganPagesSlugsResult
-    '\n  *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': LandingOrgansQueryResult
-    '\n  {\n    "totalCount": count(*[_type == "organ" && defined(slug.current)]),\n    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,\n    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date\n  }\n': LandingStatsQueryResult
-    '\n  *[_type == "organ" && defined(slug.current) && defined(location.city)]{\n    "city": location.city\n  }\n': LandingCitiesQueryResult
-    '\n  *[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)]\n    | order(date desc, _updatedAt desc) [$offset...$end] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': ArchiveOrgansQueryResult
-    '\n  count(*[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)])\n': ArchiveOrgansCountQueryResult
-    '\n  *[_type == "about" && _id == "siteAbout"][0] {\n    eyebrow,\n    title,\n    letter,\n    signoffName,\n    signoffLocation,\n    portraitImage,\n    portraitCaption,\n    portraitPlate,\n    secondaryImage,\n    secondaryCaption,\n    secondaryPlate,\n    quickFacts[]{ _key, label, value },\n    timelineSummary,\n    timeline[]{ _key, year, what, where },\n    repertoireIntro,\n    repertoire[]{ _key, era, title, pieces },\n    contactTitle,\n    contactLede,\n    contactRows[]{ _key, label, value, italic, href }\n  }\n': AboutQueryResult
-    '\n  *[_type == "journal" && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  category,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n\n    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "journal" && defined(slug.current)]),\n    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    },\n    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    }\n  }\n': JournalQueryResult
-    '\n  *[_type == "journal" && defined(slug.current)]\n  {"slug": slug.current}\n': JournalPagesSlugsResult
-    '\n  *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    "date": coalesce(date, _updatedAt),\n    category,\n    "hasAudio": count(content[_type == "audio"]) > 0,\n  }\n': JournalEntriesQueryResult
-    '\n  {\n    "totalCount": count(*[_type == "journal" && defined(slug.current)]),\n    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date\n  }\n': JournalStatsQueryResult
-    '\n  *[_type == "journalPage" && _id == "siteJournalPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': JournalPageQueryResult
-    '\n  *[_type == "organsPage" && _id == "siteOrgansPage"][0] {\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': OrgansPageQueryResult
-    '\n  *[_type == "scoresPage" && _id == "siteScoresPage"][0] {\n    kicker,\n    heading,\n    tagline,\n    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,\n    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,\n    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href\n  }\n': ScoresPageQueryResult
-    '\n  {\n    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      "date": coalesce(date, _updatedAt)\n    },\n    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      category,\n      "date": coalesce(date, _updatedAt)\n    }\n  }\n': LlmsTxtIndexQueryResult
-    '\n  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {\n    title,\n    eyebrow,\n    intro,\n    groups[]{\n      _key,\n      title,\n      links[]{ _key, label, href, description }\n    }\n  }\n': ElsewhereQueryResult
-    '\n  *[_type == "privacy" && _id == "sitePrivacy"][0] {\n    eyebrow,\n    title,\n    intro,\n    lastUpdated,\n    sections[]{ _key, heading, body },\n    contactLine\n  }\n': PrivacyQueryResult
-    '\n  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {\n    _id,\n    composer,\n    work,\n    catalog,\n    era,\n    year,\n    pages,\n    editionNumber,\n    forInstrument,\n    edition,\n    blurb,\n    "pdfUrl": pdfFile.asset->url,\n    isFeatured,\n  }\n': ScoresQueryResult
+    '*[_type == "settings" && _id == "settings-" + $locale][0]': SettingsQueryResult
+    '\n  *[_type == "settings" && _id == "settings-" + $locale][0] {\n    _id,\n    wordmark,\n    tagline\n  }\n': NavSettingsQueryResult
+    '\n  *[_type == "about" && _id == "about-" + $locale][0] {\n    "href": contactRows[href match "mailto:*"][0].href\n  }\n': FooterContactQueryResult
+    '\n  *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n    language,\n  }\n': SitemapDataResult
+    '\n  *[_type == "organ" && language == $locale && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n    disposition,\n    "position": count(*[_type == "organ" && language == $locale && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "organ" && language == $locale && defined(slug.current)]),\n    "prev": *[_type == "organ" && language == $locale && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    },\n    "next": *[_type == "organ" && language == $locale && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      location\n    }\n  }\n': OrganQueryResult
+    '\n  *[_type == "organ" && defined(slug.current) && defined(language)]\n  { "slug": slug.current, "locale": language }\n': OrganPagesSlugsResult
+    '\n  *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': LandingOrgansQueryResult
+    '\n  {\n    "totalCount": count(*[_type == "organ" && language == $locale && defined(slug.current)]),\n    "firstDate": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date asc) [0].date,\n    "latestDate": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc) [0].date\n  }\n': LandingStatsQueryResult
+    '\n  *[_type == "organ" && language == $locale && defined(slug.current) && defined(location.city)]{\n    "city": location.city\n  }\n': LandingCitiesQueryResult
+    '\n  *[_type == "organ" && language == $locale && defined(slug.current) && ($city == "" || location.city == $city)]\n    | order(date desc, _updatedAt desc) [$offset...$end] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  location,\n  builder,\n  year,\n  "hasAudio": count(content[_type == "audio"]) > 0,\n  "hasVideo": count(content[_type == "video"]) > 0,\n\n  }\n': ArchiveOrgansQueryResult
+    '\n  count(*[_type == "organ" && language == $locale && defined(slug.current) && ($city == "" || location.city == $city)])\n': ArchiveOrgansCountQueryResult
+    '\n  *[_type == "about" && _id == "about-" + $locale][0] {\n    _id,\n    eyebrow,\n    title,\n    letter,\n    signoffName,\n    signoffLocation,\n    portraitImage,\n    portraitCaption,\n    portraitPlate,\n    secondaryImage,\n    secondaryCaption,\n    secondaryPlate,\n    quickFacts[]{ _key, label, value },\n    timelineSummary,\n    timeline[]{ _key, year, what, where },\n    repertoireIntro,\n    repertoire[]{ _key, era, title, pieces },\n    contactTitle,\n    contactLede,\n    contactRows[]{ _key, label, value, italic, href }\n  }\n': AboutQueryResult
+    '\n  *[_type == "journal" && language == $locale && slug.current == $slug] [0] {\n    content[]{\n      ...,\n      markDefs[]{\n        ...,\n        \n  _type == "link" => {\n    "organ": organ->slug.current\n  }\n\n      }\n    },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  category,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n\n    "position": count(*[_type == "journal" && language == $locale && defined(slug.current) && date <= ^.date]),\n    "totalCount": count(*[_type == "journal" && language == $locale && defined(slug.current)]),\n    "prev": *[_type == "journal" && language == $locale && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    },\n    "next": *[_type == "journal" && language == $locale && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{\n      "title": coalesce(title, "Untitled"),\n      "slug": slug.current,\n      "date": coalesce(date, _updatedAt),\n      category\n    }\n  }\n': JournalQueryResult
+    '\n  *[_type == "journal" && defined(slug.current) && defined(language)]\n  { "slug": slug.current, "locale": language }\n': JournalPagesSlugsResult
+    '\n  *[_type == "journal" && language == $locale && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    coverImage,\n    "date": coalesce(date, _updatedAt),\n    category,\n    "hasAudio": count(content[_type == "audio"]) > 0,\n  }\n': JournalEntriesQueryResult
+    '\n  {\n    "totalCount": count(*[_type == "journal" && language == $locale && defined(slug.current)]),\n    "firstDate": *[_type == "journal" && language == $locale && defined(slug.current)] | order(date asc) [0].date\n  }\n': JournalStatsQueryResult
+    '\n  *[_type == "journalPage" && _id == "journalPage-" + $locale][0] {\n    _id,\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': JournalPageQueryResult
+    '\n  *[_type == "organsPage" && _id == "organsPage-" + $locale][0] {\n    _id,\n    kickerLeft,\n    kickerRight,\n    heading,\n    tagline,\n    cornerLeftSub,\n    cornerRightSub\n  }\n': OrgansPageQueryResult
+    '\n  *[_type == "scoresPage" && _id == "scoresPage-" + $locale][0] {\n    _id,\n    kicker,\n    heading,\n    tagline,\n    "noticeBody": *[_type == "settings" && _id == "settings-" + $locale][0].scoresNoticeBody,\n    "editionLine": *[_type == "settings" && _id == "settings-" + $locale][0].scoresEditionLine,\n    "contactHref": *[_type == "about" && _id == "about-" + $locale][0].contactRows[href match "mailto:*"][0].href\n  }\n': ScoresPageQueryResult
+    '\n  {\n    "organs": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      "date": coalesce(date, _updatedAt)\n    },\n    "journal": *[_type == "journal" && language == $locale && defined(slug.current)] | order(date desc) {\n      "slug": slug.current,\n      "title": coalesce(title, "Untitled"),\n      excerpt,\n      category,\n      "date": coalesce(date, _updatedAt)\n    }\n  }\n': LlmsTxtIndexQueryResult
+    '\n  *[_type == "elsewhere" && _id == "elsewhere-" + $locale][0] {\n    _id,\n    title,\n    eyebrow,\n    intro,\n    groups[]{\n      _key,\n      title,\n      links[]{ _key, label, href, description }\n    }\n  }\n': ElsewhereQueryResult
+    '\n  *[_type == "privacy" && _id == "privacy-" + $locale][0] {\n    _id,\n    eyebrow,\n    title,\n    intro,\n    lastUpdated,\n    sections[]{ _key, heading, body },\n    contactLine\n  }\n': PrivacyQueryResult
+    '\n  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {\n    _id,\n    composer,\n    work,\n    catalog,\n    era,\n    year,\n    pages,\n    editionNumber,\n    "forInstrument": coalesce(forInstrument[language == $locale][0].value, forInstrument[language == "nl"][0].value),\n    "edition": coalesce(edition[language == $locale][0].value, edition[language == "nl"][0].value),\n    "blurb": coalesce(blurb[language == $locale][0].value, blurb[language == "nl"][0].value),\n    "pdfUrl": pdfFile.asset->url,\n    isFeatured,\n  }\n': ScoresQueryResult
   }
 }

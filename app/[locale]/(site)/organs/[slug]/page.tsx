@@ -1,13 +1,15 @@
 import type { Metadata, ResolvingMetadata } from 'next'
 import { notFound } from 'next/navigation'
+import { setRequestLocale } from 'next-intl/server'
 
 import { OrganArticle, type OrganDetail } from '@/app/components/landing/OrganArticle'
 import { sanityFetch } from '@/sanity/lib/live'
 import { organPagesSlugs, organQuery } from '@/sanity/lib/queries'
 import { resolveOpenGraphImage } from '@/sanity/lib/utils'
+import { isLocale, type Locale } from '@/core/i18n/locales'
 
 type Props = {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }
 
 export async function generateStaticParams() {
@@ -16,14 +18,19 @@ export async function generateStaticParams() {
     perspective: 'published',
     stega: false,
   })
-  return data
+  // Each row already carries its own locale via the GROQ projection.
+  return (data ?? []) as Array<{ locale: string; slug: string }>
 }
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
-  const params = await props.params
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
+  const { locale: raw, slug } = await props.params
+  const locale: Locale = isLocale(raw) ? raw : 'en'
   const { data: organ } = await sanityFetch({
     query: organQuery,
-    params,
+    params: { locale, slug },
     stega: false,
   })
   const previousImages = (await parent).openGraph?.images || []
@@ -39,8 +46,10 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
 }
 
 export default async function OrganPage(props: Props) {
-  const params = await props.params
-  const { data: organ } = await sanityFetch({ query: organQuery, params })
+  const { locale: raw, slug } = await props.params
+  const locale: Locale = isLocale(raw) ? raw : 'en'
+  setRequestLocale(locale)
+  const { data: organ } = await sanityFetch({ query: organQuery, params: { locale, slug } })
 
   if (!organ?._id) {
     return notFound()

@@ -2,6 +2,8 @@ import { ComposeIcon } from '@sanity/icons'
 import { format, parseISO } from 'date-fns'
 import { defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * Journal entry — for editorial content that isn't a single-organ visit.
  *
@@ -19,6 +21,7 @@ export const journal = defineType({
   icon: ComposeIcon,
   type: 'document',
   fields: [
+    languageField,
     defineField({
       name: 'title',
       title: 'Title',

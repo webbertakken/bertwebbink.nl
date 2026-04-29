@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { Hero } from '@/app/components/landing/Hero'
 import { OrgansArchive } from '@/app/components/landing/OrgansArchive'
@@ -12,17 +13,26 @@ import {
   organsPageQuery,
 } from '@/sanity/lib/queries'
 import { sanityFetch } from '@/sanity/lib/live'
+import { isLocale, type Locale } from '@/core/i18n/locales'
 
 const PAGE_SIZE = 24
 
-export const metadata: Metadata = {
-  title: 'Organs',
-  description: 'Field notes from organs visited across the Netherlands and beyond.',
+type Props = {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ city?: string | string[] }>
 }
 
-type SearchParams = { city?: string | string[] }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: raw } = await params
+  const locale: Locale = isLocale(raw) ? raw : 'en'
+  const t = await getTranslations({ locale, namespace: 'Metadata.organs' })
+  return { title: t('title'), description: t('description') }
+}
 
-export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
+export default async function Page({ params, searchParams }: Props) {
+  const { locale: raw } = await params
+  const locale: Locale = isLocale(raw) ? raw : 'en'
+  setRequestLocale(locale)
   const sp = await searchParams
   const city = normaliseCityParam(sp.city)
 
@@ -35,15 +45,15 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
   ] = await Promise.all([
     sanityFetch({
       query: archiveOrgansQuery,
-      params: { city, offset: 0, end: PAGE_SIZE },
+      params: { locale, city, offset: 0, end: PAGE_SIZE },
     }),
     sanityFetch({
       query: archiveOrgansCountQuery,
-      params: { city },
+      params: { locale, city },
     }),
-    sanityFetch({ query: landingStatsQuery }),
-    sanityFetch({ query: landingCitiesQuery }),
-    sanityFetch({ query: organsPageQuery }),
+    sanityFetch({ query: landingStatsQuery, params: { locale } }),
+    sanityFetch({ query: landingCitiesQuery, params: { locale } }),
+    sanityFetch({ query: organsPageQuery, params: { locale } }),
   ])
 
   const totalCount = stats?.totalCount ?? 0
@@ -52,15 +62,16 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
     : new Date().getUTCFullYear()
 
   const cityCounts = countCitiesFromRows(cities)
-
   const filtered = filteredCount ?? 0
+  const tCrumbs = await getTranslations({ locale, namespace: 'Crumbs' })
 
   return (
     <>
       <Hero
+        locale={locale}
         totalCount={totalCount}
         firstYear={firstYear}
-        crumbs={[{ label: 'Home', href: '/' }, { label: 'Organs' }]}
+        crumbs={[{ label: tCrumbs('home'), href: `/` }, { label: tCrumbs('organs') }]}
         copy={page}
       />
       <OrgansArchive

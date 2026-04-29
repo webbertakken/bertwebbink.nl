@@ -2,6 +2,8 @@ import { DocumentTextIcon } from '@sanity/icons'
 import { format, parseISO } from 'date-fns'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * Post schema. Define and edit the fields for the 'post' content type.
  * Learn more: https://www.sanity.io/docs/schema-types
@@ -12,6 +14,7 @@ export const organ = defineType({
   icon: DocumentTextIcon,
   type: 'document',
   fields: [
+    languageField,
     defineField({
       name: 'title',
       title: 'Title',
@@ -46,9 +49,6 @@ export const organ = defineType({
       type: 'image',
       options: {
         hotspot: true,
-        aiAssist: {
-          imageDescriptionField: 'alt',
-        },
       },
       fields: [
         {

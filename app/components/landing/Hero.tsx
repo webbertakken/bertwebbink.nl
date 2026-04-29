@@ -2,13 +2,13 @@ import { Horizon } from './Horizon'
 import { Crumbs, type CrumbItem } from './Crumbs'
 import { renderEmphasised } from './renderEmphasised'
 import { dataAttr } from '@/sanity/lib/utils'
+import type { Locale } from '@/core/i18n/locales'
 
-const ORGANS_PAGE_ID = 'siteOrgansPage'
 const ORGANS_PAGE_TYPE = 'organsPage'
-const organsAttr = (path: string) =>
-  dataAttr({ id: ORGANS_PAGE_ID, type: ORGANS_PAGE_TYPE, path }).toString()
 
 type HeroProps = {
+  /** Active locale; pinned to the `organsPage-{locale}` singleton for stega. */
+  locale: Locale
   variant?: 'fields' | 'pipes' | 'plains'
   showSun?: boolean
   totalCount: number
@@ -58,6 +58,7 @@ const WindmillSilhouette = (props: React.SVGProps<SVGSVGElement>) => (
 )
 
 export function Hero({
+  locale,
   variant = 'fields',
   showSun = true,
   totalCount,
@@ -65,6 +66,9 @@ export function Hero({
   crumbs,
   copy,
 }: HeroProps) {
+  const ORGANS_PAGE_ID = `organsPage-${locale}`
+  const organsAttr = (path: string) =>
+    dataAttr({ id: ORGANS_PAGE_ID, type: ORGANS_PAGE_TYPE, path }).toString()
   const kickerLeft = copy?.kickerLeft ?? 'Field notes'
   const kickerRight = copy?.kickerRight ?? 'From the organ loft'
   const heading = copy?.heading ?? 'Visits to {{old organs}}'

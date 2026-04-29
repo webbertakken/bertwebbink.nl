@@ -1,6 +1,8 @@
 import { BookIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * Scores page singleton (_id: "siteScoresPage").
  *
@@ -19,6 +21,7 @@ export const scoresPage = defineType({
   icon: BookIcon,
   groups: [{ name: 'hero', title: 'Hero', default: true }],
   fields: [
+    languageField,
     defineField({
       name: 'kicker',
       title: 'Kicker',

@@ -2,13 +2,12 @@ import { Horizon } from './Horizon'
 import { Crumbs, type CrumbItem } from './Crumbs'
 import { renderEmphasised } from './renderEmphasised'
 import { dataAttr } from '@/sanity/lib/utils'
+import type { Locale } from '@/core/i18n/locales'
 
-const JOURNAL_PAGE_ID = 'siteJournalPage'
 const JOURNAL_PAGE_TYPE = 'journalPage'
-const journalAttr = (path: string) =>
-  dataAttr({ id: JOURNAL_PAGE_ID, type: JOURNAL_PAGE_TYPE, path }).toString()
 
 type JournalHeroProps = {
+  locale: Locale
   totalCount: number
   firstYear: number
   /** Optional crumbs floated over the sky, top-centred. */
@@ -30,7 +29,11 @@ type JournalHeroProps = {
  * the `trees` horizon variant baked in instead of the `fields`
  * variant's church + windmill.
  */
-export function JournalHero({ totalCount, firstYear, crumbs, copy }: JournalHeroProps) {
+export function JournalHero({ locale, totalCount, firstYear, crumbs, copy }: JournalHeroProps) {
+  const JOURNAL_PAGE_ID = `journalPage-${locale}`
+  const journalAttr = (path: string) =>
+    dataAttr({ id: JOURNAL_PAGE_ID, type: JOURNAL_PAGE_TYPE, path }).toString()
+
   const kickerLeft = copy?.kickerLeft ?? 'Writings'
   const kickerRight = copy?.kickerRight ?? 'A field journal'
   const heading = copy?.heading ?? 'The {{Journal}}'

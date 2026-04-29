@@ -11,14 +11,37 @@ import { structure } from '@/sanity/structure'
 import { StudioLayout } from '@/sanity/studio/StudioLayout'
 import { media } from 'sanity-plugin-media'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
+import { documentInternationalization } from '@sanity/document-internationalization'
+import { internationalizedArray } from 'sanity-plugin-internationalized-array'
+import { languageFilter } from '@sanity/language-filter'
 import {
   presentationTool,
   defineDocuments,
   defineLocations,
   type DocumentLocation,
 } from 'sanity/presentation'
-import { assist } from '@sanity/assist'
 import { assertValue } from '@/core/util/assertValue'
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  SUPPORTED_LANGUAGES,
+  type Locale,
+} from '@/core/i18n/locales'
+
+/** Document types that use document-per-locale (one full document per language). */
+const LOCALIZED_DOC_TYPES = [
+  'journal',
+  'organ',
+  'journalPage',
+  'organsPage',
+  'scoresPage',
+  'about',
+  'elsewhere',
+  'privacy',
+  'settings',
+] as const
+
+
 
 // Environment variables for project configuration
 const projectId = assertValue(
@@ -41,16 +64,69 @@ const homeLocation = { title: 'Home', href: '/' } satisfies DocumentLocation
 
 // resolveHref() is a convenience function that resolves the URL
 // path for different document types and used in the presentation tool.
-function resolveHref(documentType?: string, slug?: string): string | undefined {
+function resolveHref(
+  documentType?: string,
+  slug?: string,
+  locale: Locale = DEFAULT_LOCALE,
+): string | undefined {
   switch (documentType) {
     case 'organ':
-      return slug ? `/organs/${slug}` : undefined
+      return slug ? `/${locale}/organs/${slug}` : undefined
     case 'journal':
-      return slug ? `/journal/${slug}` : undefined
+      return slug ? `/${locale}/journal/${slug}` : undefined
     default:
       console.warn('Invalid document type:', documentType)
       return undefined
   }
+}
+
+/**
+ * Build the locale-aware Presentation `mainDocuments` resolver list.
+ *
+ * Every public route is locale-prefixed (`/{locale}/...`). For each route,
+ * we register one entry per locale so Presentation matches the correct
+ * sibling document for the locale-prefixed URL the editor previews.
+ */
+function localizedMainDocuments() {
+  const entries: Array<{ route: string; filter: string }> = []
+  for (const locale of LOCALES) {
+    const localePrefix = `/${locale}`
+    entries.push(
+      {
+        route: `${localePrefix}`,
+        filter: `_type == "journalPage" && _id == "journalPage-${locale}"`,
+      },
+      {
+        route: `${localePrefix}/organs`,
+        filter: `_type == "organsPage" && _id == "organsPage-${locale}"`,
+      },
+      {
+        route: `${localePrefix}/organs/:slug`,
+        filter: `_type == "organ" && language == "${locale}" && (slug.current == $slug || _id == $slug)`,
+      },
+      {
+        route: `${localePrefix}/scores`,
+        filter: `_type == "scoresPage" && _id == "scoresPage-${locale}"`,
+      },
+      {
+        route: `${localePrefix}/journal/:slug`,
+        filter: `_type == "journal" && language == "${locale}" && (slug.current == $slug || _id == $slug)`,
+      },
+      {
+        route: `${localePrefix}/about`,
+        filter: `_type == "about" && _id == "about-${locale}"`,
+      },
+      {
+        route: `${localePrefix}/elsewhere`,
+        filter: `_type == "elsewhere" && _id == "elsewhere-${locale}"`,
+      },
+      {
+        route: `${localePrefix}/privacy`,
+        filter: `_type == "privacy" && _id == "privacy-${locale}"`,
+      },
+    )
+  }
+  return entries
 }
 
 // Main Sanity configuration
@@ -83,40 +159,7 @@ export default defineConfig({
       },
       resolve: {
         // The Main Document Resolver API provides a method of resolving a main document from a given route or route pattern. https://www.sanity.io/docs/presentation-resolver-api#57720a5678d9
-        mainDocuments: defineDocuments([
-          {
-            route: '/',
-            filter: `_type == "journalPage" && _id == "siteJournalPage"`,
-          },
-          {
-            route: '/organs',
-            filter: `_type == "organsPage" && _id == "siteOrgansPage"`,
-          },
-          {
-            route: '/organs/:slug',
-            filter: `_type == "organ" && slug.current == $slug || _id == $slug`,
-          },
-          {
-            route: '/scores',
-            filter: `_type == "scoresPage" && _id == "siteScoresPage"`,
-          },
-          {
-            route: '/journal/:slug',
-            filter: `_type == "journal" && slug.current == $slug || _id == $slug`,
-          },
-          {
-            route: '/about',
-            filter: `_type == "about" && _id == "siteAbout"`,
-          },
-          {
-            route: '/elsewhere',
-            filter: `_type == "elsewhere" && _id == "siteElsewhere"`,
-          },
-          {
-            route: '/privacy',
-            filter: `_type == "privacy" && _id == "sitePrivacy"`,
-          },
-        ]),
+        mainDocuments: defineDocuments(localizedMainDocuments()),
         // Locations Resolver API allows you to define where data is being used in your application. https://www.sanity.io/docs/presentation-resolver-api#8d8bca7bfcd7
         locations: {
           settings: defineLocations({
@@ -200,9 +243,30 @@ export default defineConfig({
     structureTool({
       structure, // Custom studio structure configuration, imported from ./src/structure.ts
     }),
+    // Document-per-locale: every translatable document type except `score`.
+    // Singleton ids are pinned via Initial Value Templates and our own
+    // "Translate to all locales" action; the plugin still tracks language
+    // tabs and the translation.metadata document for them.
+    documentInternationalization({
+      supportedLanguages: SUPPORTED_LANGUAGES,
+      schemaTypes: [...LOCALIZED_DOC_TYPES],
+      languageField: 'language',
+      bulkPublish: false,
+    }),
+    // Field-level: only the `score` type uses internationalised arrays.
+    internationalizedArray({
+      languages: SUPPORTED_LANGUAGES,
+      defaultLanguages: [DEFAULT_LOCALE],
+      fieldTypes: ['string', 'text'],
+    }),
+    // Hide non-active locale tabs in the score editor.
+    languageFilter({
+      supportedLanguages: SUPPORTED_LANGUAGES,
+      defaultLanguages: [DEFAULT_LOCALE],
+      documentTypes: ['score'],
+    }),
     // Additional plugins for enhanced functionality
     unsplashImageAsset(),
-    assist(),
     visionTool(),
   ],
 

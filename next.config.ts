@@ -1,4 +1,7 @@
 import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
 const nextConfig: NextConfig = {
   env: {
@@ -6,7 +9,9 @@ const nextConfig: NextConfig = {
     SC_DISABLE_SPEEDY: 'false',
   },
   // 301 redirect old /posts/* URLs to the renamed /organs/* — keeps any
-  // bookmarks, search-engine results and external links working.
+  // bookmarks, search-engine results and external links working. The
+  // locale prefix is added by `next-intl` middleware on the redirect
+  // target so visitors land on `/{locale}/organs/...` etc.
   async redirects() {
     return [
       {
@@ -33,4 +38,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withNextIntl(nextConfig)
