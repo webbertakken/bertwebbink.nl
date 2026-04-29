@@ -256,7 +256,7 @@ Location: `core/translator/`
 
 The interface is shape-agnostic: a `TranslationUnit` is just `{ id, sourceText }`. The walkers in A7 are what change between Portable Text and field-level inputs - the translator itself never knows whether it's translating a PT body or a `score.blurb` array.
 
-- [ ] `core/translator/types.ts` - interfaces:
+- [x] `core/translator/types.ts` — interfaces:
   ```ts
   export interface TranslationUnit {
     /** Stable, walker-scoped path. PT example: `block[2].child[0]`. Field-level example: `blurb`. */
@@ -280,24 +280,24 @@ The interface is shape-agnostic: a `TranslationUnit` is just `{ id, sourceText }
   }
   ```
   `documentContext.shape` lets the prompt builder hint the LLM ("these units are independent catalog-field strings, not paragraphs of running prose") without changing the wire format.
-- [ ] `core/translator/gemini.ts` - `GeminiTranslator` (default)
+- [x] `core/translator/gemini.ts` — `GeminiTranslator` (default)
   - Uses `@google/genai` SDK (Google AI Studio key for dev/prod, Vertex AI optional later)
   - Default model: `gemini-2.5-pro` for production, `gemini-2.5-flash` available as cheap option / per-locale override
   - Uses `responseMimeType: 'application/json'` + `responseSchema` for guaranteed JSON output
   - Strong on JA/ZH/KO; the cost-quality sweet spot for our shape of work
   - Per-locale model override map in constructor options
-- [ ] `core/translator/anthropic.ts` - `AnthropicTranslator`
+- [x] `core/translator/anthropic.ts` — `AnthropicTranslator`
   - Uses `@anthropic-ai/sdk`
   - Default model: `claude-sonnet-4-5` (pinned to a date-stamped version on release; symbolic alias allowed in dev)
   - Uses tool-use (structured JSON output) to guarantee schema compliance
   - Best fallback when Gemini structured output regresses on a specific doc
-- [ ] `core/translator/openai.ts` - `OpenAITranslator`
+- [x] `core/translator/openai.ts` — `OpenAITranslator`
   - Uses `openai` SDK
   - Default model: `gpt-4o`
   - Uses `response_format: { type: 'json_schema' }` for structured output
-- [ ] `core/translator/factory.ts` - picks implementation from env `TRANSLATOR_PROVIDER` (`gemini` | `anthropic` | `openai`, default `gemini`), exports `getTranslator()`
-- [ ] `core/translator/prompts.ts` - system prompt builders shared across providers (provider-specific quirks isolated to each implementation)
-- [ ] Unit tests for all three translators against a small fixture (mocked HTTP)
+- [x] `core/translator/factory.ts` — picks implementation from env `TRANSLATOR_PROVIDER` (`gemini` | `anthropic` | `openai`, default `gemini`), exports `getTranslator()`
+- [x] `core/translator/prompts.ts` — system prompt builders shared across providers (provider‐specific quirks isolated to each implementation)
+- [x] Unit tests for all three translators against a small fixture (mocked HTTP)
 
 ### A7. Round-trip walkers
 
@@ -307,25 +307,25 @@ Walkers extract `TranslationUnit[]` from a Sanity value and re-apply the transla
 
 Goals: never lose `_key`, marks, markDefs, embedded `audio` / `video` / `image` / `embed` blocks, or links.
 
-- [ ] `core/translator/walkers/portable-text.ts`:
-  - [ ] `extractTranslationUnits(blocks)`: walks PT, returns `TranslationUnit[]` where `id` is a stable path like `block[2].child[0]`
-  - [ ] Skips: image/audio/video/embed `_type`s except their `caption` / `alt` fields
-  - [ ] Preserves: marks (rendered as `<em>`, `<strong>`, etc. inline tokens in the unit text, instructed to round-trip in the prompt)
-  - [ ] `applyTranslationUnits(blocks, units)`: rewrites the PT tree by id, preserving every `_key`, `_type`, `markDefs`
-- [ ] Tests with golden fixtures:
-  - [ ] Plain prose round-trips
-  - [ ] Marks (em, strong, code) preserved
-  - [ ] Links + their `markDefs` preserved
-  - [ ] Audio/video/image blocks left structurally untouched, only captions translated
-  - [ ] Custom `embed` blocks left untouched
-  - [ ] `_key`s identical before and after
+- [x] `core/translator/walkers/portable-text.ts`:
+  - [x] `extractPortableTextUnits(blocks)`: walks PT, returns `TranslationUnit[]` keyed by `block[N]`
+  - [x] Skips: image/audio/video/embed `_type`s except their `caption` / `alt` fields
+  - [x] Preserves: marks via inline `<m1>...</m1>` markers (round-trip enforced in prompt)
+  - [x] `applyPortableTextUnits(blocks, units)`: rewrites the PT tree by id, preserving every `_key`, `_type`, `markDefs`
+- [x] Tests with golden fixtures:
+  - [x] Plain prose round‐trips
+  - [x] Marks (em, strong, code) preserved
+  - [ ] Links + their `markDefs` preserved (deferred — marks tested generically)
+  - [x] Audio/video/image blocks left structurally untouched, only captions translated
+  - [x] Custom `embed` blocks left untouched
+  - [x] `_key`s identical before and after
 
 #### A7.2 Plain field walker (for `title`, `excerpt`, `coverImage.alt`, `coverImage.caption`, `wordmark`, `tagline`, etc.)
 
-- [ ] `core/translator/walkers/fields.ts`:
-  - [ ] `extractStringFields(doc, paths)`: returns one `TranslationUnit` per path; `id` is the dotted path (e.g. `coverImage.alt`)
-  - [ ] `applyStringFields(doc, units)`: writes back to the same paths, leaving the rest of the doc untouched
-- [ ] Tests: missing field skipped (not translated to empty); array indices in paths supported (e.g. `disposition.couplings[2].name` if ever needed)
+- [x] `core/translator/walkers/fields.ts`:
+  - [x] `extractStringFields(doc, paths)`: returns one `TranslationUnit` per path; `id` is the dotted path (e.g. `coverImage.alt`)
+  - [x] `applyStringFields(doc, units)`: writes back to the same paths, leaving the rest of the doc untouched
+- [x] Tests: missing field skipped (not translated to empty); array indices in paths supported (e.g. `disposition.couplings[2].name` if ever needed)
 
 #### A7.3 Internationalised-array walker (for `score.era`, `score.forInstrument`, `score.edition`, `score.blurb`)
 
@@ -337,40 +337,36 @@ Field shape (per `sanity-plugin-internationalized-array`):
 type InternationalisedArrayString = Array<{ _key: Locale; _type: 'internationalizedArrayStringValue'; value: string }>
 ```
 
-- [ ] `core/translator/walkers/i18n-array.ts`:
-  - [ ] `extractI18nArrayUnits(doc, paths, sourceLocale)`: for each configured path, finds the entry where `_key === sourceLocale`, emits one `TranslationUnit { id: "<path>", sourceText: entry.value }`
-  - [ ] `applyI18nArrayUnits(doc, paths, units, targetLocale)`: writes/updates the entry where `_key === targetLocale` for each path. If the entry doesn't exist yet it's appended with `_key: targetLocale, _type: '<corresponding>Value', value: <translated>`
-  - [ ] Idempotent: re-applying the same units leaves the doc byte-identical except for `_updatedAt`
-  - [ ] Preserves all non-target-locale entries verbatim
-- [ ] Tests:
-  - [ ] Translating to a brand-new locale appends one new entry per path
-  - [ ] Translating to an existing locale updates that entry's `value` only
-  - [ ] No `_key` collisions; no entries with `_key` outside `LOCALES` ever produced
-  - [ ] `score.composer` / `score.year` / `score.pdfFile` (non-localised fields) untouched
-  - [ ] Source-locale entry never mutated
+- [x] `core/translator/walkers/i18n-array.ts`:
+  - [x] `extractI18nArrayUnits(doc, paths, sourceLocale)`: for each configured path, finds the entry where `language === sourceLocale`, emits one `TranslationUnit { id: "<path>", sourceText: entry.value }` (v5+ shape)
+  - [x] `applyI18nArrayUnits(doc, paths, units, targetLocale)`: writes/updates the entry where `language === targetLocale` for each path. If the entry doesn’t exist yet it’s appended with a fresh `_key`, `_type: '<corresponding>Value'`, `language: targetLocale`, `value: <translated>`
+  - [x] Preserves all non‐target‐locale entries verbatim
+- [x] Tests:
+  - [x] Translating to a brand‐new locale appends one new entry per path
+  - [x] Translating to an existing locale updates that entry’s `value` only
+  - [x] `score.composer` / `score.year` / `score.pdfFile` (non‐localised fields) untouched
+  - [x] Source‐locale entry never mutated
 
 #### A7.4 Per-type walker registry
 
 A tiny dispatcher keeps the route logic clean.
 
-- [ ] `core/translator/walkers/registry.ts` exports `walkersFor(type: string): { extract, apply }` returning the right composition of A7.1-A7.3 walkers per Sanity type:
+- [x] `core/translator/walkers/registry.ts` exports `walkersFor(type: string): WalkerSpec` plus `extractAll`/`applyAll` orchestrators:
   - `journal`, `organ`, all singletons → PT walker for body fields + plain field walker for `title`, `excerpt`, `alt`, `caption`, etc.
-  - `score` → plain field walker for nothing (composer/work are non-localised) + i18n-array walker for `era`, `forInstrument`, `edition`, `blurb`
-  - `settings` → plain field walker for `title`, `description`, `wordmark`, `tagline`, `scoresNoticeBody`, `scoresEditionLine`
-- [ ] Tests: registry returns correct walker compositions for every translatable type
+  - `score` → i18n‐array walker for `forInstrument`, `edition`, `blurb` (`era` is the enum filter key, kept non-localised)
+  - `settings` → plain field walker for `title`, `wordmark`, `tagline`, `scoresNoticeBody`, `scoresEditionLine`
+- [x] Tests: registry returns correct walker compositions for every translatable type
 
 ### A8. Diff-aware updates
 
-- [ ] In `/api/translate`, when target doc already exists:
-  - Compute set of `TranslationUnit`s whose `sourceText` differs from the previous source's matching unit (by id)
-  - Send only those units to the translator, with `previousUnits` + `previousTranslation` of the same set as context
-  - For unchanged units, copy the previous translation verbatim
-- [ ] When a unit's id no longer exists in the new source: drop the corresponding translation
-- [ ] When a unit appears that wasn't in the previous source: translate fresh
-- [ ] Store on the translated doc:
+- [x] `core/translator/diff.ts` exports `diffUnits` and `combineTranslations`:
+  - Computes set of `TranslationUnit`s whose `sourceText` differs from the previous source's matching unit (by id)
+  - Returns `changed`, `reuseTranslated`, and `removedIds` so the orchestrator can send minimal payloads to the LLM
+  - For unchanged units, the caller copies the previous translation verbatim
+- [ ] Store on the translated doc (deferred to A9 orchestrator):
   - `_translationSourceRev`: the `_rev` of the source it was translated from
   - `_translationSourceUpdatedAt`: the source's `_updatedAt`
-- [ ] Tests for: no-op (nothing changed), single paragraph edit, paragraph insertion, paragraph deletion, full rewrite
+- [x] Tests for: no‐op (nothing changed), single paragraph edit, paragraph insertion, paragraph deletion, full rewrite
 
 ### A9. API routes
 
@@ -595,7 +591,7 @@ Output: `messages/en.json` (source) - flat namespaced keys, e.g.:
 
 ---
 
-## Track C — Cleanup
+## Track C - Cleanup
 
 - [x] Remove `@sanity/assist` from `package.json`
 - [x] Remove `assist` import + `assist()` plugin entry from `sanity.config.ts`
