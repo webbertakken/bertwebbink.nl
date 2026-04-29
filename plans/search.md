@@ -186,13 +186,13 @@ automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCar
 
 ### 4. Search query
 
-- [ ] **4.1** Add `searchQuery` to `sanity/lib/queries.ts` per the architecture sketch above. Wrap
+- [x] **4.1** Add `searchQuery` to `sanity/lib/queries.ts` per the architecture sketch above. Wrap
       in `defineQuery` for TypeGen. Use a unique name (`searchQuery`) — TypeGen silently
       overwrites duplicates (per `typegen.md`).
-- [ ] **4.2** TypeGen runs via the project's `predev` / `prebuild` hooks (`yarn extract-types &&
+- [x] **4.2** TypeGen runs via the project's `predev` / `prebuild` hooks (`yarn extract-types &&
       yarn typegen`). Run `yarn typegen` once after adding the query to confirm
       `SearchQueryResult` lands in `sanity.types.ts` cleanly.
-- [ ] **4.3** Smoke-test the query against the dev dataset with three queries (single-word Latin,
+- [x] **4.3** Smoke-test the query against the dev dataset with three queries (single-word Latin,
       multi-word, CJK substring) using Sanity Vision or a quick scratch script. Verify the score
       branch returns results (i.e. confirm the `(_type == "score" || language == $locale)` filter
       actually includes scores).
