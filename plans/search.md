@@ -262,27 +262,40 @@ automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCar
 
 ### 9. Visual + manual verification (do not skip)
 
-- [ ] **9.1** Run dev server. Type a query in two locales (`/nl/search?q=bach`, `/en/search?q=bach`)
-      and confirm results differ correctly per locale.
+- [x] **9.1** Run dev server. Type a query in two locales (`/nl/search?q=bach`, `/en/search?q=bach`)
+      and confirm results differ correctly per locale. EN returned "Organ Trail…" entries; NL
+      returned "Orgelmakerij / Orgelpad…" — disjoint corpora, prefix-extension highlights both.
 - [ ] **9.2** With a search page open in the browser (results already shown), publish a new
       `journal` entry whose title contains the current query. Confirm it appears **without page
-      reload** — proves Live Content API integration works for `/search` too.
-- [ ] **9.3** Confirm `score` results show up: search for a composer name that exists only in a
-      score (e.g. `Buxtehude` if no journal/organ mentions them). Click the result link → verifies
-      the anchor lands on the right row.
-- [ ] **9.4** Test queries with: punctuation (`Bach's`), curly apostrophes, multiple words
-      (`organ symphony`), CJK input (`バッハ` if a `ja` doc with that text exists), zero results
-      (`zzzzzz`), single-char (must short-circuit, no Sanity request).
-- [ ] **9.5** View page source on `/{locale}/search?q=bach` and confirm no Stega invisible chars
-      leaked into result anchor `href`s (a quick `grep -P '[\u0080-\u009F]'` on the rendered HTML).
-- [ ] **9.6** Verify `<head>` has `noindex, nofollow` on the search page in production build.
+      reload** — proves Live Content API integration works for `/search` too. **Manual: needs
+      a human in Sanity Studio.**
+- [x] **9.3** Confirm `score` results show up: searched `buxtehude` → score result with
+      `href="/en/scores#ed-24"`; that anchor id exists on `/en/scores` (verified via grep).
+- [x] **9.4** Edge cases verified end-to-end:
+      - `bach's` (apostrophe): 1 result — surfaced an actual UX bug; sanitiser was stripping the
+        apostrophe to `bachs` (no matches), now treats it as a separator so `bach's` → `bach`.
+      - Curly apostrophe handled identically.
+      - Compound `do-re-mi` splits into three tokens — 17 results.
+      - Multi-word `organ symphony` → "No matches" (AND across tokens).
+      - Special-chars-only `!!!`, single char `a`, empty, missing `q` → "Type a query…" empty
+        state, no Sanity request.
+      - `zzzzzz` → "No matches".
+      - Japanese `バッハ` on `/ja` → "No matches" (no Japanese content yet, expected).
+- [x] **9.5** Stega scan on the rendered HTML (`U+200B/C/D`, `U+2060–2064`, `U+FEFF`) — zero
+      occurrences. All `href` attributes clean.
+- [x] **9.6** Production build verified: `<meta name="robots" content="noindex, nofollow"/>` on
+      `/{locale}/search`, no robots meta on regular pages (default is indexable).
 - [ ] **9.7** Lighthouse / quick a11y check on the search page and the expanded search box.
+      **Manual: needs a browser.**
 
 ### 10. Quality gates and PR
 
-- [ ] **10.1** Run `/quality-checks` (oxlint, tsgo/tsc, vitest). All green.
+- [x] **10.1** Quality gates green: oxlint clean (156 files), tsgo silent, tsc silent, vitest
+      374 tests across 28 files passing, `yarn build` produces a clean production bundle with
+      `/[locale]/search` registered as a dynamic route.
 - [ ] **10.2** Open a PR. Link this plan in the description. Bullet-point summary of what the
-      PR adds; explicitly note "no new infrastructure / no new dependencies."
+      PR adds; explicitly note "no new infrastructure / no new dependencies." **Manual: held
+      pending explicit user permission to push.**
 
 ## Verification (Done means)
 

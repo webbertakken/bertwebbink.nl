@@ -52,12 +52,12 @@ describe('sanitiseQuery', () => {
   })
 
   describe('punctuation handling', () => {
-    it("strips ASCII apostrophes from inside tokens (\"bach's\" -> \"bachs\")", () => {
-      expect(sanitiseQuery("bach's")).toBe('bachs*')
+    it("treats ASCII apostrophes as a separator (\"bach's\" -> bach*; the lone 's' falls under min length)", () => {
+      expect(sanitiseQuery("bach's")).toBe('bach*')
     })
 
-    it('strips unicode curly apostrophes the same way', () => {
-      expect(sanitiseQuery('bach\u2019s')).toBe('bachs*')
+    it('treats unicode curly apostrophes the same way', () => {
+      expect(sanitiseQuery('bach\u2019s')).toBe('bach*')
     })
 
     it('strips standalone punctuation tokens entirely', () => {
@@ -72,6 +72,10 @@ describe('sanitiseQuery', () => {
 
     it('strips leading punctuation from a token', () => {
       expect(sanitiseQuery('"bach"')).toBe('bach*')
+    })
+
+    it('splits compound tokens on inner punctuation (do-re-mi yields three tokens)', () => {
+      expect(sanitiseQuery('do-re-mi')).toBe('do* re* mi*')
     })
   })
 
@@ -93,7 +97,7 @@ describe('sanitiseQuery', () => {
     })
 
     it('returns the bare lowercase tokens (no wildcards)', () => {
-      expect(extractTokens("Bach's symphony")).toEqual(['bachs', 'symphony'])
+      expect(extractTokens("Bach's symphony")).toEqual(['bach', 'symphony'])
     })
 
     it('drops sub-min-length tokens but keeps the rest', () => {

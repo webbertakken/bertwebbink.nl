@@ -23,6 +23,11 @@ const NON_TOKEN_CHARS = /[^\p{L}\p{N}\p{M}]+/gu
  * Tokenise raw user input into the bare lowercase tokens that drive both
  * the GROQ `match` query and the result-side highlighter. Returns an empty
  * array when nothing is searchable.
+ *
+ * Punctuation (including apostrophes) is treated as a token separator,
+ * not stripped within a token. So `bach's` → `['bach']` (the trailing `s`
+ * is dropped by the min-length filter), which correctly matches content
+ * containing the word "Bach".
  */
 export function extractTokens(input: string): string[] {
   if (typeof input !== 'string') return []
@@ -33,8 +38,8 @@ export function extractTokens(input: string): string[] {
   const normalised = trimmed.normalize('NFC').toLowerCase()
 
   return normalised
+    .replace(NON_TOKEN_CHARS, ' ')
     .split(/\s+/)
-    .map((token) => token.replace(NON_TOKEN_CHARS, ''))
     .filter((token) => token.length >= MIN_TOKEN_LENGTH)
 }
 
