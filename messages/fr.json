@@ -1,240 +1,240 @@
 {
   "Nav": {
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
     "wordmarkFallback": "Bert Webbink",
-    "taglineFallback": "Organist",
+    "taglineFallback": "Organiste",
     "items": {
-      "organs": "Organs",
-      "scores": "Scores",
-      "about": "About me",
-      "elsewhere": "Elsewhere"
+      "organs": "Orgues",
+      "scores": "Partitions",
+      "about": "À propos",
+      "elsewhere": "Ailleurs"
     }
   },
   "Footer": {
     "copyright": "© Bert Webbink, {year}",
     "links": {
-      "privacy": "Privacy",
-      "elsewhere": "Elsewhere",
+      "privacy": "Confidentialité",
+      "elsewhere": "Ailleurs",
       "contact": "Contact"
     }
   },
   "Crumbs": {
-    "home": "Home",
-    "organs": "Organs",
+    "home": "Accueil",
+    "organs": "Orgues",
     "journal": "Journal",
-    "scores": "Scores",
-    "about": "About",
-    "elsewhere": "Elsewhere",
-    "privacy": "Privacy"
+    "scores": "Partitions",
+    "about": "À propos",
+    "elsewhere": "Ailleurs",
+    "privacy": "Confidentialité"
   },
   "LanguagePicker": {
-    "label": "Language",
-    "switchTo": "Switch to {language}"
+    "label": "Langue",
+    "switchTo": "Passer en {language}"
   },
   "Metadata": {
     "journal": {
       "title": "Journal",
-      "description": "Essays, fragments, half-finished thoughts — published when there is something worth saying."
+      "description": "Essais, fragments, pensées inachevées — publiés quand il y a quelque chose à dire."
     },
     "organs": {
-      "title": "Organs",
-      "description": "Field notes from organs visited across the Netherlands and beyond."
+      "title": "Orgues",
+      "description": "Notes de terrain sur les orgues visités aux Pays-Bas et au-delà."
     },
     "scores": {
-      "title": "Scores",
-      "description": "Working editions of organ scores prepared by Bert Webbink — fingerings, registrations, free to download for non-commercial study."
+      "title": "Partitions",
+      "description": "Éditions de travail de partitions d'orgue préparées par Bert Webbink — doigtés, registrations, à télécharger gratuitement pour étude non commerciale."
     },
     "about": {
-      "title": "About me",
-      "description": "Bert Webbink — organist, teacher, quiet visitor of old buildings."
+      "title": "À propos",
+      "description": "Bert Webbink — organiste, professeur, visiteur silencieux de vieilles bâtisses."
     },
     "elsewhere": {
-      "title": "Elsewhere",
-      "description": "Curated links — choirs, churches, organ resources."
+      "title": "Ailleurs",
+      "description": "Sélection de liens — chœurs, églises, ressources sur l'orgue."
     },
     "privacy": {
-      "title": "Privacy",
-      "description": "A short, plain-language note about what gets logged when you visit this site."
+      "title": "Confidentialité",
+      "description": "Une note brève et simple sur ce qui est enregistré lorsque vous visitez ce site."
     }
   },
   "UnderConstruction": {
-    "title": "Under construction",
-    "subtitle": "Come back soon."
+    "title": "En construction",
+    "subtitle": "Revenez bientôt."
   },
   "Hero": {
-    "kickerLeftFallback": "Field notes",
-    "kickerRightFallback": "From the organ loft",
-    "headingFallback": "Visits to {{old organs}}",
-    "taglineFallback": "Recordings, photographs and registers from one Saturday at a time, gathered in the Netherlands and beyond.",
-    "cornerLeftSubFallback": "A field journal",
-    "cornerRightSubFallback": "The low countries",
-    "stats": "Since {firstYear} · {totalCount} organs"
+    "kickerLeftFallback": "Notes de terrain",
+    "kickerRightFallback": "Depuis la tribune",
+    "headingFallback": "Visites d'{{orgues anciens}}",
+    "taglineFallback": "Enregistrements, photographies et jeux d'orgues, un samedi à la fois, recueillis aux Pays-Bas et au-delà.",
+    "cornerLeftSubFallback": "Un journal de terrain",
+    "cornerRightSubFallback": "Les plats pays",
+    "stats": "Depuis {firstYear} · {totalCount} orgues"
   },
   "JournalHero": {
-    "kickerLeftFallback": "Writings",
-    "kickerRightFallback": "A field journal",
-    "headingFallback": "The {{Journal}}",
-    "taglineFallback": "Essays, fragments, half-finished thoughts — published when there is something worth saying, usually after a bench has changed my mind about something.",
-    "cornerLeftSubFallback": "Notes between visits",
-    "cornerRightSubFallback": "The low countries",
-    "stats": "Since {firstYear} · {totalCount} entries"
+    "kickerLeftFallback": "Écrits",
+    "kickerRightFallback": "Un journal de terrain",
+    "headingFallback": "Le {{Journal}}",
+    "taglineFallback": "Essais, fragments, pensées inachevées — publiés quand il y a quelque chose à dire, généralement après qu'un banc m'ait fait changer d'avis.",
+    "cornerLeftSubFallback": "Notes entre les visites",
+    "cornerRightSubFallback": "Les plats pays",
+    "stats": "Depuis {firstYear} · {totalCount} articles"
   },
   "OrgansArchive": {
-    "title": "The archive",
-    "filteredTitle": "Visits in <city>{city}</city>",
-    "byCity": "By city",
-    "browseAll": "Browse all  →",
-    "shownOfTotal": "{shown} of {total}",
-    "clearFilter": "clear filter ✕",
-    "loading": "Loading…",
-    "endOfArchive": "— end of the archive —"
+    "title": "Les archives",
+    "filteredTitle": "Visites à <city>{city}</city>",
+    "byCity": "Par ville",
+    "browseAll": "Tout parcourir →",
+    "shownOfTotal": "{shown} sur {total}",
+    "clearFilter": "effacer le filtre ✕",
+    "loading": "Chargement…",
+    "endOfArchive": "— fin des archives —"
   },
   "OrganCard": {
-    "readMore": "Read more",
-    "audioFragment": "Audio fragment",
-    "video": "Video",
-    "placeholderLabel": "organ photograph"
+    "readMore": "Lire la suite",
+    "audioFragment": "Extrait audio",
+    "video": "Vidéo",
+    "placeholderLabel": "photographie d'orgue"
   },
   "JournalList": {
-    "filter": "Filter",
-    "all": "All",
+    "filter": "Filtrer",
+    "all": "Tous",
     "categories": {
-      "travelogue": "Travel",
-      "workshop": "Workshop",
-      "memorial": "Memorial",
-      "home-organ": "Home organ",
-      "biography": "Biography",
-      "news": "News",
+      "travelogue": "Voyage",
+      "workshop": "Atelier",
+      "memorial": "Mémorial",
+      "home-organ": "Orgue de salon",
+      "biography": "Biographie",
+      "news": "Actualités",
       "collection": "Collection",
-      "other": "Other"
+      "other": "Autre"
     },
     "categoryKinds": {
-      "travelogue": "travelogue",
-      "workshop": "visit",
-      "memorial": "memorial",
-      "home-organ": "home organ",
-      "biography": "biography",
-      "news": "news",
+      "travelogue": "récit de voyage",
+      "workshop": "visite",
+      "memorial": "mémorial",
+      "home-organ": "orgue de salon",
+      "biography": "biographie",
+      "news": "actualité",
       "collection": "collection",
       "other": "note"
     },
-    "entriesCount": "{count, plural, one {# entry} other {# entries}}",
-    "emptyCategory": "Nothing in this category yet.",
+    "entriesCount": "{count, plural, one {# article} other {# articles}}",
+    "emptyCategory": "Rien dans cette catégorie pour le moment.",
     "pagination": {
-      "newer": "← Newer",
-      "older": "Older →",
-      "pageOf": "Page {current} of {total}"
+      "newer": "← Plus récents",
+      "older": "Plus anciens →",
+      "pageOf": "Page {current} sur {total}"
     },
-    "hasAudio": "Has audio",
-    "readEntry": "Read entry",
-    "minRead": "{count, plural, one {# min read} other {# min read}}"
+    "hasAudio": "Avec audio",
+    "readEntry": "Lire l'article",
+    "minRead": "{count, plural, one {# min de lecture} other {# min de lecture}}"
   },
   "Specs": {
-    "specification": "Specification",
-    "manuals": "Manuals",
-    "stops": "Stops",
-    "pitch": "Pitch",
-    "temperament": "Temperament",
-    "action": "Action",
-    "couplings": "Couplings",
-    "accessories": "Accessories",
-    "built": "Built {year}",
-    "restored": "Restored {year}"
+    "specification": "Composition",
+    "manuals": "Claviers",
+    "stops": "Jeux",
+    "pitch": "Diapason",
+    "temperament": "Tempérament",
+    "action": "Traction",
+    "couplings": "Accouplements",
+    "accessories": "Accessoires",
+    "built": "Construit en {year}",
+    "restored": "Restauré en {year}"
   },
   "Scores": {
     "filters": {
-      "all": "All",
+      "all": "Tous",
       "baroque": "Baroque",
-      "dutch": "Dutch School",
-      "romantic": "Romantic",
-      "modern": "Modern",
+      "dutch": "École hollandaise",
+      "romantic": "Romantique",
+      "modern": "Moderne",
       "arrangement": "Arrangements"
     },
     "sortBy": {
-      "composer": "Composer",
-      "year": "Year",
-      "edition": "Edition №"
+      "composer": "Compositeur",
+      "year": "Année",
+      "edition": "Édition n°"
     },
-    "headerKickerFallback": "A small library",
-    "headerHeadingFallback": "Editions, fingerings, {{working scores}}.",
-    "headerTaglineFallback": "Working editions I've prepared for my own use — most for specific instruments visited in the field notes. Fingerings and registrations are suggestions, not prescriptions. All scores are free to download for non-commercial study.",
-    "noticeBodyFallback": "These scores are shared for personal study and church use. If you would like to perform or record one, a short email is appreciated — and please credit the edition.",
-    "noticeEditionLineFallback": "Edition Webbink",
-    "writeToMe": "Write to me",
-    "emptyTitle": "The library is just being set up.",
-    "emptyBody": "Editions will appear here as I prepare them. Check back, or write to me below.",
-    "editionsCount": "{count, plural, one {# edition} other {# editions}}",
-    "sort": "Sort: {label}",
-    "period": "Period",
-    "download": "Download",
-    "feature": "Featured edition",
-    "featuredHeader": "Featured edition",
-    "editionNumber": "No. {number}",
+    "headerKickerFallback": "Une petite bibliothèque",
+    "headerHeadingFallback": "Éditions, doigtés, {{partitions de travail}}.",
+    "headerTaglineFallback": "Éditions de travail que j'ai préparées pour mon propre usage — la plupart pour des instruments spécifiques visités dans les notes de terrain. Les doigtés et les registrations sont des suggestions, pas des prescriptions. Toutes les partitions sont à télécharger gratuitement pour une étude non commerciale.",
+    "noticeBodyFallback": "Ces partitions sont partagées pour l'étude personnelle et l'usage liturgique. Si vous souhaitez en jouer ou en enregistrer une, un court e-mail est apprécié — et veuillez créditer l'édition.",
+    "noticeEditionLineFallback": "Édition Webbink",
+    "writeToMe": "Écrivez-moi",
+    "emptyTitle": "La bibliothèque est en cours de création.",
+    "emptyBody": "Les éditions apparaîtront ici au fur et à mesure que je les préparerai. Revenez plus tard, ou écrivez-moi ci-dessous.",
+    "editionsCount": "{count, plural, one {# édition} other {# éditions}}",
+    "sort": "Trier : {label}",
+    "period": "Période",
+    "download": "Télécharger",
+    "feature": "Édition en vedette",
+    "featuredHeader": "Édition en vedette",
+    "editionNumber": "N° {number}",
     "meta": {
-      "catalog": "Catalog",
-      "period": "Period",
+      "catalog": "Catalogue",
+      "period": "Période",
       "pages": "Pages",
-      "edition": "Edition"
+      "edition": "Édition"
     },
-    "downloadPdf": "Download PDF",
-    "noPdfYet": "No PDF yet",
+    "downloadPdf": "Télécharger le PDF",
+    "noPdfYet": "Pas encore de PDF",
     "editionLineSuffix": "· {year}",
-    "pagesShort": "{count} pp",
+    "pagesShort": "{count} p.",
     "pdfTag": "PDF",
-    "comingSoon": "soon",
-    "libraryHeading": "The <em>library</em>",
-    "showing": "Showing {shown} of {total}",
-    "emptyFilter": "Nothing in this category yet — try another filter."
+    "comingSoon": "bientôt",
+    "libraryHeading": "La <em>bibliothèque</em>",
+    "showing": "{shown} sur {total}",
+    "emptyFilter": "Rien dans cette catégorie pour le moment — essayez un autre filtre."
   },
   "About": {
-    "emptyTitle": "About me",
-    "emptyBody": "This page hasn't been set up in the Studio yet.",
-    "emptyHint": "Open <code>/admin → About page</code> to add the content.",
+    "emptyTitle": "À propos",
+    "emptyBody": "Cette page n'a pas encore été configurée dans le Studio.",
+    "emptyHint": "Ouvrez <code>/admin → Page À propos</code> pour ajouter le contenu.",
     "trajectoryNum": "01",
-    "trajectoryLabel": "Trajectory",
-    "trajectoryHeading": "A short <em>chronology</em> — how I got here.",
+    "trajectoryLabel": "Parcours",
+    "trajectoryHeading": "Une brève <em>chronologie</em> — comment j'en suis arrivé là.",
     "repertoireNum": "02",
-    "repertoireLabel": "What I play",
-    "repertoireHeading": "Repertoire I keep <em>returning to</em>."
+    "repertoireLabel": "Ce que je joue",
+    "repertoireHeading": "Le répertoire auquel je <em>reviens</em> sans cesse."
   },
   "Privacy": {
-    "emptyTitle": "Privacy",
-    "emptyBody": "This page hasn't been set up in the Studio yet.",
-    "emptyHint": "Open <code>/admin → Privacy page</code> to add the content.",
-    "lastUpdated": "Last updated {date}"
+    "emptyTitle": "Confidentialité",
+    "emptyBody": "Cette page n'a pas encore été configurée dans le Studio.",
+    "emptyHint": "Ouvrez <code>/admin → Page Confidentialité</code> pour ajouter le contenu.",
+    "lastUpdated": "Dernière mise à jour le {date}"
   },
   "Elsewhere": {
-    "title": "Elsewhere",
-    "emptyTitle": "Elsewhere",
-    "emptyBody": "This page hasn't been set up in the Studio yet.",
-    "emptyHint": "Open <code>/admin → Elsewhere page</code> to add links.",
-    "noLinks": "No links yet."
+    "title": "Ailleurs",
+    "emptyTitle": "Ailleurs",
+    "emptyBody": "Cette page n'a pas encore été configurée dans le Studio.",
+    "emptyHint": "Ouvrez <code>/admin → Page Ailleurs</code> pour ajouter des liens.",
+    "noLinks": "Pas encore de liens."
   },
   "JournalArticle": {
-    "breadcrumbHome": "The journal",
-    "previousEntry": "← Previous entry",
-    "nextEntry": "Next entry →",
-    "endOfJournal": "— end of the journal —",
-    "minRead": "{count, plural, one {# min read} other {# min read}}",
+    "breadcrumbHome": "Le journal",
+    "previousEntry": "← Article précédent",
+    "nextEntry": "Article suivant →",
+    "endOfJournal": "— fin du journal —",
+    "minRead": "{count, plural, one {# min de lecture} other {# min de lecture}}",
     "categories": {
-      "travelogue": "Travelogue",
-      "workshop": "Workshop",
+      "travelogue": "Récit de voyage",
+      "workshop": "Atelier",
       "memorial": "In memoriam",
-      "home-organ": "Home organ",
-      "biography": "Biography",
-      "news": "News",
+      "home-organ": "Orgue de salon",
+      "biography": "Biographie",
+      "news": "Actualités",
       "collection": "Collection",
-      "other": "Field note"
+      "other": "Note de terrain"
     }
   },
   "OrganArticle": {
-    "breadcrumbAll": "All organs",
-    "fieldNote": "Field note",
-    "previousVisit": "← Previous visit",
-    "nextVisit": "Next visit →",
-    "endOfJournal": "— end of the journal —",
-    "minRead": "{count, plural, one {# min read} other {# min read}}"
+    "breadcrumbAll": "Tous les orgues",
+    "fieldNote": "Note de terrain",
+    "previousVisit": "← Visite précédente",
+    "nextVisit": "Visite suivante →",
+    "endOfJournal": "— fin du journal —",
+    "minRead": "{count, plural, one {# min de lecture} other {# min de lecture}}"
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
