@@ -77,6 +77,12 @@ describe('walker registry', () => {
     expect(block.children[0].text).toBe('[en] Hello.')
   })
 
+  it('returns empty units and passes through doc when type is unknown', () => {
+    expect(extractAll({}, 'unknownType', 'nl').units).toEqual([])
+    const doc = { foo: 'bar' }
+    expect(applyAll(doc, 'unknownType', [], 'en')).toBe(doc)
+  })
+
   it('extracts and applies a score with i18n arrays', () => {
     const doc = {
       _id: 'score-x',

@@ -85,6 +85,53 @@ describe('i18n-array walker', () => {
     expect(arr.find((e) => e.language === 'de')).toMatchObject({ value: 'DE.' })
   })
 
+  it('skips paths that have no entry in the source locale', () => {
+    const doc = {
+      blurb: [
+        { _key: 'k', _type: 'internationalizedArrayTextValue', language: 'en', value: 'EN only' },
+      ],
+    }
+    expect(extractI18nArrayUnits(doc, cfg.slice(0, 1), 'nl')).toEqual([])
+  })
+
+  it('skips paths whose source value is empty/whitespace', () => {
+    const doc = {
+      blurb: [
+        { _key: 'k', _type: 'internationalizedArrayTextValue', language: 'nl', value: '   ' },
+      ],
+    }
+    expect(extractI18nArrayUnits(doc, cfg.slice(0, 1), 'nl')).toEqual([])
+  })
+
+  it('apply ignores units for paths not in the config', () => {
+    const doc = {
+      blurb: [
+        { _key: 'k', _type: 'internationalizedArrayTextValue', language: 'nl', value: 'A' },
+      ],
+    }
+    const result = applyI18nArrayUnits(
+      doc,
+      cfg.slice(0, 1),
+      [{ id: 'unrelated', sourceText: 'X' }],
+      'en',
+    )
+    expect(result).toEqual(doc)
+  })
+
+  it('handles a missing source-locale entry by initialising the array', () => {
+    const doc = {}
+    const result = applyI18nArrayUnits(
+      doc,
+      cfg.slice(0, 1),
+      [{ id: 'blurb', sourceText: 'EN.' }],
+      'en',
+    )
+    const arr = result.blurb as Array<{ language: string; value: string }>
+    expect(arr).toEqual([
+      expect.objectContaining({ language: 'en', value: 'EN.' }),
+    ])
+  })
+
   it('does not mutate the input', () => {
     const doc = {
       blurb: [

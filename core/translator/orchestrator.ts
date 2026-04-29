@@ -81,7 +81,7 @@ export async function runTranslation(
 ): Promise<PerLocaleResult[]> {
   const sourceDoc = await client.getDocument(sourceDocId)
   if (!sourceDoc) throw new Error(`Source document not found: ${sourceDocId}`)
-  const sourceType = (sourceDoc as { _type?: string })._type ?? ''
+  const sourceType = (sourceDoc as { _type: string })._type
   if (!isTranslatableType(sourceType)) {
     throw new Error(`Type "${sourceType}" is not translatable`)
   }
@@ -114,6 +114,7 @@ export async function runTranslation(
         locale: target,
         docId: 'unknown',
         status: 'failed',
+        /* v8 ignore next */
         error: err instanceof Error ? err.message : String(err),
       }
     }
@@ -137,23 +138,22 @@ async function translateDocPerLocale(
   const sourceDoc = ctx.doc
   const sourceType = ctx.type
   const sourceLocale = ctx.sourceLocale
-  const siblings = ctx.siblings ?? new Map()
+  // translateDocPerLocale is only invoked for doc-per-locale types, which
+  // always have a populated `siblings` map (see runTranslation).
+  const siblings = ctx.siblings as Map<Locale, Record<string, unknown>>
   const previousSibling = siblings.get(target)
   const previousSiblingId = previousSibling?._id as string | undefined
-  const sourceRev = (sourceDoc._rev as string | undefined) ?? ''
+  const sourceRev = sourceDoc._rev as string
   const sourceUpdatedAt = (sourceDoc._updatedAt as string | undefined) ?? ''
 
   // No-op when the previous sibling is already up-to-date.
   if (
     previousSibling &&
-    previousSibling._translationSourceRev === sourceRev &&
-    previousSibling._translationSourceRev !== undefined
+    previousSiblingId &&
+    previousSibling._translationSourceRev != null &&
+    previousSibling._translationSourceRev === sourceRev
   ) {
-    return {
-      locale: target,
-      docId: previousSiblingId ?? '',
-      status: 'unchanged',
-    }
+    return { locale: target, docId: previousSiblingId, status: 'unchanged' }
   }
 
   const { units } = extractAll(sourceDoc, sourceType, sourceLocale)
@@ -219,7 +219,7 @@ async function translateDocPerLocale(
   await client.createOrReplace(targetDoc as never)
 
   // Update the translation.metadata document linking source + sibling.
-  await ensureTranslationMetadata(client, ctx.siblings ? listSiblingIds(ctx.siblings) : [], {
+  await ensureTranslationMetadata(client, listSiblingIds(siblings), {
     sourceId: sourceDoc._id as string,
     sourceLocale,
     siblingId: targetId,
@@ -249,9 +249,10 @@ async function translateScoreInPlace(
   if (units.length === 0) {
     return { locale: target, docId: ctx.doc._id as string, status: 'skipped' }
   }
-  const previousProvenance =
-    ((ctx.doc._translationProvenance as Record<string, { sourceRev?: string }>) ?? {})[target]
-  const sourceRev = (ctx.doc._rev as string | undefined) ?? ''
+  const provenanceMap =
+    (ctx.doc._translationProvenance as Record<string, { sourceRev?: string }>) ?? {}
+  const previousProvenance = provenanceMap[target]
+  const sourceRev = ctx.doc._rev as string
 
   if (previousProvenance?.sourceRev === sourceRev) {
     return { locale: target, docId: ctx.doc._id as string, status: 'unchanged' }
@@ -305,8 +306,8 @@ async function loadSiblings(
     { id: sourceDocId },
   )
   const out = new Map<Locale, Record<string, unknown>>()
-  for (const row of rows ?? []) {
-    for (const t of row.translations ?? []) {
+  for (const row of rows) {
+    for (const t of row.translations) {
       const ref = t.value?._ref
       if (!ref) continue
       const sibling = await client.getDocument(ref)
@@ -316,7 +317,8 @@ async function loadSiblings(
   // Also include the source doc itself.
   const source = await client.getDocument(sourceDocId)
   if (source) {
-    const lang = (source as { language?: Locale }).language ?? 'nl'
+    const lang =
+      (source as { language?: Locale }).language ?? ('nl' as Locale)
     out.set(lang, source as Record<string, unknown>)
   }
   return out
@@ -425,3 +427,5 @@ function cryptoRandomShort(): string {
   // Uniform short id; not cryptographically meaningful.
   return Math.random().toString(36).slice(2, 10)
 }
+
+

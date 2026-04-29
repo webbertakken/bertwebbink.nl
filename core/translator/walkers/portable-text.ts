@@ -92,9 +92,12 @@ function mergeSpansToText(block: PortableTextBlock): {
   text: string
   spans: Array<{ marks: string[]; index: number }>
 } {
+  // Caller (`extractPortableTextUnits`) guarantees children is an array.
+  const children = block.children as PortableTextSpan[]
   const text: string[] = []
   const spans: Array<{ marks: string[]; index: number }> = []
-  ;(block.children ?? []).forEach((span, idx) => {
+  for (let idx = 0; idx < children.length; idx++) {
+    const span = children[idx]
     const marks = span.marks ?? []
     spans.push({ marks, index: idx })
     if (marks.length === 0) {
@@ -103,7 +106,7 @@ function mergeSpansToText(block: PortableTextBlock): {
       const tag = `m${idx + 1}`
       text.push(`<${tag}>${span.text}</${tag}>`)
     }
-  })
+  }
   return { text: text.join(''), spans }
 }
 

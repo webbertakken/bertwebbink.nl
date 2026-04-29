@@ -64,6 +64,11 @@ describe('diff-aware updates', () => {
     expect(result.removedIds).toEqual([])
   })
 
+  it('falls back to source text when neither translator nor reused covers a unit', () => {
+    const source = [{ id: 'a', sourceText: 'A' }]
+    expect(combineTranslations(source, [], [])).toEqual([{ id: 'a', sourceText: 'A' }])
+  })
+
   it('combines translator output and reused units in source order', () => {
     const source = [
       { id: 'block[0]', sourceText: 'A' },
