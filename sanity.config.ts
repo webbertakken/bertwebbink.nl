@@ -27,6 +27,9 @@ import {
   SUPPORTED_LANGUAGES,
   type Locale,
 } from '@/core/i18n/locales'
+import { translateAllAction } from '@/sanity/actions/translate'
+import { publishAllLocalesAction } from '@/sanity/actions/publishAll'
+import { isTranslatableType } from '@/core/translator/orchestrator'
 
 /** Document types that use document-per-locale (one full document per language). */
 const LOCALIZED_DOC_TYPES = [
@@ -273,6 +276,13 @@ export default defineConfig({
   // Schema configuration, imported from ./src/schemaTypes/index.ts
   schema: {
     types: schemaTypes,
+  },
+
+  document: {
+    actions: (prev, context) => {
+      if (!isTranslatableType(context.schemaType)) return prev
+      return [...prev, publishAllLocalesAction, translateAllAction]
+    },
   },
 
   // Custom studio chrome: widens the document pane so the PortableText

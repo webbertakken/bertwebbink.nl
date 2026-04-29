@@ -24,6 +24,9 @@
     "check-types": "tsgo --noEmit",
     "check-types:tsc": "tsc --noEmit",
     "cleanup:pre-i18n": "tsx scripts/cleanup-pre-i18n.ts",
+    "migrate:i18n": "tsx scripts/migrate-add-language.ts",
+    "translate:ui": "tsx scripts/translate-ui-messages.ts",
+    "backup:sanity": "tsx scripts/backup-sanity.ts",
     "extract-types": "sanity schema extract --enforce-required-fields"
   },
   "resolutions": {

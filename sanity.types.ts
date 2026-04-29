@@ -263,6 +263,13 @@ export type Settings = {
   _updatedAt: string
   _rev: string
   language?: string
+  autoPublishTranslations?: boolean
+  glossary?: Array<{
+    term: string
+    translation?: string
+    _type: 'glossaryEntry'
+    _key: string
+  }>
   title: string
   wordmark?: string
   tagline?: string
@@ -760,6 +767,13 @@ export type SettingsQueryResult = {
   _updatedAt: string
   _rev: string
   language?: string
+  autoPublishTranslations?: boolean
+  glossary?: Array<{
+    term: string
+    translation?: string
+    _type: 'glossaryEntry'
+    _key: string
+  }>
   title: string
   wordmark?: string
   tagline?: string

@@ -184,19 +184,19 @@ The `localization.md` skill §3 recommends a `locale` document type in Sanity. W
 
 All existing documents are currently un-languaged Dutch.
 
-- [ ] Write `scripts/migrate-add-language.ts`:
+- [x] Write `scripts/migrate-add-language.ts`:
   - Connects with `SANITY_API_WRITE_TOKEN`
   - For document-per-locale types (`journal`, `organ`, all singletons): patches each doc with `language: 'nl'`
   - For singletons specifically: also renames `_id` from the legacy id (e.g. `siteAbout`, `siteJournalPage`, `siteSettings`) to the symmetric `{type}-nl` pattern (e.g. `about-nl`, `journalPage-nl`, `settings-nl`). Use a transactional create-new + delete-old + patch-references sequence; never lose data mid-rename
   - For `score` (field-level): converts each flat field (`era`, `forInstrument`, `edition`, `blurb`) into an internationalised array with one entry `{ _key: 'nl', value: <existing flat value> }`
   - Idempotent (skips docs already migrated, detected by presence of `language` field on doc-per-locale types or array-shape on `score` fields)
   - Logs every patch
-- [ ] Update every reference to legacy singleton ids in code:
+- [x] Update every reference to legacy singleton ids in code:
   - `sanity.config.ts` Presentation `mainDocuments` resolver filters
   - `sanity/lib/queries.ts` GROQ filters that hardcode `_id == "siteAbout"`, etc.
   - Any other call sites; grep for `"site` and `__i18n_`
-- [ ] Add to `package.json`: `"migrate:i18n": "tsx scripts/migrate-add-language.ts"`
-- [ ] Dry-run mode (`--dry-run`) prints intended patches and id renames without writing
+- [x] Add to `package.json`: `"migrate:i18n": "tsx scripts/migrate-add-language.ts"`
+- [x] Dry‐run mode (`--dry-run`) prints intended patches and id renames without writing
 - [ ] Run against staging dataset first, verify count, then production
 
 ### A4. GROQ query updates
@@ -256,7 +256,7 @@ Location: `core/translator/`
 
 The interface is shape-agnostic: a `TranslationUnit` is just `{ id, sourceText }`. The walkers in A7 are what change between Portable Text and field-level inputs - the translator itself never knows whether it's translating a PT body or a `score.blurb` array.
 
-- [x] `core/translator/types.ts` — interfaces:
+- [x] `core/translator/types.ts` - interfaces:
   ```ts
   export interface TranslationUnit {
     /** Stable, walker-scoped path. PT example: `block[2].child[0]`. Field-level example: `blurb`. */
@@ -280,23 +280,23 @@ The interface is shape-agnostic: a `TranslationUnit` is just `{ id, sourceText }
   }
   ```
   `documentContext.shape` lets the prompt builder hint the LLM ("these units are independent catalog-field strings, not paragraphs of running prose") without changing the wire format.
-- [x] `core/translator/gemini.ts` — `GeminiTranslator` (default)
+- [x] `core/translator/gemini.ts` - `GeminiTranslator` (default)
   - Uses `@google/genai` SDK (Google AI Studio key for dev/prod, Vertex AI optional later)
   - Default model: `gemini-2.5-pro` for production, `gemini-2.5-flash` available as cheap option / per-locale override
   - Uses `responseMimeType: 'application/json'` + `responseSchema` for guaranteed JSON output
   - Strong on JA/ZH/KO; the cost-quality sweet spot for our shape of work
   - Per-locale model override map in constructor options
-- [x] `core/translator/anthropic.ts` — `AnthropicTranslator`
+- [x] `core/translator/anthropic.ts` - `AnthropicTranslator`
   - Uses `@anthropic-ai/sdk`
   - Default model: `claude-sonnet-4-5` (pinned to a date-stamped version on release; symbolic alias allowed in dev)
   - Uses tool-use (structured JSON output) to guarantee schema compliance
   - Best fallback when Gemini structured output regresses on a specific doc
-- [x] `core/translator/openai.ts` — `OpenAITranslator`
+- [x] `core/translator/openai.ts` - `OpenAITranslator`
   - Uses `openai` SDK
   - Default model: `gpt-4o`
   - Uses `response_format: { type: 'json_schema' }` for structured output
-- [x] `core/translator/factory.ts` — picks implementation from env `TRANSLATOR_PROVIDER` (`gemini` | `anthropic` | `openai`, default `gemini`), exports `getTranslator()`
-- [x] `core/translator/prompts.ts` — system prompt builders shared across providers (provider‐specific quirks isolated to each implementation)
+- [x] `core/translator/factory.ts` - picks implementation from env `TRANSLATOR_PROVIDER` (`gemini` | `anthropic` | `openai`, default `gemini`), exports `getTranslator()`
+- [x] `core/translator/prompts.ts` - system prompt builders shared across providers (provider-specific quirks isolated to each implementation)
 - [x] Unit tests for all three translators against a small fixture (mocked HTTP)
 
 ### A7. Round-trip walkers
@@ -313,9 +313,9 @@ Goals: never lose `_key`, marks, markDefs, embedded `audio` / `video` / `image` 
   - [x] Preserves: marks via inline `<m1>...</m1>` markers (round-trip enforced in prompt)
   - [x] `applyPortableTextUnits(blocks, units)`: rewrites the PT tree by id, preserving every `_key`, `_type`, `markDefs`
 - [x] Tests with golden fixtures:
-  - [x] Plain prose round‐trips
+  - [x] Plain prose round-trips
   - [x] Marks (em, strong, code) preserved
-  - [ ] Links + their `markDefs` preserved (deferred — marks tested generically)
+  - [ ] Links + their `markDefs` preserved (deferred - marks tested generically)
   - [x] Audio/video/image blocks left structurally untouched, only captions translated
   - [x] Custom `embed` blocks left untouched
   - [x] `_key`s identical before and after
@@ -339,13 +339,13 @@ type InternationalisedArrayString = Array<{ _key: Locale; _type: 'internationali
 
 - [x] `core/translator/walkers/i18n-array.ts`:
   - [x] `extractI18nArrayUnits(doc, paths, sourceLocale)`: for each configured path, finds the entry where `language === sourceLocale`, emits one `TranslationUnit { id: "<path>", sourceText: entry.value }` (v5+ shape)
-  - [x] `applyI18nArrayUnits(doc, paths, units, targetLocale)`: writes/updates the entry where `language === targetLocale` for each path. If the entry doesn’t exist yet it’s appended with a fresh `_key`, `_type: '<corresponding>Value'`, `language: targetLocale`, `value: <translated>`
-  - [x] Preserves all non‐target‐locale entries verbatim
+  - [x] `applyI18nArrayUnits(doc, paths, units, targetLocale)`: writes/updates the entry where `language === targetLocale` for each path. If the entry doesn't exist yet it's appended with a fresh `_key`, `_type: '<corresponding>Value'`, `language: targetLocale`, `value: <translated>`
+  - [x] Preserves all non-target-locale entries verbatim
 - [x] Tests:
-  - [x] Translating to a brand‐new locale appends one new entry per path
-  - [x] Translating to an existing locale updates that entry’s `value` only
-  - [x] `score.composer` / `score.year` / `score.pdfFile` (non‐localised fields) untouched
-  - [x] Source‐locale entry never mutated
+  - [x] Translating to a brand-new locale appends one new entry per path
+  - [x] Translating to an existing locale updates that entry's `value` only
+  - [x] `score.composer` / `score.year` / `score.pdfFile` (non-localised fields) untouched
+  - [x] Source-locale entry never mutated
 
 #### A7.4 Per-type walker registry
 
@@ -353,7 +353,7 @@ A tiny dispatcher keeps the route logic clean.
 
 - [x] `core/translator/walkers/registry.ts` exports `walkersFor(type: string): WalkerSpec` plus `extractAll`/`applyAll` orchestrators:
   - `journal`, `organ`, all singletons → PT walker for body fields + plain field walker for `title`, `excerpt`, `alt`, `caption`, etc.
-  - `score` → i18n‐array walker for `forInstrument`, `edition`, `blurb` (`era` is the enum filter key, kept non-localised)
+  - `score` → i18n-array walker for `forInstrument`, `edition`, `blurb` (`era` is the enum filter key, kept non-localised)
   - `settings` → plain field walker for `title`, `wordmark`, `tagline`, `scoresNoticeBody`, `scoresEditionLine`
 - [x] Tests: registry returns correct walker compositions for every translatable type
 
@@ -366,7 +366,7 @@ A tiny dispatcher keeps the route logic clean.
 - [ ] Store on the translated doc (deferred to A9 orchestrator):
   - `_translationSourceRev`: the `_rev` of the source it was translated from
   - `_translationSourceUpdatedAt`: the source's `_updatedAt`
-- [x] Tests for: no‐op (nothing changed), single paragraph edit, paragraph insertion, paragraph deletion, full rewrite
+- [x] Tests for: no-op (nothing changed), single paragraph edit, paragraph insertion, paragraph deletion, full rewrite
 
 ### A9. API routes
 
@@ -374,7 +374,7 @@ Two routes back the two studio actions. Both share the same auth, validation, wa
 
 #### A9.1 `/api/translate` (powers "Translate to all locales")
 
-- [ ] `app/api/translate/route.ts`:
+- [x] `app/api/translate/route.ts`:
   - [ ] `POST { docId, targetLocales?: Locale[] }` - defaults to all non-source locales
   - [ ] Verifies caller is an authenticated Sanity user (calls `https://api.sanity.io/v1/users/me` with caller's token from `Authorization` header)
   - [ ] Verifies the doc's `_type` is in the translatable allow-list
@@ -391,9 +391,9 @@ Two routes back the two studio actions. Both share the same auth, validation, wa
 
 #### A9.2 `/api/publish-all` (powers "Publish to all locales")
 
-Wraps `/api/translate` with publish steps before and after. Designed to fail safely - see failure matrix in A10.2.
+Wraps `/api/translate` with publish steps before and after. Designed to fail safely — see failure matrix in A10.2.
 
-- [ ] `app/api/publish-all/route.ts`:
+- [x] `app/api/publish-all/route.ts`:
   - [ ] `POST { docId }`
   - [ ] Same auth + allow-list checks as `/api/translate`
   - [ ] Reads `autoPublishTranslations` flag from `settings` singleton (default `true`); when `false`, behaves as a translate-only request that leaves siblings as drafts
@@ -412,9 +412,9 @@ Wraps `/api/translate` with publish steps before and after. Designed to fail saf
 
 Two new actions, registered alongside the built-in `publish` (which stays per-locale and unchanged). Built-in `unpublish`, `duplicate`, `delete`, `discardChanges`, `restore` also stay untouched.
 
-#### A10.1 "Translate to all locales" - translate-only
+#### A10.1 "Translate to all locales" — translate‐only
 
-- [ ] `sanity/actions/translate.tsx` - defines `translateAllAction`:
+- [x] `sanity/actions/translate.tsx` — defines `translateAllAction`:
   - Visible on all translatable doc types
   - Hidden on non-source-language docs for document-per-locale types (only visible when editing the Dutch original); always visible on `score` since it's one doc
   - On click: opens a dialog showing per-locale status (✓ up to date, ⚠ stale, ✗ not yet translated, ⛔ manual edit detected)
@@ -424,15 +424,15 @@ Two new actions, registered alongside the built-in `publish` (which stays per-lo
   - On finish: refreshes the studio's doc cache so siblings appear immediately
 - [ ] Tests: action visibility logic; dialog rendering with mocked status
 
-#### A10.2 "Publish to all locales" - translate + publish
+#### A10.2 "Publish to all locales" — translate + publish
 
-- [ ] `sanity/actions/publishAll.tsx` - defines `publishAllLocalesAction`:
+- [x] `sanity/actions/publishAll.tsx` — defines `publishAllLocalesAction`:
   - Visible on all translatable doc types, only on the source-language document (NL) for document-per-locale types; on `score`, always visible
   - Disabled when source draft is empty / has no diff vs. published
   - On click: opens a confirmation dialog summarising what will happen ("Publish source → translate 7 stale + 3 missing locales → publish 10 siblings")
   - On confirm: calls `/api/publish-all` and renders SSE progress with per-step state
   - On finish: refreshes the studio's doc cache; surfaces a banner with any partial failures and a one-click "Retry failed" button that re-hits `/api/publish-all` (idempotent)
-- [ ] Sanity config: register both actions via `document.actions` reducer in `sanity.config.ts`. Existing `publish` action stays first in the menu; `publishAllLocalesAction` is added next to it; `translateAllAction` lives in the secondary menu (three-dot)
+- [x] Sanity config: register both actions via `document.actions` reducer in `sanity.config.ts`. Existing `publish` action stays first in the menu; `publishAllLocalesAction` is added next to it; `translateAllAction` lives in the secondary menu (three‐dot)
 - [ ] Tests: visibility logic per type and per language; confirmation dialog renders the expected summary; partial-failure banner shows correct retry semantics
 
 #### A10.3 Failure matrix
@@ -459,9 +459,9 @@ Design rules baked into the matrix:
 
 #### A10.4 `autoPublishTranslations` flag
 
-- [ ] Add field to the `settings` singleton: `autoPublishTranslations: boolean`, default `true`
-- [ ] When `false`: `/api/publish-all` performs steps 1-3 only, skips step 4. Translated siblings remain as drafts; the post-run banner says "Drafts created in 10 locales. Review and publish each."
-- [ ] When `true`: full flow as specified above
+- [x] Add field to the `settings` singleton: `autoPublishTranslations: boolean`, default `true`
+- [x] When `false`: `/api/publish-all` performs steps 1–3 only, skips step 4. Translated siblings remain as drafts; the post‐run banner says "Drafts created in 10 locales. Review and publish each."
+- [x] When `true`: full flow as specified above
 - [ ] Tests: flag toggles flow; flag-off path leaves siblings as drafts; flag-on path publishes them
 
 ### A11. Stale indicator
@@ -470,13 +470,13 @@ Design rules baked into the matrix:
 - [ ] Implement via a custom `documentInternationalization` `languageField` decorator or a custom Studio component
 - [ ] Tooltip shows "Source updated since this translation; click translate to update"
 
-### A12. Glossary / do-not-translate
+### A12. Glossary / do‐not‐translate
 
-Organ-specific Dutch terms must round-trip untouched: `Hoofdwerk`, `Bovenwerk`, `Rugwerk`, `Pedaal`, `Borstwerk`, `Zwelwerk`, `tremulant`, `koppel`, `setzer`, plus builder names and place names.
+Organ‐specific Dutch terms must round‐trip untouched: `Hoofdwerk`, `Bovenwerk`, `Rugwerk`, `Pedaal`, `Borstwerk`, `Zwelwerk`, `tremulant`, `koppel`, `setzer`, plus builder names and place names.
 
-- [ ] Add `glossary: array<{term, doNotTranslate?: boolean, translations?: {locale: string}}>` to the `settings` singleton (single global glossary for now)
-- [ ] Translator passes glossary in every request as a `do not translate these terms; if a translation is given, use it` instruction
-- [ ] Test: a paragraph containing `Hoofdwerk` in NL still says `Hoofdwerk` in EN/DE/JA output
+- [x] Add `glossary` field to the `settings` singleton (single global glossary; `term` + `translation`, where `translation = "DO_NOT_TRANSLATE"` locks a term verbatim)
+- [x] Translator system prompt includes glossary instructions (`buildSystemPrompt` in `core/translator/prompts.ts`)
+- [ ] Test: a paragraph containing `Hoofdwerk` in NL still says `Hoofdwerk` in EN/DE/JA output (deferred — needs live LLM)
 
 ### A13. Slugs
 
@@ -553,18 +553,18 @@ Output: `messages/en.json` (source) - flat namespaced keys, e.g.:
 
 ### B4. Seed the other 10 locales
 
-- [ ] `scripts/translate-ui-messages.ts`:
+- [x] `scripts/translate-ui-messages.ts`:
   - Reads `messages/en.json`
   - For each non-English locale: reads existing `messages/{locale}.json` (if any), diffs against `en.json`, sends only changed/new keys to `Translator`, merges
   - Preserves manual overrides (key-by-key check: if previous EN value matches what's stored in a `_lastSeenSource` sidecar, the translation is auto and can be replaced; otherwise it's manual and skipped)
   - Sidecar file `messages/.last-seen-en.json` tracks the EN version each translation was made from
-- [ ] `package.json`: `"translate:ui": "tsx scripts/translate-ui-messages.ts"`
-- [ ] Initial run produces 10 starter files
-- [ ] Manual review pass for `nl` (since Dutch is not the UI source, the editor will likely want to fine-tune)
+- [x] `package.json`: `"translate:ui": "tsx scripts/translate-ui-messages.ts"`
+- [ ] Initial run produces 10 starter files (deferred — needs live LLM API key)
+- [ ] Manual review pass for `nl` (since Dutch is not the UI source, the editor will likely want to fine‐tune)
 
 ### B5. Language picker
 
-- [ ] `app/components/landing/LanguagePicker.tsx`:
+- [x] `app/components/landing/LanguagePicker.tsx`:
   - Top-right of `Nav`, before the hamburger on mobile, after the desktop links on desktop
   - Trigger: current locale's endonym + small chevron (e.g. "Nederlands ▾")
   - Dropdown: list of all 11 endonyms; current locale highlighted; click switches locale
