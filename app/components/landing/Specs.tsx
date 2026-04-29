@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import { dataAttr } from '@/sanity/lib/utils'
 
 const organAttr = (id: string, path: string) =>
@@ -97,29 +99,30 @@ function NamedList({
 }
 
 export function Specs({ organId, builder, year, disposition }: SpecsProps) {
+  const t = useTranslations('Specs')
   const d: Disposition = disposition ?? {}
   const dispAttr = (path: string) =>
     organId ? organAttr(organId, `disposition.${path}`) : undefined
   const stats: { key: string; label: string; value: string; field: string }[] = []
   if (d.manuals != null)
-    stats.push({ key: 'manuals', label: 'Manuals', value: String(d.manuals), field: 'manuals' })
+    stats.push({ key: 'manuals', label: t('manuals'), value: String(d.manuals), field: 'manuals' })
   if (d.stops != null)
-    stats.push({ key: 'stops', label: 'Stops', value: String(d.stops), field: 'stops' })
+    stats.push({ key: 'stops', label: t('stops'), value: String(d.stops), field: 'stops' })
   if (d.pitch)
-    stats.push({ key: 'pitch', label: 'Pitch', value: d.pitch, field: 'pitch' })
+    stats.push({ key: 'pitch', label: t('pitch'), value: d.pitch, field: 'pitch' })
   if (d.temperament)
     stats.push({
       key: 'temperament',
-      label: 'Temperament',
+      label: t('temperament'),
       value: d.temperament,
       field: 'temperament',
     })
   if (d.action)
-    stats.push({ key: 'action', label: 'Action', value: d.action, field: 'action' })
+    stats.push({ key: 'action', label: t('action'), value: d.action, field: 'action' })
 
   const builtLine = [
-    year ? `Built ${year}` : null,
-    d.restoredYear ? `Restored ${d.restoredYear}` : null,
+    year ? t('built', { year }) : null,
+    d.restoredYear ? t('restored', { year: d.restoredYear }) : null,
   ]
     .filter(Boolean)
     .join(' · ')
@@ -127,7 +130,7 @@ export function Specs({ organId, builder, year, disposition }: SpecsProps) {
   return (
     <aside className="lg:sticky lg:top-8">
       <h3 className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-4 pb-3 border-b border-rule-soft">
-        Specification
+        {t('specification')}
       </h3>
       {builder && (
         <p
@@ -224,7 +227,7 @@ export function Specs({ organId, builder, year, disposition }: SpecsProps) {
           })}
           {d.couplings && d.couplings.length > 0 && (
             <NamedList
-              title="Couplings"
+              title={t('couplings')}
               items={d.couplings as NamedItem[]}
               organId={organId}
               field="couplings"
@@ -232,7 +235,7 @@ export function Specs({ organId, builder, year, disposition }: SpecsProps) {
           )}
           {d.accessories && d.accessories.length > 0 && (
             <NamedList
-              title="Accessories"
+              title={t('accessories')}
               items={d.accessories as NamedItem[]}
               organId={organId}
               field="accessories"

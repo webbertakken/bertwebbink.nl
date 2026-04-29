@@ -1,3 +1,4 @@
+import { useFormatter, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Image } from 'next-sanity/image'
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
@@ -25,13 +26,6 @@ type OrganCardProps = {
   index?: number
   totalCount?: number
 }
-
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
 
 const IconAudio = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -77,6 +71,8 @@ const IconArrow = (props: React.SVGProps<SVGSVGElement>) => (
 )
 
 export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
+  const t = useTranslations('OrganCard')
+  const format = useFormatter()
   const padWidth = Math.max(2, String(totalCount ?? index).length)
   const hasAudio = organ.hasAudio
   const hasVideo = organ.hasVideo
@@ -92,7 +88,7 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
   })
 
   const locationLabel = organ.location ? `${organ.location.city}, ${organ.location.country}` : null
-  const placeholderLabel = organ.location?.building ?? 'organ photograph'
+  const placeholderLabel = organ.location?.building ?? t('placeholderLabel')
   const builderLine = [organ.builder, organ.year].filter(Boolean).join(' · ')
 
   return (
@@ -123,7 +119,7 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
         {hasAudio && (
           <span
             className="h-[30px] min-w-[30px] px-[9px] inline-flex items-center justify-center gap-1.5 bg-[oklch(0.99_0.004_85/0.92)] backdrop-blur-[8px] border border-[oklch(0.86_0.012_75/0.6)] rounded-full text-ink text-[10.5px]"
-            title="Audio fragment"
+            title={t('audioFragment')}
           >
             <IconAudio className="w-[13px] h-[13px]" />
           </span>
@@ -131,7 +127,7 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
         {hasVideo && (
           <span
             className="h-[30px] min-w-[30px] px-[9px] inline-flex items-center justify-center gap-1.5 bg-[oklch(0.99_0.004_85/0.92)] backdrop-blur-[8px] border border-[oklch(0.86_0.012_75/0.6)] rounded-full text-ink text-[10.5px]"
-            title="Video"
+            title={t('video')}
           >
             <IconVideo className="w-[13px] h-[13px]" />
           </span>
@@ -146,7 +142,13 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
               <span className="w-[3px] h-[3px] bg-ink-faint rounded-full opacity-70" />
             </>
           )}
-          <span>{fmtDate(organ.date)}</span>
+          <span>
+            {format.dateTime(new Date(organ.date), {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })}
+          </span>
         </div>
         <h3
           className="font-serif font-medium text-[27px] leading-[1.16] m-0 mb-2.5 text-ink text-balance"
@@ -162,7 +164,7 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
             {builderLine || organ.location?.building || ''}
           </span>
           <span className="text-ink inline-flex items-center gap-1.5 transition-colors duration-300 font-sans tracking-[0.04em] text-xs whitespace-nowrap group-hover:text-accent">
-            Read&nbsp;more
+            {t('readMore')}
             <IconArrow className="w-[14px] h-[14px]" />
           </span>
         </div>

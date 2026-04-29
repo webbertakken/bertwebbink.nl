@@ -1,65 +1,242 @@
 {
   "Nav": {
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "wordmarkFallback": "Bert Webbink",
-    "taglineFallback": "Organist",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기",
+    "wordmarkFallback": "베르트 웨빙크",
+    "taglineFallback": "오르가니스트",
     "items": {
-      "organs": "Organs",
-      "scores": "Scores",
-      "about": "About me",
-      "elsewhere": "Elsewhere"
+      "organs": "오르간",
+      "scores": "악보",
+      "about": "소개",
+      "elsewhere": "다른 곳"
     }
   },
   "Footer": {
-    "copyright": "© Bert Webbink, {year}",
+    "copyright": "© 베르트 웨빙크, {year}",
     "links": {
-      "privacy": "Privacy",
-      "elsewhere": "Elsewhere",
-      "contact": "Contact"
+      "privacy": "개인정보처리방침",
+      "elsewhere": "다른 곳",
+      "contact": "문의"
     }
   },
   "Crumbs": {
-    "home": "Home",
-    "organs": "Organs",
-    "journal": "Journal",
-    "scores": "Scores",
-    "about": "About",
-    "elsewhere": "Elsewhere",
-    "privacy": "Privacy"
+    "home": "홈",
+    "organs": "오르간",
+    "journal": "저널",
+    "scores": "악보",
+    "about": "소개",
+    "elsewhere": "다른 곳",
+    "privacy": "개인정보처리방침"
   },
   "LanguagePicker": {
-    "label": "Language",
-    "switchTo": "Switch to {language}"
+    "label": "언어",
+    "switchTo": "{language}로 전환"
   },
   "Metadata": {
     "journal": {
-      "title": "Journal",
-      "description": "Essays, fragments, half-finished thoughts — published when there is something worth saying."
+      "title": "저널",
+      "description": "에세이, 단편, 미완성 생각 — 할 말이 있을 때 발행됩니다."
     },
     "organs": {
-      "title": "Organs",
-      "description": "Field notes from organs visited across the Netherlands and beyond."
+      "title": "오르간",
+      "description": "네덜란드 및 그 외 지역에서 방문한 오르간에 대한 현장 기록."
     },
     "scores": {
-      "title": "Scores",
-      "description": "Working editions of organ scores prepared by Bert Webbink — fingerings, registrations, free to download for non-commercial study."
+      "title": "악보",
+      "description": "베르트 웨빙크가 준비한 오르간 악보 작업판 — 운지법, 레지스트레이션, 비상업적 학습용으로 무료 다운로드 가능."
     },
     "about": {
-      "title": "About me",
-      "description": "Bert Webbink — organist, teacher, quiet visitor of old buildings."
+      "title": "소개",
+      "description": "베르트 웨빙크 — 오르가니스트, 교사, 오래된 건물의 조용한 방문객."
     },
     "elsewhere": {
-      "title": "Elsewhere",
-      "description": "Curated links — choirs, churches, organ resources."
+      "title": "다른 곳",
+      "description": "선별된 링크 — 합창단, 교회, 오르간 자료."
     },
     "privacy": {
-      "title": "Privacy",
-      "description": "A short, plain-language note about what gets logged when you visit this site."
+      "title": "개인정보처리방침",
+      "description": "이 사이트 방문 시 기록되는 내용에 대한 짧고 쉬운 설명."
     }
   },
   "UnderConstruction": {
-    "title": "Under construction",
-    "subtitle": "Come back soon."
+    "title": "공사 중",
+    "subtitle": "곧 다시 방문해주세요."
+  },
+  "Hero": {
+    "kickerLeftFallback": "현장 기록",
+    "kickerRightFallback": "오르간 로프트에서",
+    "headingFallback": "{{오래된 오르간}} 방문",
+    "taglineFallback": "네덜란드 및 그 외 지역에서 한 번에 한 토요일씩 수집된 녹음, 사진 및 레지스터.",
+    "cornerLeftSubFallback": "현장 저널",
+    "cornerRightSubFallback": "저지대 국가",
+    "stats": "{firstYear}년부터 · 오르간 {totalCount}대"
+  },
+  "JournalHero": {
+    "kickerLeftFallback": "글",
+    "kickerRightFallback": "현장 저널",
+    "headingFallback": "그 {{저널}}",
+    "taglineFallback": "에세이, 단편, 미완성 생각 — 할 말이 있을 때, 보통 벤치가 어떤 것에 대한 내 생각을 바꾼 후에 발행됩니다.",
+    "cornerLeftSubFallback": "방문 사이의 기록",
+    "cornerRightSubFallback": "저지대 국가",
+    "stats": "{firstYear}년부터 · 게시물 {totalCount}개"
+  },
+  "OrgansArchive": {
+    "title": "아카이브",
+    "filteredTitle": "<city>{city}</city> 방문",
+    "byCity": "도시별",
+    "browseAll": "모두 보기 →",
+    "shownOfTotal": "{total}개 중 {shown}개",
+    "clearFilter": "필터 지우기 ✕",
+    "loading": "로딩 중…",
+    "endOfArchive": "— 아카이브 끝 —"
+  },
+  "OrganCard": {
+    "readMore": "더 읽기",
+    "audioFragment": "오디오 조각",
+    "video": "비디오",
+    "placeholderLabel": "오르간 사진"
+  },
+  "JournalList": {
+    "filter": "필터",
+    "all": "전체",
+    "categories": {
+      "travelogue": "여행",
+      "workshop": "워크숍",
+      "memorial": "추모",
+      "home-organ": "가정용 오르간",
+      "biography": "전기",
+      "news": "뉴스",
+      "collection": "컬렉션",
+      "other": "기타"
+    },
+    "categoryKinds": {
+      "travelogue": "여행기",
+      "workshop": "방문",
+      "memorial": "추모",
+      "home-organ": "가정용 오르간",
+      "biography": "전기",
+      "news": "뉴스",
+      "collection": "컬렉션",
+      "other": "메모"
+    },
+    "entriesCount": "{count, plural, one {#개 게시물} other {#개 게시물}}",
+    "emptyCategory": "이 카테고리에는 아직 아무것도 없습니다.",
+    "pagination": {
+      "newer": "← 최신",
+      "older": "이전 →",
+      "pageOf": "{total}페이지 중 {current}페이지"
+    },
+    "hasAudio": "오디오 있음",
+    "readEntry": "게시물 읽기",
+    "minRead": "{count, plural, one {#분 읽기} other {#분 읽기}}"
+  },
+  "Specs": {
+    "specification": "사양",
+    "manuals": "건반",
+    "stops": "스톱",
+    "pitch": "피치",
+    "temperament": "평균율",
+    "action": "액션",
+    "couplings": "커플링",
+    "accessories": "액세서리",
+    "built": "{year}년 제작",
+    "restored": "{year}년 복원"
+  },
+  "Scores": {
+    "filters": {
+      "all": "전체",
+      "baroque": "바로크",
+      "dutch": "네덜란드 학파",
+      "romantic": "낭만주의",
+      "modern": "현대",
+      "arrangement": "편곡"
+    },
+    "sortBy": {
+      "composer": "작곡가",
+      "year": "연도",
+      "edition": "에디션 번호"
+    },
+    "headerKickerFallback": "작은 라이브러리",
+    "headerHeadingFallback": "에디션, 운지법, {{작업 악보}}.",
+    "headerTaglineFallback": "제가 개인적으로 사용하기 위해 준비한 작업판 — 대부분 현장 기록에서 방문한 특정 악기를 위한 것입니다. 운지법과 레지스트레이션은 제안이며, 필수가 아닙니다. 모든 악보는 비상업적 학습용으로 무료 다운로드 가능합니다.",
+    "noticeBodyFallback": "이 악보들은 개인 학습 및 교회 사용을 위해 공유됩니다. 연주 또는 녹음을 원하시면 짧은 이메일을 보내주시면 감사하겠습니다 — 그리고 에디션을 명시해주세요.",
+    "noticeEditionLineFallback": "웨빙크 에디션",
+    "writeToMe": "저에게 쓰기",
+    "emptyTitle": "라이브러리가 막 설정되는 중입니다.",
+    "emptyBody": "제가 준비하는 대로 에디션이 여기에 나타날 것입니다. 다시 확인하거나 아래에 저에게 써주세요.",
+    "editionsCount": "{count, plural, one {#개 에디션} other {#개 에디션}}",
+    "sort": "정렬: {label}",
+    "period": "시대",
+    "download": "다운로드",
+    "feature": "추천 에디션",
+    "featuredHeader": "추천 에디션",
+    "editionNumber": "번호 {number}",
+    "meta": {
+      "catalog": "카탈로그",
+      "period": "시대",
+      "pages": "페이지",
+      "edition": "에디션"
+    },
+    "downloadPdf": "PDF 다운로드",
+    "noPdfYet": "아직 PDF 없음",
+    "editionLineSuffix": "· {year}",
+    "pagesShort": "{count}쪽",
+    "pdfTag": "PDF",
+    "comingSoon": "출시 예정",
+    "libraryHeading": "그 <em>라이브러리</em>",
+    "showing": "{total}개 중 {shown}개 표시",
+    "emptyFilter": "이 카테고리에는 아직 아무것도 없습니다 — 다른 필터를 시도해보세요."
+  },
+  "About": {
+    "emptyTitle": "소개",
+    "emptyBody": "이 페이지는 아직 스튜디오에서 설정되지 않았습니다.",
+    "emptyHint": "콘텐츠를 추가하려면 <code>/admin → About page</code>를 여세요.",
+    "trajectoryNum": "01",
+    "trajectoryLabel": "궤적",
+    "trajectoryHeading": "짧은 <em>연대기</em> — 제가 여기까지 오게 된 과정.",
+    "repertoireNum": "02",
+    "repertoireLabel": "제가 연주하는 것",
+    "repertoireHeading": "제가 계속 <em>다시 찾는</em> 레퍼토리."
+  },
+  "Privacy": {
+    "emptyTitle": "개인정보처리방침",
+    "emptyBody": "이 페이지는 아직 스튜디오에서 설정되지 않았습니다.",
+    "emptyHint": "콘텐츠를 추가하려면 <code>/admin → Privacy page</code>를 여세요.",
+    "lastUpdated": "최종 업데이트 {date}"
+  },
+  "Elsewhere": {
+    "title": "다른 곳",
+    "emptyTitle": "다른 곳",
+    "emptyBody": "이 페이지는 아직 스튜디오에서 설정되지 않았습니다.",
+    "emptyHint": "링크를 추가하려면 <code>/admin → Elsewhere page</code>를 여세요.",
+    "noLinks": "아직 링크가 없습니다."
+  },
+  "JournalArticle": {
+    "breadcrumbHome": "저널",
+    "previousEntry": "← 이전 게시물",
+    "nextEntry": "다음 게시물 →",
+    "endOfJournal": "— 저널 끝 —",
+    "minRead": "{count, plural, one {#분 읽기} other {#분 읽기}}",
+    "categories": {
+      "travelogue": "여행기",
+      "workshop": "워크숍",
+      "memorial": "추모",
+      "home-organ": "가정용 오르간",
+      "biography": "전기",
+      "news": "뉴스",
+      "collection": "컬렉션",
+      "other": "현장 기록"
+    }
+  },
+  "OrganArticle": {
+    "breadcrumbAll": "모든 오르간",
+    "fieldNote": "현장 기록",
+    "previousVisit": "← 이전 방문",
+    "nextVisit": "다음 방문 →",
+    "endOfJournal": "— 저널 끝 —",
+    "minRead": "{count, plural, one {#분 읽기} other {#분 읽기}}"
+  },
+  "Placeholder": {
+    "label": "[ {fallback} ]"
   }
 }

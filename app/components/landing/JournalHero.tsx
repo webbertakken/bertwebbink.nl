@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import { Horizon } from './Horizon'
 import { Crumbs, type CrumbItem } from './Crumbs'
 import { renderEmphasised } from './renderEmphasised'
@@ -30,18 +32,17 @@ type JournalHeroProps = {
  * variant's church + windmill.
  */
 export function JournalHero({ locale, totalCount, firstYear, crumbs, copy }: JournalHeroProps) {
+  const t = useTranslations('JournalHero')
   const JOURNAL_PAGE_ID = `journalPage-${locale}`
   const journalAttr = (path: string) =>
     dataAttr({ id: JOURNAL_PAGE_ID, type: JOURNAL_PAGE_TYPE, path }).toString()
 
-  const kickerLeft = copy?.kickerLeft ?? 'Writings'
-  const kickerRight = copy?.kickerRight ?? 'A field journal'
-  const heading = copy?.heading ?? 'The {{Journal}}'
-  const tagline =
-    copy?.tagline ??
-    'Essays, fragments, half-finished thoughts — published when there is something worth saying, usually after a bench has changed my mind about something.'
-  const cornerLeftSub = copy?.cornerLeftSub ?? 'Notes between visits'
-  const cornerRightSub = copy?.cornerRightSub ?? 'The low countries'
+  const kickerLeft = copy?.kickerLeft ?? t('kickerLeftFallback')
+  const kickerRight = copy?.kickerRight ?? t('kickerRightFallback')
+  const heading = copy?.heading ?? t('headingFallback')
+  const tagline = copy?.tagline ?? t('taglineFallback')
+  const cornerLeftSub = copy?.cornerLeftSub ?? t('cornerLeftSubFallback')
+  const cornerRightSub = copy?.cornerRightSub ?? t('cornerRightSubFallback')
 
   return (
     <section
@@ -63,7 +64,7 @@ export function JournalHero({ locale, totalCount, firstYear, crumbs, copy }: Jou
 
       {/* corner editorial meta — top left */}
       <div className="hidden md:block absolute top-[68px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint">
-        Since {firstYear} · {totalCount} entries
+        {t('stats', { firstYear, totalCount })}
         <span
           data-sanity={journalAttr('cornerLeftSub')}
           className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink"

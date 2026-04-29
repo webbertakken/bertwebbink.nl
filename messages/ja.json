@@ -1,65 +1,242 @@
 {
   "Nav": {
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "wordmarkFallback": "Bert Webbink",
-    "taglineFallback": "Organist",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる",
+    "wordmarkFallback": "バート・ウェビンク",
+    "taglineFallback": "オルガニスト",
     "items": {
-      "organs": "Organs",
-      "scores": "Scores",
-      "about": "About me",
-      "elsewhere": "Elsewhere"
+      "organs": "オルガン",
+      "scores": "楽譜",
+      "about": "私について",
+      "elsewhere": "その他"
     }
   },
   "Footer": {
-    "copyright": "© Bert Webbink, {year}",
+    "copyright": "© バート・ウェビンク、{year}",
     "links": {
-      "privacy": "Privacy",
-      "elsewhere": "Elsewhere",
-      "contact": "Contact"
+      "privacy": "プライバシー",
+      "elsewhere": "その他",
+      "contact": "お問い合わせ"
     }
   },
   "Crumbs": {
-    "home": "Home",
-    "organs": "Organs",
-    "journal": "Journal",
-    "scores": "Scores",
-    "about": "About",
-    "elsewhere": "Elsewhere",
-    "privacy": "Privacy"
+    "home": "ホーム",
+    "organs": "オルガン",
+    "journal": "ジャーナル",
+    "scores": "楽譜",
+    "about": "について",
+    "elsewhere": "その他",
+    "privacy": "プライバシー"
   },
   "LanguagePicker": {
-    "label": "Language",
-    "switchTo": "Switch to {language}"
+    "label": "言語",
+    "switchTo": "{language}に切り替える"
   },
   "Metadata": {
     "journal": {
-      "title": "Journal",
-      "description": "Essays, fragments, half-finished thoughts — published when there is something worth saying."
+      "title": "ジャーナル",
+      "description": "エッセイ、断片、未完成の思考 — 語る価値のあるものがあるときに公開されます。"
     },
     "organs": {
-      "title": "Organs",
-      "description": "Field notes from organs visited across the Netherlands and beyond."
+      "title": "オルガン",
+      "description": "オランダ国内外で訪れたオルガンからのフィールドノート。"
     },
     "scores": {
-      "title": "Scores",
-      "description": "Working editions of organ scores prepared by Bert Webbink — fingerings, registrations, free to download for non-commercial study."
+      "title": "楽譜",
+      "description": "バート・ウェビンクが作成したオルガン楽譜の作業版 — 運指、レジストレーション、非営利学習のために無料でダウンロードできます。"
     },
     "about": {
-      "title": "About me",
-      "description": "Bert Webbink — organist, teacher, quiet visitor of old buildings."
+      "title": "私について",
+      "description": "バート・ウェビンク — オルガニスト、教師、古い建物の静かな訪問者。"
     },
     "elsewhere": {
-      "title": "Elsewhere",
-      "description": "Curated links — choirs, churches, organ resources."
+      "title": "その他",
+      "description": "厳選されたリンク — 合唱団、教会、オルガン資料。"
     },
     "privacy": {
-      "title": "Privacy",
-      "description": "A short, plain-language note about what gets logged when you visit this site."
+      "title": "プライバシー",
+      "description": "このサイトを訪問した際に何が記録されるかについての、短く平易な言葉での説明。"
     }
   },
   "UnderConstruction": {
-    "title": "Under construction",
-    "subtitle": "Come back soon."
+    "title": "工事中",
+    "subtitle": "近日中に再訪してください。"
+  },
+  "Hero": {
+    "kickerLeftFallback": "フィールドノート",
+    "kickerRightFallback": "オルガンロフトから",
+    "headingFallback": "{{古いオルガン}}への訪問",
+    "taglineFallback": "オランダ国内外で、ある土曜日に一度に集められた録音、写真、レジスター。",
+    "cornerLeftSubFallback": "フィールドジャーナル",
+    "cornerRightSubFallback": "低地諸国",
+    "stats": "{firstYear}年以来 · {totalCount}台のオルガン"
+  },
+  "JournalHero": {
+    "kickerLeftFallback": "著作",
+    "kickerRightFallback": "フィールドジャーナル",
+    "headingFallback": "{{ジャーナル}}",
+    "taglineFallback": "エッセイ、断片、未完成の思考 — 語る価値のあるものがあるときに公開されます。通常、ベンチが何かについて私の考えを変えた後に。",
+    "cornerLeftSubFallback": "訪問間のメモ",
+    "cornerRightSubFallback": "低地諸国",
+    "stats": "{firstYear}年以来 · {totalCount}件のエントリー"
+  },
+  "OrgansArchive": {
+    "title": "アーカイブ",
+    "filteredTitle": "<city>{city}</city>での訪問",
+    "byCity": "都市別",
+    "browseAll": "すべて閲覧 →",
+    "shownOfTotal": "{total}件中{shown}件",
+    "clearFilter": "フィルターをクリア ✕",
+    "loading": "読み込み中…",
+    "endOfArchive": "— アーカイブの終わり —"
+  },
+  "OrganCard": {
+    "readMore": "続きを読む",
+    "audioFragment": "音声断片",
+    "video": "動画",
+    "placeholderLabel": "オルガン写真"
+  },
+  "JournalList": {
+    "filter": "フィルター",
+    "all": "すべて",
+    "categories": {
+      "travelogue": "旅行",
+      "workshop": "ワークショップ",
+      "memorial": "追悼",
+      "home-organ": "ホームオルガン",
+      "biography": "伝記",
+      "news": "ニュース",
+      "collection": "コレクション",
+      "other": "その他"
+    },
+    "categoryKinds": {
+      "travelogue": "旅行記",
+      "workshop": "訪問",
+      "memorial": "追悼",
+      "home-organ": "ホームオルガン",
+      "biography": "伝記",
+      "news": "ニュース",
+      "collection": "コレクション",
+      "other": "メモ"
+    },
+    "entriesCount": "{count}件のエントリー",
+    "emptyCategory": "このカテゴリにはまだ何もありません。",
+    "pagination": {
+      "newer": "← 新しい記事",
+      "older": "古い記事 →",
+      "pageOf": "{total}ページ中{current}ページ"
+    },
+    "hasAudio": "音声あり",
+    "readEntry": "記事を読む",
+    "minRead": "{count}分で読めます"
+  },
+  "Specs": {
+    "specification": "仕様",
+    "manuals": "手鍵盤",
+    "stops": "ストップ",
+    "pitch": "ピッチ",
+    "temperament": "音律",
+    "action": "アクション",
+    "couplings": "カプリング",
+    "accessories": "付属品",
+    "built": "{year}年建造",
+    "restored": "{year}年修復"
+  },
+  "Scores": {
+    "filters": {
+      "all": "すべて",
+      "baroque": "バロック",
+      "dutch": "オランダ楽派",
+      "romantic": "ロマン派",
+      "modern": "現代",
+      "arrangement": "編曲"
+    },
+    "sortBy": {
+      "composer": "作曲家",
+      "year": "年",
+      "edition": "版番号"
+    },
+    "headerKickerFallback": "小さなライブラリ",
+    "headerHeadingFallback": "版、運指、{{作業用楽譜}}。",
+    "headerTaglineFallback": "私が個人的な使用のために作成した作業版 — そのほとんどはフィールドノートで訪れた特定の楽器用です。運指とレジストレーションは提案であり、指示ではありません。すべての楽譜は非営利学習のために無料でダウンロードできます。",
+    "noticeBodyFallback": "これらの楽譜は個人的な学習および教会での使用のために共有されています。演奏または録音をご希望の場合は、短いメールをいただけると幸いです — そして、版を明記してください。",
+    "noticeEditionLineFallback": "ウェビンク版",
+    "writeToMe": "私に連絡する",
+    "emptyTitle": "ライブラリは現在設定中です。",
+    "emptyBody": "準備ができ次第、ここに版が表示されます。後で確認するか、以下から私に連絡してください。",
+    "editionsCount": "{count}件の版",
+    "sort": "並べ替え: {label}",
+    "period": "時代",
+    "download": "ダウンロード",
+    "feature": "特集版",
+    "featuredHeader": "特集版",
+    "editionNumber": "No. {number}",
+    "meta": {
+      "catalog": "カタログ",
+      "period": "時代",
+      "pages": "ページ数",
+      "edition": "版"
+    },
+    "downloadPdf": "PDFをダウンロード",
+    "noPdfYet": "まだPDFはありません",
+    "editionLineSuffix": "· {year}",
+    "pagesShort": "{count}ページ",
+    "pdfTag": "PDF",
+    "comingSoon": "近日公開",
+    "libraryHeading": "<em>ライブラリ</em>",
+    "showing": "{total}件中{shown}件を表示",
+    "emptyFilter": "このカテゴリにはまだ何もありません — 別のフィルターを試してください。"
+  },
+  "About": {
+    "emptyTitle": "私について",
+    "emptyBody": "このページはまだスタジオで設定されていません。",
+    "emptyHint": "コンテンツを追加するには、<code>/admin → About page</code>を開いてください。",
+    "trajectoryNum": "01",
+    "trajectoryLabel": "軌跡",
+    "trajectoryHeading": "短い<em>年表</em> — 私がここにたどり着くまで。",
+    "repertoireNum": "02",
+    "repertoireLabel": "演奏レパートリー",
+    "repertoireHeading": "私が<em>繰り返し演奏する</em>レパートリー。"
+  },
+  "Privacy": {
+    "emptyTitle": "プライバシー",
+    "emptyBody": "このページはまだスタジオで設定されていません。",
+    "emptyHint": "コンテンツを追加するには、<code>/admin → Privacy page</code>を開いてください。",
+    "lastUpdated": "最終更新日: {date}"
+  },
+  "Elsewhere": {
+    "title": "その他",
+    "emptyTitle": "その他",
+    "emptyBody": "このページはまだスタジオで設定されていません。",
+    "emptyHint": "リンクを追加するには、<code>/admin → Elsewhere page</code>を開いてください。",
+    "noLinks": "まだリンクはありません。"
+  },
+  "JournalArticle": {
+    "breadcrumbHome": "ジャーナル",
+    "previousEntry": "← 前の記事",
+    "nextEntry": "次の記事 →",
+    "endOfJournal": "— ジャーナルの終わり —",
+    "minRead": "{count}分で読めます",
+    "categories": {
+      "travelogue": "旅行記",
+      "workshop": "ワークショップ",
+      "memorial": "追悼",
+      "home-organ": "ホームオルガン",
+      "biography": "伝記",
+      "news": "ニュース",
+      "collection": "コレクション",
+      "other": "フィールドノート"
+    }
+  },
+  "OrganArticle": {
+    "breadcrumbAll": "すべてのオルガン",
+    "fieldNote": "フィールドノート",
+    "previousVisit": "← 前の訪問",
+    "nextVisit": "次の訪問 →",
+    "endOfJournal": "— ジャーナルの終わり —",
+    "minRead": "{count}分で読めます"
+  },
+  "Placeholder": {
+    "label": "[ {fallback} ]"
   }
 }

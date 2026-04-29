@@ -1,65 +1,242 @@
 {
   "Nav": {
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
+    "openMenu": "Apri menu",
+    "closeMenu": "Chiudi menu",
     "wordmarkFallback": "Bert Webbink",
-    "taglineFallback": "Organist",
+    "taglineFallback": "Organista",
     "items": {
-      "organs": "Organs",
-      "scores": "Scores",
-      "about": "About me",
-      "elsewhere": "Elsewhere"
+      "organs": "Organi",
+      "scores": "Spartiti",
+      "about": "Chi sono",
+      "elsewhere": "Altrove"
     }
   },
   "Footer": {
     "copyright": "© Bert Webbink, {year}",
     "links": {
       "privacy": "Privacy",
-      "elsewhere": "Elsewhere",
-      "contact": "Contact"
+      "elsewhere": "Altrove",
+      "contact": "Contatti"
     }
   },
   "Crumbs": {
     "home": "Home",
-    "organs": "Organs",
-    "journal": "Journal",
-    "scores": "Scores",
-    "about": "About",
-    "elsewhere": "Elsewhere",
+    "organs": "Organi",
+    "journal": "Diario",
+    "scores": "Spartiti",
+    "about": "Chi sono",
+    "elsewhere": "Altrove",
     "privacy": "Privacy"
   },
   "LanguagePicker": {
-    "label": "Language",
-    "switchTo": "Switch to {language}"
+    "label": "Lingua",
+    "switchTo": "Passa a {language}"
   },
   "Metadata": {
     "journal": {
-      "title": "Journal",
-      "description": "Essays, fragments, half-finished thoughts — published when there is something worth saying."
+      "title": "Diario",
+      "description": "Saggi, frammenti, pensieri incompiuti — pubblicati quando c'è qualcosa che vale la pena dire."
     },
     "organs": {
-      "title": "Organs",
-      "description": "Field notes from organs visited across the Netherlands and beyond."
+      "title": "Organi",
+      "description": "Appunti di viaggio da organi visitati nei Paesi Bassi e oltre."
     },
     "scores": {
-      "title": "Scores",
-      "description": "Working editions of organ scores prepared by Bert Webbink — fingerings, registrations, free to download for non-commercial study."
+      "title": "Spartiti",
+      "description": "Edizioni di lavoro di spartiti per organo preparate da Bert Webbink — diteggiature, registrazioni, scaricabili gratuitamente per studio non commerciale."
     },
     "about": {
-      "title": "About me",
-      "description": "Bert Webbink — organist, teacher, quiet visitor of old buildings."
+      "title": "Chi sono",
+      "description": "Bert Webbink — organista, insegnante, tranquillo visitatore di vecchi edifici."
     },
     "elsewhere": {
-      "title": "Elsewhere",
-      "description": "Curated links — choirs, churches, organ resources."
+      "title": "Altrove",
+      "description": "Link selezionati — cori, chiese, risorse per organo."
     },
     "privacy": {
       "title": "Privacy",
-      "description": "A short, plain-language note about what gets logged when you visit this site."
+      "description": "Una breve nota in linguaggio semplice su cosa viene registrato quando visiti questo sito."
     }
   },
   "UnderConstruction": {
-    "title": "Under construction",
-    "subtitle": "Come back soon."
+    "title": "In costruzione",
+    "subtitle": "Torna presto."
+  },
+  "Hero": {
+    "kickerLeftFallback": "Appunti di viaggio",
+    "kickerRightFallback": "Dalla cantoria",
+    "headingFallback": "Visite a {{vecchi organi}}",
+    "taglineFallback": "Registrazioni, fotografie e registri da un sabato alla volta, raccolti nei Paesi Bassi e oltre.",
+    "cornerLeftSubFallback": "Un diario di viaggio",
+    "cornerRightSubFallback": "I Paesi Bassi",
+    "stats": "Dal {firstYear} · {totalCount} organi"
+  },
+  "JournalHero": {
+    "kickerLeftFallback": "Scritti",
+    "kickerRightFallback": "Un diario di viaggio",
+    "headingFallback": "Il {{Diario}}",
+    "taglineFallback": "Saggi, frammenti, pensieri incompiuti — pubblicati quando c'è qualcosa che vale la pena dire, di solito dopo che una panca mi ha fatto cambiare idea su qualcosa.",
+    "cornerLeftSubFallback": "Note tra una visita e l'altra",
+    "cornerRightSubFallback": "I Paesi Bassi",
+    "stats": "Dal {firstYear} · {totalCount} voci"
+  },
+  "OrgansArchive": {
+    "title": "L'archivio",
+    "filteredTitle": "Visite a <city>{city}</city>",
+    "byCity": "Per città",
+    "browseAll": "Sfoglia tutto →",
+    "shownOfTotal": "{shown} di {total}",
+    "clearFilter": "cancella filtro ✕",
+    "loading": "Caricamento…",
+    "endOfArchive": "— fine dell'archivio —"
+  },
+  "OrganCard": {
+    "readMore": "Leggi di più",
+    "audioFragment": "Frammento audio",
+    "video": "Video",
+    "placeholderLabel": "fotografia dell'organo"
+  },
+  "JournalList": {
+    "filter": "Filtra",
+    "all": "Tutti",
+    "categories": {
+      "travelogue": "Viaggio",
+      "workshop": "Workshop",
+      "memorial": "Commemorazione",
+      "home-organ": "Organo domestico",
+      "biography": "Biografia",
+      "news": "Notizie",
+      "collection": "Collezione",
+      "other": "Altro"
+    },
+    "categoryKinds": {
+      "travelogue": "diario di viaggio",
+      "workshop": "visita",
+      "memorial": "commemorazione",
+      "home-organ": "organo domestico",
+      "biography": "biografia",
+      "news": "notizie",
+      "collection": "collezione",
+      "other": "nota"
+    },
+    "entriesCount": "{count, plural, one {# voce} other {# voci}}",
+    "emptyCategory": "Ancora niente in questa categoria.",
+    "pagination": {
+      "newer": "← Più recenti",
+      "older": "Meno recenti →",
+      "pageOf": "Pagina {current} di {total}"
+    },
+    "hasAudio": "Con audio",
+    "readEntry": "Leggi voce",
+    "minRead": "{count, plural, one {# min di lettura} other {# min di lettura}}"
+  },
+  "Specs": {
+    "specification": "Specifiche",
+    "manuals": "Manuali",
+    "stops": "Registri",
+    "pitch": "Intonazione",
+    "temperament": "Temperamento",
+    "action": "Meccanica",
+    "couplings": "Accoppiamenti",
+    "accessories": "Accessori",
+    "built": "Costruito nel {year}",
+    "restored": "Restaurato nel {year}"
+  },
+  "Scores": {
+    "filters": {
+      "all": "Tutti",
+      "baroque": "Barocco",
+      "dutch": "Scuola olandese",
+      "romantic": "Romantico",
+      "modern": "Moderno",
+      "arrangement": "Arrangiamenti"
+    },
+    "sortBy": {
+      "composer": "Compositore",
+      "year": "Anno",
+      "edition": "Edizione №"
+    },
+    "headerKickerFallback": "Una piccola biblioteca",
+    "headerHeadingFallback": "Edizioni, diteggiature, {{spartiti di lavoro}}.",
+    "headerTaglineFallback": "Edizioni di lavoro che ho preparato per mio uso personale — la maggior parte per strumenti specifici visitati negli appunti di viaggio. Diteggiature e registrazioni sono suggerimenti, non prescrizioni. Tutti gli spartiti sono scaricabili gratuitamente per studio non commerciale.",
+    "noticeBodyFallback": "Questi spartiti sono condivisi per studio personale e uso ecclesiastico. Se desideri eseguirne o registrarne uno, una breve email è gradita — e per favore cita l'edizione.",
+    "noticeEditionLineFallback": "Edizione Webbink",
+    "writeToMe": "Scrivimi",
+    "emptyTitle": "La biblioteca è in fase di allestimento.",
+    "emptyBody": "Le edizioni appariranno qui man mano che le preparo. Controlla di nuovo, o scrivimi qui sotto.",
+    "editionsCount": "{count, plural, one {# edizione} other {# edizioni}}",
+    "sort": "Ordina: {label}",
+    "period": "Periodo",
+    "download": "Scarica",
+    "feature": "Edizione in evidenza",
+    "featuredHeader": "Edizione in evidenza",
+    "editionNumber": "N. {number}",
+    "meta": {
+      "catalog": "Catalogo",
+      "period": "Periodo",
+      "pages": "Pagine",
+      "edition": "Edizione"
+    },
+    "downloadPdf": "Scarica PDF",
+    "noPdfYet": "Ancora nessun PDF",
+    "editionLineSuffix": "· {year}",
+    "pagesShort": "{count} pp",
+    "pdfTag": "PDF",
+    "comingSoon": "presto",
+    "libraryHeading": "La <em>biblioteca</em>",
+    "showing": "Mostra {shown} di {total}",
+    "emptyFilter": "Ancora niente in questa categoria — prova un altro filtro."
+  },
+  "About": {
+    "emptyTitle": "Chi sono",
+    "emptyBody": "Questa pagina non è ancora stata configurata nello Studio.",
+    "emptyHint": "Apri <code>/admin → About page</code> per aggiungere il contenuto.",
+    "trajectoryNum": "01",
+    "trajectoryLabel": "Percorso",
+    "trajectoryHeading": "Una breve <em>cronologia</em> — come sono arrivato qui.",
+    "repertoireNum": "02",
+    "repertoireLabel": "Cosa suono",
+    "repertoireHeading": "Repertorio a cui <em>torno sempre</em>."
+  },
+  "Privacy": {
+    "emptyTitle": "Privacy",
+    "emptyBody": "Questa pagina non è ancora stata configurata nello Studio.",
+    "emptyHint": "Apri <code>/admin → Privacy page</code> per aggiungere il contenuto.",
+    "lastUpdated": "Ultimo aggiornamento {date}"
+  },
+  "Elsewhere": {
+    "title": "Altrove",
+    "emptyTitle": "Altrove",
+    "emptyBody": "Questa pagina non è ancora stata configurata nello Studio.",
+    "emptyHint": "Apri <code>/admin → Elsewhere page</code> per aggiungere i link.",
+    "noLinks": "Ancora nessun link."
+  },
+  "JournalArticle": {
+    "breadcrumbHome": "Il diario",
+    "previousEntry": "← Voce precedente",
+    "nextEntry": "Voce successiva →",
+    "endOfJournal": "— fine del diario —",
+    "minRead": "{count, plural, one {# min di lettura} other {# min di lettura}}",
+    "categories": {
+      "travelogue": "Diario di viaggio",
+      "workshop": "Workshop",
+      "memorial": "In memoriam",
+      "home-organ": "Organo domestico",
+      "biography": "Biografia",
+      "news": "Notizie",
+      "collection": "Collezione",
+      "other": "Nota di campo"
+    }
+  },
+  "OrganArticle": {
+    "breadcrumbAll": "Tutti gli organi",
+    "fieldNote": "Nota di campo",
+    "previousVisit": "← Visita precedente",
+    "nextVisit": "Visita successiva →",
+    "endOfJournal": "— fine del diario —",
+    "minRead": "{count, plural, one {# min di lettura} other {# min di lettura}}"
+  },
+  "Placeholder": {
+    "label": "[ {fallback} ]"
   }
 }

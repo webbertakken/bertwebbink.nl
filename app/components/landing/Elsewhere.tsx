@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 
@@ -41,18 +42,20 @@ const introComponents = {
 }
 
 function Crumbs() {
+  const tCrumbs = useTranslations('Crumbs')
   return (
     <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-14">
       <Link href="/" className="transition-colors hover:text-accent">
-        Home
+        {tCrumbs('home')}
       </Link>
       <span className="opacity-40">/</span>
-      <span className="text-ink">Elsewhere</span>
+      <span className="text-ink">{tCrumbs('elsewhere')}</span>
     </div>
   )
 }
 
 function EmptyState() {
+  const t = useTranslations('Elsewhere')
   return (
     <section className="max-w-[840px] mx-auto px-6 md:px-12 py-32 text-center">
       <Crumbs />
@@ -60,14 +63,17 @@ function EmptyState() {
         className="font-serif font-light leading-none m-0 mb-8 text-balance"
         style={{ fontSize: 'clamp(40px, 5vw, 64px)', letterSpacing: '-0.012em' }}
       >
-        Elsewhere
+        {t('emptyTitle')}
       </h1>
       <p className="font-serif italic text-2xl text-ink-soft m-0 mb-4 max-w-[40ch] mx-auto">
-        Deze pagina is nog niet ingericht in de Studio.
+        {t('emptyBody')}
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
-        Open <span className="not-italic font-mono text-sm text-ink">/admin → Elsewhere page</span>{' '}
-        om links toe te voegen.
+        {t.rich('emptyHint', {
+          code: (chunks) => (
+            <span className="not-italic font-mono text-sm text-ink">{chunks}</span>
+          ),
+        })}
       </p>
     </section>
   )
@@ -83,6 +89,7 @@ export function Elsewhere({
   if (!data) return <EmptyState />
   const elsewhereId = data._id ?? `elsewhere-${locale}`
   const elsewhereAttr = stegaAttrFor(elsewhereId, 'elsewhere')
+  const t = useTranslations('Elsewhere')
 
   return (
     <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8 pb-32" data-screen-label="elsewhere">
@@ -104,7 +111,7 @@ export function Elsewhere({
           letterSpacing: '-0.012em',
         }}
       >
-        {data.title || 'Elsewhere'}
+        {data.title || t('title')}
       </h1>
 
       {data.intro && data.intro.length > 0 && (
@@ -184,7 +191,7 @@ export function Elsewhere({
       )}
 
       {(!data.groups || data.groups.length === 0) && (
-        <p className="font-serif italic text-ink-faint text-lg">Nog geen links toegevoegd.</p>
+        <p className="font-serif italic text-ink-faint text-lg">{t('noLinks')}</p>
       )}
     </main>
   )

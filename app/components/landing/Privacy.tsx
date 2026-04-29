@@ -1,3 +1,4 @@
+import { useFormatter, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 
 import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
@@ -19,26 +20,40 @@ export type PrivacyContent = {
   contactLine: string | null
 }
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+function PrivacyLastUpdated({ attr, date }: { attr: string; date: string }) {
+  const t = useTranslations('Privacy')
+  const format = useFormatter()
+  return (
+    <p
+      data-sanity={attr}
+      className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-10"
+    >
+      {t('lastUpdated', {
+        date: format.dateTime(new Date(date), {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }),
+      })}
+    </p>
+  )
+}
 
 function Crumbs() {
+  const tCrumbs = useTranslations('Crumbs')
   return (
     <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-14">
       <Link href="/" className="transition-colors hover:text-accent">
-        Home
+        {tCrumbs('home')}
       </Link>
       <span className="opacity-40">/</span>
-      <span className="text-ink">Privacy</span>
+      <span className="text-ink">{tCrumbs('privacy')}</span>
     </div>
   )
 }
 
 function EmptyState() {
+  const t = useTranslations('Privacy')
   return (
     <section className="max-w-[840px] mx-auto px-6 md:px-12 py-32 text-center">
       <Crumbs />
@@ -46,14 +61,17 @@ function EmptyState() {
         className="font-serif font-light leading-none m-0 mb-8 text-balance"
         style={{ fontSize: 'clamp(40px, 5vw, 64px)', letterSpacing: '-0.012em' }}
       >
-        Privacy
+        {t('emptyTitle')}
       </h1>
       <p className="font-serif italic text-2xl text-ink-soft m-0 mb-4 max-w-[40ch] mx-auto">
-        Deze pagina is nog niet ingericht in de Studio.
+        {t('emptyBody')}
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
-        Open <span className="not-italic font-mono text-sm text-ink">/admin → Privacy page</span>{' '}
-        om de inhoud toe te voegen.
+        {t.rich('emptyHint', {
+          code: (chunks) => (
+            <span className="not-italic font-mono text-sm text-ink">{chunks}</span>
+          ),
+        })}
       </p>
     </section>
   )
@@ -97,12 +115,10 @@ export function Privacy({
       </h1>
 
       {data.lastUpdated && (
-        <p
-          data-sanity={privacyAttr('lastUpdated')}
-          className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-10"
-        >
-          Last updated {fmtDate(data.lastUpdated)}
-        </p>
+        <PrivacyLastUpdated
+          attr={privacyAttr('lastUpdated')}
+          date={data.lastUpdated}
+        />
       )}
 
       {data.intro && (

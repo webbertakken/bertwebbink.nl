@@ -1,65 +1,242 @@
 {
   "Nav": {
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
     "wordmarkFallback": "Bert Webbink",
     "taglineFallback": "Organist",
     "items": {
-      "organs": "Organs",
-      "scores": "Scores",
-      "about": "About me",
-      "elsewhere": "Elsewhere"
+      "organs": "Orgeln",
+      "scores": "Noten",
+      "about": "Über mich",
+      "elsewhere": "Anderswo"
     }
   },
   "Footer": {
     "copyright": "© Bert Webbink, {year}",
     "links": {
-      "privacy": "Privacy",
-      "elsewhere": "Elsewhere",
-      "contact": "Contact"
+      "privacy": "Datenschutz",
+      "elsewhere": "Anderswo",
+      "contact": "Kontakt"
     }
   },
   "Crumbs": {
-    "home": "Home",
-    "organs": "Organs",
+    "home": "Startseite",
+    "organs": "Orgeln",
     "journal": "Journal",
-    "scores": "Scores",
-    "about": "About",
-    "elsewhere": "Elsewhere",
-    "privacy": "Privacy"
+    "scores": "Noten",
+    "about": "Über",
+    "elsewhere": "Anderswo",
+    "privacy": "Datenschutz"
   },
   "LanguagePicker": {
-    "label": "Language",
-    "switchTo": "Switch to {language}"
+    "label": "Sprache",
+    "switchTo": "Wechseln zu {language}"
   },
   "Metadata": {
     "journal": {
       "title": "Journal",
-      "description": "Essays, fragments, half-finished thoughts — published when there is something worth saying."
+      "description": "Essays, Fragmente, halbfertige Gedanken – veröffentlicht, wenn es etwas zu sagen gibt."
     },
     "organs": {
-      "title": "Organs",
-      "description": "Field notes from organs visited across the Netherlands and beyond."
+      "title": "Orgeln",
+      "description": "Feldnotizen von Orgeln, die in den Niederlanden und darüber hinaus besucht wurden."
     },
     "scores": {
-      "title": "Scores",
-      "description": "Working editions of organ scores prepared by Bert Webbink — fingerings, registrations, free to download for non-commercial study."
+      "title": "Noten",
+      "description": "Arbeitsausgaben von Orgelnoten, erstellt von Bert Webbink – Fingersätze, Registrierungen, kostenlos zum nicht-kommerziellen Studium herunterladbar."
     },
     "about": {
-      "title": "About me",
-      "description": "Bert Webbink — organist, teacher, quiet visitor of old buildings."
+      "title": "Über mich",
+      "description": "Bert Webbink – Organist, Lehrer, stiller Besucher alter Gebäude."
     },
     "elsewhere": {
-      "title": "Elsewhere",
-      "description": "Curated links — choirs, churches, organ resources."
+      "title": "Anderswo",
+      "description": "Ausgewählte Links – Chöre, Kirchen, Orgelressourcen."
     },
     "privacy": {
-      "title": "Privacy",
-      "description": "A short, plain-language note about what gets logged when you visit this site."
+      "title": "Datenschutz",
+      "description": "Eine kurze, verständliche Notiz darüber, was beim Besuch dieser Website protokolliert wird."
     }
   },
   "UnderConstruction": {
-    "title": "Under construction",
-    "subtitle": "Come back soon."
+    "title": "Im Aufbau",
+    "subtitle": "Bald wiederkommen."
+  },
+  "Hero": {
+    "kickerLeftFallback": "Feldnotizen",
+    "kickerRightFallback": "Von der Orgelempore",
+    "headingFallback": "Besuche bei {{alten Orgeln}}",
+    "taglineFallback": "Aufnahmen, Fotografien und Register von jeweils einem Samstag, gesammelt in den Niederlanden und darüber hinaus.",
+    "cornerLeftSubFallback": "Ein Feldjournal",
+    "cornerRightSubFallback": "Die Niederlande",
+    "stats": "Seit {firstYear} · {totalCount} Orgeln"
+  },
+  "JournalHero": {
+    "kickerLeftFallback": "Schriften",
+    "kickerRightFallback": "Ein Feldjournal",
+    "headingFallback": "Das {{Journal}}",
+    "taglineFallback": "Essays, Fragmente, halbfertige Gedanken – veröffentlicht, wenn es etwas zu sagen gibt, meist nachdem eine Bank meine Meinung zu etwas geändert hat.",
+    "cornerLeftSubFallback": "Notizen zwischen Besuchen",
+    "cornerRightSubFallback": "Die Niederlande",
+    "stats": "Seit {firstYear} · {totalCount} Einträge"
+  },
+  "OrgansArchive": {
+    "title": "Das Archiv",
+    "filteredTitle": "Besuche in <city>{city}</city>",
+    "byCity": "Nach Stadt",
+    "browseAll": "Alle durchsuchen →",
+    "shownOfTotal": "{shown} von {total}",
+    "clearFilter": "Filter löschen ✕",
+    "loading": "Lädt…",
+    "endOfArchive": "— Ende des Archivs —"
+  },
+  "OrganCard": {
+    "readMore": "Mehr lesen",
+    "audioFragment": "Audiofragment",
+    "video": "Video",
+    "placeholderLabel": "Orgelaufnahme"
+  },
+  "JournalList": {
+    "filter": "Filter",
+    "all": "Alle",
+    "categories": {
+      "travelogue": "Reise",
+      "workshop": "Workshop",
+      "memorial": "Gedenken",
+      "home-organ": "Hausorgel",
+      "biography": "Biografie",
+      "news": "Nachrichten",
+      "collection": "Sammlung",
+      "other": "Sonstiges"
+    },
+    "categoryKinds": {
+      "travelogue": "Reisebericht",
+      "workshop": "Besuch",
+      "memorial": "Gedenken",
+      "home-organ": "Hausorgel",
+      "biography": "Biografie",
+      "news": "Nachrichten",
+      "collection": "Sammlung",
+      "other": "Notiz"
+    },
+    "entriesCount": "{count, plural, one {# Eintrag} other {# Einträge}}",
+    "emptyCategory": "Noch nichts in dieser Kategorie.",
+    "pagination": {
+      "newer": "← Neuere",
+      "older": "Ältere →",
+      "pageOf": "Seite {current} von {total}"
+    },
+    "hasAudio": "Mit Audio",
+    "readEntry": "Eintrag lesen",
+    "minRead": "{count, plural, one {# Min. Lesezeit} other {# Min. Lesezeit}}"
+  },
+  "Specs": {
+    "specification": "Spezifikation",
+    "manuals": "Manualen",
+    "stops": "Register",
+    "pitch": "Stimmung",
+    "temperament": "Temperatur",
+    "action": "Traktur",
+    "couplings": "Koppeln",
+    "accessories": "Zubehör",
+    "built": "Gebaut {year}",
+    "restored": "Restauriert {year}"
+  },
+  "Scores": {
+    "filters": {
+      "all": "Alle",
+      "baroque": "Barock",
+      "dutch": "Niederländische Schule",
+      "romantic": "Romantik",
+      "modern": "Modern",
+      "arrangement": "Bearbeitungen"
+    },
+    "sortBy": {
+      "composer": "Komponist",
+      "year": "Jahr",
+      "edition": "Ausgabe Nr."
+    },
+    "headerKickerFallback": "Eine kleine Bibliothek",
+    "headerHeadingFallback": "Ausgaben, Fingersätze, {{Arbeitsnoten}}.",
+    "headerTaglineFallback": "Arbeitsausgaben, die ich für den Eigengebrauch erstellt habe – die meisten für bestimmte Instrumente, die in den Feldnotizen besucht wurden. Fingersätze und Registrierungen sind Vorschläge, keine Vorschriften. Alle Noten können kostenlos für nicht-kommerzielle Studien heruntergeladen werden.",
+    "noticeBodyFallback": "Diese Noten werden für das persönliche Studium und den kirchlichen Gebrauch geteilt. Wenn Sie eine aufführen oder aufnehmen möchten, ist eine kurze E-Mail willkommen – und bitte geben Sie die Ausgabe an.",
+    "noticeEditionLineFallback": "Edition Webbink",
+    "writeToMe": "Schreiben Sie mir",
+    "emptyTitle": "Die Bibliothek wird gerade eingerichtet.",
+    "emptyBody": "Ausgaben werden hier erscheinen, sobald ich sie vorbereitet habe. Schauen Sie wieder vorbei oder schreiben Sie mir unten.",
+    "editionsCount": "{count, plural, one {# Ausgabe} other {# Ausgaben}}",
+    "sort": "Sortieren: {label}",
+    "period": "Epoche",
+    "download": "Herunterladen",
+    "feature": "Empfohlene Ausgabe",
+    "featuredHeader": "Empfohlene Ausgabe",
+    "editionNumber": "Nr. {number}",
+    "meta": {
+      "catalog": "Katalog",
+      "period": "Epoche",
+      "pages": "Seiten",
+      "edition": "Ausgabe"
+    },
+    "downloadPdf": "PDF herunterladen",
+    "noPdfYet": "Noch kein PDF",
+    "editionLineSuffix": "· {year}",
+    "pagesShort": "{count} S.",
+    "pdfTag": "PDF",
+    "comingSoon": "bald",
+    "libraryHeading": "Die <em>Bibliothek</em>",
+    "showing": "Zeigt {shown} von {total}",
+    "emptyFilter": "Noch nichts in dieser Kategorie – versuchen Sie einen anderen Filter."
+  },
+  "About": {
+    "emptyTitle": "Über mich",
+    "emptyBody": "Diese Seite wurde noch nicht im Studio eingerichtet.",
+    "emptyHint": "Öffnen Sie <code>/admin → About page</code>, um den Inhalt hinzuzufügen.",
+    "trajectoryNum": "01",
+    "trajectoryLabel": "Werdegang",
+    "trajectoryHeading": "Eine kurze <em>Chronologie</em> – wie ich hierher kam.",
+    "repertoireNum": "02",
+    "repertoireLabel": "Was ich spiele",
+    "repertoireHeading": "Repertoire, zu dem ich immer wieder <em>zurückkehre</em>."
+  },
+  "Privacy": {
+    "emptyTitle": "Datenschutz",
+    "emptyBody": "Diese Seite wurde noch nicht im Studio eingerichtet.",
+    "emptyHint": "Öffnen Sie <code>/admin → Privacy page</code>, um den Inhalt hinzuzufügen.",
+    "lastUpdated": "Zuletzt aktualisiert am {date}"
+  },
+  "Elsewhere": {
+    "title": "Anderswo",
+    "emptyTitle": "Anderswo",
+    "emptyBody": "Diese Seite wurde noch nicht im Studio eingerichtet.",
+    "emptyHint": "Öffnen Sie <code>/admin → Elsewhere page</code>, um Links hinzuzufügen.",
+    "noLinks": "Noch keine Links."
+  },
+  "JournalArticle": {
+    "breadcrumbHome": "Das Journal",
+    "previousEntry": "← Vorheriger Eintrag",
+    "nextEntry": "Nächster Eintrag →",
+    "endOfJournal": "— Ende des Journals —",
+    "minRead": "{count, plural, one {# Min. Lesezeit} other {# Min. Lesezeit}}",
+    "categories": {
+      "travelogue": "Reisebericht",
+      "workshop": "Workshop",
+      "memorial": "In memoriam",
+      "home-organ": "Hausorgel",
+      "biography": "Biografie",
+      "news": "Nachrichten",
+      "collection": "Sammlung",
+      "other": "Feldnotiz"
+    }
+  },
+  "OrganArticle": {
+    "breadcrumbAll": "Alle Orgeln",
+    "fieldNote": "Feldnotiz",
+    "previousVisit": "← Vorheriger Besuch",
+    "nextVisit": "Nächster Besuch →",
+    "endOfJournal": "— Ende des Journals —",
+    "minRead": "{count, plural, one {# Min. Lesezeit} other {# Min. Lesezeit}}"
+  },
+  "Placeholder": {
+    "label": "[ {fallback} ]"
   }
 }

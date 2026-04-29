@@ -1,3 +1,4 @@
+import { useFormatter, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Image } from 'next-sanity/image'
 import type { PortableTextBlock } from 'next-sanity'
@@ -47,23 +48,17 @@ export type JournalDetail = {
   content: PortableTextBlock[] | null
 }
 
-const CATEGORY_LABEL: Record<string, string> = {
-  travelogue: 'Travelogue',
-  workshop: 'Workshop',
-  memorial: 'In memoriam',
-  'home-organ': 'Home organ',
-  biography: 'Biography',
-  news: 'News',
-  collection: 'Collection',
-  other: 'Field note',
-}
-
-const fmtLong = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  })
+const CATEGORY_KEYS = [
+  'travelogue',
+  'workshop',
+  'memorial',
+  'home-organ',
+  'biography',
+  'news',
+  'collection',
+  'other',
+] as const
+type CategoryKey = (typeof CATEGORY_KEYS)[number]
 
 function readMinutes(content: PortableTextBlock[] | null): number {
   if (!content) return 0
@@ -79,16 +74,22 @@ function readMinutes(content: PortableTextBlock[] | null): number {
   return Math.max(1, Math.ceil(words / 200))
 }
 
-function categoryLabel(category: JournalCategory | null): string {
-  if (!category) return CATEGORY_LABEL.other
-  return CATEGORY_LABEL[category] ?? CATEGORY_LABEL.other
+function useCategoryLabel(): (category: JournalCategory | null) => string {
+  const t = useTranslations('JournalArticle.categories')
+  return (category) => {
+    const key = (category && (CATEGORY_KEYS as readonly string[]).includes(category)
+      ? category
+      : 'other') as CategoryKey
+    return t(key as never)
+  }
 }
 
 function Crumbs() {
+  const t = useTranslations('JournalArticle')
   return (
     <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-16">
       <Link href="/" className="transition-colors hover:text-accent">
-        The journal
+        {t('breadcrumbHome')}
       </Link>
     </div>
   )
@@ -111,6 +112,9 @@ function Header({
   date: string
   readMin: number
 }) {
+  const t = useTranslations('JournalArticle')
+  const format = useFormatter()
+  const categoryLabel = useCategoryLabel()
   const padWidth = Math.max(2, String(totalCount || position).length)
   const numLabel = `N° ${String(position).padStart(padWidth, '0')}`
   return (
@@ -130,11 +134,13 @@ function Header({
         {title}
       </h1>
       <div className="inline-flex items-center justify-center flex-wrap gap-3.5 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-faint">
-        <span data-sanity={journalAttr(entryId, 'date')}>{fmtLong(date)}</span>
+        <span data-sanity={journalAttr(entryId, 'date')}>
+          {format.dateTime(new Date(date), { day: '2-digit', month: 'long', year: 'numeric' })}
+        </span>
         {readMin > 0 && (
           <>
             <span className="w-[3px] h-[3px] bg-ink-faint rounded-full opacity-60" />
-            <span>{readMin} min read</span>
+            <span>{t('minRead', { count: readMin })}</span>
           </>
         )}
       </div>
@@ -205,21 +211,29 @@ function Cover({
 }
 
 function NeighborLink({ side, entry }: { side: 'prev' | 'next'; entry: JournalNeighbor }) {
+  const t = useTranslations('JournalArticle')
+  const format = useFormatter()
+  const categoryLabel = useCategoryLabel()
   if (!entry) {
     return (
       <div className={side === 'next' ? 'md:text-right' : ''}>
         <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-3.5">
-          {side === 'prev' ? '← Previous entry' : 'Next entry →'}
+          {side === 'prev' ? t('previousEntry') : t('nextEntry')}
         </p>
-        <p className="font-serif italic text-ink-faint m-0">— end of the journal —</p>
+        <p className="font-serif italic text-ink-faint m-0">{t('endOfJournal')}</p>
       </div>
     )
   }
-  const meta = [categoryLabel(entry.category), fmtLong(entry.date)].filter(Boolean).join(' · ')
+  const meta = [
+    categoryLabel(entry.category),
+    format.dateTime(new Date(entry.date), { day: '2-digit', month: 'long', year: 'numeric' }),
+  ]
+    .filter(Boolean)
+    .join(' · ')
   return (
     <div className={side === 'next' ? 'md:text-right' : ''}>
       <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-3.5">
-        {side === 'prev' ? '← Previous entry' : 'Next entry →'}
+        {side === 'prev' ? t('previousEntry') : t('nextEntry')}
       </p>
       <Link
         href={`/journal/${entry.slug}`}

@@ -1,3 +1,4 @@
+import { useFormatter, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Image } from 'next-sanity/image'
 import type { PortableTextBlock } from 'next-sanity'
@@ -54,13 +55,6 @@ export type OrganDetail = {
   content: PortableTextBlock[] | null
 }
 
-const fmtLong = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  })
-
 function readMinutes(content: PortableTextBlock[] | null): number {
   if (!content) return 0
   let words = 0
@@ -76,10 +70,11 @@ function readMinutes(content: PortableTextBlock[] | null): number {
 }
 
 function Crumbs({ city }: { city?: string }) {
+  const t = useTranslations('OrganArticle')
   return (
     <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-16">
       <Link href="/" className="transition-colors hover:text-accent">
-        All organs
+        {t('breadcrumbAll')}
       </Link>
       {city && (
         <>
@@ -110,6 +105,8 @@ function Header({
   date: string
   readMin: number
 }) {
+  const t = useTranslations('OrganArticle')
+  const format = useFormatter()
   const padWidth = Math.max(2, String(totalCount || position).length)
   const numLabel = `N° ${String(position).padStart(padWidth, '0')}`
   const locLabel = location ? `${location.city}, ${location.country}` : null
@@ -118,7 +115,7 @@ function Header({
     <header className="grid grid-cols-1 gap-7 mx-auto mb-12 max-w-[880px] text-center">
       <div className="inline-flex items-center justify-center gap-4 font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint">
         <span className="w-7 h-px bg-current opacity-50" />
-        Field note
+        {t('fieldNote')}
         <span className="text-accent">✦</span>
         {numLabel}
         <span className="w-7 h-px bg-current opacity-50" />
@@ -145,11 +142,13 @@ function Header({
       <div className="inline-flex items-center justify-center flex-wrap gap-3.5 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-faint">
         {locLabel && <span data-sanity={organAttr(organId, 'location.city')}>{locLabel}</span>}
         {locLabel && <span className="w-[3px] h-[3px] bg-ink-faint rounded-full opacity-60" />}
-        <span data-sanity={organAttr(organId, 'date')}>{fmtLong(date)}</span>
+        <span data-sanity={organAttr(organId, 'date')}>
+          {format.dateTime(new Date(date), { day: '2-digit', month: 'long', year: 'numeric' })}
+        </span>
         {readMin > 0 && (
           <>
             <span className="w-[3px] h-[3px] bg-ink-faint rounded-full opacity-60" />
-            <span>{readMin} min read</span>
+            <span>{t('minRead', { count: readMin })}</span>
           </>
         )}
       </div>
@@ -218,21 +217,28 @@ function Cover({
 }
 
 function NeighborLink({ side, organ }: { side: 'prev' | 'next'; organ: NeighborOrgan }) {
+  const t = useTranslations('OrganArticle')
+  const format = useFormatter()
   if (!organ) {
     return (
       <div className={side === 'next' ? 'md:text-right' : ''}>
         <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-3.5">
-          {side === 'prev' ? '← Previous visit' : 'Next visit →'}
+          {side === 'prev' ? t('previousVisit') : t('nextVisit')}
         </p>
-        <p className="font-serif italic text-ink-faint m-0">— end of the journal —</p>
+        <p className="font-serif italic text-ink-faint m-0">{t('endOfJournal')}</p>
       </div>
     )
   }
-  const meta = [organ.location?.city, fmtLong(organ.date)].filter(Boolean).join(' · ')
+  const meta = [
+    organ.location?.city,
+    format.dateTime(new Date(organ.date), { day: '2-digit', month: 'long', year: 'numeric' }),
+  ]
+    .filter(Boolean)
+    .join(' · ')
   return (
     <div className={side === 'next' ? 'md:text-right' : ''}>
       <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-3.5">
-        {side === 'prev' ? '← Previous visit' : 'Next visit →'}
+        {side === 'prev' ? t('previousVisit') : t('nextVisit')}
       </p>
       <Link
         href={`/organs/${organ.slug}`}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useFormatter, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Image } from 'next-sanity/image'
 import { stegaClean } from '@sanity/client/stega'
@@ -38,34 +39,17 @@ type JournalListProps = {
 
 const PAGE_SIZE = 8
 
-const CATEGORY_LABEL: Record<string, string> = {
-  travelogue: 'Travel',
-  workshop: 'Workshop',
-  memorial: 'Memorial',
-  'home-organ': 'Home organ',
-  biography: 'Biography',
-  news: 'News',
-  collection: 'Collection',
-  other: 'Other',
-}
-
-const CATEGORY_KIND: Record<string, string> = {
-  travelogue: 'travelogue',
-  workshop: 'visit',
-  memorial: 'memorial',
-  'home-organ': 'home organ',
-  biography: 'biography',
-  news: 'news',
-  collection: 'collection',
-  other: 'note',
-}
-
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+const CATEGORY_KEYS = [
+  'travelogue',
+  'workshop',
+  'memorial',
+  'home-organ',
+  'biography',
+  'news',
+  'collection',
+  'other',
+] as const
+type CategoryKey = (typeof CATEGORY_KEYS)[number]
 
 const readMin = (excerpt: string | null) => {
   // Rough estimate from excerpt length (full content not in the
@@ -81,6 +65,7 @@ const figureLabelFor = (entry: JournalEntrySummary) => {
 }
 
 function EntryFigure({ entry }: { entry: JournalEntrySummary }) {
+  const t = useTranslations('JournalList')
   const url = entry.coverImage?.asset?._ref
     ? urlForImage(entry.coverImage)?.width(560).height(420).fit('crop').url()
     : null
@@ -107,8 +92,8 @@ function EntryFigure({ entry }: { entry: JournalEntrySummary }) {
       {entry.hasAudio && (
         <span
           className="absolute right-3 top-3 w-7 h-7 bg-[oklch(0.99_0.004_85/0.92)] text-ink rounded-full flex items-center justify-center text-sm"
-          aria-label="Has audio"
-          title="Has audio"
+          aria-label={t('hasAudio')}
+          title={t('hasAudio')}
         >
           ♪
         </span>
@@ -118,9 +103,13 @@ function EntryFigure({ entry }: { entry: JournalEntrySummary }) {
 }
 
 function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number }) {
+  const t = useTranslations('JournalList')
+  const format = useFormatter()
   const titleAttr = dataAttr({ id: entry._id, type: 'journal', path: 'title' }).toString()
-  const cat = entry.category ?? 'other'
-  const kind = CATEGORY_KIND[cat] ?? cat
+  const cat = (entry.category ?? 'other') as CategoryKey
+  const kind = (CATEGORY_KEYS as readonly string[]).includes(cat)
+    ? t(`categoryKinds.${cat}`)
+    : entry.category ?? 'other'
   return (
     <Link
       href={`/journal/${entry.slug}`}
@@ -131,7 +120,7 @@ function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number 
         <span className="block text-ink text-[11px] mb-1.5">
           N° {String(index).padStart(3, '0')}
         </span>
-        {fmtDate(entry.date)}
+        {format.dateTime(new Date(entry.date), { day: 'numeric', month: 'long', year: 'numeric' })}
         <br />
         {readMin(entry.excerpt)} min read
       </div>
@@ -152,7 +141,7 @@ function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number 
         )}
         <div className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
           <span className="text-ink inline-flex items-center gap-2 transition-colors duration-300 group-hover:text-accent">
-            Read entry <span className="text-[11px]">→</span>
+            {t('readEntry')} <span className="text-[11px]">→</span>
           </span>
         </div>
       </div>
@@ -162,6 +151,7 @@ function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number 
 }
 
 export function JournalList({ entries, totalCount }: JournalListProps) {
+  const t = useTranslations('JournalList')
   const [activeCat, setActiveCat] = useState<string>('all')
   const [page, setPage] = useState(1)
 
@@ -217,10 +207,10 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
       <div className="max-w-[1240px] mx-auto px-6 md:px-12">
       <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-y border-rule-soft py-3.5 mb-14">
         <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint mr-3">
-          Filter
+          {t('filter')}
         </span>
         <FilterButton
-          label="All"
+          label={t('all')}
           count={counts.all ?? 0}
           active={activeCat === 'all'}
           onClick={() => setCat('all')}
@@ -228,21 +218,21 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
         {categories.map((c) => (
           <FilterButton
             key={c}
-            label={CATEGORY_LABEL[c] ?? c}
+            label={(CATEGORY_KEYS as readonly string[]).includes(c) ? t(`categories.${c}` as never) : c}
             count={counts[c] ?? 0}
             active={activeCat === c}
             onClick={() => setCat(c)}
           />
         ))}
         <span className="ml-auto font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
-          {String(baseCount).padStart(2, '0')} entries
+          {t('entriesCount', { count: baseCount })}
         </span>
       </div>
 
       <div className="flex flex-col mb-12">
         {visible.length === 0 ? (
           <p className="font-serif italic text-ink-faint text-lg py-16 text-center">
-            Nothing in this category yet.
+            {t('emptyCategory')}
           </p>
         ) : (
           visible.map((p, i) => (
@@ -259,10 +249,10 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
             disabled={safePage === 1}
             className="font-serif italic text-[18px] text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent disabled:opacity-50 disabled:pointer-events-none disabled:border-rule-soft cursor-pointer disabled:cursor-default bg-transparent border-x-0 border-t-0"
           >
-            ← Newer
+            {t('pagination.newer')}
           </button>
           <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
-            Page {safePage} of {totalPages}
+            {t('pagination.pageOf', { current: safePage, total: totalPages })}
           </span>
           <button
             type="button"
@@ -270,7 +260,7 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
             disabled={safePage === totalPages}
             className="font-serif italic text-[18px] text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent disabled:opacity-50 disabled:pointer-events-none disabled:border-rule-soft cursor-pointer disabled:cursor-default bg-transparent border-x-0 border-t-0"
           >
-            Older →
+            {t('pagination.older')}
           </button>
         </div>
       )}
