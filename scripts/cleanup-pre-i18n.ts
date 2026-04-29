@@ -83,21 +83,32 @@ function parseArgs(argv: string[]): Args {
   return { env: resolve(env), apply }
 }
 
+function parseEnvLine(line: string): [string, string] | null {
+  const trimmed = line.trim()
+  if (!trimmed || trimmed.startsWith('#')) return null
+  const eq = trimmed.indexOf('=')
+  if (eq === -1) return null
+  const key = trimmed.slice(0, eq).trim()
+  const raw = trimmed.slice(eq + 1).trimStart()
+  let value: string
+  if (raw.startsWith('"') || raw.startsWith("'")) {
+    const quote = raw[0]
+    const rest = raw.slice(1)
+    const close = rest.indexOf(quote)
+    value = close === -1 ? rest.trim() : rest.slice(0, close)
+  } else {
+    const hashIdx = raw.search(/\s#/)
+    value = (hashIdx === -1 ? raw : raw.slice(0, hashIdx)).trim()
+  }
+  return [key, value]
+}
+
 function loadEnv(envPath: string): void {
   const content = readFileSync(envPath, 'utf8')
   for (const line of content.split('\n')) {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) continue
-    const eq = trimmed.indexOf('=')
-    if (eq === -1) continue
-    const key = trimmed.slice(0, eq).trim()
-    let value = trimmed.slice(eq + 1).trim()
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1)
-    }
+    const parsed = parseEnvLine(line)
+    if (!parsed) continue
+    const [key, value] = parsed
     if (!(key in process.env)) process.env[key] = value
   }
 }
