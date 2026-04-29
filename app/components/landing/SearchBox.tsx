@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 import type { Locale } from '@/core/i18n/locales'
@@ -8,8 +9,8 @@ import type { Locale } from '@/core/i18n/locales'
 type SearchBoxProps = {
   locale: Locale
   /**
-   * Visual mode for screens >= md. On mobile (drawer), pass `expanded`
-   * so the input is always shown.
+   * Visual mode. `inline` = collapsed icon that expands on click (desktop nav).
+   * `expanded` = always-visible input (mobile drawer).
    */
   variant?: 'inline' | 'expanded'
 }
@@ -17,13 +18,25 @@ type SearchBoxProps = {
 export function SearchBox({ locale, variant = 'inline' }: SearchBoxProps) {
   const tNav = useTranslations('Nav')
   const tSearch = useTranslations('Search')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const urlQuery = searchParams?.get('q') ?? ''
+
   const startExpanded = variant === 'expanded'
   const [open, setOpen] = useState(startExpanded)
+  const [value, setValue] = useState(urlQuery)
   const inputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
+  // Sync the input with the URL when it changes (browser back/forward, manual edits).
   useEffect(() => {
-    if (!open || startExpanded) return
+    setValue(urlQuery)
+  }, [urlQuery])
+
+  // Inline-mode behaviour: focus on open, Esc + outside-click to close.
+  useEffect(() => {
+    if (startExpanded) return
+    if (!open) return
     inputRef.current?.focus()
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false)
@@ -42,16 +55,22 @@ export function SearchBox({ locale, variant = 'inline' }: SearchBoxProps) {
 
   const showInput = open || startExpanded
 
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const trimmed = value.trim()
+    const target = trimmed
+      ? `/${locale}/search?q=${encodeURIComponent(trimmed)}`
+      : `/${locale}/search`
+    router.push(target)
+  }
+
   return (
     <form
       ref={formRef}
       role="search"
-      action={`/${locale}/search`}
-      method="get"
+      onSubmit={handleSubmit}
       className={
-        startExpanded
-          ? 'flex items-center gap-2 w-full'
-          : 'flex items-center gap-1.5'
+        startExpanded ? 'flex items-center gap-2 w-full' : 'flex items-center gap-1.5'
       }
     >
       {showInput && (
@@ -59,6 +78,8 @@ export function SearchBox({ locale, variant = 'inline' }: SearchBoxProps) {
           ref={inputRef}
           type="search"
           name="q"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           aria-label={tSearch('placeholder')}
           placeholder={tSearch('placeholder')}
           autoComplete="off"
