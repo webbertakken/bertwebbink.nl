@@ -99,13 +99,24 @@ survives.
 
 ## Done means
 
-- [ ] Step 1 backup path:`~/sanity-backups/bertwebbink.nl/<TIMESTAMP>/production.tar.gz` (fill in)
-- [ ] `drafts.siteSettings` no longer exists in the dataset
-- [ ] `drafts.1b2o827S21abcdyBtUtha0` no longer exists in the dataset
-- [ ] `drafts.v2I8xbswIO3h0NWvyLCPIC` no longer exists in the dataset
-- [ ] Type breakdown live‑queried against the dataset matches the post‑run expectations above
-- [ ] PR `chore/cleanup-pre-i18n` merged + tagged
-- [ ] `plans/upgrades.md` Phase 0 unblocked
+- [x] Step 1 backup path: `~/sanity-backups/bertwebbink.nl/2026-04-29_02-45-47/production.tar.gz`
+      (5.9 GB, 172 docs, 1842 assets, gzip integrity OK, all 3 target ids present pre‑cleanup)
+- [x] `drafts.siteSettings` no longer exists in the dataset (transaction `v2I8xbswIO3h0NWvyTgTiC`)
+- [x] `drafts.1b2o827S21abcdyBtUtha0` no longer exists in the dataset
+- [x] `drafts.v2I8xbswIO3h0NWvyLCPIC` no longer exists in the dataset
+- [x] Type breakdown live‑queried against the dataset matches the post‑run expectations:
+      `settings`=1, `post`=0, `blog`=0, `organ`=132, `journal`=25, `score`=4, 6 singletons each at
+      1, plus `sanity.previewUrlSecret`=1
+- [x] Re‑running `yarn cleanup:pre-i18n` is now a no‑op (all 3 target ids report "already gone")
+- [ ] PR `chore/cleanup-pre-i18n` merged + tagged (pending review)
+- [ ] `plans/upgrades.md` Phase 0 unblocked (pending PR merge)
+
+Manual Studio confirmation steps (for reviewer):
+
+- [ ] Open `/admin`, click `Settings` → confirm one entry, no draft indicator
+- [ ] Open the published `Hoogeveen De Opgang` organ → confirm "Discard changes" not available
+      (no draft sibling left)
+- [ ] Same for the published `Orgelpad Vollenhove …` journal
 
 ## Out of scope
 
