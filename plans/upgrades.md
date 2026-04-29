@@ -21,7 +21,7 @@ happens on a modern, supported stack.
 | `@types/react`, `@types/react-dom`      | ^18.3.x  | `^19.x`                         | Currently mismatched against React 19       |
 | `sanity`                                | 3.91.0   | `^5.22.0`                       | Two majors                                  |
 | `@sanity/vision`                        | 3.91.0   | `^5.22.0`                       | Tracks `sanity`                             |
-| `next-sanity`                           | 9.8.42   | `^12.3.1`                       | Three majors; needs Next 16                 |
+| `next-sanity`                           | 9.8.42   | `^11.6.13` (Phase 5 deferred)   | 12.3.1 + Next 16 + Turbopack has an upstream Could-not-parse-module bug; revisit on next-sanity 13 |
 | `@sanity/client`                        | 7.4.0    | `^7.22.0`                       | Minor                                       |
 | `@sanity/icons`                         | 3.7.0    | `^3.7.4`                        | Patch                                       |
 | `@sanity/image-url`                     | 1.1.0    | `^2.1.1`                        | One major                                   |
@@ -139,14 +139,24 @@ Big phase. Group together because `next-sanity` 11+ requires Sanity 5.
 - [ ] Confirm Visual Editing overlay still works on `/`, `/organs/[slug]`, `/journal/[slug]`
 - [ ] Commit
 
-### Phase 5 — `next-sanity` 11.5 → 12
+### Phase 5 — `next-sanity` 11.5 → 12 — **DEFERRED**
 
-Final `next-sanity` bump, runs only after everything above is green.
+Deferred upstream. `next-sanity@12.3.1` + Next 16.2.4 + Turbopack fails to compile any `/api` route
+that uses `defineEnableDraftMode`: Turbopack tries to resolve
+`next/dist/server/route-modules/app-route/vendored/contexts/app-router-context.js` which doesn't
+exist in Next 16 (the file is under `app-page`, not `app-route`).
 
-- [ ] `yarn up next-sanity@^12.3.1`
-- [ ] Re-verify draft mode + Live Content + Presentation Tool
-- [ ] `yarn build` clean
-- [ ] Commit
+Attempted workaround: `serverExternalPackages: ['next-sanity']` fixes the route compile but breaks
+the Studio import (`next-sanity/studio` is a client component; making the package server-external
+prevents the client bundle from picking it up).
+
+Resolution: stay on `next-sanity@^11.5` (resolves to 11.6.13). Revisit when `next-sanity@13` lands
+or a 12.x patch fixes the Turbopack path mismatch.
+
+- [x] `yarn up next-sanity@^11.5` (kept at 11.6.13)
+- [x] Re-verify draft mode + Live Content + Presentation Tool (working under 11.6.13)
+- [x] `yarn build` clean
+- [x] Committed (9df75eb "defer Phase 5")
 
 ### Phase 6 — TypeScript native (tsgo)
 
@@ -223,10 +233,13 @@ Mirror the migrator's `scripts/lint.mjs` runner pattern (it works around the git
 
 ## Done means
 
-- [ ] All packages match the target table
-- [ ] All scripts (`build`, `check-types`, `lint`, `test`, `dev`, `start`, `typegen`,
+- [x] All packages match the target table (Phase 5 explicitly deferred to next-sanity 11.6.13)
+- [x] All scripts (`build`, `check-types`, `lint`, `test`, `dev`, `start`, `typegen`,
       `extract-types`) pass
-- [ ] `/admin` and the public site behave identically to before the upgrade
-- [ ] No new console warnings or peer-dep warnings
-- [ ] PR merged, tag created
-- [ ] `plans/translations.md` Phase 1 unblocked
+- [x] `/admin` and the public site behave identically to before the upgrade
+- [x] Two pre-existing peer-dep warnings remain (¹): both predate this PR and don't break behaviour
+      — `@sanity/assist` requests `@sanity/mutator` (resolved by Sanity 5's bundled mutator),
+      `sanity-plugin-media` requests `react-is`. The first will be resolved when `@sanity/assist`
+      is removed in `plans/translations.md` Track C; the second is benign and tracked separately.
+- [ ] PR merged, tag created (pending review)
+- [ ] `plans/translations.md` Phase 1 unblocked (pending PR merge)
