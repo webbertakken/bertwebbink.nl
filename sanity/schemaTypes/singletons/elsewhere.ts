@@ -1,6 +1,8 @@
 import { LinkIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * Elsewhere page singleton (_id: "siteElsewhere").
  *
@@ -14,6 +16,7 @@ export const elsewhere = defineType({
   type: 'document',
   icon: LinkIcon,
   fields: [
+    languageField,
     defineField({
       name: 'title',
       title: 'Page title',

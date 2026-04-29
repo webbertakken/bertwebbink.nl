@@ -1,6 +1,8 @@
 import { HomeIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * Journal page singleton (_id: "siteJournalPage").
  *
@@ -18,6 +20,7 @@ export const journalPage = defineType({
   icon: HomeIcon,
   groups: [{ name: 'hero', title: 'Hero', default: true }],
   fields: [
+    languageField,
     defineField({
       name: 'kickerLeft',
       title: 'Kicker — left',

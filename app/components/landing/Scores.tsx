@@ -1,9 +1,10 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
 import { dataAttr } from '@/sanity/lib/utils'
+import type { Locale } from '@/core/i18n/locales'
 import { renderEmphasised, renderInlineItalic } from './renderEmphasised'
 
 export type Score = {
@@ -23,6 +24,7 @@ export type Score = {
 }
 
 type ScoresProps = {
+  locale: Locale
   scores: Score[]
   /** Editable hero copy. All fields fall back to design defaults. */
   copy?: {
@@ -90,10 +92,13 @@ const IconCaret = () => (
   </svg>
 )
 
-const SCORES_PAGE_ID = 'siteScoresPage'
 const SCORES_PAGE_TYPE = 'scoresPage'
-const scoresPageAttr = (path: string) =>
-  dataAttr({ id: SCORES_PAGE_ID, type: SCORES_PAGE_TYPE, path }).toString()
+const makeScoresPageAttr = (locale: Locale) => (path: string) =>
+  dataAttr({
+    id: `scoresPage-${locale}`,
+    type: SCORES_PAGE_TYPE,
+    path,
+  }).toString()
 const scoreAttr = (id: string, path: string) =>
   dataAttr({ id, type: 'score', path }).toString()
 
@@ -114,7 +119,13 @@ function Crumbs() {
   )
 }
 
-function Header({ copy }: { copy?: ScoresProps['copy'] }) {
+function Header({
+  copy,
+  scoresPageAttr,
+}: {
+  copy?: ScoresProps['copy']
+  scoresPageAttr: (path: string) => string
+}) {
   const kicker = copy?.kicker ?? 'A small library'
   const heading = copy?.heading ?? 'Editions, fingerings, {{working scores}}.'
   const tagline =
@@ -441,21 +452,24 @@ function Grid({ scores, total }: { scores: Score[]; total: number }) {
 }
 
 function Notice({
+  locale,
   body,
   editionLine,
   contactHref,
 }: {
+  locale: Locale
   body?: string | null
   editionLine?: string | null
   contactHref?: string | null
 }) {
+  const settingsId = `settings-${locale}`
   const noticeAttr = dataAttr({
-    id: 'siteSettings',
+    id: settingsId,
     type: 'settings',
     path: 'scoresNoticeBody',
   }).toString()
   const editionAttr = dataAttr({
-    id: 'siteSettings',
+    id: settingsId,
     type: 'settings',
     path: 'scoresEditionLine',
   }).toString()
@@ -507,10 +521,11 @@ function EmptyLibrary() {
   )
 }
 
-export function Scores({ scores, copy }: ScoresProps) {
+export function Scores({ locale, scores, copy }: ScoresProps) {
   const [active, setActive] = useState<FilterKey>('all')
   const [sortIdx, setSortIdx] = useState(0)
   const sortKey = SORTS[sortIdx].key
+  const scoresPageAttr = makeScoresPageAttr(locale)
 
   const counts = useMemo(() => {
     const out: Record<FilterKey, number> = {
@@ -549,7 +564,7 @@ export function Scores({ scores, copy }: ScoresProps) {
   return (
     <>
       <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8" data-screen-label="scores">
-        <Header copy={copy} />
+        <Header copy={copy} scoresPageAttr={scoresPageAttr} />
         {scores.length === 0 ? (
           <EmptyLibrary />
         ) : (
@@ -568,6 +583,7 @@ export function Scores({ scores, copy }: ScoresProps) {
         )}
       </main>
       <Notice
+        locale={locale}
         body={copy?.noticeBody ?? null}
         editionLine={copy?.editionLine ?? null}
         contactHref={copy?.contactHref ?? null}

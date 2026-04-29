@@ -31,6 +31,7 @@ export const score = defineType({
     defineField({
       name: 'era',
       title: 'Era',
+      description: 'Categorical filter key; display labels are localised via UI strings.',
       type: 'string',
       validation: (rule) => rule.required(),
       options: {
@@ -66,21 +67,21 @@ export const score = defineType({
     defineField({
       name: 'forInstrument',
       title: 'For instrument',
-      type: 'string',
-      initialValue: 'For organ',
+      description:
+        'Per-locale label, e.g. "For organ" / "Voor orgel". Authored in Dutch; translated by the translate action.',
+      type: 'internationalizedArrayString',
     }),
     defineField({
       name: 'edition',
       title: 'Edition revision',
-      description: 'e.g. "1st edition", "2nd revised, 2024".',
-      type: 'string',
+      description: 'Per-locale, e.g. "1st edition" / "1e editie".',
+      type: 'internationalizedArrayString',
     }),
     defineField({
       name: 'blurb',
       title: 'Description',
-      description: 'Short description shown alongside the featured score.',
-      type: 'text',
-      rows: 4,
+      description: 'Per-locale short description shown alongside the featured score.',
+      type: 'internationalizedArrayText',
     }),
     defineField({
       name: 'pdfFile',

@@ -1,6 +1,8 @@
 import { LockIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * Privacy page singleton (_id: "sitePrivacy").
  *
@@ -14,6 +16,7 @@ export const privacy = defineType({
   type: 'document',
   icon: LockIcon,
   fields: [
+    languageField,
     defineField({
       name: 'eyebrow',
       title: 'Eyebrow',

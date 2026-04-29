@@ -2,6 +2,7 @@ import { CogIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import * as demo from '../../lib/initialValues'
+import { languageField } from '../fields/language'
 
 /**
  * Settings schema Singleton. Singletons are single documents that are displayed not in a collection, handy for things like site settings and other global configurations.
@@ -17,8 +18,48 @@ export const settings = defineType({
     { name: 'chrome', title: 'Site chrome' },
     { name: 'seo', title: 'Search engine optimisation' },
     { name: 'aeo', title: 'Agentic engine optimisation' },
+    { name: 'translation', title: 'Translation' },
   ],
   fields: [
+    languageField,
+    defineField({
+      name: 'autoPublishTranslations',
+      title: 'Auto-publish translated siblings',
+      description:
+        'When enabled (default), the "Publish to all locales" action publishes each translated sibling immediately. When disabled, translations are kept as drafts for manual review.',
+      type: 'boolean',
+      initialValue: true,
+      group: 'translation',
+    }),
+    defineField({
+      name: 'glossary',
+      title: 'Translation glossary',
+      description:
+        'Site-wide glossary applied to every translation. Use "DO_NOT_TRANSLATE" as the target to lock a term verbatim across all locales.',
+      type: 'array',
+      group: 'translation',
+      of: [
+        {
+          type: 'object',
+          name: 'glossaryEntry',
+          fields: [
+            defineField({
+              name: 'term',
+              type: 'string',
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: 'translation',
+              type: 'string',
+              description: 'Either the preferred translation, or "DO_NOT_TRANSLATE".',
+            }),
+          ],
+          preview: {
+            select: { title: 'term', subtitle: 'translation' },
+          },
+        },
+      ],
+    }),
     defineField({
       name: 'title',
       description: 'Site name. Used in the browser tab title ("%s | Site name") and as the default page title.',
@@ -150,9 +191,6 @@ export const settings = defineType({
       description: 'Displayed on social cards and search engine results.',
       options: {
         hotspot: true,
-        aiAssist: {
-          imageDescriptionField: 'alt',
-        },
       },
       fields: [
         defineField({

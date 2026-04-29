@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 
 import { sanityFetch } from '@/sanity/lib/live'
 import { settingsQuery } from '@/sanity/lib/queries'
+import { UI_DEFAULT_LOCALE } from '@/core/i18n/locales'
 
 /**
  * Crawlers that exist primarily to feed model *training* data — content
@@ -37,8 +38,10 @@ const TRAINING_CRAWLERS = [
 const CITATION_CRAWLERS = ['PerplexityBot', 'OAI-SearchBot', 'ChatGPT-User']
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
+  // robots.txt is site-wide; pick the UI default locale for the policy.
   const { data: settings } = await sanityFetch({
     query: settingsQuery,
+    params: { locale: UI_DEFAULT_LOCALE },
     stega: false,
   })
   const policy = (settings?.aiCrawlPolicy ?? 'citation-only') as

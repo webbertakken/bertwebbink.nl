@@ -1,0 +1,65 @@
+{
+  "Nav": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "wordmarkFallback": "Bert Webbink",
+    "taglineFallback": "Organist",
+    "items": {
+      "organs": "Organs",
+      "scores": "Scores",
+      "about": "About me",
+      "elsewhere": "Elsewhere"
+    }
+  },
+  "Footer": {
+    "copyright": "© Bert Webbink, {year}",
+    "links": {
+      "privacy": "Privacy",
+      "elsewhere": "Elsewhere",
+      "contact": "Contact"
+    }
+  },
+  "Crumbs": {
+    "home": "Home",
+    "organs": "Organs",
+    "journal": "Journal",
+    "scores": "Scores",
+    "about": "About",
+    "elsewhere": "Elsewhere",
+    "privacy": "Privacy"
+  },
+  "LanguagePicker": {
+    "label": "Language",
+    "switchTo": "Switch to {language}"
+  },
+  "Metadata": {
+    "journal": {
+      "title": "Journal",
+      "description": "Essays, fragments, half-finished thoughts — published when there is something worth saying."
+    },
+    "organs": {
+      "title": "Organs",
+      "description": "Field notes from organs visited across the Netherlands and beyond."
+    },
+    "scores": {
+      "title": "Scores",
+      "description": "Working editions of organ scores prepared by Bert Webbink — fingerings, registrations, free to download for non-commercial study."
+    },
+    "about": {
+      "title": "About me",
+      "description": "Bert Webbink — organist, teacher, quiet visitor of old buildings."
+    },
+    "elsewhere": {
+      "title": "Elsewhere",
+      "description": "Curated links — choirs, churches, organ resources."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "A short, plain-language note about what gets logged when you visit this site."
+    }
+  },
+  "UnderConstruction": {
+    "title": "Under construction",
+    "subtitle": "Come back soon."
+  }
+}

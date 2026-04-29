@@ -1,6 +1,8 @@
 import { UserIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
+import { languageField } from '../fields/language'
+
 /**
  * About page singleton (_id: "siteAbout").
  *
@@ -13,6 +15,7 @@ export const about = defineType({
   type: 'document',
   icon: UserIcon,
   fields: [
+    languageField,
     defineField({
       name: 'eyebrow',
       title: 'Eyebrow',

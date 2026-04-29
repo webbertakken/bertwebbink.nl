@@ -1,16 +1,27 @@
 import { defineQuery } from 'next-sanity'
 
-export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
+/**
+ * All page queries are locale-aware: they take a `$locale` parameter and
+ * scope by `language == $locale`. Singletons resolve via the symmetric
+ * `{type}-{locale}` id pattern. The `score` type is field-level: it has
+ * no `language` field and uses `coalesce(value[language == $locale][0],
+ * value[language == "nl"][0])` for its localised array fields.
+ */
+
+export const settingsQuery = defineQuery(
+  `*[_type == "settings" && _id == "settings-" + $locale][0]`,
+)
 
 export const navSettingsQuery = defineQuery(`
-  *[_type == "settings" && _id == "siteSettings"][0] {
+  *[_type == "settings" && _id == "settings-" + $locale][0] {
+    _id,
     wordmark,
     tagline
   }
 `)
 
 export const footerContactQuery = defineQuery(`
-  *[_type == "about" && _id == "siteAbout"][0] {
+  *[_type == "about" && _id == "about-" + $locale][0] {
     "href": contactRows[href match "mailto:*"][0].href
   }
 `)
@@ -36,16 +47,21 @@ const linkReference = /* groq */ `
   }
 `
 
+/**
+ * Sitemap data: emits one entry per (slug, locale) pair so the
+ * sitemap.ts route can build per-locale URLs with hreflang siblings.
+ */
 export const sitemapData = defineQuery(`
   *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {
     "slug": slug.current,
     _type,
     _updatedAt,
+    language,
   }
 `)
 
 export const organQuery = defineQuery(`
-  *[_type == "organ" && slug.current == $slug] [0] {
+  *[_type == "organ" && language == $locale && slug.current == $slug] [0] {
     content[]{
       ...,
       markDefs[]{
@@ -55,15 +71,15 @@ export const organQuery = defineQuery(`
     },
     ${organFields}
     disposition,
-    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),
-    "totalCount": count(*[_type == "organ" && defined(slug.current)]),
-    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
+    "position": count(*[_type == "organ" && language == $locale && defined(slug.current) && date <= ^.date]),
+    "totalCount": count(*[_type == "organ" && language == $locale && defined(slug.current)]),
+    "prev": *[_type == "organ" && language == $locale && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
       "title": coalesce(title, "Untitled"),
       "slug": slug.current,
       "date": coalesce(date, _updatedAt),
       location
     },
-    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
+    "next": *[_type == "organ" && language == $locale && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
       "title": coalesce(title, "Untitled"),
       "slug": slug.current,
       "date": coalesce(date, _updatedAt),
@@ -72,46 +88,49 @@ export const organQuery = defineQuery(`
   }
 `)
 
+/**
+ * Enumerates one entry per (slug, locale) pair for `generateStaticParams`.
+ * The route handler maps these to params.
+ */
 export const organPagesSlugs = defineQuery(`
-  *[_type == "organ" && defined(slug.current)]
-  {"slug": slug.current}
+  *[_type == "organ" && defined(slug.current) && defined(language)]
+  { "slug": slug.current, "locale": language }
 `)
 
 export const landingOrgansQuery = defineQuery(`
-  *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
+  *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
     ${organFields}
   }
 `)
 
 export const landingStatsQuery = defineQuery(`
   {
-    "totalCount": count(*[_type == "organ" && defined(slug.current)]),
-    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,
-    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date
+    "totalCount": count(*[_type == "organ" && language == $locale && defined(slug.current)]),
+    "firstDate": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date asc) [0].date,
+    "latestDate": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc) [0].date
   }
 `)
 
 export const landingCitiesQuery = defineQuery(`
-  *[_type == "organ" && defined(slug.current) && defined(location.city)]{
+  *[_type == "organ" && language == $locale && defined(slug.current) && defined(location.city)]{
     "city": location.city
   }
 `)
 
-// `$city` is an empty string for "no filter" or a city name for filtered.
-// `$end` is the (exclusive) slice end — caller passes offset + limit.
 export const archiveOrgansQuery = defineQuery(`
-  *[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)]
+  *[_type == "organ" && language == $locale && defined(slug.current) && ($city == "" || location.city == $city)]
     | order(date desc, _updatedAt desc) [$offset...$end] {
     ${organFields}
   }
 `)
 
 export const archiveOrgansCountQuery = defineQuery(`
-  count(*[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)])
+  count(*[_type == "organ" && language == $locale && defined(slug.current) && ($city == "" || location.city == $city)])
 `)
 
 export const aboutQuery = defineQuery(`
-  *[_type == "about" && _id == "siteAbout"][0] {
+  *[_type == "about" && _id == "about-" + $locale][0] {
+    _id,
     eyebrow,
     title,
     letter,
@@ -146,7 +165,7 @@ const journalDetailFields = /* groq */ `
 `
 
 export const journalQuery = defineQuery(`
-  *[_type == "journal" && slug.current == $slug] [0] {
+  *[_type == "journal" && language == $locale && slug.current == $slug] [0] {
     content[]{
       ...,
       markDefs[]{
@@ -155,15 +174,15 @@ export const journalQuery = defineQuery(`
       }
     },
     ${journalDetailFields}
-    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),
-    "totalCount": count(*[_type == "journal" && defined(slug.current)]),
-    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
+    "position": count(*[_type == "journal" && language == $locale && defined(slug.current) && date <= ^.date]),
+    "totalCount": count(*[_type == "journal" && language == $locale && defined(slug.current)]),
+    "prev": *[_type == "journal" && language == $locale && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{
       "title": coalesce(title, "Untitled"),
       "slug": slug.current,
       "date": coalesce(date, _updatedAt),
       category
     },
-    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
+    "next": *[_type == "journal" && language == $locale && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{
       "title": coalesce(title, "Untitled"),
       "slug": slug.current,
       "date": coalesce(date, _updatedAt),
@@ -173,12 +192,12 @@ export const journalQuery = defineQuery(`
 `)
 
 export const journalPagesSlugs = defineQuery(`
-  *[_type == "journal" && defined(slug.current)]
-  {"slug": slug.current}
+  *[_type == "journal" && defined(slug.current) && defined(language)]
+  { "slug": slug.current, "locale": language }
 `)
 
 export const journalEntriesQuery = defineQuery(`
-  *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+  *[_type == "journal" && language == $locale && defined(slug.current)] | order(date desc, _updatedAt desc) {
     _id,
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
@@ -192,13 +211,14 @@ export const journalEntriesQuery = defineQuery(`
 
 export const journalStatsQuery = defineQuery(`
   {
-    "totalCount": count(*[_type == "journal" && defined(slug.current)]),
-    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date
+    "totalCount": count(*[_type == "journal" && language == $locale && defined(slug.current)]),
+    "firstDate": *[_type == "journal" && language == $locale && defined(slug.current)] | order(date asc) [0].date
   }
 `)
 
 export const journalPageQuery = defineQuery(`
-  *[_type == "journalPage" && _id == "siteJournalPage"][0] {
+  *[_type == "journalPage" && _id == "journalPage-" + $locale][0] {
+    _id,
     kickerLeft,
     kickerRight,
     heading,
@@ -209,7 +229,8 @@ export const journalPageQuery = defineQuery(`
 `)
 
 export const organsPageQuery = defineQuery(`
-  *[_type == "organsPage" && _id == "siteOrgansPage"][0] {
+  *[_type == "organsPage" && _id == "organsPage-" + $locale][0] {
+    _id,
     kickerLeft,
     kickerRight,
     heading,
@@ -220,25 +241,30 @@ export const organsPageQuery = defineQuery(`
 `)
 
 export const scoresPageQuery = defineQuery(`
-  *[_type == "scoresPage" && _id == "siteScoresPage"][0] {
+  *[_type == "scoresPage" && _id == "scoresPage-" + $locale][0] {
+    _id,
     kicker,
     heading,
     tagline,
-    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,
-    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,
-    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href
+    "noticeBody": *[_type == "settings" && _id == "settings-" + $locale][0].scoresNoticeBody,
+    "editionLine": *[_type == "settings" && _id == "settings-" + $locale][0].scoresEditionLine,
+    "contactHref": *[_type == "about" && _id == "about-" + $locale][0].contactRows[href match "mailto:*"][0].href
   }
 `)
 
+/**
+ * Per-locale llms.txt index. The route at `/llms.{locale}.txt` calls this
+ * with the appropriate locale; root `/llms.txt` defaults to English.
+ */
 export const llmsTxtIndexQuery = defineQuery(`
   {
-    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {
+    "organs": *[_type == "organ" && language == $locale && defined(slug.current)] | order(date desc) {
       "slug": slug.current,
       "title": coalesce(title, "Untitled"),
       excerpt,
       "date": coalesce(date, _updatedAt)
     },
-    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {
+    "journal": *[_type == "journal" && language == $locale && defined(slug.current)] | order(date desc) {
       "slug": slug.current,
       "title": coalesce(title, "Untitled"),
       excerpt,
@@ -249,7 +275,8 @@ export const llmsTxtIndexQuery = defineQuery(`
 `)
 
 export const elsewhereQuery = defineQuery(`
-  *[_type == "elsewhere" && _id == "siteElsewhere"][0] {
+  *[_type == "elsewhere" && _id == "elsewhere-" + $locale][0] {
+    _id,
     title,
     eyebrow,
     intro,
@@ -262,7 +289,8 @@ export const elsewhereQuery = defineQuery(`
 `)
 
 export const privacyQuery = defineQuery(`
-  *[_type == "privacy" && _id == "sitePrivacy"][0] {
+  *[_type == "privacy" && _id == "privacy-" + $locale][0] {
+    _id,
     eyebrow,
     title,
     intro,
@@ -272,6 +300,11 @@ export const privacyQuery = defineQuery(`
   }
 `)
 
+/**
+ * Scores: field-level locale via `internationalizedArrayString` /
+ * `internationalizedArrayText`. We coalesce to the Dutch source as a
+ * fallback when a locale entry is missing.
+ */
 export const scoresQuery = defineQuery(`
   *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {
     _id,
@@ -282,9 +315,9 @@ export const scoresQuery = defineQuery(`
     year,
     pages,
     editionNumber,
-    forInstrument,
-    edition,
-    blurb,
+    "forInstrument": coalesce(forInstrument[language == $locale][0].value, forInstrument[language == "nl"][0].value),
+    "edition": coalesce(edition[language == $locale][0].value, edition[language == "nl"][0].value),
+    "blurb": coalesce(blurb[language == $locale][0].value, blurb[language == "nl"][0].value),
     "pdfUrl": pdfFile.asset->url,
     isFeatured,
   }

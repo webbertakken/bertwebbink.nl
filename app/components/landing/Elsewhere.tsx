@@ -1,7 +1,8 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
 
-import { dataAttr } from '@/sanity/lib/utils'
+import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
+import type { Locale } from '@/core/i18n/locales'
 
 type LinkItem = {
   _key: string
@@ -17,15 +18,12 @@ type Group = {
 }
 
 export type ElsewhereContent = {
+  _id?: string
   title: string | null
   eyebrow: string | null
   intro: PortableTextBlock[] | null
   groups: Group[] | null
 }
-
-const ID = 'siteElsewhere'
-const elsewhereAttr = (path: string) =>
-  dataAttr({ id: ID, type: 'elsewhere', path }).toString()
 
 const introComponents = {
   block: {
@@ -75,8 +73,16 @@ function EmptyState() {
   )
 }
 
-export function Elsewhere({ data }: { data: ElsewhereContent | null }) {
+export function Elsewhere({
+  locale,
+  data,
+}: {
+  locale: Locale
+  data: ElsewhereContent | null
+}) {
   if (!data) return <EmptyState />
+  const elsewhereId = data._id ?? `elsewhere-${locale}`
+  const elsewhereAttr = stegaAttrFor(elsewhereId, 'elsewhere')
 
   return (
     <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8 pb-32" data-screen-label="elsewhere">

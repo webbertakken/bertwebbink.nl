@@ -1,28 +1,19 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 import { dataAttr } from '@/sanity/lib/utils'
-
-const SETTINGS_ID = 'siteSettings'
-const settingsAttr = (path: string) =>
-  dataAttr({ id: SETTINGS_ID, type: 'settings', path }).toString()
+import { Link, usePathname } from '@/i18n/navigation'
+import { LanguagePicker } from './LanguagePicker'
+import type { Locale } from '@/core/i18n/locales'
 
 type NavProps = {
+  locale: Locale
   active?: 'organs' | 'scores' | 'about' | 'elsewhere'
   wordmark?: string | null
   tagline?: string | null
 }
-
-// Journal lives at `/` and is reached via the wordmark/logo — no nav item.
-const ITEMS = [
-  { id: 'organs', label: 'Organs', href: '/organs' },
-  { id: 'scores', label: 'Scores', href: '/scores' },
-  { id: 'about', label: 'About me', href: '/about' },
-  { id: 'elsewhere', label: 'Elsewhere', href: '/elsewhere' },
-] as const
 
 function deriveActive(pathname: string): NavProps['active'] {
   if (pathname.startsWith('/scores')) return 'scores'
@@ -34,7 +25,21 @@ function deriveActive(pathname: string): NavProps['active'] {
   return undefined
 }
 
-export function Nav({ active, wordmark, tagline }: NavProps) {
+export function Nav({ locale, active, wordmark, tagline }: NavProps) {
+  const t = useTranslations('Nav')
+  const SETTINGS_ID = `settings-${locale}`
+  const settingsAttr = (path: string) =>
+    dataAttr({ id: SETTINGS_ID, type: 'settings', path }).toString()
+  const ITEMS = useMemo(
+    () => [
+      { id: 'organs' as const, label: t('items.organs'), href: '/organs' },
+      { id: 'scores' as const, label: t('items.scores'), href: '/scores' },
+      { id: 'about' as const, label: t('items.about'), href: '/about' },
+      { id: 'elsewhere' as const, label: t('items.elsewhere'), href: '/elsewhere' },
+    ],
+    [t],
+  )
+
   const [open, setOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const btnRef = useRef<HTMLButtonElement>(null)
@@ -53,8 +58,8 @@ export function Nav({ active, wordmark, tagline }: NavProps) {
       if (e.key === 'Escape') setOpen(false)
     }
     const onPointerDown = (e: PointerEvent) => {
-      const t = e.target as Node
-      if (panelRef.current?.contains(t) || btnRef.current?.contains(t)) return
+      const target = e.target as Node
+      if (panelRef.current?.contains(target) || btnRef.current?.contains(target)) return
       setOpen(false)
     }
     document.addEventListener('keydown', onKey)
@@ -73,12 +78,12 @@ export function Nav({ active, wordmark, tagline }: NavProps) {
         className="font-serif text-2xl font-medium text-ink whitespace-nowrap inline-flex items-baseline gap-2.5"
         style={{ letterSpacing: '0.005em' }}
       >
-        <span data-sanity={settingsAttr('wordmark')}>{wordmark || 'Bert Webbink'}</span>
+        <span data-sanity={settingsAttr('wordmark')}>{wordmark || t('wordmarkFallback')}</span>
         <span
           data-sanity={settingsAttr('tagline')}
           className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint border-l border-rule pl-2.5 ml-0.5 font-normal"
         >
-          {tagline || 'Organist'}
+          {tagline || t('taglineFallback')}
         </span>
       </Link>
 
@@ -97,12 +102,17 @@ export function Nav({ active, wordmark, tagline }: NavProps) {
         ))}
       </div>
 
+      {/* Language picker (desktop) */}
+      <div className="hidden md:block">
+        <LanguagePicker locale={locale} />
+      </div>
+
       {/* Mobile hamburger */}
       <button
         ref={btnRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? 'Close menu' : 'Open menu'}
+        aria-label={open ? t('closeMenu') : t('openMenu')}
         aria-expanded={open}
         aria-controls="mobile-nav-panel"
         className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2.5 text-ink cursor-pointer"
@@ -155,6 +165,9 @@ export function Nav({ active, wordmark, tagline }: NavProps) {
               )
             })}
           </ul>
+          <div className="border-t border-rule-soft px-3 py-3">
+            <LanguagePicker locale={locale} />
+          </div>
         </div>
       )}
       </div>
