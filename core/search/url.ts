@@ -1,13 +1,19 @@
 /**
- * Build a next-intl-compatible `Href` for a search hit.
+ * Build a locale-prefixed URL string for a search hit.
  *
- * Returns the typed object shape `<Link href={...}>` from `@/i18n/navigation`
- * accepts. next-intl resolves it to the active locale's pathname at render
- * time, so this builder doesn't need a `locale` argument.
+ * Returns a string like `/{locale}/{path}` that the next-intl `<Link>`
+ * accepts as a static href. Score has no detail page so the URL targets
+ * the scores list with a `#ed-NN` hash.
  *
  * Returns `null` when the hit can't produce a valid URL (e.g. a journal
  * document without a slug, or an unrecognised `_type`). Callers should
  * filter those out before rendering.
+ *
+ * **Note:** when `feat/translate-disposition` lands localised pathnames,
+ * paths like `/de/organs/...` will redirect to `/de/orgeln/...` via the
+ * i18n middleware (one extra hop). At that point this builder can swap
+ * to next-intl's typed `Href` shape with `params`, which will substitute
+ * params and emit the localised segment directly.
  */
 
 export type SearchHitInput = {
@@ -16,29 +22,21 @@ export type SearchHitInput = {
   editionNumber?: number | null
 }
 
-export type SearchResultHref =
-  | { pathname: '/journal/[slug]'; params: { slug: string } }
-  | { pathname: '/organs/[slug]'; params: { slug: string } }
-  | { pathname: '/scores'; hash?: string }
-  | { pathname: '/about' }
-  | { pathname: '/elsewhere' }
-  | { pathname: '/privacy' }
-
-export function searchResultHref(hit: SearchHitInput): SearchResultHref | null {
+export function searchResultHref(hit: SearchHitInput, locale: string): string | null {
   switch (hit._type) {
     case 'journal':
-      return hit.slug ? { pathname: '/journal/[slug]', params: { slug: hit.slug } } : null
+      return hit.slug ? `/${locale}/journal/${hit.slug}` : null
     case 'organ':
-      return hit.slug ? { pathname: '/organs/[slug]', params: { slug: hit.slug } } : null
+      return hit.slug ? `/${locale}/organs/${hit.slug}` : null
     case 'score':
-      if (hit.editionNumber == null) return { pathname: '/scores' }
-      return { pathname: '/scores', hash: `ed-${String(hit.editionNumber).padStart(2, '0')}` }
+      if (hit.editionNumber == null) return `/${locale}/scores`
+      return `/${locale}/scores#ed-${String(hit.editionNumber).padStart(2, '0')}`
     case 'about':
-      return { pathname: '/about' }
+      return `/${locale}/about`
     case 'elsewhere':
-      return { pathname: '/elsewhere' }
+      return `/${locale}/elsewhere`
     case 'privacy':
-      return { pathname: '/privacy' }
+      return `/${locale}/privacy`
     default:
       return null
   }

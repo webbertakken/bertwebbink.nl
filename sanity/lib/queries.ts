@@ -344,8 +344,7 @@ export const searchQuery = defineQuery(`
       boost(title match $q, 5),
       boost(work match $q, 5),
       boost(composer match $q, 4),
-      boost(excerpt match $q, 2),
-      boost(blurb[language == $locale][0].value match $q, 2)
+      boost(excerpt match $q, 2)
     )
   | order(_score desc, _updatedAt desc)
   [0...50]

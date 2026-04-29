@@ -19,20 +19,27 @@ const MIN_TOKEN_LENGTH = 2
 
 const NON_TOKEN_CHARS = /[^\p{L}\p{N}\p{M}]+/gu
 
-export function sanitiseQuery(input: string): string | null {
-  if (typeof input !== 'string') return null
+/**
+ * Tokenise raw user input into the bare lowercase tokens that drive both
+ * the GROQ `match` query and the result-side highlighter. Returns an empty
+ * array when nothing is searchable.
+ */
+export function extractTokens(input: string): string[] {
+  if (typeof input !== 'string') return []
 
   const trimmed = input.trim()
-  if (trimmed === '') return null
+  if (trimmed === '') return []
 
   const normalised = trimmed.normalize('NFC').toLowerCase()
 
-  const tokens = normalised
+  return normalised
     .split(/\s+/)
     .map((token) => token.replace(NON_TOKEN_CHARS, ''))
     .filter((token) => token.length >= MIN_TOKEN_LENGTH)
+}
 
+export function sanitiseQuery(input: string): string | null {
+  const tokens = extractTokens(input)
   if (tokens.length === 0) return null
-
   return tokens.map((token) => `${token}*`).join(' ')
 }

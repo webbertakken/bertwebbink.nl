@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { sanitiseQuery } from './sanitise'
+import { extractTokens, sanitiseQuery } from './sanitise'
 
 describe('sanitiseQuery', () => {
   describe('empty / too-short input', () => {
@@ -83,6 +83,21 @@ describe('sanitiseQuery', () => {
       expect(decomposed).not.toBe(composed)
       expect(sanitiseQuery(decomposed)).toBe(sanitiseQuery(composed))
       expect(sanitiseQuery(decomposed)).toBe('caf\u00e9*')
+    })
+  })
+
+  describe('extractTokens (shared with the highlighter)', () => {
+    it('returns an empty array for empty / whitespace input', () => {
+      expect(extractTokens('')).toEqual([])
+      expect(extractTokens('   ')).toEqual([])
+    })
+
+    it('returns the bare lowercase tokens (no wildcards)', () => {
+      expect(extractTokens("Bach's symphony")).toEqual(['bachs', 'symphony'])
+    })
+
+    it('drops sub-min-length tokens but keeps the rest', () => {
+      expect(extractTokens('a bach b symphony')).toEqual(['bach', 'symphony'])
     })
   })
 
