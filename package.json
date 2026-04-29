@@ -21,7 +21,8 @@
     "test": "vitest",
     "coverage": "vitest --coverage",
     "typegen": "sanity typegen generate",
-    "check-types": "tsc --noEmit",
+    "check-types": "tsgo --noEmit",
+    "check-types:tsc": "tsc --noEmit",
     "cleanup:pre-i18n": "tsx scripts/cleanup-pre-i18n.ts",
     "extract-types": "sanity schema extract --enforce-required-fields"
   },
@@ -61,6 +62,7 @@
     "@types/node": "^20.17.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript/native-preview": "^7.0.0-dev.20260425.1",
     "@vitejs/plugin-react": "^4.5.1",
     "@vitest/coverage-v8": "3.2.2",
     "dotenv": "^16.5.0",
