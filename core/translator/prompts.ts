@@ -18,7 +18,13 @@ export function buildSystemPrompt(req: TranslateRequest): string {
     `You are a professional translator translating ${sourceName} (${req.sourceLocale}) text into ${targetName} (${req.targetLocale}).`,
   )
   lines.push(
-    'You MUST preserve every inline formatting marker exactly as given. Inline markers in the source look like <m1>...</m1>, <m2>...</m2> and so on; the integers and tag names must be present in the translation, wrapping the equivalent translated phrase.',
+    'You MUST preserve every inline formatting marker exactly as given, AND you MUST NOT invent new ones. There are two kinds:',
+  )
+  lines.push(
+    '  1. Numbered tags: <m1>...</m1>, <m2>...</m2>, ... (used in long-form prose). When present in the source, keep the exact same tag names and integers, wrapping the equivalent translated phrase. When NOT present in the source, do NOT introduce them.',
+  )
+  lines.push(
+    '  2. Brace-italic markers: {{...}} (used in short labels and titles to italicise the wrapped phrase on render). Preserve them verbatim when present in the source. Do NOT convert {{...}} to <m1>...</m1> or vice-versa, and do NOT add brace markers around words that the source did not already wrap.',
   )
   if (shape === 'portable-text') {
     lines.push(
