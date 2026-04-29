@@ -6,11 +6,16 @@ import { LOCALES } from '@/core/i18n/locales'
 import { shouldShowTranslateAction } from './visibility'
 
 /**
- * "Publish to all locales" \u2014 next to the built-in Publish action.
+ * Primary "Publish" action for translatable doc types.
  *
- * Validates source, publishes source, translates stale/missing siblings,
- * publishes each translated sibling. Per the failure matrix, per-locale
- * failures don't block other locales.
+ * Validates the source, publishes it, translates every other locale,
+ * and publishes each translated sibling. Per the failure matrix,
+ * per-locale failures don't block other locales. The built-in single-
+ * locale Publish action stays in the overflow menu as a fallback for
+ * when an editor wants to ship just one locale.
+ *
+ * To keep translations as drafts only, flip
+ * `Site Settings › Auto-publish translated siblings` to off.
  */
 export function publishAllLocalesAction(
   props: DocumentActionProps,
@@ -33,7 +38,7 @@ function usePublishAllLocalesAction(
 
   return {
     icon: PublishIcon,
-    label: busy ? 'Publishing\u2026' : 'Publish to all locales',
+    label: busy ? 'Publishing\u2026' : 'Publish',
     onHandle: () => {
       setOpen(true)
       run()
@@ -43,9 +48,16 @@ function usePublishAllLocalesAction(
       onClose: () => setOpen(false),
       header: 'Publish to all locales',
       content: (
-        <pre style={{ fontSize: 12, lineHeight: 1.4, maxHeight: 360, overflow: 'auto' }}>
-          {output || 'Starting\u2026'}
-        </pre>
+        <>
+          <p style={{ fontSize: 13, lineHeight: 1.5, margin: '0 0 12px' }}>
+            Publishes this document, then translates and publishes every
+            other locale. Set \u201cAuto-publish translated siblings\u201d
+            to off in Site Settings to keep them as drafts instead.
+          </p>
+          <pre style={{ fontSize: 12, lineHeight: 1.4, maxHeight: 360, overflow: 'auto' }}>
+            {output || 'Starting\u2026'}
+          </pre>
+        </>
       ),
     },
     disabled: busy,

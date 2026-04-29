@@ -27,8 +27,8 @@ import {
   SUPPORTED_LANGUAGES,
   type Locale,
 } from '@/core/i18n/locales'
-import { translateAllAction } from '@/sanity/actions/translate'
 import { publishAllLocalesAction } from '@/sanity/actions/publishAll'
+import { relabelSingleLocalePublish } from '@/sanity/actions/relabelPublish'
 import { staleTranslationBadge } from '@/sanity/badges/staleTranslation'
 import { isTranslatableType } from '@/core/translator/orchestrator'
 
@@ -311,7 +311,16 @@ export default defineConfig({
   document: {
     actions: (prev, context) => {
       if (!isTranslatableType(context.schemaType)) return prev
-      return [...prev, publishAllLocalesAction, translateAllAction]
+      // Multi-locale Publish takes the primary slot (Studio renders the
+      // first action as the prominent button). The built-in single-
+      // locale `publish` stays in the overflow menu as a fallback,
+      // relabeled so editors see at a glance that it skips translation.
+      const relabeled = prev.map((action) =>
+        (action as unknown as { action?: string }).action === 'publish'
+          ? relabelSingleLocalePublish(action)
+          : action,
+      )
+      return [publishAllLocalesAction, ...relabeled]
     },
     badges: (prev, context) => {
       if (!isTranslatableType(context.schemaType)) return prev

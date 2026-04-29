@@ -94,7 +94,7 @@ export async function POST(request: Request) {
         return
       }
 
-      // Step 3: translate.
+      // Step 3: translate (writes published siblings directly).
       let results
       try {
         results = await runTranslation(client, translator, docId, {
@@ -117,11 +117,6 @@ export async function POST(request: Request) {
         }
         if (r.status === 'failed' || r.status === 'skipped') {
           publishedResults.push({ ...r, publishStatus: 'not-published' })
-          continue
-        }
-        if (type === 'score') {
-          // Score is a single doc; already createOrReplaced (effectively published).
-          publishedResults.push({ ...r, publishStatus: 'published' })
           continue
         }
         try {
