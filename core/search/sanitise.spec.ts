@@ -8,6 +8,13 @@ describe('sanitiseQuery', () => {
       expect(sanitiseQuery('')).toBeNull()
     })
 
+    it('returns null defensively for non-string input', () => {
+      // The TS signature is `string` but JS callers may pass anything.
+      expect(sanitiseQuery(null as unknown as string)).toBeNull()
+      expect(sanitiseQuery(undefined as unknown as string)).toBeNull()
+      expect(sanitiseQuery(123 as unknown as string)).toBeNull()
+    })
+
     it('returns null for whitespace-only input', () => {
       expect(sanitiseQuery('   ')).toBeNull()
       expect(sanitiseQuery('\t\n')).toBeNull()
