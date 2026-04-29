@@ -22,6 +22,7 @@
     "coverage": "vitest --coverage",
     "typegen": "sanity typegen generate",
     "check-types": "tsc --noEmit",
+    "cleanup:pre-i18n": "tsx scripts/cleanup-pre-i18n.ts",
     "extract-types": "sanity schema extract --enforce-required-fields"
   },
   "dependencies": {
