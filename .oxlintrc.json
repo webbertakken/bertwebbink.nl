@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "nextjs", "vitest", "jsx-a11y", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error"
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "eslint/no-await-in-loop": "off",
+    "vitest/require-mock-type-parameters": "off",
+
+    "eslint/no-underscore-dangle": "off",
+
+    "react/no-array-index-key": "off",
+
+    "unicorn/no-array-sort": "off",
+
+    "jsx-a11y/media-has-caption": "off",
+
+    "jsx-a11y/iframe-has-title": "off",
+
+    "react/iframe-missing-sandbox": "off"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2024": true,
+    "vitest/globals": true
+  }
+}

@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 type FooterProps = {
   /** mailto:/href used for the Contact link. Falls back to /about. */
   contactHref?: string | null
@@ -13,12 +15,12 @@ export function Footer({ contactHref }: FooterProps = {}) {
       >
         <div>© Bert Webbink, {year}</div>
         <div className="flex gap-7">
-          <a href="/privacy" className="transition-colors hover:text-ink">
+          <Link href="/privacy" className="transition-colors hover:text-ink">
             Privacy
-          </a>
-          <a href="/elsewhere" className="transition-colors hover:text-ink">
+          </Link>
+          <Link href="/elsewhere" className="transition-colors hover:text-ink">
             Elsewhere
-          </a>
+          </Link>
           <a href={contactHref ?? '/about'} className="transition-colors hover:text-ink">
             Contact
           </a>

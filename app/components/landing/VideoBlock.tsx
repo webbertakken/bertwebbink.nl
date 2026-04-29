@@ -60,6 +60,7 @@ export function VideoBlock({
           className="absolute inset-0 w-full h-full"
           src={`https://www.youtube.com/embed/${id}?autoplay=1`}
           title={title || 'Video'}
+          sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
@@ -73,6 +74,7 @@ export function VideoBlock({
           className="absolute inset-0 w-full h-full"
           src={`https://player.vimeo.com/video/${id}?autoplay=1`}
           title={title || 'Video'}
+          sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
         />

@@ -12,6 +12,8 @@
  * ---------------------------------------------------------------------------------
  */
 
+export declare const internalGroqTypeReferenceTo: unique symbol
+
 // Source: schema.json
 export type Embed = {
   _type: 'embed'
@@ -783,8 +785,8 @@ export type AllSanitySchemaTypes =
   | Geopoint
   | Slug
   | SanityAssetSourceData
-export declare const internalGroqTypeReferenceTo: unique symbol
-// Source: ./sanity/lib/queries.ts
+
+// Source: sanity/lib/queries.ts
 // Variable: settingsQuery
 // Query: *[_type == "settings"][0]
 export type SettingsQueryResult = {
@@ -841,17 +843,23 @@ export type SettingsQueryResult = {
   aiSummary?: string
   aiCrawlPolicy: 'allow-all' | 'citation-only' | 'disallow-all'
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: navSettingsQuery
 // Query: *[_type == "settings" && _id == "siteSettings"][0] {    wordmark,    tagline  }
 export type NavSettingsQueryResult = {
   wordmark: string | null
   tagline: string | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: footerContactQuery
 // Query: *[_type == "about" && _id == "siteAbout"][0] {    "href": contactRows[href match "mailto:*"][0].href  }
 export type FooterContactQueryResult = {
   href: string | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: sitemapData
 // Query: *[(_type == "organ" || _type == "journal") && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
 export type SitemapDataResult = Array<
@@ -866,6 +874,8 @@ export type SitemapDataResult = Array<
       _updatedAt: string
     }
 >
+
+// Source: sanity/lib/queries.ts
 // Variable: organQuery
 // Query: *[_type == "organ" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,    disposition,    "position": count(*[_type == "organ" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "organ" && defined(slug.current)]),    "prev": *[_type == "organ" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    },    "next": *[_type == "organ" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      location    }  }
 export type OrganQueryResult = {
@@ -1048,11 +1058,15 @@ export type OrganQueryResult = {
     } | null
   } | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: organPagesSlugs
 // Query: *[_type == "organ" && defined(slug.current)]  {"slug": slug.current}
 export type OrganPagesSlugsResult = Array<{
   slug: string
 }>
+
+// Source: sanity/lib/queries.ts
 // Variable: landingOrgansQuery
 // Query: *[_type == "organ" && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
 export type LandingOrgansQueryResult = Array<{
@@ -1086,6 +1100,8 @@ export type LandingOrgansQueryResult = Array<{
   hasAudio: boolean | null
   hasVideo: boolean | null
 }>
+
+// Source: sanity/lib/queries.ts
 // Variable: landingStatsQuery
 // Query: {    "totalCount": count(*[_type == "organ" && defined(slug.current)]),    "firstDate": *[_type == "organ" && defined(slug.current)] | order(date asc) [0].date,    "latestDate": *[_type == "organ" && defined(slug.current)] | order(date desc) [0].date  }
 export type LandingStatsQueryResult = {
@@ -1093,11 +1109,15 @@ export type LandingStatsQueryResult = {
   firstDate: string | null
   latestDate: string | null
 }
+
+// Source: sanity/lib/queries.ts
 // Variable: landingCitiesQuery
 // Query: *[_type == "organ" && defined(slug.current) && defined(location.city)]{    "city": location.city  }
 export type LandingCitiesQueryResult = Array<{
-  city: string | null
+  city: string
 }>
+
+// Source: sanity/lib/queries.ts
 // Variable: archiveOrgansQuery
 // Query: *[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)]    | order(date desc, _updatedAt desc) [$offset...$end] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  location,  builder,  year,  "hasAudio": count(content[_type == "audio"]) > 0,  "hasVideo": count(content[_type == "video"]) > 0,  }
 export type ArchiveOrgansQueryResult = Array<{
@@ -1131,9 +1151,13 @@ export type ArchiveOrgansQueryResult = Array<{
   hasAudio: boolean | null
   hasVideo: boolean | null
 }>
+
+// Source: sanity/lib/queries.ts
 // Variable: archiveOrgansCountQuery
 // Query: count(*[_type == "organ" && defined(slug.current) && ($city == "" || location.city == $city)])
 export type ArchiveOrgansCountQueryResult = number
+
+// Source: sanity/lib/queries.ts
 // Variable: aboutQuery
 // Query: *[_type == "about" && _id == "siteAbout"][0] {    eyebrow,    title,    letter,    signoffName,    signoffLocation,    portraitImage,    portraitCaption,    portraitPlate,    secondaryImage,    secondaryCaption,    secondaryPlate,    quickFacts[]{ _key, label, value },    timelineSummary,    timeline[]{ _key, year, what, where },    repertoireIntro,    repertoire[]{ _key, era, title, pieces },    contactTitle,    contactLede,    contactRows[]{ _key, label, value, italic, href }  }
 export type AboutQueryResult = {
@@ -1214,6 +1238,8 @@ export type AboutQueryResult = {
     href: string | null
   }> | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: journalQuery
 // Query: *[_type == "journal" && slug.current == $slug] [0] {    content[]{      ...,      markDefs[]{        ...,          _type == "link" => {    "organ": organ->slug.current  }      }    },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  category,  coverImage,  "date": coalesce(date, _updatedAt),    "position": count(*[_type == "journal" && defined(slug.current) && date <= ^.date]),    "totalCount": count(*[_type == "journal" && defined(slug.current)]),    "prev": *[_type == "journal" && defined(slug.current) && date < ^.date] | order(date desc, _updatedAt desc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    },    "next": *[_type == "journal" && defined(slug.current) && date > ^.date] | order(date asc, _updatedAt asc) [0]{      "title": coalesce(title, "Untitled"),      "slug": slug.current,      "date": coalesce(date, _updatedAt),      category    }  }
 export type JournalQueryResult = {
@@ -1371,11 +1397,15 @@ export type JournalQueryResult = {
       | 'workshop'
   } | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: journalPagesSlugs
 // Query: *[_type == "journal" && defined(slug.current)]  {"slug": slug.current}
 export type JournalPagesSlugsResult = Array<{
   slug: string
 }>
+
+// Source: sanity/lib/queries.ts
 // Variable: journalEntriesQuery
 // Query: *[_type == "journal" && defined(slug.current)] | order(date desc, _updatedAt desc) {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    category,    "hasAudio": count(content[_type == "audio"]) > 0,  }
 export type JournalEntriesQueryResult = Array<{
@@ -1409,12 +1439,16 @@ export type JournalEntriesQueryResult = Array<{
     | 'workshop'
   hasAudio: boolean | null
 }>
+
+// Source: sanity/lib/queries.ts
 // Variable: journalStatsQuery
 // Query: {    "totalCount": count(*[_type == "journal" && defined(slug.current)]),    "firstDate": *[_type == "journal" && defined(slug.current)] | order(date asc) [0].date  }
 export type JournalStatsQueryResult = {
   totalCount: number
   firstDate: string | null
 }
+
+// Source: sanity/lib/queries.ts
 // Variable: journalPageQuery
 // Query: *[_type == "journalPage" && _id == "siteJournalPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
 export type JournalPageQueryResult = {
@@ -1425,6 +1459,8 @@ export type JournalPageQueryResult = {
   cornerLeftSub: string | null
   cornerRightSub: string | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: organsPageQuery
 // Query: *[_type == "organsPage" && _id == "siteOrgansPage"][0] {    kickerLeft,    kickerRight,    heading,    tagline,    cornerLeftSub,    cornerRightSub  }
 export type OrgansPageQueryResult = {
@@ -1435,6 +1471,8 @@ export type OrgansPageQueryResult = {
   cornerLeftSub: string | null
   cornerRightSub: string | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: scoresPageQuery
 // Query: *[_type == "scoresPage" && _id == "siteScoresPage"][0] {    kicker,    heading,    tagline,    "noticeBody": *[_type == "settings" && _id == "siteSettings"][0].scoresNoticeBody,    "editionLine": *[_type == "settings" && _id == "siteSettings"][0].scoresEditionLine,    "contactHref": *[_type == "about" && _id == "siteAbout"][0].contactRows[href match "mailto:*"][0].href  }
 export type ScoresPageQueryResult = {
@@ -1445,6 +1483,8 @@ export type ScoresPageQueryResult = {
   editionLine: string | null
   contactHref: string | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: llmsTxtIndexQuery
 // Query: {    "organs": *[_type == "organ" && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      "date": coalesce(date, _updatedAt)    },    "journal": *[_type == "journal" && defined(slug.current)] | order(date desc) {      "slug": slug.current,      "title": coalesce(title, "Untitled"),      excerpt,      category,      "date": coalesce(date, _updatedAt)    }  }
 export type LlmsTxtIndexQueryResult = {
@@ -1470,6 +1510,8 @@ export type LlmsTxtIndexQueryResult = {
     date: string
   }>
 }
+
+// Source: sanity/lib/queries.ts
 // Variable: elsewhereQuery
 // Query: *[_type == "elsewhere" && _id == "siteElsewhere"][0] {    title,    eyebrow,    intro,    groups[]{      _key,      title,      links[]{ _key, label, href, description }    }  }
 export type ElsewhereQueryResult = {
@@ -1500,6 +1542,8 @@ export type ElsewhereQueryResult = {
     }> | null
   }> | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: privacyQuery
 // Query: *[_type == "privacy" && _id == "sitePrivacy"][0] {    eyebrow,    title,    intro,    lastUpdated,    sections[]{ _key, heading, body },    contactLine  }
 export type PrivacyQueryResult = {
@@ -1514,6 +1558,8 @@ export type PrivacyQueryResult = {
   }> | null
   contactLine: string | null
 } | null
+
+// Source: sanity/lib/queries.ts
 // Variable: scoresQuery
 // Query: *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {    _id,    composer,    work,    catalog,    era,    year,    pages,    editionNumber,    forInstrument,    edition,    blurb,    "pdfUrl": pdfFile.asset->url,    isFeatured,  }
 export type ScoresQueryResult = Array<{

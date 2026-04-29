@@ -141,6 +141,7 @@ function buildComponents(organId: string): PortableTextComponents {
               className="w-full h-full"
               src={value.url}
               title={value.caption || 'Embedded content'}
+              sandbox="allow-scripts allow-same-origin allow-popups allow-presentation"
               allowFullScreen
             />
           </div>

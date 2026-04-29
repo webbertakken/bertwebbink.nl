@@ -58,7 +58,7 @@ function gateIsActive(): boolean {
   return false
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   if (!gateIsActive()) return NextResponse.next()
 
   const { pathname, searchParams } = request.nextUrl

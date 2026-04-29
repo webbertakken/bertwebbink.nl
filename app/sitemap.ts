@@ -13,10 +13,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     query: sitemapData,
   })
   const headersList = await headers()
-  const sitemap: MetadataRoute.Sitemap = []
-  const domain: String = headersList.get('host') as string
-  sitemap.push({
-    url: domain as string,
+  const entries: MetadataRoute.Sitemap = []
+  const domain: string = headersList.get('host') as string
+  entries.push({
+    url: domain,
     lastModified: new Date(),
     priority: 1,
     changeFrequency: 'monthly',
@@ -47,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       } else {
         continue
       }
-      sitemap.push({
+      entries.push({
         lastModified: p._updatedAt || new Date(),
         priority,
         changeFrequency,
@@ -56,5 +56,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  return sitemap
+  return entries
 }
