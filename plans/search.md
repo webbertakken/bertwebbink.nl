@@ -177,12 +177,12 @@ automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCar
 
 ### 3. Highlight wrapper (pure function)
 
-- [ ] **3.1** Write `app/components/search/highlight.spec.ts` covering: single token highlights
+- [x] **3.1** Write `app/components/search/highlight.spec.ts` covering: single token highlights
       whole-word and prefix occurrences; multiple tokens; case-insensitive match; preserves
       surrounding text; HTML-escapes input (no XSS); no tokens → returns text unchanged; CJK input
       where each char is a "token" still wraps correctly; returns React fragments, not raw HTML
       strings.
-- [ ] **3.2** Implement `highlight(text, tokens)` in `app/components/search/highlight.ts`.
+- [x] **3.2** Implement `highlight(text, tokens)` in `app/components/search/highlight.ts`.
 
 ### 4. Search query
 
