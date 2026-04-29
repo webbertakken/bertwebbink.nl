@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { EchoTranslator } from './echo'
 import {
   isTranslatableType,
+  runDispositionOnlyTranslation,
   runTranslation,
   translatableTypes,
 } from './orchestrator'
@@ -162,7 +163,15 @@ describe('runTranslation \u2014 document-per-locale', () => {
     expect(langs).toEqual(['en', 'nl'])
   })
 
-  it('skips locales whose previous sibling matches the source rev (unchanged)', async () => {
+  it('always runs the diff-aware path so walker-spec expansions are picked up', async () => {
+    // Even when the source rev matches the sibling's stored
+    // `_translationSourceRev`, we still run extraction + diff. The
+    // diff classifies units against `previousSource` (extracted from
+    // the sibling itself); since the sibling holds the translated
+    // values, current-source units don't match — every unit goes to
+    // the LLM. That's the price of not having a separate previous-
+    // source snapshot, and it's why "force" is the default behaviour
+    // for doc-per-locale types.
     const client = makeClient([
       {
         _id: 'about-nl',
@@ -176,6 +185,51 @@ describe('runTranslation \u2014 document-per-locale', () => {
         _rev: 'rev-en-1',
         _type: 'about',
         language: 'en',
+        title: '[en] A',
+        _translationSourceRev: 'rev-1',
+      },
+      {
+        _id: 'meta-1',
+        _type: 'translation.metadata',
+        translations: [
+          { _key: 'k1', language: 'nl', value: { _ref: 'about-nl', _type: 'reference' } },
+          { _key: 'k2', language: 'en', value: { _ref: 'about-en', _type: 'reference' } },
+        ],
+      },
+    ])
+    const results = await runTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'about-nl',
+      { targetLocales: ['en'] },
+    )
+    expect(results[0].status).toBe('updated')
+    // The sibling now reflects a fresh re-translation off the source.
+    expect((client.__store.get('about-en') as { title: string }).title).toBe('[en] A')
+  })
+
+  it('re-translates a stale sibling whose stored value matches the un-translated source (deep-clone case)', async () => {
+    // A common case after a walker expansion: the sibling has a
+    // field that was deep-cloned from the source and never
+    // translated. The new diff path detects "prev translation ===
+    // prev source" and re-translates instead of reusing the
+    // un-translated value forever.
+    const client = makeClient([
+      {
+        _id: 'about-nl',
+        _rev: 'rev-1',
+        _type: 'about',
+        language: 'nl',
+        title: 'A',
+      },
+      {
+        _id: 'about-en',
+        _rev: 'rev-en-1',
+        _type: 'about',
+        language: 'en',
+        // Sibling's stored value matches the source verbatim — a
+        // tell-tale sign that this field was deep-cloned, never
+        // translated by the LLM.
         title: 'A',
         _translationSourceRev: 'rev-1',
       },
@@ -188,12 +242,14 @@ describe('runTranslation \u2014 document-per-locale', () => {
         ],
       },
     ])
-    const results = await runTranslation(adapt(client), new EchoTranslator(), 'about-nl', {
-      targetLocales: ['en'],
-    })
-    expect(results).toEqual([
-      { locale: 'en', docId: 'about-en', status: 'unchanged' },
-    ])
+    const results = await runTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'about-nl',
+      { targetLocales: ['en'] },
+    )
+    expect(results[0].status).toBe('updated')
+    expect((client.__store.get('about-en') as { title: string }).title).toBe('[en] A')
   })
 
   it('updates an existing sibling when source rev changed', async () => {
@@ -301,6 +357,62 @@ describe('runTranslation — non-singleton documents (organ/journal)', () => {
     expect(results[0].docId).toMatch(/^organ-en-/)
     const sibling = client.__store.get(results[0].docId)!
     expect(sibling).toMatchObject({ _type: 'organ', language: 'en', title: '[en] Een orgel' })
+  })
+
+  it('translates organ disposition fields, keeping stop names canonical and writing the gloss to `translation`', async () => {
+    const client = makeClient([
+      {
+        _id: 'organ-source-disp',
+        _rev: 'r',
+        _type: 'organ',
+        language: 'nl',
+        title: 'Een orgel',
+        disposition: {
+          registers: [
+            {
+              _key: 'r1',
+              name: 'Hoofdwerk',
+              stops: [
+                { _key: 's1', name: 'Bordun', pitch: "16'" },
+                { _key: 's2', name: 'Principal', pitch: "8'", note: 'discant' },
+              ],
+            },
+          ],
+          couplings: [{ _key: 'c1', name: 'Hoofdwerk – Bovenwerk' }],
+          accessories: [{ _key: 'a1', name: 'Tremulant' }],
+        },
+      },
+    ])
+    const results = await runTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-source-disp',
+      { targetLocales: ['ja'] },
+    )
+    expect(results[0].status).toBe('created')
+    const sibling = client.__store.get(results[0].docId) as {
+      disposition: {
+        registers: Array<{
+          name: string
+          stops: Array<{ name: string; note?: string; translation?: string; pitch?: string }>
+        }>
+        couplings: Array<{ name: string }>
+        accessories: Array<{ name: string }>
+      }
+    }
+    // Headings get translated in place.
+    expect(sibling.disposition.registers[0].name).toBe('[ja] Hoofdwerk')
+    expect(sibling.disposition.couplings[0].name).toBe('[ja] Hoofdwerk – Bovenwerk')
+    expect(sibling.disposition.accessories[0].name).toBe('[ja] Tremulant')
+    // Stop name stays canonical.
+    expect(sibling.disposition.registers[0].stops[0].name).toBe('Bordun')
+    expect(sibling.disposition.registers[0].stops[1].name).toBe('Principal')
+    // Stop gloss lands on the dedicated `translation` field.
+    expect(sibling.disposition.registers[0].stops[0].translation).toBe('[ja] Bordun')
+    expect(sibling.disposition.registers[0].stops[1].translation).toBe('[ja] Principal')
+    // Stop note translated in place; pitch (mathematical) untouched.
+    expect(sibling.disposition.registers[0].stops[1].note).toBe('[ja] discant')
+    expect(sibling.disposition.registers[0].stops[0].pitch).toBe("16'")
   })
 
   it('updates an existing metadata doc by patching translations array', async () => {
@@ -414,7 +526,11 @@ describe('runTranslation \u2014 score (field-level)', () => {
     expect(provenance.en.sourceRev).toBe('rev-s-1')
   })
 
-  it('skips a target locale whose provenance already matches the source rev', async () => {
+  it('always re-translates a score even when provenance.sourceRev matches', async () => {
+    // The early-exit on `_translationProvenance[target].sourceRev`
+    // was removed because it hid walker-spec expansions — score
+    // re-runs are cheap (3 short field-level strings) so we always
+    // re-extract and re-apply.
     const client = makeClient([
       {
         _id: 'score-1',
@@ -430,7 +546,7 @@ describe('runTranslation \u2014 score (field-level)', () => {
     const results = await runTranslation(adapt(client), new EchoTranslator(), 'score-1', {
       targetLocales: ['en'],
     })
-    expect(results[0].status).toBe('unchanged')
+    expect(results[0].status).toBe('updated')
   })
 
   it('updates an existing target locale entry on a second run', async () => {
@@ -584,5 +700,362 @@ describe('runTranslation \u2014 score (field-level)', () => {
     const usage = events.find((e) => e.type === 'translator:usage')!
     expect(usage.tokens).toBe(42)
     expect(usage.durationMs).toBe(150)
+  })
+})
+
+describe('runDispositionOnlyTranslation', () => {
+  const sourceOrgan = {
+    _id: 'organ-source-disp',
+    _rev: 'r',
+    _type: 'organ',
+    language: 'nl',
+    title: 'Een orgel',
+    excerpt: 'Een korte aanloop',
+    disposition: {
+      registers: [
+        {
+          _key: 'r1',
+          name: 'Hoofdwerk',
+          stops: [
+            { _key: 's1', name: 'Bordun', pitch: "16'" },
+            { _key: 's2', name: 'Principal', pitch: "8'" },
+          ],
+        },
+      ],
+      couplings: [{ _key: 'c1', name: 'Hoofdwerk – Bovenwerk' }],
+      accessories: [{ _key: 'a1', name: 'Tremulant' }],
+    },
+  }
+
+  it('patches each existing sibling with translated disposition only, leaving title/excerpt untouched', async () => {
+    const client = makeClient([
+      sourceOrgan,
+      {
+        _id: 'organ-en',
+        _type: 'organ',
+        language: 'en',
+        // Pre-existing translations on the sibling that must NOT be
+        // overwritten by the disposition-only run.
+        title: 'An organ',
+        excerpt: 'A short approach',
+        disposition: {
+          registers: [
+            {
+              _key: 'r1',
+              name: 'Hoofdwerk',
+              stops: [
+                { _key: 's1', name: 'Bordun', pitch: "16'" },
+                { _key: 's2', name: 'Principal', pitch: "8'" },
+              ],
+            },
+          ],
+          couplings: [{ _key: 'c1', name: 'Hoofdwerk – Bovenwerk' }],
+          accessories: [{ _key: 'a1', name: 'Tremulant' }],
+        },
+      },
+      {
+        _id: 'meta-1',
+        _type: 'translation.metadata',
+        translations: [
+          { _key: 'k1', language: 'nl', value: { _ref: 'organ-source-disp', _type: 'reference' } },
+          { _key: 'k2', language: 'en', value: { _ref: 'organ-en', _type: 'reference' } },
+        ],
+      },
+    ])
+    const results = await runDispositionOnlyTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-source-disp',
+      { targetLocales: ['en'] },
+    )
+    expect(results[0]).toMatchObject({ locale: 'en', docId: 'organ-en', status: 'updated' })
+
+    const updated = client.__store.get('organ-en') as {
+      title: string
+      excerpt: string
+      disposition: {
+        registers: Array<{
+          name: string
+          stops: Array<{ name: string; translation?: string }>
+        }>
+        couplings: Array<{ name: string }>
+        accessories: Array<{ name: string }>
+      }
+    }
+    // Title + excerpt preserved verbatim from the previous sibling.
+    expect(updated.title).toBe('An organ')
+    expect(updated.excerpt).toBe('A short approach')
+    // Disposition headings translated in place.
+    expect(updated.disposition.registers[0].name).toBe('[en] Hoofdwerk')
+    expect(updated.disposition.couplings[0].name).toBe('[en] Hoofdwerk – Bovenwerk')
+    expect(updated.disposition.accessories[0].name).toBe('[en] Tremulant')
+    // Stop names stay canonical, gloss lands on `translation`.
+    expect(updated.disposition.registers[0].stops[0].name).toBe('Bordun')
+    expect(updated.disposition.registers[0].stops[0].translation).toBe('[en] Bordun')
+    expect(updated.disposition.registers[0].stops[1].name).toBe('Principal')
+    expect(updated.disposition.registers[0].stops[1].translation).toBe('[en] Principal')
+  })
+
+  it('skips locales without an existing sibling', async () => {
+    const client = makeClient([sourceOrgan])
+    const results = await runDispositionOnlyTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-source-disp',
+      { targetLocales: ['de'] },
+    )
+    expect(results[0].status).toBe('skipped')
+    expect(results[0].error).toMatch(/no sibling/i)
+  })
+
+  it('skips every locale when the source has no disposition', async () => {
+    const client = makeClient([
+      {
+        _id: 'organ-blank',
+        _rev: 'r',
+        _type: 'organ',
+        language: 'nl',
+        title: 'A',
+        // No `disposition` field.
+      },
+    ])
+    const results = await runDispositionOnlyTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-blank',
+      { targetLocales: ['en', 'de'] },
+    )
+    expect(results.every((r) => r.status === 'skipped')).toBe(true)
+  })
+
+  it('skips every locale when the disposition has no translatable units', async () => {
+    const client = makeClient([
+      {
+        _id: 'organ-empty-disp',
+        _rev: 'r',
+        _type: 'organ',
+        language: 'nl',
+        title: 'A',
+        disposition: {
+          // Object exists but every array is empty.
+          registers: [],
+          couplings: [],
+          accessories: [],
+        },
+      },
+    ])
+    const results = await runDispositionOnlyTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-empty-disp',
+      { targetLocales: ['en'] },
+    )
+    expect(results[0].status).toBe('skipped')
+  })
+
+  it('throws when the source doc id does not exist', async () => {
+    const client = makeClient([])
+    await expect(
+      runDispositionOnlyTranslation(
+        adapt(client),
+        new EchoTranslator(),
+        'organ-nope',
+        { targetLocales: ['en'] },
+      ),
+    ).rejects.toThrow(/not found/i)
+  })
+
+  it('throws when the source doc is not an organ', async () => {
+    const client = makeClient([
+      { _id: 'journal-nl', _rev: 'r', _type: 'journal', language: 'nl', title: 'A' },
+    ])
+    await expect(
+      runDispositionOnlyTranslation(
+        adapt(client),
+        new EchoTranslator(),
+        'journal-nl',
+        { targetLocales: ['en'] },
+      ),
+    ).rejects.toThrow(/disposition-only/i)
+  })
+
+  it('reports per-locale failures and continues', async () => {
+    class FlakyTranslator implements Translator {
+      readonly name = 'flaky'
+      readonly model = 'flaky-1'
+      async translate(req: TranslateRequest) {
+        if (req.targetLocale === 'de') throw new Error('boom')
+        return {
+          units: req.units.map((u) => ({ id: u.id, sourceText: `[${req.targetLocale}] ${u.sourceText}` })),
+        }
+      }
+    }
+    const client = makeClient([
+      sourceOrgan,
+      {
+        _id: 'organ-en',
+        _type: 'organ',
+        language: 'en',
+        title: 'EN',
+        disposition: {
+          registers: [
+            {
+              _key: 'r1',
+              name: 'Hoofdwerk',
+              stops: [{ _key: 's1', name: 'Bordun', pitch: "16'" }],
+            },
+          ],
+        },
+      },
+      {
+        _id: 'organ-de',
+        _type: 'organ',
+        language: 'de',
+        title: 'DE',
+        disposition: {
+          registers: [
+            {
+              _key: 'r1',
+              name: 'Hoofdwerk',
+              stops: [{ _key: 's1', name: 'Bordun', pitch: "16'" }],
+            },
+          ],
+        },
+      },
+      {
+        _id: 'meta-1',
+        _type: 'translation.metadata',
+        translations: [
+          { _key: 'k1', language: 'nl', value: { _ref: 'organ-source-disp', _type: 'reference' } },
+          { _key: 'k2', language: 'en', value: { _ref: 'organ-en', _type: 'reference' } },
+          { _key: 'k3', language: 'de', value: { _ref: 'organ-de', _type: 'reference' } },
+        ],
+      },
+    ])
+    const events: Array<{ type: string; result?: { status: string } }> = []
+    const results = await runDispositionOnlyTranslation(
+      adapt(client),
+      new FlakyTranslator(),
+      'organ-source-disp',
+      {
+        targetLocales: ['en', 'de'],
+        onProgress: (e) => events.push(e as never),
+      },
+    )
+    const byLocale = Object.fromEntries(results.map((r) => [r.locale, r]))
+    expect(byLocale.en.status).toBe('updated')
+    expect(byLocale.de.status).toBe('failed')
+    expect(byLocale.de.error).toBe('boom')
+    // The locale:done event for the failed locale should fire too.
+    const failedDone = events.find(
+      (e) => e.type === 'locale:done' && e.result?.status === 'failed',
+    )
+    expect(failedDone).toBeDefined()
+  })
+
+  it('emits progress events with translator usage', async () => {
+    class TimedEcho extends EchoTranslator {
+      override async translate(req: TranslateRequest) {
+        const result = await super.translate(req)
+        return { ...result, usage: { totalTokens: 7, durationMs: 11 } }
+      }
+    }
+    const client = makeClient([
+      sourceOrgan,
+      {
+        _id: 'organ-en',
+        _type: 'organ',
+        language: 'en',
+        title: 'EN',
+        disposition: {
+          registers: [
+            {
+              _key: 'r1',
+              name: 'Hoofdwerk',
+              stops: [{ _key: 's1', name: 'Bordun', pitch: "16'" }],
+            },
+          ],
+        },
+      },
+      {
+        _id: 'meta-1',
+        _type: 'translation.metadata',
+        translations: [
+          { _key: 'k1', language: 'nl', value: { _ref: 'organ-source-disp', _type: 'reference' } },
+          { _key: 'k2', language: 'en', value: { _ref: 'organ-en', _type: 'reference' } },
+        ],
+      },
+    ])
+    const events: Array<{ type: string; tokens?: number; durationMs?: number }> = []
+    await runDispositionOnlyTranslation(
+      adapt(client),
+      new TimedEcho(),
+      'organ-source-disp',
+      {
+        targetLocales: ['en'],
+        onProgress: (e) => events.push(e as never),
+      },
+    )
+    expect(events.find((e) => e.type === 'locale:start')).toBeDefined()
+    expect(events.find((e) => e.type === 'locale:done')).toBeDefined()
+    const usage = events.find((e) => e.type === 'translator:usage')!
+    expect(usage.tokens).toBe(7)
+    expect(usage.durationMs).toBe(11)
+  })
+
+  it('emits a locale:done event for skipped siblings too', async () => {
+    const client = makeClient([sourceOrgan])
+    const events: Array<{ type: string }> = []
+    await runDispositionOnlyTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-source-disp',
+      {
+        targetLocales: ['de'],
+        onProgress: (e) => events.push(e as never),
+      },
+    )
+    expect(events.filter((e) => e.type === 'locale:done')).toHaveLength(1)
+  })
+
+  it('defaults to every locale except the source when targetLocales is omitted', async () => {
+    const client = makeClient([sourceOrgan])
+    const results = await runDispositionOnlyTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-source-disp',
+    )
+    // 11 total locales, minus the source (`nl`) = 10.
+    expect(results).toHaveLength(10)
+    // All locales are skipped because no siblings exist in this fixture.
+    expect(results.every((r) => r.status === 'skipped')).toBe(true)
+  })
+
+  it('falls back to `nl` when the source doc has no `language` field', async () => {
+    const client = makeClient([
+      {
+        // Same shape as `sourceOrgan` but without an explicit `language`.
+        _id: 'organ-no-lang',
+        _rev: 'r',
+        _type: 'organ',
+        title: 'Een orgel',
+        disposition: {
+          registers: [
+            {
+              _key: 'r1',
+              name: 'Hoofdwerk',
+              stops: [{ _key: 's1', name: 'Bordun', pitch: "16'" }],
+            },
+          ],
+        },
+      },
+    ])
+    const results = await runDispositionOnlyTranslation(
+      adapt(client),
+      new EchoTranslator(),
+      'organ-no-lang',
+    )
+    // Source language defaults to `nl`, so we get 10 target locales.
+    expect(results).toHaveLength(10)
   })
 })

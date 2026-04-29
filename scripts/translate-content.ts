@@ -9,14 +9,18 @@
  *   yarn translate:content --type singletons               # all 7 NL singletons
  *   yarn translate:content --all                           # everything translatable
  *   yarn translate:content --type journal --dry-run        # preview list, no calls
+ *   yarn translate:content --type organ --only-disposition  # cheap rerun: patch only
+ *                                                           # the disposition into
+ *                                                           # existing siblings
  *
  * Honours the same env as `/api/translate`:
  *   GOOGLE_AI_API_KEY, SANITY_API_WRITE_TOKEN, GEMINI_MODEL, TRANSLATOR_PROVIDER.
  *
- * Behaviour matches the Studio's "Publish (auto-translated)" button:
- * runs `runTranslation` against each source doc, which writes published
- * siblings (or patches `score` in place). Honours diff-aware reuse, so
- * re-running is cheap.
+ * Default behaviour (no `--only-disposition`) matches the Studio's
+ * "Publish (auto-translated)" button: full document translation via
+ * `runTranslation`. With `--only-disposition`, the script translates
+ * the organ disposition only and patches each existing sibling —
+ * cheap rerun for the case where the walker just expanded.
  */
 
 import 'dotenv/config'
@@ -25,7 +29,10 @@ import { createClient } from '@sanity/client'
 
 import { LOCALES, type Locale } from '../core/i18n/locales'
 import { getTranslator } from '../core/translator/factory'
-import { runTranslation } from '../core/translator/orchestrator'
+import {
+  runDispositionOnlyTranslation,
+  runTranslation,
+} from '../core/translator/orchestrator'
 
 const projectId = required('NEXT_PUBLIC_SANITY_PROJECT_ID')
 const dataset = required('NEXT_PUBLIC_SANITY_DATASET')
@@ -56,22 +63,29 @@ function required(name: string): string {
   return value
 }
 
-function parseArgs(): { mode: Mode; dryRun: boolean; targetLocales: Locale[] | undefined } {
+function parseArgs(): {
+  mode: Mode
+  dryRun: boolean
+  targetLocales: Locale[] | undefined
+  onlyDisposition: boolean
+} {
   const args = process.argv.slice(2)
   const dryRun = args.includes('--dry-run')
+  const onlyDisposition = args.includes('--only-disposition')
   const localesArg = pluck(args, '--locales')
   const targetLocales = localesArg
     ? (localesArg.split(',').filter((l): l is Locale =>
         (LOCALES as readonly string[]).includes(l),
       ) as Locale[])
     : undefined
-  if (args.includes('--all')) return { mode: { kind: 'all' }, dryRun, targetLocales }
+  if (args.includes('--all'))
+    return { mode: { kind: 'all' }, dryRun, targetLocales, onlyDisposition }
   const id = pluck(args, '--id')
-  if (id) return { mode: { kind: 'id', id }, dryRun, targetLocales }
+  if (id) return { mode: { kind: 'id', id }, dryRun, targetLocales, onlyDisposition }
   const type = pluck(args, '--type')
-  if (type) return { mode: { kind: 'type', type }, dryRun, targetLocales }
+  if (type) return { mode: { kind: 'type', type }, dryRun, targetLocales, onlyDisposition }
   console.error(
-    'Usage: yarn translate:content [--id <docId> | --type <type> | --all] [--locales fr,de] [--dry-run]',
+    'Usage: yarn translate:content [--id <docId> | --type <type> | --all] [--locales fr,de] [--dry-run] [--only-disposition]',
   )
   process.exit(1)
 }
@@ -83,7 +97,7 @@ function pluck(args: string[], flag: string): string | undefined {
 }
 
 async function main() {
-  const { mode, dryRun, targetLocales } = parseArgs()
+  const { mode, dryRun, targetLocales, onlyDisposition } = parseArgs()
   const client = createClient({
     projectId,
     dataset,
@@ -93,8 +107,20 @@ async function main() {
     perspective: 'raw',
   })
 
-  const ids = await resolveDocIds(client, mode)
-  console.log(`[${dryRun ? 'DRY-RUN' : 'APPLY'}] ${ids.length} document(s) to translate`)
+  if (onlyDisposition) {
+    // Disposition only lives on organ docs — narrow the scope so we
+    // never pass a non-organ id to `runDispositionOnlyTranslation`.
+    if (mode.kind === 'type' && mode.type !== 'organ' && mode.type !== 'all') {
+      console.error(
+        `--only-disposition is only valid with --type organ (or --all/--id <organ>); got --type ${mode.type}`,
+      )
+      process.exit(1)
+    }
+  }
+  const ids = await resolveDocIds(client, mode, onlyDisposition)
+  console.log(
+    `[${dryRun ? 'DRY-RUN' : 'APPLY'}] ${onlyDisposition ? '(disposition only) ' : ''}${ids.length} document(s) to translate`,
+  )
   for (const id of ids) console.log(`  ${id}`)
   if (dryRun) return
 
@@ -108,12 +134,21 @@ async function main() {
     processed++
     process.stdout.write(`\n[${processed}/${ids.length}] ${id} ... `)
     try {
-      const results = await runTranslation(client, translator, id, {
-        targetLocales,
-        onProgress: (event) => {
-          if (event.type === 'translator:usage' && event.tokens) totalTokens += event.tokens
-        },
-      })
+      const results = onlyDisposition
+        ? await runDispositionOnlyTranslation(client, translator, id, {
+            targetLocales,
+            onProgress: (event) => {
+              if (event.type === 'translator:usage' && event.tokens)
+                totalTokens += event.tokens
+            },
+          })
+        : await runTranslation(client, translator, id, {
+            targetLocales,
+            onProgress: (event) => {
+              if (event.type === 'translator:usage' && event.tokens)
+                totalTokens += event.tokens
+            },
+          })
       const summary = results
         .map((r) => `${r.locale}=${r.status}${r.error ? `(${r.error})` : ''}`)
         .join(' ')
@@ -132,8 +167,16 @@ async function main() {
 async function resolveDocIds(
   client: ReturnType<typeof createClient>,
   mode: Mode,
+  onlyDisposition: boolean,
 ): Promise<string[]> {
   if (mode.kind === 'id') return [mode.id]
+
+  if (onlyDisposition) {
+    // Single, simple query: every published Dutch organ.
+    return await client.fetch<string[]>(
+      `*[_type == "organ" && language == "nl" && !(_id in path("drafts.**"))]._id`,
+    )
+  }
 
   if (mode.kind === 'type') {
     if (mode.type === 'singletons') {

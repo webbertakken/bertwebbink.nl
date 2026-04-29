@@ -25,7 +25,7 @@ End-to-end plan for shipping multilingual content + UI on bertwebbink.nl.
 | Default provider | **Google - Gemini 2.5 Pro** |
 | Pluggability | `Translator` interface + `GeminiTranslator` (default) + `AnthropicTranslator` + `OpenAITranslator` implementations, picked by `TRANSLATOR_PROVIDER` env |
 | UI strings library | `next-intl` |
-| Stale handling | (a) visual indicator in studio + (b) action always re-runs all locales diff-aware on press |
+| Stale handling | (a) visual indicator in studio + (b) action always re-runs all locales on press. The orchestrator no longer short-circuits on a matching `_translationSourceRev`, so walker-spec expansions automatically reach existing siblings |
 | UI strings authoring | Hand-authored `messages/en.json`, seeded to other 10 via the same pipeline, human-editable per locale |
 | Translate button | Document Action in studio's three-dot menu |
 | Plugin extraction | **Deferred** - build internal first under `sanity/plugins/translate/`, extract later |
@@ -475,11 +475,18 @@ Design rules baked into the matrix:
 
 ### A12. Glossary / do-not-translate
 
-Organ-specific Dutch terms must round-trip untouched: `Hoofdwerk`, `Bovenwerk`, `Rugwerk`, `Pedaal`, `Borstwerk`, `Zwelwerk`, `tremulant`, `koppel`, `setzer`, plus builder names and place names.
+Glossary is intentionally light. Builder names and place names are the
+clear DO_NOT_TRANSLATE candidates ("Albertus Antoni Hinsz",
+"Vriezenveen"). Dutch organ terms like `Hoofdwerk`, `Bovenwerk`,
+`Rugwerk`, `Pedaal`, `Borstwerk`, `Zwelwerk` are now translated like
+any other heading (a Japanese reader sees `主鍵盤` rather than
+`Hoofdwerk`); the LLM is free to pick the idiomatic equivalent. Stop
+names are translated separately into a `translation` field and rendered
+in parens next to the canonical name.
 
 - [x] Add `glossary` field to the `settings` singleton (single global glossary; `term` + `translation`, where `translation = "DO_NOT_TRANSLATE"` locks a term verbatim)
 - [x] Translator system prompt includes glossary instructions (`buildSystemPrompt` in `core/translator/prompts.ts`)
-- [ ] Test: a paragraph containing `Hoofdwerk` in NL still says `Hoofdwerk` in EN/DE/JA output (deferred - needs live LLM API key; the prompt format is unit-tested in `prompts.spec.ts`)
+- [x] Disposition surface (`registers[*].name`, `couplings[*]`, `accessories[*]`, `stops[*].name` → `stops[*].translation`, `stops[*].note`) is part of the `organ` walker; register/coupling/accessory headings translate in place, stop names stay canonical with an optional gloss in parens
 
 ### A13. Slugs
 

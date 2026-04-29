@@ -15,11 +15,15 @@ export function slugify(input: string): string {
       .toLowerCase()
       // Decompose so we can strip combining diacritics from Latin scripts.
       .normalize('NFKD')
-      // Strip combining marks (Latin diacritics). CJK / Hangul jamo live
-      // outside this range and are left alone.
+      // Strip combining marks in the Latin diacritic range only. Marks
+      // outside this range are part of the script (Devanagari
+      // anusvara, Arabic harakat, etc.) and must stay so the slug
+      // remains the actual word.
       .replace(/[\u0300-\u036f]/g, '')
-      // Replace non-letter / non-digit runs with a single dash.
-      .replace(/[^\p{L}\p{N}]+/gu, '-')
+      // Replace non-letter / non-digit / non-mark runs with a single
+      // dash. Including \p{M} preserves combining marks used by
+      // Devanagari, Hebrew, Arabic, Thai, etc.
+      .replace(/[^\p{L}\p{N}\p{M}]+/gu, '-')
       .replace(/^-+|-+$/g, '')
       // Re-compose to NFC so non-Latin scripts (Hangul, etc.) end up in
       // the canonical web form. Browsers and search engines compare

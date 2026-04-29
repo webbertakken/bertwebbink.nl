@@ -35,7 +35,6 @@ export function isTranslatableType(type: string): boolean {
 export type PerLocaleStatus =
   | 'created'
   | 'updated'
-  | 'unchanged'
   | 'skipped'
   | 'failed'
 
@@ -152,7 +151,6 @@ export async function runTranslation(
   const siblingIds = listSiblingIds(ctx.siblings as Map<Locale, Record<string, unknown>>)
   for (const result of results) {
     if (result.status === 'failed' || result.status === 'skipped') continue
-    if (result.status === 'unchanged') continue
     await ensureTranslationMetadata(client, siblingIds, {
       sourceId: sourceDoc._id as string,
       sourceLocale,
@@ -162,6 +160,114 @@ export async function runTranslation(
     })
   }
   return results
+}
+
+/**
+ * Translate **only** the disposition surface of an organ doc and
+ * patch each existing sibling. Title/excerpt/content stay exactly
+ * as they already are on the sibling, so this is the cheap rerun
+ * path you want after expanding the walker to cover disposition.
+ *
+ * Cost-shape: ~15% of a full re-translation, because disposition is
+ * roughly 15% of the token volume of a typical organ post.
+ *
+ * Behaviour notes:
+ *   - Skips locales that don't have a sibling yet — you need a full
+ *     `runTranslation` first to seed those.
+ *   - Replaces the sibling's `disposition` object with a fresh deep
+ *     clone of the source's `disposition` (so any new editor changes
+ *     in the structure are picked up), then applies translations on
+ *     top.
+ *   - Doesn't touch `translation.metadata` because every targeted
+ *     sibling already exists and is already linked.
+ */
+export async function runDispositionOnlyTranslation(
+  client: SanityClient,
+  translator: Translator,
+  organDocId: string,
+  options: TranslateOptions = {},
+): Promise<PerLocaleResult[]> {
+  const sourceDoc = await client.getDocument(organDocId)
+  if (!sourceDoc) throw new Error(`Source document not found: ${organDocId}`)
+  const sourceType = (sourceDoc as { _type: string })._type
+  if (sourceType !== 'organ') {
+    throw new Error(`Disposition-only mode is for organ docs; got "${sourceType}"`)
+  }
+  const sourceLocale = (sourceDoc as { language?: Locale }).language ?? 'nl'
+  const targets = (options.targetLocales ?? LOCALES.filter((l) => l !== sourceLocale)) as Locale[]
+
+  const sourceDisposition = (sourceDoc as { disposition?: unknown }).disposition
+  if (!sourceDisposition) {
+    return targets.map((locale) => ({ locale, docId: 'unknown', status: 'skipped' as const }))
+  }
+
+  const allUnits = extractAll(sourceDoc as Record<string, unknown>, 'organ', sourceLocale).units
+  const dispositionUnits = allUnits.filter((u) => u.id.startsWith('disposition.'))
+  if (dispositionUnits.length === 0) {
+    return targets.map((locale) => ({ locale, docId: 'unknown', status: 'skipped' as const }))
+  }
+
+  const siblings = await loadSiblings(client, organDocId)
+
+  const tasks = targets.map(async (target) => {
+    options.onProgress?.({ type: 'locale:start', locale: target })
+    const sibling = siblings.get(target)
+    if (!sibling) {
+      const result: PerLocaleResult = {
+        locale: target,
+        docId: 'unknown',
+        status: 'skipped',
+        error: 'No sibling for this locale; run a full translation first.',
+      }
+      options.onProgress?.({ type: 'locale:done', result })
+      return result
+    }
+    const siblingId = sibling._id as string
+    let translatedUnits: import('./types').TranslationUnit[] = []
+    try {
+      const result = await translator.translate({
+        sourceLocale,
+        targetLocale: target,
+        units: dispositionUnits,
+        glossary: options.glossary,
+        documentContext: {
+          type: 'organ',
+          title: sourceDoc.title as string | undefined,
+          shape: 'mixed',
+        },
+      })
+      translatedUnits = result.units
+      options.onProgress?.({
+        type: 'translator:usage',
+        locale: target,
+        durationMs: result.usage?.durationMs,
+        tokens: result.usage?.totalTokens,
+      })
+    } catch (err) {
+      const errored: PerLocaleResult = {
+        locale: target,
+        docId: siblingId,
+        status: 'failed',
+        /* v8 ignore next */
+        error: err instanceof Error ? err.message : String(err),
+      }
+      options.onProgress?.({ type: 'locale:done', result: errored })
+      return errored
+    }
+    // Start from the existing sibling, refresh `disposition` from
+    // source, then apply the translations. Title/excerpt/content stay
+    // exactly as the sibling already had them.
+    const next = JSON.parse(JSON.stringify(sibling)) as Record<string, unknown>
+    next.disposition = JSON.parse(JSON.stringify(sourceDisposition))
+    const final = applyAll(next, 'organ', translatedUnits, target) as Record<string, unknown>
+    final._id = siblingId
+    await client.createOrReplace(final as never)
+    const ok: PerLocaleResult = { locale: target, docId: siblingId, status: 'updated' }
+    options.onProgress?.({ type: 'locale:done', result: ok })
+    return ok
+  })
+
+  return Promise.all(tasks)
 }
 
 /**
@@ -185,16 +291,6 @@ async function translateDocPerLocale(
   const previousSiblingId = previousSibling?._id as string | undefined
   const sourceRev = sourceDoc._rev as string
   const sourceUpdatedAt = (sourceDoc._updatedAt as string | undefined) ?? ''
-
-  // No-op when the previous sibling is already up-to-date.
-  if (
-    previousSibling &&
-    previousSiblingId &&
-    previousSibling._translationSourceRev != null &&
-    previousSibling._translationSourceRev === sourceRev
-  ) {
-    return { locale: target, docId: previousSiblingId, status: 'unchanged' }
-  }
 
   const { units } = extractAll(sourceDoc, sourceType, sourceLocale)
   const previousSourceUnits = previousSibling
@@ -286,14 +382,16 @@ async function translateScoreInPlace(
   if (units.length === 0) {
     return { locale: target, docId: ctx.doc._id as string, status: 'skipped' }
   }
+  const sourceRev = ctx.doc._rev as string
   const provenanceMap =
     (ctx.doc._translationProvenance as Record<string, { sourceRev?: string }>) ?? {}
   const previousProvenance = provenanceMap[target]
-  const sourceRev = ctx.doc._rev as string
-
-  if (previousProvenance?.sourceRev === sourceRev) {
-    return { locale: target, docId: ctx.doc._id as string, status: 'unchanged' }
-  }
+  // We used to early-exit here when `previousProvenance.sourceRev`
+  // matched `sourceRev`, but that short-circuit hides walker-spec
+  // expansions from existing translations: newly-translatable fields
+  // would never get translated because the rev appeared "up to date".
+  // Score is field-level with only three short translatable fields,
+  // so the cost of re-sending everything every run is negligible.
 
   const result = await translator.translate({
     sourceLocale: ctx.sourceLocale,

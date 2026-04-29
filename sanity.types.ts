@@ -589,6 +589,7 @@ export type Organ = {
         name: string
         pitch?: string
         note?: string
+        translation?: string
         _type: 'stop'
         _key: string
       }>
@@ -972,6 +973,7 @@ export type OrganQueryResult = {
         name: string
         pitch?: string
         note?: string
+        translation?: string
         _type: 'stop'
         _key: string
       }>
