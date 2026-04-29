@@ -162,7 +162,7 @@ Returns a next-intl typed `Href` object (or `null`), not a string. The result is
 `<Link>` from `@/i18n/navigation` which handles locale-prefix and per-locale path translation
 automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCard.tsx`).
 
-- [ ] **2.1** Write `core/search/url.spec.ts` covering:
+- [x] **2.1** Write `core/search/url.spec.ts` covering:
       - `journal` with slug → `{ pathname: '/journal/[slug]', params: { slug } }`
       - `organ` with slug → `{ pathname: '/organs/[slug]', params: { slug } }`
       - `score` with editionNumber → `{ pathname: '/scores', hash: 'ed-01' }` (zero-padded to 2)
@@ -171,7 +171,7 @@ automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCar
       - `journal`/`organ` missing slug → returns `null` (caller filters out)
       - unknown `_type` → returns `null`
       - **No `locale` parameter** — next-intl `<Link>` handles locale at render time.
-- [ ] **2.2** Implement `searchResultHref(result)` in `core/search/url.ts`. Type the return as
+- [x] **2.2** Implement `searchResultHref(result)` in `core/search/url.ts`. Type the return as
       next-intl's `Href` (import from `next-intl/routing` or use the inferred type from
       `@/i18n/routing`). Functions stays pure — no React, no next-intl runtime hooks.
 
