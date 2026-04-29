@@ -6,6 +6,12 @@ import { useTranslations } from 'next-intl'
 import { LOCALES, LOCALE_ENDONYMS, type Locale } from '@/core/i18n/locales'
 import { usePathname, useRouter } from '@/i18n/navigation'
 
+/**
+ * Read on the client at module-eval time. `next-intl`/Next.js inlines
+ * `NEXT_PUBLIC_*` env vars into the client bundle so this is safe.
+ */
+const I18N_ENABLED = process.env.NEXT_PUBLIC_I18N_ENABLED !== 'false'
+
 type LanguagePickerProps = {
   locale: Locale
   className?: string
@@ -26,6 +32,9 @@ export function LanguagePicker({ locale, className }: LanguagePickerProps) {
   const [, startTransition] = useTransition()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
+
+  // Phase-1 rollout flag — hide the picker entirely when i18n is off.
+  if (!I18N_ENABLED) return null
 
   useEffect(() => {
     if (!open) return

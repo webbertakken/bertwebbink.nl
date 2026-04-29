@@ -1,4 +1,6 @@
 import { LAUNCH_AT_MS } from '@/core/launch'
+import { LOCALES, type Locale } from '@/core/i18n/locales'
+import { SINGLE_LOCALE_FALLBACK } from '@/core/i18n/featureFlag'
 
 /**
  * Pure helpers for the proxy middleware. Lives in its own file so the
@@ -30,4 +32,24 @@ export function gateIsActive(
   if (env.UNDER_CONSTRUCTION === 'true') return true
   if (Number.isFinite(LAUNCH_AT_MS) && now < LAUNCH_AT_MS) return true
   return false
+}
+
+/**
+ * Decide whether a single-locale lock applies and what target path to
+ * redirect to. Returns `null` when no redirect is needed.
+ *
+ * Used by the proxy middleware. Pure function; no side effects.
+ */
+export function singleLocaleLockTarget(
+  pathname: string,
+  i18nEnabled: boolean,
+  fallback: Locale = SINGLE_LOCALE_FALLBACK,
+): string | null {
+  if (i18nEnabled) return null
+  const segments = pathname.split('/')
+  const localePrefix = segments[1]
+  if (!LOCALES.includes(localePrefix as Locale)) return null
+  if (localePrefix === fallback) return null
+  segments[1] = fallback
+  return segments.join('/')
 }

@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
 import { LAUNCH_AT_MS } from './core/launch'
-import { gateIsActive, isAlwaysAllowed } from './proxy.helpers'
+import {
+  gateIsActive,
+  isAlwaysAllowed,
+  singleLocaleLockTarget,
+} from './proxy.helpers'
 
 const FUTURE = LAUNCH_AT_MS + 1000 * 60 * 60 * 24
 const PAST = LAUNCH_AT_MS - 1000 * 60 * 60 * 24
@@ -41,5 +45,33 @@ describe('gateIsActive', () => {
   it('respects the explicit UNDER_CONSTRUCTION env override', () => {
     expect(gateIsActive(FUTURE, { UNDER_CONSTRUCTION: 'true' })).toBe(true)
     expect(gateIsActive(PAST, { UNDER_CONSTRUCTION: 'false' })).toBe(true) // launch still in past
+  })
+})
+
+describe('singleLocaleLockTarget', () => {
+  it('returns null when i18n is enabled', () => {
+    expect(singleLocaleLockTarget('/de/about', true)).toBeNull()
+    expect(singleLocaleLockTarget('/nl/organs', true)).toBeNull()
+  })
+
+  it('returns null when the path already uses the fallback locale', () => {
+    expect(singleLocaleLockTarget('/en/about', false)).toBeNull()
+    expect(singleLocaleLockTarget('/en', false)).toBeNull()
+  })
+
+  it('rewrites every other locale prefix to /en when i18n is disabled', () => {
+    expect(singleLocaleLockTarget('/nl/about', false)).toBe('/en/about')
+    expect(singleLocaleLockTarget('/de/organs/foo', false)).toBe('/en/organs/foo')
+    expect(singleLocaleLockTarget('/ja', false)).toBe('/en')
+  })
+
+  it('leaves non-locale paths alone', () => {
+    expect(singleLocaleLockTarget('/admin/structure', false)).toBeNull()
+    expect(singleLocaleLockTarget('/api/translate', false)).toBeNull()
+    expect(singleLocaleLockTarget('/under-construction', false)).toBeNull()
+  })
+
+  it('honours an explicit fallback override', () => {
+    expect(singleLocaleLockTarget('/de/about', false, 'nl')).toBe('/nl/about')
   })
 })

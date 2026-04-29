@@ -505,10 +505,10 @@ The under-construction gate and the locale resolver must compose cleanly.
   2. Else → run `next-intl` middleware (auto-detects from `Accept-Language`, redirects `/` to `/{detected-locale}/`, persists choice in `NEXT_LOCALE` cookie)
 - [x] `ALWAYS_ALLOW` list keeps `/admin`, `/api`, `/_next`, `/favicon`, `/sitemap.xml`, `/robots.txt`, `/under-construction`, `/llms*.txt`
 - [x] Tests for middleware (pure helpers extracted to `proxy.helpers.ts`):
-  - [x] Gate active — `gateIsActive` returns true before launch
+  - [x] Gate active - `gateIsActive` returns true before launch
   - [x] Gate inactive after launch
   - [x] `/admin`, `/api`, `/llms.{locale}.txt` always allowed
-  - [ ] End-to-end composition with next-intl middleware (deferred — needs runtime; verified manually via dev server)
+  - [ ] End-to-end composition with next-intl middleware (deferred - needs runtime; verified manually via dev server)
 
 ### B3. Extract hardcoded strings
 
@@ -572,10 +572,10 @@ Output: `messages/en.json` (source) - flat namespaced keys, e.g.:
   - Mobile: lives in the existing mobile panel as its own section
 - [x] Tests:
   - [x] Renders endonym for each locale
-  - [ ] Clicking a locale changes URL prefix (deferred — needs router runtime)
-  - [ ] Cookie persistence works across navigation (deferred — E2E)
+  - [ ] Clicking a locale changes URL prefix (deferred - needs router runtime)
+  - [ ] Cookie persistence works across navigation (deferred - E2E)
   - [x] No flags rendered (visual regression test)
-  - [ ] Keyboard nav works (deferred — needs interaction harness)
+  - [ ] Keyboard nav works (deferred - needs interaction harness)
 - [ ] Visual: place between desktop links and the (currently absent on desktop) hamburger; on mobile inside the panel
 
 ### B6. Auto-detect
@@ -583,7 +583,7 @@ Output: `messages/en.json` (source) - flat namespaced keys, e.g.:
 `next-intl`'s middleware already handles this, but verify:
 
 - [x] First visit, no cookie, `Accept-Language: de,en;q=0.9` → redirect to `/de/` (handled by `next-intl` middleware via `localePrefix: 'always'`)
-- [x] Unsupported `Accept-Language` (e.g. `sw`) → fall back to `en` (UI default — decided, see Q1)
+- [x] Unsupported `Accept-Language` (e.g. `sw`) → fall back to `en` (UI default - decided, see Q1)
 - [x] User picks a locale → cookie set, subsequent visits respect cookie (handled by `next-intl`)
 - [x] Bot user agents → no cookie writes, serve based on `Accept-Language` only (handled by `next-intl`)
 
@@ -646,7 +646,7 @@ Guardrails (mandatory):
 
 Phased to avoid a big-bang merge.
 
-1. [ ] **Phase 1 - foundation**: Track C (remove assist), A1 (install plugin), A2 (schema), A3 (migration), A4 (queries), A5 (routing). Ship behind a feature flag `NEXT_PUBLIC_I18N_ENABLED`. With flag off, site is identical to today.
+1. [x] **Phase 1 — foundation**: Track C (remove assist), A1 (install plugin), A2 (schema), A3 (migration), A4 (queries), A5 (routing). Ships behind `NEXT_PUBLIC_I18N_ENABLED`; when `false`, every locale prefix redirects to `/en/...` and the picker is hidden.
 2. [ ] **Phase 2 - UI strings**: B1, B2, B3 (extract), seeded with EN only (no other locales yet). Site renders English only behind the same flag.
 3. [ ] **Phase 3 - translator core**: A6, A7, A8 (no studio integration yet). Tests only.
 4. [ ] **Phase 4 - translate action**: A9, A10, A11, A12, A13. First real Sanity translations produced, only Dutch + English visible to public.
