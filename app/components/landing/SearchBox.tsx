@@ -1,13 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
-import type { Locale } from '@/core/i18n/locales'
+import { useRouter } from '@/i18n/navigation'
 
 type SearchBoxProps = {
-  locale: Locale
   /**
    * Visual mode. `inline` = collapsed icon that expands on click (desktop nav).
    * `expanded` = always-visible input (mobile drawer).
@@ -15,7 +14,7 @@ type SearchBoxProps = {
   variant?: 'inline' | 'expanded'
 }
 
-export function SearchBox({ locale, variant = 'inline' }: SearchBoxProps) {
+export function SearchBox({ variant = 'inline' }: SearchBoxProps) {
   const tNav = useTranslations('Nav')
   const tSearch = useTranslations('Search')
   const router = useRouter()
@@ -58,10 +57,11 @@ export function SearchBox({ locale, variant = 'inline' }: SearchBoxProps) {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const trimmed = value.trim()
-    const target = trimmed
-      ? `/${locale}/search?q=${encodeURIComponent(trimmed)}`
-      : `/${locale}/search`
-    router.push(target)
+    if (trimmed) {
+      router.push({ pathname: '/search', query: { q: trimmed } })
+    } else {
+      router.push({ pathname: '/search' })
+    }
   }
 
   return (

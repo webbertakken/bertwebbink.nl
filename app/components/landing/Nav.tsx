@@ -105,7 +105,7 @@ export function Nav({ locale, active, wordmark, tagline }: NavProps) {
 
       {/* Search + language picker (desktop) */}
       <div className="hidden md:flex items-center gap-4">
-        <SearchBox locale={locale} />
+        <SearchBox />
         <LanguagePicker locale={locale} />
       </div>
 
@@ -168,7 +168,7 @@ export function Nav({ locale, active, wordmark, tagline }: NavProps) {
             })}
           </ul>
           <div className="border-t border-rule-soft px-3 py-3 flex flex-col gap-3">
-            <SearchBox locale={locale} variant="expanded" />
+            <SearchBox variant="expanded" />
             <LanguagePicker locale={locale} />
           </div>
         </div>

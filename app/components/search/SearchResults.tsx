@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 
+import { getPathname } from '@/i18n/navigation'
 import { searchResultHref, type SearchHitInput } from '@/core/search/url'
 import type { Locale } from '@/core/i18n/locales'
 import type { SearchQueryResult } from '@/sanity.types'
@@ -36,8 +37,12 @@ export async function SearchResults({ locale, query, tokens, results }: SearchRe
 
   const renderable = results
     .map((hit) => {
-      const url = searchResultHref(hit as SearchHitInput, locale)
-      return url ? { hit, url } : null
+      const href = searchResultHref(hit as SearchHitInput)
+      if (!href) return null
+      // Resolve to a static URL string server-side. next-intl substitutes
+      // dynamic [slug] params and rewrites to the per-locale segment.
+      const url = getPathname({ locale, href })
+      return { hit, url }
     })
     .filter((row): row is { hit: (typeof results)[number]; url: string } => row !== null)
 

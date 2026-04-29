@@ -210,11 +210,13 @@ automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCar
       `robots: { index: false, follow: false }` — search results pages must never be indexed.
 - [x] **5.4** Verify `<SanityLive />` is mounted in `app/layout.tsx` (it is — line 110). One-line
       check, no setup needed.
-- [ ] **5.5** **Conditional on `feat/translate-disposition` having merged**: add `/search` to
-      `i18n/routing.ts` `pathnames` and `i18n/pathnames.json`. Use locale-translated segments
-      (e.g. `/de/suche`, `/ja/検索`). Either run `yarn translate:pathnames` or hand-author the 11
-      strings (small enough). If localised pathnames haven't merged yet, `/search` works as a
-      literal route in every locale and this task is deferred to a follow-up.
+- [x] **5.5** Added `/search` to `i18n/routing.ts` `pathnames` and `i18n/pathnames.json` once
+      `feat/translate-disposition` merged. Locale-translated segments hand-authored (zoeken /
+      suche / recherche / buscar / cerca / pesquisa / खोज / 検索 / 搜索 / 검색). URL builder
+      switched back to typed next-intl `Href` objects; `SearchResults` resolves them via
+      `getPathname({ locale, href })`; `SearchBox` uses next-intl typed `useRouter`. Verified
+      end-to-end: `/de/suche` returns DE results with `/de/blog/...` + `/de/orgeln/...` URLs;
+      `/ja/検索` returns JA results with `/ja/オルガン` etc.
 
 ### 6. Search results component
 

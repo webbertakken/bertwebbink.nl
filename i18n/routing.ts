@@ -115,6 +115,19 @@ export const pathnames = {
     zh: '/博客/[slug]',
     ko: '/일기/[slug]',
   },
+  '/search': {
+    en: '/search',
+    nl: '/zoeken',
+    de: '/suche',
+    fr: '/recherche',
+    es: '/buscar',
+    it: '/cerca',
+    pt: '/pesquisa',
+    hi: '/खोज',
+    ja: '/検索',
+    zh: '/搜索',
+    ko: '/검색',
+  },
 } as const satisfies Record<string, string | Record<Locale, string>>
 
 /**
