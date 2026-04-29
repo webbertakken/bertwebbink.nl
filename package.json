@@ -25,13 +25,16 @@
     "cleanup:pre-i18n": "tsx scripts/cleanup-pre-i18n.ts",
     "extract-types": "sanity schema extract --enforce-required-fields"
   },
+  "resolutions": {
+    "@sanity/client": "^7.22.0"
+  },
   "dependencies": {
     "@sanity/assist": "^4.2.0",
-    "@sanity/client": "^7.4.0",
-    "@sanity/icons": "^3.7.0",
-    "@sanity/image-url": "^1.1.0",
+    "@sanity/client": "^7.22",
+    "@sanity/icons": "^3.7.4",
+    "@sanity/image-url": "^2",
     "@sanity/uuid": "^3.0.2",
-    "@sanity/vision": "^3.91.0",
+    "@sanity/vision": "^4",
     "@tailwindcss/postcss": "^4.1.8",
     "@tailwindcss/typography": "^0.5.16",
     "@vercel/speed-insights": "^1.1.0",
@@ -43,9 +46,9 @@
     "postcss": "^8.5.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "sanity": "^3.91.0",
-    "sanity-plugin-asset-source-unsplash": "^3.0.3",
-    "sanity-plugin-media": "^3.0.3",
+    "sanity": "^4",
+    "sanity-plugin-asset-source-unsplash": "^7",
+    "sanity-plugin-media": "^4",
     "sonner": "^1.7.0",
     "styled-components": "^6.1.13",
     "tailwindcss": "^4.1.8"
