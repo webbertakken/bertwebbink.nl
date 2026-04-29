@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "Veldnotities",
     "kickerRightFallback": "Vanaf de orgelgalerij",
-    "headingFallback": "Bezoeken aan {{oude orgels}}",
+    "headingFallback": "Bezoeken aan <em>oude orgels</em>",
     "taglineFallback": "Opnames, foto's en registers van telkens één zaterdag, verzameld in Nederland en daarbuiten.",
     "cornerLeftSubFallback": "Een veldjournaal",
     "cornerRightSubFallback": "De lage landen",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "Geschriften",
     "kickerRightFallback": "Een veldjournaal",
-    "headingFallback": "Het {{Journaal}}",
+    "headingFallback": "Het <em>Tijdschrift</em>",
     "taglineFallback": "Essays, fragmenten, half-afgemaakte gedachten — gepubliceerd wanneer er iets zinnigs te zeggen valt, meestal nadat een bankje mijn mening over iets heeft veranderd.",
     "cornerLeftSubFallback": "Notities tussen bezoeken",
     "cornerRightSubFallback": "De lage landen",
@@ -157,7 +157,7 @@
       "edition": "Editie №"
     },
     "headerKickerFallback": "Een kleine bibliotheek",
-    "headerHeadingFallback": "Edities, vingerzettingen, {{werkpartituren}}.",
+    "headerHeadingFallback": "Uitgaven, vingerzettingen, <em>werkpartituren</em>.",
     "headerTaglineFallback": "Werkedities die ik voor eigen gebruik heb voorbereid — de meeste voor specifieke instrumenten die in de veldnotities zijn bezocht. Vingerzettingen en registraties zijn suggesties, geen voorschriften. Alle partituren zijn gratis te downloaden voor niet-commerciële studie.",
     "noticeBodyFallback": "Deze partituren worden gedeeld voor persoonlijke studie en kerkelijk gebruik. Als u er een wilt uitvoeren of opnemen, wordt een korte e-mail op prijs gesteld — en vermeld alstublieft de editie.",
     "noticeEditionLineFallback": "Editie Webbink",

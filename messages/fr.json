@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "Notes de terrain",
     "kickerRightFallback": "Depuis la tribune d'orgue",
-    "headingFallback": "Visites d' {{orgues anciens}}",
+    "headingFallback": "Visites à <em>vieux orgues</em>",
     "taglineFallback": "Enregistrements, photographies et registres d'un samedi à la fois, recueillis aux Pays-Bas et au-delà.",
     "cornerLeftSubFallback": "Un journal de terrain",
     "cornerRightSubFallback": "Les Pays-Bas",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "Écrits",
     "kickerRightFallback": "Un journal de terrain",
-    "headingFallback": "Le {{Journal}}",
+    "headingFallback": "Le <em>Journal</em>",
     "taglineFallback": "Essais, fragments, pensées inachevées — publiés quand il y a quelque chose à dire, généralement après qu'un banc m'ait fait changer d'avis sur quelque chose.",
     "cornerLeftSubFallback": "Notes entre les visites",
     "cornerRightSubFallback": "Les Pays-Bas",
@@ -157,7 +157,7 @@
       "edition": "Édition №"
     },
     "headerKickerFallback": "Une petite bibliothèque",
-    "headerHeadingFallback": "Éditions, doigtés, {{partitions de travail}}.",
+    "headerHeadingFallback": "Éditions, doigtés, <em>partitions de travail</em>.",
     "headerTaglineFallback": "Éditions de travail que j'ai préparées pour mon usage personnel — la plupart pour des instruments spécifiques visités dans les notes de terrain. Les doigtés et les registrations sont des suggestions, pas des prescriptions. Toutes les partitions sont téléchargeables gratuitement pour étude non commerciale.",
     "noticeBodyFallback": "Ces partitions sont partagées pour l'étude personnelle et l'utilisation en église. Si vous souhaitez en interpréter ou en enregistrer une, un court e-mail est apprécié — et veuillez créditer l'édition.",
     "noticeEditionLineFallback": "Édition Webbink",

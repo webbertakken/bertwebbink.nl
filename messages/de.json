@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "Feldnotizen",
     "kickerRightFallback": "Von der Orgelempore",
-    "headingFallback": "Besuche bei {{alten Orgeln}}",
+    "headingFallback": "Besuche bei <em>alten Orgeln</em>",
     "taglineFallback": "Aufnahmen, Fotografien und Register von jeweils einem Samstag, gesammelt in den Niederlanden und darüber hinaus.",
     "cornerLeftSubFallback": "Ein Feldjournal",
     "cornerRightSubFallback": "Die Niederlande",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "Schriften",
     "kickerRightFallback": "Ein Feldjournal",
-    "headingFallback": "Das {{Journal}}",
+    "headingFallback": "Das <em>Journal</em>",
     "taglineFallback": "Essays, Fragmente, halbfertige Gedanken – veröffentlicht, wenn es etwas zu sagen gibt, meist nachdem eine Bank meine Meinung zu etwas geändert hat.",
     "cornerLeftSubFallback": "Notizen zwischen Besuchen",
     "cornerRightSubFallback": "Die Niederlande",
@@ -157,7 +157,7 @@
       "edition": "Ausgabe Nr."
     },
     "headerKickerFallback": "Eine kleine Bibliothek",
-    "headerHeadingFallback": "Ausgaben, Fingersätze, {{Arbeitsnoten}}.",
+    "headerHeadingFallback": "Ausgaben, Fingersätze, <em>Arbeitspartituren</em>.",
     "headerTaglineFallback": "Arbeitsausgaben, die ich für den Eigengebrauch erstellt habe – die meisten für bestimmte Instrumente, die in den Feldnotizen besucht wurden. Fingersätze und Registrierungen sind Vorschläge, keine Vorschriften. Alle Noten können kostenlos für nicht-kommerzielle Studien heruntergeladen werden.",
     "noticeBodyFallback": "Diese Noten werden für das persönliche Studium und den kirchlichen Gebrauch geteilt. Wenn Sie eine aufführen oder aufnehmen möchten, ist eine kurze E-Mail willkommen – und bitte geben Sie die Ausgabe an.",
     "noticeEditionLineFallback": "Edition Webbink",

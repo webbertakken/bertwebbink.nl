@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "현장 기록",
     "kickerRightFallback": "오르간 로프트에서",
-    "headingFallback": "{{오래된 오르간}} 방문",
+    "headingFallback": "<em>오래된 오르간</em> 방문",
     "taglineFallback": "네덜란드 및 그 외 지역에서 한 번에 한 토요일씩 수집된 녹음, 사진 및 레지스터.",
     "cornerLeftSubFallback": "현장 저널",
     "cornerRightSubFallback": "저지대 국가",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "글",
     "kickerRightFallback": "현장 저널",
-    "headingFallback": "그 {{저널}}",
+    "headingFallback": "<em>저널</em>",
     "taglineFallback": "에세이, 단편, 미완성 생각 — 할 말이 있을 때, 보통 벤치가 어떤 것에 대한 내 생각을 바꾼 후에 발행됩니다.",
     "cornerLeftSubFallback": "방문 사이의 기록",
     "cornerRightSubFallback": "저지대 국가",
@@ -157,7 +157,7 @@
       "edition": "에디션 번호"
     },
     "headerKickerFallback": "작은 라이브러리",
-    "headerHeadingFallback": "에디션, 운지법, {{작업 악보}}.",
+    "headerHeadingFallback": "에디션, 운지법, <em>작업 악보</em>.",
     "headerTaglineFallback": "제가 개인적으로 사용하기 위해 준비한 작업판 — 대부분 현장 기록에서 방문한 특정 악기를 위한 것입니다. 운지법과 레지스트레이션은 제안이며, 필수가 아닙니다. 모든 악보는 비상업적 학습용으로 무료 다운로드 가능합니다.",
     "noticeBodyFallback": "이 악보들은 개인 학습 및 교회 사용을 위해 공유됩니다. 연주 또는 녹음을 원하시면 짧은 이메일을 보내주시면 감사하겠습니다 — 그리고 에디션을 명시해주세요.",
     "noticeEditionLineFallback": "웨빙크 에디션",

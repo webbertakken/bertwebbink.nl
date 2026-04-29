@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "Notas de campo",
     "kickerRightFallback": "Desde el coro del órgano",
-    "headingFallback": "Visitas a {{órganos antiguos}}",
+    "headingFallback": "Visitas a <em>órganos antiguos</em>",
     "taglineFallback": "Grabaciones, fotografías y registros de un sábado a la vez, recopilados en los Países Bajos y más allá.",
     "cornerLeftSubFallback": "Un diario de campo",
     "cornerRightSubFallback": "Los Países Bajos",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "Escritos",
     "kickerRightFallback": "Un diario de campo",
-    "headingFallback": "El {{Diario}}",
+    "headingFallback": "El <em>Diario</em>",
     "taglineFallback": "Ensayos, fragmentos, pensamientos a medio terminar — publicados cuando hay algo que valga la pena decir, generalmente después de que un banco me haya hecho cambiar de opinión sobre algo.",
     "cornerLeftSubFallback": "Notas entre visitas",
     "cornerRightSubFallback": "Los Países Bajos",
@@ -157,7 +157,7 @@
       "edition": "Edición №"
     },
     "headerKickerFallback": "Una pequeña biblioteca",
-    "headerHeadingFallback": "Ediciones, digitaciones, {{partituras de trabajo}}.",
+    "headerHeadingFallback": "Ediciones, digitaciones, <em>partituras de trabajo</em>.",
     "headerTaglineFallback": "Ediciones de trabajo que he preparado para mi propio uso — la mayoría para instrumentos específicos visitados en las notas de campo. Las digitaciones y registros son sugerencias, no prescripciones. Todas las partituras son de descarga gratuita para estudio no comercial.",
     "noticeBodyFallback": "Estas partituras se comparten para estudio personal y uso eclesiástico. Si deseas interpretar o grabar una, se agradece un breve correo electrónico — y por favor, acredita la edición.",
     "noticeEditionLineFallback": "Edición Webbink",

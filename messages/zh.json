@@ -65,7 +65,7 @@
   "Hero": {
     "kickerLeftFallback": "现场笔记",
     "kickerRightFallback": "来自管风琴阁楼",
-    "headingFallback": "参观{{古老的管风琴}}",
+    "headingFallback": "参观<em>古老风琴</em>",
     "taglineFallback": "来自荷兰及其他地区，一次一个周六的录音、照片和音栓记录。",
     "cornerLeftSubFallback": "现场日志",
     "cornerRightSubFallback": "低地国家",
@@ -74,7 +74,7 @@
   "JournalHero": {
     "kickerLeftFallback": "作品",
     "kickerRightFallback": "现场日志",
-    "headingFallback": "{{日志}}",
+    "headingFallback": "<em>期刊</em>",
     "taglineFallback": "随笔、片段、未完成的思考——在有值得一说的事情时发表，通常是在某个长凳改变了我的想法之后。",
     "cornerLeftSubFallback": "访问间隙的笔记",
     "cornerRightSubFallback": "低地国家",
@@ -157,7 +157,7 @@
       "edition": "版本号"
     },
     "headerKickerFallback": "一个小图书馆",
-    "headerHeadingFallback": "版本、指法、{{工作乐谱}}。",
+    "headerHeadingFallback": "版本、指法、<em>工作乐谱</em>。",
     "headerTaglineFallback": "我为自己使用而准备的工作版本——大部分是为现场笔记中访问过的特定乐器而作。指法和音栓设置是建议，而非规定。所有乐谱均可免费下载用于非商业学习。",
     "noticeBodyFallback": "这些乐谱供个人学习和教堂使用。如果您想演奏或录制其中一首，请发送简短邮件告知——并请注明版本。",
     "noticeEditionLineFallback": "Webbink 版本",
