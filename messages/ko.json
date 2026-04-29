@@ -9,7 +9,8 @@
       "scores": "악보",
       "about": "소개",
       "elsewhere": "다른 곳"
-    }
+    },
+    "openSearch": "Open search"
   },
   "Footer": {
     "copyright": "© 베르트 웨빙크, {year}",
@@ -56,6 +57,10 @@
     "privacy": {
       "title": "개인정보처리방침",
       "description": "이 사이트 방문 시 기록되는 내용에 대한 짧고 쉬운 설명."
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search across journal entries, organs, scores, and pages."
     }
   },
   "UnderConstruction": {
@@ -238,5 +243,20 @@
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
+  },
+  "Search": {
+    "heading": "Search",
+    "placeholder": "Search the site…",
+    "submit": "Search",
+    "empty": "Type a query to search journal entries, organs, scores, and pages.",
+    "noResultsFor": "No matches for “{query}”.",
+    "typeLabels": {
+      "journal": "Journal",
+      "organ": "Organ",
+      "score": "Score",
+      "about": "About",
+      "elsewhere": "Elsewhere",
+      "privacy": "Privacy"
+    }
   }
 }

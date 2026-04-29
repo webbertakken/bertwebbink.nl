@@ -9,7 +9,8 @@
       "scores": "楽譜",
       "about": "私について",
       "elsewhere": "その他"
-    }
+    },
+    "openSearch": "Open search"
   },
   "Footer": {
     "copyright": "© バート・ウェビンク、{year}",
@@ -56,6 +57,10 @@
     "privacy": {
       "title": "プライバシー",
       "description": "このサイトを訪問した際に何が記録されるかについての、短く平易な言葉での説明。"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search across journal entries, organs, scores, and pages."
     }
   },
   "UnderConstruction": {
@@ -238,5 +243,20 @@
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
+  },
+  "Search": {
+    "heading": "Search",
+    "placeholder": "Search the site…",
+    "submit": "Search",
+    "empty": "Type a query to search journal entries, organs, scores, and pages.",
+    "noResultsFor": "No matches for “{query}”.",
+    "typeLabels": {
+      "journal": "Journal",
+      "organ": "Organ",
+      "score": "Score",
+      "about": "About",
+      "elsewhere": "Elsewhere",
+      "privacy": "Privacy"
+    }
   }
 }

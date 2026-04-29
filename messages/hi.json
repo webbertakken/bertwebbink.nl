@@ -9,7 +9,8 @@
       "scores": "स्कोर",
       "about": "मेरे बारे में",
       "elsewhere": "अन्यत्र"
-    }
+    },
+    "openSearch": "Open search"
   },
   "Footer": {
     "copyright": "© बर्ट वेबिंक, {year}",
@@ -56,6 +57,10 @@
     "privacy": {
       "title": "गोपनीयता",
       "description": "इस साइट पर आने पर क्या लॉग किया जाता है, इसके बारे में एक छोटा, सरल-भाषा नोट।"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search across journal entries, organs, scores, and pages."
     }
   },
   "UnderConstruction": {
@@ -238,5 +243,20 @@
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
+  },
+  "Search": {
+    "heading": "Search",
+    "placeholder": "Search the site…",
+    "submit": "Search",
+    "empty": "Type a query to search journal entries, organs, scores, and pages.",
+    "noResultsFor": "No matches for “{query}”.",
+    "typeLabels": {
+      "journal": "Journal",
+      "organ": "Organ",
+      "score": "Score",
+      "about": "About",
+      "elsewhere": "Elsewhere",
+      "privacy": "Privacy"
+    }
   }
 }

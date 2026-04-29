@@ -9,7 +9,8 @@
       "scores": "乐谱",
       "about": "关于我",
       "elsewhere": "其他"
-    }
+    },
+    "openSearch": "Open search"
   },
   "Footer": {
     "copyright": "© Bert Webbink, {year}",
@@ -56,6 +57,10 @@
     "privacy": {
       "title": "隐私",
       "description": "关于您访问本网站时记录内容的简短、通俗易懂的说明。"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search across journal entries, organs, scores, and pages."
     }
   },
   "UnderConstruction": {
@@ -238,5 +243,20 @@
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
+  },
+  "Search": {
+    "heading": "Search",
+    "placeholder": "Search the site…",
+    "submit": "Search",
+    "empty": "Type a query to search journal entries, organs, scores, and pages.",
+    "noResultsFor": "No matches for “{query}”.",
+    "typeLabels": {
+      "journal": "Journal",
+      "organ": "Organ",
+      "score": "Score",
+      "about": "About",
+      "elsewhere": "Elsewhere",
+      "privacy": "Privacy"
+    }
   }
 }

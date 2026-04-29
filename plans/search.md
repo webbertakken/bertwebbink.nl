@@ -199,16 +199,16 @@ automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCar
 
 ### 5. Search page
 
-- [ ] **5.1** Create `app/[locale]/(site)/search/page.tsx` as a server component. Reads `q` from
+- [x] **5.1** Create `app/[locale]/(site)/search/page.tsx` as a server component. Reads `q` from
       `searchParams`, sanitises via `sanitiseQuery`, calls `sanityFetch({ query: searchQuery,
       params: { locale, q }, stega: false })`. The `stega: false` is required so slugs flowing
       into URL building are clean.
-- [ ] **5.2** Render via `<SearchResults>`: distinct empty (`q` missing/below min), no-results
+- [x] **5.2** Render via `<SearchResults>`: distinct empty (`q` missing/below min), no-results
       (`q` valid, zero hits), and results-list states.
-- [ ] **5.3** Set page metadata via `generateMetadata` using next-intl `getTranslations` (no
+- [x] **5.3** Set page metadata via `generateMetadata` using next-intl `getTranslations` (no
       Sanity strings needed). Title is `Metadata.search.title` + query echo;
       `robots: { index: false, follow: false }` — search results pages must never be indexed.
-- [ ] **5.4** Verify `<SanityLive />` is mounted in `app/layout.tsx` (it is — line 110). One-line
+- [x] **5.4** Verify `<SanityLive />` is mounted in `app/layout.tsx` (it is — line 110). One-line
       check, no setup needed.
 - [ ] **5.5** **Conditional on `feat/translate-disposition` having merged**: add `/search` to
       `i18n/routing.ts` `pathnames` and `i18n/pathnames.json`. Use locale-translated segments
@@ -218,48 +218,47 @@ automatically. Pattern matches existing components (`JournalList.tsx`, `OrganCar
 
 ### 6. Search results component
 
-- [ ] **6.1** Create `app/components/search/SearchResults.tsx` (server component, no client JS
+- [x] **6.1** Create `app/components/search/SearchResults.tsx` (server component, no client JS
       needed). Renders one `<li>` per result with: type badge (translated), highlighted title,
-      highlighted snippet, **`<Link>` from `@/i18n/navigation`** with the typed `Href` from
-      `searchResultHref(result)`. Filter out any result where `searchResultHref` returns `null`
-      (defensive — drafts or malformed docs).
-- [ ] **6.2** Add `id="ed-{editionNumber}"` (zero-padded to 2 digits) to each score row in
-      `app/components/landing/Scores.tsx`. **Audit confirmed missing as of plan rebase — must be
-      added.** The component renders `<ScoreCard>` items; the anchor id goes on the outermost
-      element of each card (audit the `ScoreCard` and `Featured` sub-components on lines ~140
-      onwards). Smooth-scroll behaviour from `:target` is fine — no JS needed.
-- [ ] **6.3** Empty state copy: "Try a search" (translated). No-results copy: "No matches for
-      'xyz'" with the query echoed (HTML-escaped). Translations follow next-intl conventions.
+      highlighted snippet, anchor to the URL from `searchResultHref(result, locale)`. Filter out
+      any result where `searchResultHref` returns `null` (defensive — drafts or malformed docs).
+      **Implementation note:** uses plain `next/link` + locale-prefixed string URLs rather than
+      next-intl's typed `<Link>` because dynamic-href substitution requires the `pathnames`
+      config that lands with `feat/translate-disposition`. Once that merges this can swap.
+- [x] **6.2** Add `id="ed-{editionNumber}"` (zero-padded to 2 digits) to each score row in
+      `app/components/landing/Scores.tsx`. Done via shared `editionAnchorId()` helper applied
+      to both `<Featured>` and `<ScoreCard>`; added `scroll-mt-16` so the sticky-ish nav doesn't
+      cover the target.
+- [x] **6.3** Empty state copy: "Type a query…" (translated). No-results copy: "No matches for
+      “{query}”" with the query echoed (next-intl interpolation, auto-escaped).
+      Translations seeded in `messages/{locale}.json` under `Search.empty` / `Search.noResultsFor`.
 
 ### 7. Search box in Nav
 
-- [ ] **7.1** Create `app/components/landing/SearchBox.tsx` as a small client component:
-      magnifying-glass button → click expands inline input → submit navigates to
-      `/{locale}/search?q=...` via the next-intl-aware router. Press `Esc` to close. `/` shortcut
-      to focus is **out of scope** — keeps the component simpler, can add later.
-- [ ] **7.2** Slot into `Nav.tsx` adjacent to `LanguagePicker`: desktop at lines 106-107
-      (`<div className="hidden md:block">` block), mobile inside the drawer near line 168
-      (`<div className="border-t border-rule-soft px-3 py-3">`). Match the same visibility
-      breakpoint pattern (`hidden md:block` for desktop, in-drawer for mobile).
-- [ ] **7.3** Accessibility: `<form role="search">`, input has translated `aria-label` (or visible
-      label), icon button has `aria-label={t('Nav.openSearch')}`, icon is `aria-hidden`,
-      focus-visible style matches site convention (`focus-visible:outline-accent` or whatever the
-      project uses — grep for existing usage in `LanguagePicker`).
+- [x] **7.1** Create `app/components/landing/SearchBox.tsx` as a small client component:
+      magnifying-glass button → click expands inline input → submit (native form GET) navigates
+      to `/{locale}/search?q=...`. Press `Esc` or click outside to close. The form uses native
+      GET so it works without JS for the submit path; only the expand/collapse behaviour needs
+      JS. `/` shortcut deliberately out of scope.
+- [x] **7.2** Slot into `Nav.tsx` adjacent to `LanguagePicker` on desktop (gap-4 wrapper) and
+      stacked above it inside the mobile drawer with `variant="expanded"` so the input is always
+      visible there.
+- [x] **7.3** Accessibility: `<form role="search">`, input has translated `aria-label`, icon
+      button has `aria-label={tNav('openSearch')}` collapsed / `aria-label={tSearch('submit')}`
+      expanded, icon is `aria-hidden`, `focus-visible:outline-accent` for both input and button.
 
 ### 8. i18n strings
 
-- [ ] **8.1** Add to `messages/en.json` (PascalCase namespaces, matching project convention):
-      - `Search.heading` — page heading
-      - `Search.placeholder` — input placeholder
-      - `Search.submit` — submit button text/aria
-      - `Search.empty` — "Type to search" before any query
-      - `Search.noResultsFor` — ICU string with `{query}` variable
-      - `Search.typeLabels.journal|organ|score|about|elsewhere|privacy` — result type badges
-      - `Metadata.search.title` and `Metadata.search.description` — page `<head>` strings
-      - `Nav.openSearch` — aria-label for the magnifying-glass button
-- [ ] **8.2** Run `yarn translate:ui` to seed the other 10 locales (per the existing translations
-      pipeline). Verify nl/de/ja look reasonable; manual edit if a string reads oddly. The `.last-
-      seen-en.json` file will pick up the new keys automatically.
+- [x] **8.1** Add to `messages/en.json` (PascalCase namespaces, matching project convention):
+      - `Search.heading`, `Search.placeholder`, `Search.submit`
+      - `Search.empty`, `Search.noResultsFor` (ICU `{query}`)
+      - `Search.typeLabels.journal|organ|score|about|elsewhere|privacy`
+      - `Metadata.search.title` and `Metadata.search.description`
+      - `Nav.openSearch` aria-label
+- [ ] **8.2** Run `yarn translate:ui` to seed the other 9 non-en, non-nl locales. Currently they
+      hold English placeholder copies so dev doesn't throw on missing keys; the proper
+      translation pass needs a Gemini key set in `.env`. Dutch (`messages/nl.json`) authored
+      by hand because it's the content default.
 
 ### 9. Visual + manual verification (do not skip)
 
