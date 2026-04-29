@@ -8,87 +8,87 @@
       "organs": "管风琴",
       "scores": "乐谱",
       "about": "关于我",
-      "elsewhere": "其他链接"
+      "elsewhere": "其他"
     }
   },
   "Footer": {
     "copyright": "© Bert Webbink, {year}",
     "links": {
-      "privacy": "隐私政策",
-      "elsewhere": "其他链接",
+      "privacy": "隐私",
+      "elsewhere": "其他",
       "contact": "联系方式"
     }
   },
   "Crumbs": {
-    "home": "主页",
+    "home": "首页",
     "organs": "管风琴",
     "journal": "日志",
     "scores": "乐谱",
     "about": "关于",
-    "elsewhere": "其他链接",
-    "privacy": "隐私政策"
+    "elsewhere": "其他",
+    "privacy": "隐私"
   },
   "LanguagePicker": {
     "label": "语言",
-    "switchTo": "切换至{language}"
+    "switchTo": "切换到{language}"
   },
   "Metadata": {
     "journal": {
       "title": "日志",
-      "description": "随笔、片段、未完成的想法——当有值得分享的内容时发布。"
+      "description": "随笔、片段、未完成的思考——在有值得一说的事情时发表。"
     },
     "organs": {
       "title": "管风琴",
-      "description": "探访荷兰及其他地区管风琴的田野笔记。"
+      "description": "来自荷兰及其他地区参观过的管风琴的现场笔记。"
     },
     "scores": {
       "title": "乐谱",
-      "description": "由 Bert Webbink 整理的管风琴乐谱工作版——包含指法、音栓配置，可免费下载用于非商业性学习。"
+      "description": "Bert Webbink 准备的管风琴乐谱工作版本——指法、音栓设置，可免费下载用于非商业学习。"
     },
     "about": {
       "title": "关于我",
-      "description": "Bert Webbink——管风琴师、教师、古老建筑的静谧访客。"
+      "description": "Bert Webbink — 管风琴师、教师、古建筑的安静访客。"
     },
     "elsewhere": {
-      "title": "其他链接",
+      "title": "其他",
       "description": "精选链接——合唱团、教堂、管风琴资源。"
     },
     "privacy": {
-      "title": "隐私政策",
-      "description": "关于您访问本网站时会记录哪些信息的简短、通俗说明。"
+      "title": "隐私",
+      "description": "关于您访问本网站时记录内容的简短、通俗易懂的说明。"
     }
   },
   "UnderConstruction": {
     "title": "正在建设中",
-    "subtitle": "敬请期待。"
+    "subtitle": "请稍后回来。"
   },
   "Hero": {
-    "kickerLeftFallback": "田野笔记",
-    "kickerRightFallback": "来自管风琴演奏台",
-    "headingFallback": "探访{{古老管风琴}}",
-    "taglineFallback": "在荷兰及其他地区，于每个周六收集的录音、照片和音栓配置。",
-    "cornerLeftSubFallback": "田野日志",
+    "kickerLeftFallback": "现场笔记",
+    "kickerRightFallback": "来自管风琴阁楼",
+    "headingFallback": "参观{{古老的管风琴}}",
+    "taglineFallback": "来自荷兰及其他地区，一次一个周六的录音、照片和音栓记录。",
+    "cornerLeftSubFallback": "现场日志",
     "cornerRightSubFallback": "低地国家",
-    "stats": "始于 {firstYear} 年 · {totalCount} 台管风琴"
+    "stats": "自 {firstYear} 年 · {totalCount} 架管风琴"
   },
   "JournalHero": {
-    "kickerLeftFallback": "文章",
-    "kickerRightFallback": "田野日志",
+    "kickerLeftFallback": "作品",
+    "kickerRightFallback": "现场日志",
     "headingFallback": "{{日志}}",
-    "taglineFallback": "随笔、片段、未完成的想法——当有值得分享的内容时发布，通常是在琴凳上的思考改变了我的想法之后。",
-    "cornerLeftSubFallback": "探访间隙的笔记",
+    "taglineFallback": "随笔、片段、未完成的思考——在有值得一说的事情时发表，通常是在某个长凳改变了我的想法之后。",
+    "cornerLeftSubFallback": "访问间隙的笔记",
     "cornerRightSubFallback": "低地国家",
-    "stats": "始于 {firstYear} 年 · {totalCount} 篇"
+    "stats": "自 {firstYear} 年 · {totalCount} 篇日志"
   },
   "OrgansArchive": {
-    "title": "档案馆",
-    "filteredTitle": "在<city>{city}</city>的探访",
+    "title": "档案",
+    "filteredTitle": "在 <city>{city}</city> 的访问",
     "byCity": "按城市",
     "browseAll": "浏览全部 →",
     "shownOfTotal": "{shown} / {total}",
     "clearFilter": "清除筛选 ✕",
     "loading": "加载中…",
-    "endOfArchive": "— 档案馆尽头 —"
+    "endOfArchive": "— 档案结束 —"
   },
   "OrganCard": {
     "readMore": "阅读更多",
@@ -110,8 +110,8 @@
       "other": "其他"
     },
     "categoryKinds": {
-      "travelogue": "旅行随笔",
-      "workshop": "探访",
+      "travelogue": "游记",
+      "workshop": "访问",
       "memorial": "纪念",
       "home-organ": "家用管风琴",
       "biography": "传记",
@@ -119,27 +119,27 @@
       "collection": "收藏",
       "other": "笔记"
     },
-    "entriesCount": "{count} 篇",
-    "emptyCategory": "此分类下暂无内容。",
+    "entriesCount": "{count} 篇日志",
+    "emptyCategory": "此类别暂无内容。",
     "pagination": {
-      "newer": "← 新篇",
-      "older": "旧篇 →",
+      "newer": "← 较新",
+      "older": "较旧 →",
       "pageOf": "第 {current} 页 / 共 {total} 页"
     },
-    "hasAudio": "含音频",
-    "readEntry": "阅读文章",
-    "minRead": "阅读需 {count} 分钟"
+    "hasAudio": "包含音频",
+    "readEntry": "阅读日志",
+    "minRead": "{count} 分钟阅读"
   },
   "Specs": {
     "specification": "规格",
-    "manuals": "手键盘",
+    "manuals": "键盘",
     "stops": "音栓",
     "pitch": "音高",
     "temperament": "音律",
-    "action": "音栓机",
+    "action": "传动装置",
     "couplings": "联键",
     "accessories": "附件",
-    "built": "建于 {year} 年",
+    "built": "建造于 {year} 年",
     "restored": "修复于 {year} 年"
   },
   "Scores": {
@@ -156,21 +156,21 @@
       "year": "年份",
       "edition": "版本号"
     },
-    "headerKickerFallback": "小型乐谱库",
+    "headerKickerFallback": "一个小图书馆",
     "headerHeadingFallback": "版本、指法、{{工作乐谱}}。",
-    "headerTaglineFallback": "我为自用而整理的工作版乐谱——多数是为田野笔记中探访过的特定乐器而准备。指法和音栓配置仅为建议，并非规定。所有乐谱均可免费下载用于非商业性学习。",
-    "noticeBodyFallback": "这些乐谱仅供个人学习和教堂使用。如欲公开演奏或录音，请发邮件告知，不胜感激——并请注明版本来源。",
+    "headerTaglineFallback": "我为自己使用而准备的工作版本——大部分是为现场笔记中访问过的特定乐器而作。指法和音栓设置是建议，而非规定。所有乐谱均可免费下载用于非商业学习。",
+    "noticeBodyFallback": "这些乐谱供个人学习和教堂使用。如果您想演奏或录制其中一首，请发送简短邮件告知——并请注明版本。",
     "noticeEditionLineFallback": "Webbink 版本",
-    "writeToMe": "联系我",
-    "emptyTitle": "乐谱库正在建立中。",
-    "emptyBody": "乐谱整理好后会在此处显示。请稍后回来查看，或通过下方方式联系我。",
+    "writeToMe": "写信给我",
+    "emptyTitle": "图书馆正在建设中。",
+    "emptyBody": "我准备好后，版本将在此处显示。请稍后查看，或在下方写信给我。",
     "editionsCount": "{count} 个版本",
-    "sort": "排序: {label}",
+    "sort": "排序：{label}",
     "period": "时期",
     "download": "下载",
-    "feature": "精选版本",
-    "featuredHeader": "精选版本",
-    "editionNumber": "第 {number} 号",
+    "feature": "特色版本",
+    "featuredHeader": "特色版本",
+    "editionNumber": "编号 {number}",
     "meta": {
       "catalog": "目录",
       "period": "时期",
@@ -183,58 +183,58 @@
     "pagesShort": "{count} 页",
     "pdfTag": "PDF",
     "comingSoon": "即将推出",
-    "libraryHeading": "<em>乐谱库</em>",
-    "showing": "显示 {shown} / {total}",
-    "emptyFilter": "此分类下暂无内容——请尝试其他筛选条件。"
+    "libraryHeading": "<em>图书馆</em>",
+    "showing": "显示 {shown} / 共 {total}",
+    "emptyFilter": "此类别暂无内容——请尝试其他筛选条件。"
   },
   "About": {
     "emptyTitle": "关于我",
-    "emptyBody": "此页面尚未在工作室中设置。",
-    "emptyHint": "打开 <code>/admin → 关于页面</code> 以添加内容。",
+    "emptyBody": "此页面尚未在 Studio 中设置。",
+    "emptyHint": "打开 <code>/admin → 关于页面</code> 添加内容。",
     "trajectoryNum": "01",
     "trajectoryLabel": "轨迹",
-    "trajectoryHeading": "简短的<em>年表</em>——我的历程。",
+    "trajectoryHeading": "简短的<em>年表</em>——我是如何走到这一步的。",
     "repertoireNum": "02",
-    "repertoireLabel": "我的演奏曲目",
-    "repertoireHeading": "我反复<em>回归</em>的曲目。"
+    "repertoireLabel": "我演奏的曲目",
+    "repertoireHeading": "我一直<em>反复演奏</em>的曲目。"
   },
   "Privacy": {
-    "emptyTitle": "隐私政策",
-    "emptyBody": "此页面尚未在工作室中设置。",
-    "emptyHint": "打开 <code>/admin → 隐私页面</code> 以添加内容。",
+    "emptyTitle": "隐私",
+    "emptyBody": "此页面尚未在 Studio 中设置。",
+    "emptyHint": "打开 <code>/admin → 隐私页面</code> 添加内容。",
     "lastUpdated": "最后更新于 {date}"
   },
   "Elsewhere": {
-    "title": "其他链接",
-    "emptyTitle": "其他链接",
-    "emptyBody": "此页面尚未在工作室中设置。",
-    "emptyHint": "打开 <code>/admin → 其他链接页面</code> 以添加链接。",
+    "title": "其他",
+    "emptyTitle": "其他",
+    "emptyBody": "此页面尚未在 Studio 中设置。",
+    "emptyHint": "打开 <code>/admin → 其他页面</code> 添加链接。",
     "noLinks": "暂无链接。"
   },
   "JournalArticle": {
     "breadcrumbHome": "日志",
     "previousEntry": "← 上一篇",
     "nextEntry": "下一篇 →",
-    "endOfJournal": "— 日志尽头 —",
-    "minRead": "阅读需 {count} 分钟",
+    "endOfJournal": "— 日志结束 —",
+    "minRead": "{count} 分钟阅读",
     "categories": {
-      "travelogue": "旅行随笔",
+      "travelogue": "游记",
       "workshop": "工作坊",
       "memorial": "纪念",
       "home-organ": "家用管风琴",
       "biography": "传记",
       "news": "新闻",
       "collection": "收藏",
-      "other": "田野笔记"
+      "other": "现场笔记"
     }
   },
   "OrganArticle": {
     "breadcrumbAll": "所有管风琴",
-    "fieldNote": "田野笔记",
-    "previousVisit": "← 上次探访",
-    "nextVisit": "下次探访 →",
-    "endOfJournal": "— 日志尽头 —",
-    "minRead": "阅读需 {count} 分钟"
+    "fieldNote": "现场笔记",
+    "previousVisit": "← 上一次访问",
+    "nextVisit": "下一次访问 →",
+    "endOfJournal": "— 日志结束 —",
+    "minRead": "{count} 分钟阅读"
   },
   "Placeholder": {
     "label": "[ {fallback} ]"

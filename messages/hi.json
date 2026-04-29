@@ -1,9 +1,9 @@
 {
   "Nav": {
-    "openMenu": "मेन्यू खोलें",
-    "closeMenu": "मेन्यू बंद करें",
+    "openMenu": "मेनू खोलें",
+    "closeMenu": "मेनू बंद करें",
     "wordmarkFallback": "बर्ट वेबिंक",
-    "taglineFallback": "ऑर्गनिस्ट",
+    "taglineFallback": "ऑर्गेनिस्ट",
     "items": {
       "organs": "ऑर्गन",
       "scores": "स्कोर",
@@ -14,9 +14,9 @@
   "Footer": {
     "copyright": "© बर्ट वेबिंक, {year}",
     "links": {
-      "privacy": "निजता",
+      "privacy": "गोपनीयता",
       "elsewhere": "अन्यत्र",
-      "contact": "संपर्क"
+      "contact": "संपर्क करें"
     }
   },
   "Crumbs": {
@@ -24,9 +24,9 @@
     "organs": "ऑर्गन",
     "journal": "जर्नल",
     "scores": "स्कोर",
-    "about": "परिचय",
+    "about": "के बारे में",
     "elsewhere": "अन्यत्र",
-    "privacy": "निजता"
+    "privacy": "गोपनीयता"
   },
   "LanguagePicker": {
     "label": "भाषा",
@@ -35,49 +35,49 @@
   "Metadata": {
     "journal": {
       "title": "जर्नल",
-      "description": "निबंध, अंश, अधूरे विचार — तब प्रकाशित होते हैं जब कुछ कहने लायक होता है।"
+      "description": "निबंध, अंश, अधूरे विचार — तभी प्रकाशित होते हैं जब कहने लायक कुछ होता है।"
     },
     "organs": {
       "title": "ऑर्गन",
-      "description": "नीदरलैंड और उसके बाहर देखे गए ऑर्गन से फ़ील्ड नोट्स।"
+      "description": "नीदरलैंड और उससे आगे के ऑर्गन से फील्ड नोट्स।"
     },
     "scores": {
       "title": "स्कोर",
-      "description": "बर्ट वेबिंक द्वारा तैयार किए गए ऑर्गन स्कोर के वर्किंग एडिशन — फिंगरिंग, रजिस्ट्रेशन, गैर-व्यावसायिक अध्ययन के लिए मुफ्त डाउनलोड।"
+      "description": "बर्ट वेबिंक द्वारा तैयार किए गए ऑर्गन स्कोर के कार्य संस्करण — फिंगरिंग, पंजीकरण, गैर-व्यावसायिक अध्ययन के लिए मुफ्त डाउनलोड।"
     },
     "about": {
       "title": "मेरे बारे में",
-      "description": "बर्ट वेबिंक — ऑर्गनिस्ट, शिक्षक, पुरानी इमारतों का शांत आगंतुक।"
+      "description": "बर्ट वेबिंक — ऑर्गेनिस्ट, शिक्षक, पुरानी इमारतों के शांत आगंतुक।"
     },
     "elsewhere": {
       "title": "अन्यत्र",
-      "description": "चुने हुए लिंक — गायक मंडल, चर्च, ऑर्गन संसाधन।"
+      "description": "क्यूरेटेड लिंक — गायक-मंडलियां, चर्च, ऑर्गन संसाधन।"
     },
     "privacy": {
-      "title": "निजता",
-      "description": "इस साइट पर आने पर क्या लॉग किया जाता है, इसके बारे में एक संक्षिप्त, सरल भाषा में नोट।"
+      "title": "गोपनीयता",
+      "description": "इस साइट पर आने पर क्या लॉग किया जाता है, इसके बारे में एक छोटा, सरल-भाषा नोट।"
     }
   },
   "UnderConstruction": {
     "title": "निर्माणाधीन",
-    "subtitle": "जल्द ही वापस आएँ।"
+    "subtitle": "जल्द ही वापस आएं।"
   },
   "Hero": {
-    "kickerLeftFallback": "फ़ील्ड नोट्स",
-    "kickerRightFallback": "ऑर्गन लॉफ़्ट से",
-    "headingFallback": "{{पुराने ऑर्गन}} की यात्राएँ",
-    "taglineFallback": "नीदरलैंड और उसके बाहर से हर शनिवार को इकट्ठा की गई रिकॉर्डिंग, तस्वीरें और रजिस्टर।",
-    "cornerLeftSubFallback": "एक फ़ील्ड जर्नल",
-    "cornerRightSubFallback": "निम्न देश",
+    "kickerLeftFallback": "फील्ड नोट्स",
+    "kickerRightFallback": "ऑर्गन लॉफ्ट से",
+    "headingFallback": "Visits to {{old organs}}",
+    "taglineFallback": "नीदरलैंड और उससे आगे से एक-एक शनिवार के रिकॉर्डिंग, तस्वीरें और रजिस्टर।",
+    "cornerLeftSubFallback": "एक फील्ड जर्नल",
+    "cornerRightSubFallback": "निचले देश",
     "stats": "{firstYear} से · {totalCount} ऑर्गन"
   },
   "JournalHero": {
     "kickerLeftFallback": "लेखन",
-    "kickerRightFallback": "एक फ़ील्ड जर्नल",
-    "headingFallback": "{{जर्नल}}",
-    "taglineFallback": "निबंध, अंश, अधूरे विचार — जब कुछ कहने लायक होता है तब प्रकाशित होते हैं, आमतौर पर जब किसी बेंच ने मेरा मन बदल दिया हो।",
-    "cornerLeftSubFallback": "यात्राओं के बीच के नोट्स",
-    "cornerRightSubFallback": "निम्न देश",
+    "kickerRightFallback": "एक फील्ड जर्नल",
+    "headingFallback": "The {{Journal}}",
+    "taglineFallback": "निबंध, अंश, अधूरे विचार — तभी प्रकाशित होते हैं जब कहने लायक कुछ होता है, आमतौर पर जब किसी बेंच ने किसी चीज़ के बारे में मेरा विचार बदल दिया हो।",
+    "cornerLeftSubFallback": "यात्राओं के बीच नोट्स",
+    "cornerRightSubFallback": "निचले देश",
     "stats": "{firstYear} से · {totalCount} प्रविष्टियाँ"
   },
   "OrgansArchive": {
@@ -103,7 +103,7 @@
       "travelogue": "यात्रा",
       "workshop": "कार्यशाला",
       "memorial": "स्मृति",
-      "home-organ": "घरेलू ऑर्गन",
+      "home-organ": "होम ऑर्गन",
       "biography": "जीवनी",
       "news": "समाचार",
       "collection": "संग्रह",
@@ -113,7 +113,7 @@
       "travelogue": "यात्रा वृत्तांत",
       "workshop": "यात्रा",
       "memorial": "स्मृति",
-      "home-organ": "घरेलू ऑर्गन",
+      "home-organ": "होम ऑर्गन",
       "biography": "जीवनी",
       "news": "समाचार",
       "collection": "संग्रह",
@@ -122,30 +122,30 @@
     "entriesCount": "{count, plural, one {# प्रविष्टि} other {# प्रविष्टियाँ}}",
     "emptyCategory": "इस श्रेणी में अभी कुछ भी नहीं है।",
     "pagination": {
-      "newer": "← नए",
-      "older": "पुराने →",
-      "pageOf": "पेज {current} / {total}"
+      "newer": "← नया",
+      "older": "पुराना →",
+      "pageOf": "पृष्ठ {total} में से {current}"
     },
     "hasAudio": "ऑडियो है",
     "readEntry": "प्रविष्टि पढ़ें",
-    "minRead": "{count, plural, one {# मिनट का पठन} other {# मिनट का पठन}}"
+    "minRead": "{count, plural, one {# मिनट पढ़ें} other {# मिनट पढ़ें}}"
   },
   "Specs": {
     "specification": "विनिर्देश",
     "manuals": "मैनुअल",
     "stops": "स्टॉप",
     "pitch": "पिच",
-    "temperament": "टेम्परामेंट",
-    "action": "एक्शन",
-    "couplings": "कपलिंग",
-    "accessories": "एक्सेसरीज़",
+    "temperament": "स्वभाव",
+    "action": "क्रिया",
+    "couplings": "युग्मन",
+    "accessories": "सहायक उपकरण",
     "built": "{year} में निर्मित",
-    "restored": "{year} में पुनर्स्थापित"
+    "restored": "{year} में बहाल"
   },
   "Scores": {
     "filters": {
       "all": "सभी",
-      "baroque": "बैरोक",
+      "baroque": "बरोक",
       "dutch": "डच स्कूल",
       "romantic": "रोमांटिक",
       "modern": "आधुनिक",
@@ -154,87 +154,87 @@
     "sortBy": {
       "composer": "संगीतकार",
       "year": "वर्ष",
-      "edition": "संस्करण №"
+      "edition": "संस्करण संख्या"
     },
     "headerKickerFallback": "एक छोटी लाइब्रेरी",
-    "headerHeadingFallback": "संस्करण, फिंगरिंग, {{वर्किंग स्कोर}}।",
-    "headerTaglineFallback": "मेरे अपने उपयोग के लिए तैयार किए गए वर्किंग एडिशन — ज़्यादातर फ़ील्ड नोट्स में देखे गए विशिष्ट उपकरणों के लिए। फिंगरिंग और रजिस्ट्रेशन सुझाव हैं, निर्देश नहीं। सभी स्कोर गैर-व्यावसायिक अध्ययन के लिए मुफ्त डाउनलोड किए जा सकते हैं।",
-    "noticeBodyFallback": "ये स्कोर व्यक्तिगत अध्ययन और चर्च के उपयोग के लिए साझा किए गए हैं। यदि आप किसी एक का प्रदर्शन या रिकॉर्ड करना चाहते हैं, तो एक संक्षिप्त ईमेल की सराहना की जाएगी — और कृपया संस्करण को श्रेय दें।",
+    "headerHeadingFallback": "संस्करण, फिंगरिंग, {{कार्य स्कोर}}।",
+    "headerTaglineFallback": "मेरे अपने उपयोग के लिए तैयार किए गए कार्य संस्करण — अधिकांश फील्ड नोट्स में देखे गए विशिष्ट उपकरणों के लिए। फिंगरिंग और पंजीकरण सुझाव हैं, नुस्खे नहीं। सभी स्कोर गैर-व्यावसायिक अध्ययन के लिए मुफ्त डाउनलोड के लिए उपलब्ध हैं।",
+    "noticeBodyFallback": "ये स्कोर व्यक्तिगत अध्ययन और चर्च के उपयोग के लिए साझा किए जाते हैं। यदि आप किसी एक को प्रस्तुत या रिकॉर्ड करना चाहते हैं, तो एक छोटा ईमेल सराहनीय है — और कृपया संस्करण को श्रेय दें।",
     "noticeEditionLineFallback": "संस्करण वेबिंक",
     "writeToMe": "मुझे लिखें",
     "emptyTitle": "लाइब्रेरी अभी स्थापित की जा रही है।",
-    "emptyBody": "जैसे ही मैं उन्हें तैयार करूँगा, संस्करण यहाँ दिखाई देंगे। वापस जाँचें, या नीचे मुझे लिखें।",
+    "emptyBody": "जैसे ही मैं उन्हें तैयार करूँगा, संस्करण यहाँ दिखाई देंगे। वापस जाँच करें, या मुझे नीचे लिखें।",
     "editionsCount": "{count, plural, one {# संस्करण} other {# संस्करण}}",
     "sort": "क्रमबद्ध करें: {label}",
     "period": "अवधि",
     "download": "डाउनलोड करें",
     "feature": "विशेष संस्करण",
     "featuredHeader": "विशेष संस्करण",
-    "editionNumber": "नं. {number}",
+    "editionNumber": "सं. {number}",
     "meta": {
       "catalog": "कैटलॉग",
       "period": "अवधि",
-      "pages": "पेज",
+      "pages": "पृष्ठ",
       "edition": "संस्करण"
     },
-    "downloadPdf": "PDF डाउनलोड करें",
-    "noPdfYet": "अभी तक कोई PDF नहीं",
+    "downloadPdf": "पीडीएफ डाउनलोड करें",
+    "noPdfYet": "अभी कोई पीडीएफ नहीं",
     "editionLineSuffix": "· {year}",
     "pagesShort": "{count} पृष्ठ",
-    "pdfTag": "PDF",
+    "pdfTag": "पीडीएफ",
     "comingSoon": "जल्द ही",
     "libraryHeading": "<em>लाइब्रेरी</em>",
     "showing": "{total} में से {shown} दिखा रहा है",
-    "emptyFilter": "इस श्रेणी में अभी कुछ भी नहीं है — दूसरा फ़िल्टर आज़माएँ।"
+    "emptyFilter": "इस श्रेणी में अभी कुछ भी नहीं है — कोई अन्य फ़िल्टर आज़माएँ।"
   },
   "About": {
     "emptyTitle": "मेरे बारे में",
-    "emptyBody": "यह पेज अभी तक स्टूडियो में सेट नहीं किया गया है।",
+    "emptyBody": "यह पृष्ठ अभी तक स्टूडियो में सेट नहीं किया गया है।",
     "emptyHint": "सामग्री जोड़ने के लिए <code>/admin → About page</code> खोलें।",
     "trajectoryNum": "01",
-    "trajectoryLabel": "यात्रा",
+    "trajectoryLabel": "प्रक्षेपवक्र",
     "trajectoryHeading": "एक संक्षिप्त <em>कालक्रम</em> — मैं यहाँ कैसे पहुँचा।",
     "repertoireNum": "02",
     "repertoireLabel": "मैं क्या बजाता हूँ",
-    "repertoireHeading": "रेपर्टरी जिस पर मैं <em>वापस आता रहता हूँ</em>।"
+    "repertoireHeading": "संग्रह जिसमें मैं <em>वापस आता रहता हूँ</em>।"
   },
   "Privacy": {
-    "emptyTitle": "निजता",
-    "emptyBody": "यह पेज अभी तक स्टूडियो में सेट नहीं किया गया है।",
+    "emptyTitle": "गोपनीयता",
+    "emptyBody": "यह पृष्ठ अभी तक स्टूडियो में सेट नहीं किया गया है।",
     "emptyHint": "सामग्री जोड़ने के लिए <code>/admin → Privacy page</code> खोलें।",
     "lastUpdated": "अंतिम अपडेट {date}"
   },
   "Elsewhere": {
     "title": "अन्यत्र",
     "emptyTitle": "अन्यत्र",
-    "emptyBody": "यह पेज अभी तक स्टूडियो में सेट नहीं किया गया है।",
+    "emptyBody": "यह पृष्ठ अभी तक स्टूडियो में सेट नहीं किया गया है।",
     "emptyHint": "लिंक जोड़ने के लिए <code>/admin → Elsewhere page</code> खोलें।",
-    "noLinks": "अभी तक कोई लिंक नहीं।"
+    "noLinks": "अभी कोई लिंक नहीं।"
   },
   "JournalArticle": {
     "breadcrumbHome": "जर्नल",
     "previousEntry": "← पिछली प्रविष्टि",
     "nextEntry": "अगली प्रविष्टि →",
     "endOfJournal": "— जर्नल का अंत —",
-    "minRead": "{count, plural, one {# मिनट का पठन} other {# मिनट का पठन}}",
+    "minRead": "{count, plural, one {# मिनट पढ़ें} other {# मिनट पढ़ें}}",
     "categories": {
       "travelogue": "यात्रा वृत्तांत",
       "workshop": "कार्यशाला",
       "memorial": "स्मृति में",
-      "home-organ": "घरेलू ऑर्गन",
+      "home-organ": "होम ऑर्गन",
       "biography": "जीवनी",
       "news": "समाचार",
       "collection": "संग्रह",
-      "other": "फ़ील्ड नोट"
+      "other": "फील्ड नोट"
     }
   },
   "OrganArticle": {
     "breadcrumbAll": "सभी ऑर्गन",
-    "fieldNote": "फ़ील्ड नोट",
+    "fieldNote": "फील्ड नोट",
     "previousVisit": "← पिछली यात्रा",
     "nextVisit": "अगली यात्रा →",
     "endOfJournal": "— जर्नल का अंत —",
-    "minRead": "{count, plural, one {# मिनट का पठन} other {# मिनट का पठन}}"
+    "minRead": "{count, plural, one {# मिनट पढ़ें} other {# मिनट पढ़ें}}"
   },
   "Placeholder": {
     "label": "[ {fallback} ]"

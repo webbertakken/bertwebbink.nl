@@ -16,7 +16,7 @@
     "links": {
       "privacy": "Privacidade",
       "elsewhere": "Outros locais",
-      "contact": "Contacto"
+      "contact": "Contato"
     }
   },
   "Crumbs": {
@@ -43,7 +43,7 @@
     },
     "scores": {
       "title": "Partituras",
-      "description": "Edições de trabalho de partituras para órgão preparadas por Bert Webbink — dedilhados, registos, disponíveis para download gratuito para estudo não comercial."
+      "description": "Edições de trabalho de partituras de órgão preparadas por Bert Webbink — digitações, registros, download gratuito para estudo não comercial."
     },
     "about": {
       "title": "Sobre mim",
@@ -51,11 +51,11 @@
     },
     "elsewhere": {
       "title": "Outros locais",
-      "description": "Links selecionados — coros, igrejas, recursos para órgão."
+      "description": "Links selecionados — coros, igrejas, recursos de órgão."
     },
     "privacy": {
       "title": "Privacidade",
-      "description": "Uma nota curta e em linguagem simples sobre o que é registado quando visita este site."
+      "description": "Uma nota curta e em linguagem simples sobre o que é registrado quando você visita este site."
     }
   },
   "UnderConstruction": {
@@ -66,7 +66,7 @@
     "kickerLeftFallback": "Notas de campo",
     "kickerRightFallback": "Do coro do órgão",
     "headingFallback": "Visitas a {{órgãos antigos}}",
-    "taglineFallback": "Gravações, fotografias e registos de um sábado de cada vez, recolhidos nos Países Baixos e além.",
+    "taglineFallback": "Gravações, fotografias e registros de um sábado de cada vez, reunidos nos Países Baixos e além.",
     "cornerLeftSubFallback": "Um diário de campo",
     "cornerRightSubFallback": "Os Países Baixos",
     "stats": "Desde {firstYear} · {totalCount} órgãos"
@@ -75,7 +75,7 @@
     "kickerLeftFallback": "Escritos",
     "kickerRightFallback": "Um diário de campo",
     "headingFallback": "O {{Diário}}",
-    "taglineFallback": "Ensaios, fragmentos, pensamentos inacabados — publicados quando há algo que valha a pena dizer, geralmente depois de um banco de órgão me ter feito mudar de ideias sobre algo.",
+    "taglineFallback": "Ensaios, fragmentos, pensamentos inacabados — publicados quando há algo que valha a pena dizer, geralmente depois que um banco me fez mudar de ideia sobre algo.",
     "cornerLeftSubFallback": "Notas entre visitas",
     "cornerRightSubFallback": "Os Países Baixos",
     "stats": "Desde {firstYear} · {totalCount} entradas"
@@ -87,7 +87,7 @@
     "browseAll": "Ver todos →",
     "shownOfTotal": "{shown} de {total}",
     "clearFilter": "limpar filtro ✕",
-    "loading": "A carregar…",
+    "loading": "Carregando…",
     "endOfArchive": "— fim do arquivo —"
   },
   "OrganCard": {
@@ -103,7 +103,7 @@
       "travelogue": "Viagem",
       "workshop": "Workshop",
       "memorial": "Memorial",
-      "home-organ": "Órgão de casa",
+      "home-organ": "Órgão doméstico",
       "biography": "Biografia",
       "news": "Notícias",
       "collection": "Coleção",
@@ -113,14 +113,14 @@
       "travelogue": "diário de viagem",
       "workshop": "visita",
       "memorial": "memorial",
-      "home-organ": "órgão de casa",
+      "home-organ": "órgão doméstico",
       "biography": "biografia",
-      "news": "notícia",
+      "news": "notícias",
       "collection": "coleção",
       "other": "nota"
     },
     "entriesCount": "{count, plural, one {# entrada} other {# entradas}}",
-    "emptyCategory": "Ainda nada nesta categoria.",
+    "emptyCategory": "Nada nesta categoria ainda.",
     "pagination": {
       "newer": "← Mais recentes",
       "older": "Mais antigos →",
@@ -133,10 +133,10 @@
   "Specs": {
     "specification": "Especificação",
     "manuals": "Manuais",
-    "stops": "Registos",
+    "stops": "Registros",
     "pitch": "Afinação",
     "temperament": "Temperamento",
-    "action": "Tração",
+    "action": "Mecânica",
     "couplings": "Acoplamentos",
     "accessories": "Acessórios",
     "built": "Construído em {year}",
@@ -154,38 +154,38 @@
     "sortBy": {
       "composer": "Compositor",
       "year": "Ano",
-      "edition": "Edição n.º"
+      "edition": "Edição nº"
     },
     "headerKickerFallback": "Uma pequena biblioteca",
-    "headerHeadingFallback": "Edições, dedilhados, {{partituras de trabalho}}.",
-    "headerTaglineFallback": "Edições de trabalho que preparei para uso próprio — a maioria para instrumentos específicos visitados nas notas de campo. Os dedilhados e registos são sugestões, não prescrições. Todas as partituras estão disponíveis para download gratuito para estudo não comercial.",
-    "noticeBodyFallback": "Estas partituras são partilhadas para estudo pessoal e uso na igreja. Se desejar executar ou gravar uma, agradece-se um breve e-mail — e, por favor, dê crédito à edição.",
+    "headerHeadingFallback": "Edições, digitações, {{partituras de trabalho}}.",
+    "headerTaglineFallback": "Edições de trabalho que preparei para meu próprio uso — a maioria para instrumentos específicos visitados nas notas de campo. Digitações e registros são sugestões, não prescrições. Todas as partituras são gratuitas para download para estudo não comercial.",
+    "noticeBodyFallback": "Estas partituras são compartilhadas para estudo pessoal e uso em igrejas. Se desejar executar ou gravar uma, um breve e-mail é apreciado — e por favor, credite a edição.",
     "noticeEditionLineFallback": "Edição Webbink",
     "writeToMe": "Escreva-me",
-    "emptyTitle": "A biblioteca está a ser criada.",
-    "emptyBody": "As edições aparecerão aqui à medida que as preparo. Volte mais tarde ou escreva-me abaixo.",
+    "emptyTitle": "A biblioteca está sendo configurada.",
+    "emptyBody": "As edições aparecerão aqui à medida que as preparo. Volte mais tarde, ou escreva-me abaixo.",
     "editionsCount": "{count, plural, one {# edição} other {# edições}}",
     "sort": "Ordenar: {label}",
     "period": "Período",
-    "download": "Download",
+    "download": "Baixar",
     "feature": "Edição em destaque",
     "featuredHeader": "Edição em destaque",
-    "editionNumber": "N.º {number}",
+    "editionNumber": "Nº {number}",
     "meta": {
       "catalog": "Catálogo",
       "period": "Período",
       "pages": "Páginas",
       "edition": "Edição"
     },
-    "downloadPdf": "Download PDF",
-    "noPdfYet": "Ainda sem PDF",
+    "downloadPdf": "Baixar PDF",
+    "noPdfYet": "Nenhum PDF ainda",
     "editionLineSuffix": "· {year}",
     "pagesShort": "{count} pp",
     "pdfTag": "PDF",
     "comingSoon": "em breve",
     "libraryHeading": "A <em>biblioteca</em>",
-    "showing": "A mostrar {shown} de {total}",
-    "emptyFilter": "Ainda nada nesta categoria — experimente outro filtro."
+    "showing": "Mostrando {shown} de {total}",
+    "emptyFilter": "Nada nesta categoria ainda — tente outro filtro."
   },
   "About": {
     "emptyTitle": "Sobre mim",
@@ -193,23 +193,23 @@
     "emptyHint": "Abra <code>/admin → Página Sobre</code> para adicionar o conteúdo.",
     "trajectoryNum": "01",
     "trajectoryLabel": "Trajetória",
-    "trajectoryHeading": "Uma breve <em>cronologia</em> — como cheguei aqui.",
+    "trajectoryHeading": "Uma curta <em>cronologia</em> — como cheguei aqui.",
     "repertoireNum": "02",
     "repertoireLabel": "O que toco",
-    "repertoireHeading": "Repertório ao qual <em>continuo a voltar</em>."
+    "repertoireHeading": "Repertório ao qual <em>sempre retorno</em>."
   },
   "Privacy": {
     "emptyTitle": "Privacidade",
     "emptyBody": "Esta página ainda não foi configurada no Studio.",
     "emptyHint": "Abra <code>/admin → Página de Privacidade</code> para adicionar o conteúdo.",
-    "lastUpdated": "Última atualização: {date}"
+    "lastUpdated": "Última atualização em {date}"
   },
   "Elsewhere": {
     "title": "Outros locais",
     "emptyTitle": "Outros locais",
     "emptyBody": "Esta página ainda não foi configurada no Studio.",
     "emptyHint": "Abra <code>/admin → Página Outros locais</code> para adicionar links.",
-    "noLinks": "Ainda sem links."
+    "noLinks": "Nenhum link ainda."
   },
   "JournalArticle": {
     "breadcrumbHome": "O diário",
@@ -221,7 +221,7 @@
       "travelogue": "Diário de viagem",
       "workshop": "Workshop",
       "memorial": "In memoriam",
-      "home-organ": "Órgão de casa",
+      "home-organ": "Órgão doméstico",
       "biography": "Biografia",
       "news": "Notícias",
       "collection": "Coleção",

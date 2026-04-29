@@ -2,20 +2,20 @@
   "Nav": {
     "openMenu": "メニューを開く",
     "closeMenu": "メニューを閉じる",
-    "wordmarkFallback": "ベルト・ウェビンク",
+    "wordmarkFallback": "バート・ウェビンク",
     "taglineFallback": "オルガニスト",
     "items": {
       "organs": "オルガン",
       "scores": "楽譜",
-      "about": "プロフィール",
-      "elsewhere": "リンク"
+      "about": "私について",
+      "elsewhere": "その他"
     }
   },
   "Footer": {
-    "copyright": "© ベルト・ウェビンク, {year}",
+    "copyright": "© バート・ウェビンク、{year}",
     "links": {
-      "privacy": "プライバシーポリシー",
-      "elsewhere": "リンク",
+      "privacy": "プライバシー",
+      "elsewhere": "その他",
       "contact": "お問い合わせ"
     }
   },
@@ -24,18 +24,18 @@
     "organs": "オルガン",
     "journal": "ジャーナル",
     "scores": "楽譜",
-    "about": "プロフィール",
-    "elsewhere": "リンク",
-    "privacy": "プライバシーポリシー"
+    "about": "について",
+    "elsewhere": "その他",
+    "privacy": "プライバシー"
   },
   "LanguagePicker": {
     "label": "言語",
-    "switchTo": "{language}に切り替え"
+    "switchTo": "{language}に切り替える"
   },
   "Metadata": {
     "journal": {
       "title": "ジャーナル",
-      "description": "エッセイ、断片、未完成の思索 — 語るべきことがあるときに公開。"
+      "description": "エッセイ、断片、未完成の思考 — 語る価値のあるものがあるときに公開されます。"
     },
     "organs": {
       "title": "オルガン",
@@ -43,67 +43,67 @@
     },
     "scores": {
       "title": "楽譜",
-      "description": "ベルト・ウェビンクが作成したオルガン楽譜の実用版 — 運指、レジストレーション付き。非商用研究目的で無料ダウンロード可能。"
+      "description": "バート・ウェビンクが作成したオルガン楽譜の作業版 — 運指、レジストレーション、非営利学習のために無料でダウンロードできます。"
     },
     "about": {
-      "title": "プロフィール",
-      "description": "ベルト・ウェビンク — オルガニスト、教師、古い建物を静かに訪れる人。"
+      "title": "私について",
+      "description": "バート・ウェビンク — オルガニスト、教師、古い建物の静かな訪問者。"
     },
     "elsewhere": {
-      "title": "リンク",
-      "description": "厳選リンク集 — 聖歌隊、教会、オルガン関連資料。"
+      "title": "その他",
+      "description": "厳選されたリンク — 合唱団、教会、オルガン資料。"
     },
     "privacy": {
-      "title": "プライバシーポリシー",
-      "description": "このサイトを訪問した際に記録される情報についての、簡潔で平易な説明。"
+      "title": "プライバシー",
+      "description": "このサイトを訪問した際に何が記録されるかについての、短く平易な言葉での説明。"
     }
   },
   "UnderConstruction": {
-    "title": "準備中",
-    "subtitle": "しばらくお待ちください。"
+    "title": "工事中",
+    "subtitle": "近日中に再訪してください。"
   },
   "Hero": {
     "kickerLeftFallback": "フィールドノート",
     "kickerRightFallback": "オルガンロフトから",
     "headingFallback": "{{古いオルガン}}への訪問",
-    "taglineFallback": "オランダ国内外で、土曜日に少しずつ集めた録音、写真、ストップリスト。",
+    "taglineFallback": "オランダ国内外で、ある土曜日に一度に集められた録音、写真、レジスター。",
     "cornerLeftSubFallback": "フィールドジャーナル",
     "cornerRightSubFallback": "低地諸国",
-    "stats": "{firstYear}年より · {totalCount}台のオルガン"
+    "stats": "{firstYear}年以来 · {totalCount}台のオルガン"
   },
   "JournalHero": {
-    "kickerLeftFallback": "執筆",
+    "kickerLeftFallback": "著作",
     "kickerRightFallback": "フィールドジャーナル",
     "headingFallback": "{{ジャーナル}}",
-    "taglineFallback": "エッセイ、断片、未完成の思索 — 語るべきことがあるときに公開。大抵は、オルガンベンチで何かしらの考えが変わった後に。",
-    "cornerLeftSubFallback": "訪問の合間のノート",
+    "taglineFallback": "エッセイ、断片、未完成の思考 — 語る価値のあるものがあるときに公開されます。通常、ベンチが何かについて私の考えを変えた後に。",
+    "cornerLeftSubFallback": "訪問間のメモ",
     "cornerRightSubFallback": "低地諸国",
-    "stats": "{firstYear}年より · {totalCount}件の記事"
+    "stats": "{firstYear}年以来 · {totalCount}件のエントリー"
   },
   "OrgansArchive": {
     "title": "アーカイブ",
     "filteredTitle": "<city>{city}</city>での訪問",
     "byCity": "都市別",
-    "browseAll": "すべて表示 →",
+    "browseAll": "すべて閲覧 →",
     "shownOfTotal": "{total}件中{shown}件",
     "clearFilter": "フィルターをクリア ✕",
     "loading": "読み込み中…",
-    "endOfArchive": "— アーカイブの終端 —"
+    "endOfArchive": "— アーカイブの終わり —"
   },
   "OrganCard": {
     "readMore": "続きを読む",
     "audioFragment": "音声断片",
     "video": "動画",
-    "placeholderLabel": "オルガンの写真"
+    "placeholderLabel": "オルガン写真"
   },
   "JournalList": {
     "filter": "フィルター",
     "all": "すべて",
     "categories": {
-      "travelogue": "旅行記",
+      "travelogue": "旅行",
       "workshop": "ワークショップ",
       "memorial": "追悼",
-      "home-organ": "自宅オルガン",
+      "home-organ": "ホームオルガン",
       "biography": "伝記",
       "news": "ニュース",
       "collection": "コレクション",
@@ -111,16 +111,16 @@
     },
     "categoryKinds": {
       "travelogue": "旅行記",
-      "workshop": "訪問記",
+      "workshop": "訪問",
       "memorial": "追悼",
-      "home-organ": "自宅オルガン",
+      "home-organ": "ホームオルガン",
       "biography": "伝記",
       "news": "ニュース",
       "collection": "コレクション",
-      "other": "ノート"
+      "other": "メモ"
     },
-    "entriesCount": "{count}件の記事",
-    "emptyCategory": "このカテゴリにはまだ記事がありません。",
+    "entriesCount": "{count}件のエントリー",
+    "emptyCategory": "このカテゴリにはまだ何もありません。",
     "pagination": {
       "newer": "← 新しい記事",
       "older": "古い記事 →",
@@ -128,7 +128,7 @@
     },
     "hasAudio": "音声あり",
     "readEntry": "記事を読む",
-    "minRead": "読了時間: 約{count}分"
+    "minRead": "{count}分で読めます"
   },
   "Specs": {
     "specification": "仕様",
@@ -137,8 +137,8 @@
     "pitch": "ピッチ",
     "temperament": "音律",
     "action": "アクション",
-    "couplings": "カップリング",
-    "accessories": "補助装置",
+    "couplings": "カプリング",
+    "accessories": "付属品",
     "built": "{year}年建造",
     "restored": "{year}年修復"
   },
@@ -148,29 +148,29 @@
       "baroque": "バロック",
       "dutch": "オランダ楽派",
       "romantic": "ロマン派",
-      "modern": "近現代",
+      "modern": "現代",
       "arrangement": "編曲"
     },
     "sortBy": {
       "composer": "作曲家",
-      "year": "年代",
+      "year": "年",
       "edition": "版番号"
     },
     "headerKickerFallback": "小さなライブラリ",
-    "headerHeadingFallback": "版、運指、{{実用楽譜}}。",
-    "headerTaglineFallback": "私が個人用に作成した実用版楽譜です。多くはフィールドノートで訪れた特定の楽器のために用意しました。運指やレジストレーションは提案であり、規定ではありません。すべての楽譜は非商用研究目的で無料ダウンロードできます。",
-    "noticeBodyFallback": "これらの楽譜は個人研究および教会での使用のために共有されています。演奏や録音を希望される場合は、簡単なメールをいただけると幸いです。また、版のクレジット表記をお願いします。",
+    "headerHeadingFallback": "版、運指、{{作業用楽譜}}。",
+    "headerTaglineFallback": "私が個人的な使用のために作成した作業版 — そのほとんどはフィールドノートで訪れた特定の楽器用です。運指とレジストレーションは提案であり、指示ではありません。すべての楽譜は非営利学習のために無料でダウンロードできます。",
+    "noticeBodyFallback": "これらの楽譜は個人的な学習および教会での使用のために共有されています。演奏または録音をご希望の場合は、短いメールをいただけると幸いです — そして、版を明記してください。",
     "noticeEditionLineFallback": "ウェビンク版",
-    "writeToMe": "連絡する",
-    "emptyTitle": "ライブラリは準備中です。",
-    "emptyBody": "楽譜は準備が整い次第、ここに表示されます。後ほど再確認するか、下記よりご連絡ください。",
-    "editionsCount": "{count}版",
+    "writeToMe": "私に連絡する",
+    "emptyTitle": "ライブラリは現在設定中です。",
+    "emptyBody": "準備ができ次第、ここに版が表示されます。後で確認するか、以下から私に連絡してください。",
+    "editionsCount": "{count}件の版",
     "sort": "並べ替え: {label}",
     "period": "時代",
     "download": "ダウンロード",
-    "feature": "おすすめの版",
-    "featuredHeader": "おすすめの版",
-    "editionNumber": "第{number}番",
+    "feature": "特集版",
+    "featuredHeader": "特集版",
+    "editionNumber": "No. {number}",
     "meta": {
       "catalog": "カタログ",
       "period": "時代",
@@ -178,50 +178,50 @@
       "edition": "版"
     },
     "downloadPdf": "PDFをダウンロード",
-    "noPdfYet": "PDF未作成",
-    "editionLineSuffix": "· {year}年",
+    "noPdfYet": "まだPDFはありません",
+    "editionLineSuffix": "· {year}",
     "pagesShort": "{count}ページ",
     "pdfTag": "PDF",
     "comingSoon": "近日公開",
     "libraryHeading": "<em>ライブラリ</em>",
     "showing": "{total}件中{shown}件を表示",
-    "emptyFilter": "このカテゴリにはまだ楽譜がありません — 別のフィルターをお試しください。"
+    "emptyFilter": "このカテゴリにはまだ何もありません — 別のフィルターを試してください。"
   },
   "About": {
-    "emptyTitle": "プロフィール",
-    "emptyBody": "このページはまだStudioで設定されていません。",
-    "emptyHint": "<code>/admin → プロフィールページ</code>を開いてコンテンツを追加してください。",
+    "emptyTitle": "私について",
+    "emptyBody": "このページはまだスタジオで設定されていません。",
+    "emptyHint": "コンテンツを追加するには、<code>/admin → About page</code>を開いてください。",
     "trajectoryNum": "01",
-    "trajectoryLabel": "経歴",
-    "trajectoryHeading": "短い<em>年表</em> — これまでの歩み。",
+    "trajectoryLabel": "軌跡",
+    "trajectoryHeading": "短い<em>年表</em> — 私がここにたどり着くまで。",
     "repertoireNum": "02",
-    "repertoireLabel": "演奏曲目",
-    "repertoireHeading": "何度も<em>立ち返る</em>レパートリー。"
+    "repertoireLabel": "演奏レパートリー",
+    "repertoireHeading": "私が<em>繰り返し演奏する</em>レパートリー。"
   },
   "Privacy": {
-    "emptyTitle": "プライバシーポリシー",
-    "emptyBody": "このページはまだStudioで設定されていません。",
-    "emptyHint": "<code>/admin → プライバシーポリシーページ</code>を開いてコンテンツを追加してください。",
+    "emptyTitle": "プライバシー",
+    "emptyBody": "このページはまだスタジオで設定されていません。",
+    "emptyHint": "コンテンツを追加するには、<code>/admin → Privacy page</code>を開いてください。",
     "lastUpdated": "最終更新日: {date}"
   },
   "Elsewhere": {
-    "title": "リンク",
-    "emptyTitle": "リンク",
-    "emptyBody": "このページはまだStudioで設定されていません。",
-    "emptyHint": "<code>/admin → リンクページ</code>を開いてリンクを追加してください。",
-    "noLinks": "まだリンクがありません。"
+    "title": "その他",
+    "emptyTitle": "その他",
+    "emptyBody": "このページはまだスタジオで設定されていません。",
+    "emptyHint": "リンクを追加するには、<code>/admin → Elsewhere page</code>を開いてください。",
+    "noLinks": "まだリンクはありません。"
   },
   "JournalArticle": {
     "breadcrumbHome": "ジャーナル",
     "previousEntry": "← 前の記事",
     "nextEntry": "次の記事 →",
-    "endOfJournal": "— ジャーナルの終端 —",
-    "minRead": "読了時間: 約{count}分",
+    "endOfJournal": "— ジャーナルの終わり —",
+    "minRead": "{count}分で読めます",
     "categories": {
       "travelogue": "旅行記",
       "workshop": "ワークショップ",
       "memorial": "追悼",
-      "home-organ": "自宅オルガン",
+      "home-organ": "ホームオルガン",
       "biography": "伝記",
       "news": "ニュース",
       "collection": "コレクション",
@@ -233,8 +233,8 @@
     "fieldNote": "フィールドノート",
     "previousVisit": "← 前の訪問",
     "nextVisit": "次の訪問 →",
-    "endOfJournal": "— ジャーナルの終端 —",
-    "minRead": "読了時間: 約{count}分"
+    "endOfJournal": "— ジャーナルの終わり —",
+    "minRead": "{count}分で読めます"
   },
   "Placeholder": {
     "label": "[ {fallback} ]"

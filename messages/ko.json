@@ -2,21 +2,21 @@
   "Nav": {
     "openMenu": "메뉴 열기",
     "closeMenu": "메뉴 닫기",
-    "wordmarkFallback": "베르트 베빙크",
+    "wordmarkFallback": "베르트 웨빙크",
     "taglineFallback": "오르가니스트",
     "items": {
       "organs": "오르간",
       "scores": "악보",
       "about": "소개",
-      "elsewhere": "외부 링크"
+      "elsewhere": "다른 곳"
     }
   },
   "Footer": {
-    "copyright": "© 베르트 베빙크, {year}",
+    "copyright": "© 베르트 웨빙크, {year}",
     "links": {
       "privacy": "개인정보처리방침",
-      "elsewhere": "외부 링크",
-      "contact": "연락처"
+      "elsewhere": "다른 곳",
+      "contact": "문의"
     }
   },
   "Crumbs": {
@@ -25,48 +25,48 @@
     "journal": "저널",
     "scores": "악보",
     "about": "소개",
-    "elsewhere": "외부 링크",
+    "elsewhere": "다른 곳",
     "privacy": "개인정보처리방침"
   },
   "LanguagePicker": {
     "label": "언어",
-    "switchTo": "{language}(으)로 전환"
+    "switchTo": "{language}로 전환"
   },
   "Metadata": {
     "journal": {
       "title": "저널",
-      "description": "에세이, 단상, 미완의 생각들 — 할 말이 있을 때 게시됩니다."
+      "description": "에세이, 단편, 미완성 생각 — 할 말이 있을 때 발행됩니다."
     },
     "organs": {
       "title": "오르간",
-      "description": "네덜란드 전역과 그 외 지역에서 방문한 오르간에 대한 현장 기록입니다."
+      "description": "네덜란드 및 그 외 지역에서 방문한 오르간에 대한 현장 기록."
     },
     "scores": {
       "title": "악보",
-      "description": "베르트 베빙크가 준비한 오르간 악보 작업본 — 운지법, 레지스트레이션, 비상업적 학습용으로 무료 다운로드 가능합니다."
+      "description": "베르트 웨빙크가 준비한 오르간 악보 작업판 — 운지법, 레지스트레이션, 비상업적 학습용으로 무료 다운로드 가능."
     },
     "about": {
       "title": "소개",
-      "description": "베르트 베빙크 — 오르가니스트, 교사, 오래된 건물을 조용히 방문하는 사람."
+      "description": "베르트 웨빙크 — 오르가니스트, 교사, 오래된 건물의 조용한 방문객."
     },
     "elsewhere": {
-      "title": "외부 링크",
+      "title": "다른 곳",
       "description": "선별된 링크 — 합창단, 교회, 오르간 자료."
     },
     "privacy": {
       "title": "개인정보처리방침",
-      "description": "이 사이트를 방문할 때 기록되는 내용에 대한 짧고 평이한 설명입니다."
+      "description": "이 사이트 방문 시 기록되는 내용에 대한 짧고 쉬운 설명."
     }
   },
   "UnderConstruction": {
     "title": "공사 중",
-    "subtitle": "곧 다시 방문해 주세요."
+    "subtitle": "곧 다시 방문해주세요."
   },
   "Hero": {
     "kickerLeftFallback": "현장 기록",
     "kickerRightFallback": "오르간 로프트에서",
-    "headingFallback": "{{오래된 오르간}} 방문기",
-    "taglineFallback": "네덜란드와 그 외 지역에서 매주 토요일마다 수집한 녹음, 사진, 레지스터.",
+    "headingFallback": "{{오래된 오르간}} 방문",
+    "taglineFallback": "네덜란드 및 그 외 지역에서 한 번에 한 토요일씩 수집된 녹음, 사진 및 레지스터.",
     "cornerLeftSubFallback": "현장 저널",
     "cornerRightSubFallback": "저지대 국가",
     "stats": "{firstYear}년부터 · 오르간 {totalCount}대"
@@ -74,18 +74,18 @@
   "JournalHero": {
     "kickerLeftFallback": "글",
     "kickerRightFallback": "현장 저널",
-    "headingFallback": "{{저널}}",
-    "taglineFallback": "에세이, 단상, 미완의 생각들 — 할 말이 있을 때, 보통 오르간 의자에 앉아 생각이 바뀐 후에 게시됩니다.",
+    "headingFallback": "그 {{저널}}",
+    "taglineFallback": "에세이, 단편, 미완성 생각 — 할 말이 있을 때, 보통 벤치가 어떤 것에 대한 내 생각을 바꾼 후에 발행됩니다.",
     "cornerLeftSubFallback": "방문 사이의 기록",
     "cornerRightSubFallback": "저지대 국가",
     "stats": "{firstYear}년부터 · 게시물 {totalCount}개"
   },
   "OrgansArchive": {
     "title": "아카이브",
-    "filteredTitle": "<city>{city}</city> 방문기",
+    "filteredTitle": "<city>{city}</city> 방문",
     "byCity": "도시별",
     "browseAll": "모두 보기 →",
-    "shownOfTotal": "{shown}/{total}",
+    "shownOfTotal": "{total}개 중 {shown}개",
     "clearFilter": "필터 지우기 ✕",
     "loading": "로딩 중…",
     "endOfArchive": "— 아카이브 끝 —"
@@ -105,7 +105,7 @@
       "memorial": "추모",
       "home-organ": "가정용 오르간",
       "biography": "전기",
-      "news": "소식",
+      "news": "뉴스",
       "collection": "컬렉션",
       "other": "기타"
     },
@@ -115,12 +115,12 @@
       "memorial": "추모",
       "home-organ": "가정용 오르간",
       "biography": "전기",
-      "news": "소식",
+      "news": "뉴스",
       "collection": "컬렉션",
       "other": "메모"
     },
-    "entriesCount": "게시물 {count}개",
-    "emptyCategory": "이 카테고리에 아직 게시물이 없습니다.",
+    "entriesCount": "{count, plural, one {#개 게시물} other {#개 게시물}}",
+    "emptyCategory": "이 카테고리에는 아직 아무것도 없습니다.",
     "pagination": {
       "newer": "← 최신",
       "older": "이전 →",
@@ -128,16 +128,16 @@
     },
     "hasAudio": "오디오 있음",
     "readEntry": "게시물 읽기",
-    "minRead": "읽는 데 {count}분"
+    "minRead": "{count, plural, one {#분 읽기} other {#분 읽기}}"
   },
   "Specs": {
     "specification": "사양",
-    "manuals": "매뉴얼",
+    "manuals": "건반",
     "stops": "스톱",
-    "pitch": "음고",
-    "temperament": "음률",
+    "pitch": "피치",
+    "temperament": "평균율",
     "action": "액션",
-    "couplings": "커플러",
+    "couplings": "커플링",
     "accessories": "액세서리",
     "built": "{year}년 제작",
     "restored": "{year}년 복원"
@@ -146,7 +146,7 @@
     "filters": {
       "all": "전체",
       "baroque": "바로크",
-      "dutch": "네덜란드 악파",
+      "dutch": "네덜란드 학파",
       "romantic": "낭만주의",
       "modern": "현대",
       "arrangement": "편곡"
@@ -156,21 +156,21 @@
       "year": "연도",
       "edition": "에디션 번호"
     },
-    "headerKickerFallback": "작은 도서관",
-    "headerHeadingFallback": "에디션, 운지법, {{작업용 악보}}.",
-    "headerTaglineFallback": "개인적인 용도로 준비한 작업용 에디션입니다. 대부분은 현장 기록에서 방문한 특정 악기를 위한 것입니다. 운지법과 레지스트레이션은 제안일 뿐, 규정은 아닙니다. 모든 악보는 비상업적 학습용으로 무료로 다운로드할 수 있습니다.",
-    "noticeBodyFallback": "이 악보들은 개인적인 학습 및 교회용으로 공유됩니다. 연주나 녹음을 원하시면 짧은 이메일을 보내주시면 감사하겠습니다. 그리고 에디션 출처를 밝혀주세요.",
-    "noticeEditionLineFallback": "에디션 베빙크",
-    "writeToMe": "메일 보내기",
-    "emptyTitle": "라이브러리를 준비 중입니다.",
-    "emptyBody": "에디션은 준비되는 대로 여기에 표시됩니다. 다시 확인하거나 아래로 메일을 보내주세요.",
-    "editionsCount": "에디션 {count}개",
+    "headerKickerFallback": "작은 라이브러리",
+    "headerHeadingFallback": "에디션, 운지법, {{작업 악보}}.",
+    "headerTaglineFallback": "제가 개인적으로 사용하기 위해 준비한 작업판 — 대부분 현장 기록에서 방문한 특정 악기를 위한 것입니다. 운지법과 레지스트레이션은 제안이며, 필수가 아닙니다. 모든 악보는 비상업적 학습용으로 무료 다운로드 가능합니다.",
+    "noticeBodyFallback": "이 악보들은 개인 학습 및 교회 사용을 위해 공유됩니다. 연주 또는 녹음을 원하시면 짧은 이메일을 보내주시면 감사하겠습니다 — 그리고 에디션을 명시해주세요.",
+    "noticeEditionLineFallback": "웨빙크 에디션",
+    "writeToMe": "저에게 쓰기",
+    "emptyTitle": "라이브러리가 막 설정되는 중입니다.",
+    "emptyBody": "제가 준비하는 대로 에디션이 여기에 나타날 것입니다. 다시 확인하거나 아래에 저에게 써주세요.",
+    "editionsCount": "{count, plural, one {#개 에디션} other {#개 에디션}}",
     "sort": "정렬: {label}",
     "period": "시대",
     "download": "다운로드",
     "feature": "추천 에디션",
     "featuredHeader": "추천 에디션",
-    "editionNumber": "No. {number}",
+    "editionNumber": "번호 {number}",
     "meta": {
       "catalog": "카탈로그",
       "period": "시대",
@@ -182,48 +182,48 @@
     "editionLineSuffix": "· {year}",
     "pagesShort": "{count}쪽",
     "pdfTag": "PDF",
-    "comingSoon": "곧 제공",
-    "libraryHeading": "<em>라이브러리</em>",
-    "showing": "총 {total}개 중 {shown}개 표시",
-    "emptyFilter": "이 카테고리에 아직 항목이 없습니다 — 다른 필터를 시도해 보세요."
+    "comingSoon": "출시 예정",
+    "libraryHeading": "그 <em>라이브러리</em>",
+    "showing": "{total}개 중 {shown}개 표시",
+    "emptyFilter": "이 카테고리에는 아직 아무것도 없습니다 — 다른 필터를 시도해보세요."
   },
   "About": {
     "emptyTitle": "소개",
     "emptyBody": "이 페이지는 아직 스튜디오에서 설정되지 않았습니다.",
-    "emptyHint": "<code>/admin → 소개 페이지</code>를 열어 콘텐츠를 추가하세요.",
+    "emptyHint": "콘텐츠를 추가하려면 <code>/admin → About page</code>를 여세요.",
     "trajectoryNum": "01",
     "trajectoryLabel": "궤적",
-    "trajectoryHeading": "짧은 <em>연대기</em> — 제가 여기까지 온 과정.",
+    "trajectoryHeading": "짧은 <em>연대기</em> — 제가 여기까지 오게 된 과정.",
     "repertoireNum": "02",
-    "repertoireLabel": "연주곡",
-    "repertoireHeading": "제가 계속 <em>다시 연주하는</em> 레퍼토리."
+    "repertoireLabel": "제가 연주하는 것",
+    "repertoireHeading": "제가 계속 <em>다시 찾는</em> 레퍼토리."
   },
   "Privacy": {
     "emptyTitle": "개인정보처리방침",
     "emptyBody": "이 페이지는 아직 스튜디오에서 설정되지 않았습니다.",
-    "emptyHint": "<code>/admin → 개인정보처리방침 페이지</code>를 열어 콘텐츠를 추가하세요.",
-    "lastUpdated": "마지막 업데이트: {date}"
+    "emptyHint": "콘텐츠를 추가하려면 <code>/admin → Privacy page</code>를 여세요.",
+    "lastUpdated": "최종 업데이트 {date}"
   },
   "Elsewhere": {
-    "title": "외부 링크",
-    "emptyTitle": "외부 링크",
+    "title": "다른 곳",
+    "emptyTitle": "다른 곳",
     "emptyBody": "이 페이지는 아직 스튜디오에서 설정되지 않았습니다.",
-    "emptyHint": "<code>/admin → 외부 링크 페이지</code>를 열어 링크를 추가하세요.",
+    "emptyHint": "링크를 추가하려면 <code>/admin → Elsewhere page</code>를 여세요.",
     "noLinks": "아직 링크가 없습니다."
   },
   "JournalArticle": {
     "breadcrumbHome": "저널",
-    "previousEntry": "← 이전 글",
-    "nextEntry": "다음 글 →",
+    "previousEntry": "← 이전 게시물",
+    "nextEntry": "다음 게시물 →",
     "endOfJournal": "— 저널 끝 —",
-    "minRead": "읽는 데 {count}분",
+    "minRead": "{count, plural, one {#분 읽기} other {#분 읽기}}",
     "categories": {
       "travelogue": "여행기",
       "workshop": "워크숍",
       "memorial": "추모",
       "home-organ": "가정용 오르간",
       "biography": "전기",
-      "news": "소식",
+      "news": "뉴스",
       "collection": "컬렉션",
       "other": "현장 기록"
     }
@@ -234,7 +234,7 @@
     "previousVisit": "← 이전 방문",
     "nextVisit": "다음 방문 →",
     "endOfJournal": "— 저널 끝 —",
-    "minRead": "읽는 데 {count}분"
+    "minRead": "{count, plural, one {#분 읽기} other {#분 읽기}}"
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
