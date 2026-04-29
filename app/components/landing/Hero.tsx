@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 import { Horizon } from './Horizon'
 import { Crumbs, type CrumbItem } from './Crumbs'
 import { renderEmphasised } from './renderEmphasised'
@@ -66,17 +68,16 @@ export function Hero({
   crumbs,
   copy,
 }: HeroProps) {
+  const t = useTranslations('Hero')
   const ORGANS_PAGE_ID = `organsPage-${locale}`
   const organsAttr = (path: string) =>
     dataAttr({ id: ORGANS_PAGE_ID, type: ORGANS_PAGE_TYPE, path }).toString()
-  const kickerLeft = copy?.kickerLeft ?? 'Field notes'
-  const kickerRight = copy?.kickerRight ?? 'From the organ loft'
-  const heading = copy?.heading ?? 'Visits to {{old organs}}'
-  const tagline =
-    copy?.tagline ??
-    'Recordings, photographs and registers from one Saturday at a time, gathered in the Netherlands and beyond.'
-  const cornerLeftSub = copy?.cornerLeftSub ?? 'A field journal'
-  const cornerRightSub = copy?.cornerRightSub ?? 'The low countries'
+  const kickerLeft = copy?.kickerLeft ?? t('kickerLeftFallback')
+  const kickerRight = copy?.kickerRight ?? t('kickerRightFallback')
+  const heading = copy?.heading ?? t('headingFallback')
+  const tagline = copy?.tagline ?? t('taglineFallback')
+  const cornerLeftSub = copy?.cornerLeftSub ?? t('cornerLeftSubFallback')
+  const cornerRightSub = copy?.cornerRightSub ?? t('cornerRightSubFallback')
 
   return (
     <section
@@ -122,7 +123,7 @@ export function Hero({
 
       {/* corner editorial meta — top left */}
       <div className="hidden md:block absolute top-[68px] left-12 z-[3] font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint">
-        Since {firstYear} · {totalCount} organs
+        {t('stats', { firstYear, totalCount })}
         <span
           data-sanity={organsAttr('cornerLeftSub')}
           className="block mt-0.5 font-serif italic text-sm normal-case tracking-[0.04em] text-ink"

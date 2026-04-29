@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 
 import { OrganCard, type LandingOrgan } from './OrganCard'
@@ -18,6 +19,7 @@ type OrgansArchiveProps = {
 }
 
 export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: OrgansArchiveProps) {
+  const t = useTranslations('OrgansArchive')
   const [organs, setOrgans] = useState<LandingOrgan[]>(initialOrgans)
   const [loading, setLoading] = useState(false)
   const [exhausted, setExhausted] = useState(initialOrgans.length >= totalCount)
@@ -104,13 +106,13 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
           {!exhausted && (
             <div ref={sentinelRef} className="mt-12 flex justify-center" aria-hidden="true">
               <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
-                {loading ? 'Loading…' : ''}
+                {loading ? t('loading') : ''}
               </span>
             </div>
           )}
           {exhausted && organs.length > PAGE_SIZE && (
             <p className="mt-14 text-center font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
-              — end of the archive —
+              {t('endOfArchive')}
             </p>
           )}
         </div>
@@ -118,7 +120,7 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
         {sortedCities.length > 0 && (
           <aside className="lg:sticky lg:top-8">
             <h3 className="font-mono font-bold text-[10.5px] tracking-[0.22em] uppercase text-ink-faint m-0 mb-4 pb-3 border-b border-rule-soft">
-              By city
+              {t('byCity')}
             </h3>
             <ul className="list-none m-0 p-0 flex flex-col">
               {sortedCities.map(({ city: c, count }) => {
@@ -146,7 +148,7 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
                 href={cityHref('')}
                 className="text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent"
               >
-                Browse all &nbsp;→
+                {t('browseAll')}
               </Link>
             </div>
           </aside>
@@ -167,30 +169,29 @@ function ArchiveHeader({
   shown: number
   total: number
 }) {
+  const t = useTranslations('OrgansArchive')
   return (
     <div className="flex items-baseline justify-between mb-8 px-1 gap-6">
       <h2
         className="font-serif italic text-[22px] m-0 text-ink-soft"
         style={{ letterSpacing: '0.005em' }}
       >
-        {filterActive ? (
-          <>
-            Visits in <span className="not-italic font-normal text-ink">{city}</span>
-          </>
-        ) : (
-          'The archive'
-        )}
+        {filterActive
+          ? t.rich('filteredTitle', {
+              city: () => (
+                <span className="not-italic font-normal text-ink">{city}</span>
+              ),
+            })
+          : t('title')}
       </h2>
       <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 whitespace-nowrap">
-        <span>
-          {shown} of {total}
-        </span>
+        <span>{t('shownOfTotal', { shown, total })}</span>
         {filterActive && (
           <Link
             href={cityHref('')}
             className="text-ink-soft border-b border-rule pb-[2px] transition-colors duration-200 hover:text-accent hover:border-accent"
           >
-            clear filter ✕
+            {t('clearFilter')}
           </Link>
         )}
       </span>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 
 import { dataAttr } from '@/sanity/lib/utils'
@@ -37,33 +38,13 @@ type ScoresProps = {
   } | null
 }
 
-const ERA_LABELS = {
-  baroque: 'Baroque',
-  dutch: 'Dutch School',
-  romantic: 'Romantic',
-  modern: 'Modern',
-  arrangement: 'Arrangement',
-} as const
-
-type EraKey = keyof typeof ERA_LABELS
+const ERA_KEYS = ['baroque', 'dutch', 'romantic', 'modern', 'arrangement'] as const
+type EraKey = (typeof ERA_KEYS)[number]
 type FilterKey = 'all' | EraKey
 type SortKey = 'composer' | 'year' | 'edition'
 
-const FILTER_ORDER: FilterKey[] = ['all', 'baroque', 'dutch', 'romantic', 'modern', 'arrangement']
-const FILTER_LABEL: Record<FilterKey, string> = {
-  all: 'All',
-  baroque: 'Baroque',
-  dutch: 'Dutch School',
-  romantic: 'Romantic',
-  modern: 'Modern',
-  arrangement: 'Arrangements',
-}
-
-const SORTS: { key: SortKey; label: string }[] = [
-  { key: 'composer', label: 'Composer' },
-  { key: 'year', label: 'Year' },
-  { key: 'edition', label: 'Edition №' },
-]
+const FILTER_ORDER: FilterKey[] = ['all', ...ERA_KEYS]
+const SORT_KEYS: SortKey[] = ['composer', 'year', 'edition']
 
 const IconDownload = () => (
   <svg
@@ -104,17 +85,25 @@ const scoreAttr = (id: string, path: string) =>
 
 const fmtEdition = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
 const fmtEditionShort = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
-const eraLabel = (era: string | null) =>
-  (era && (ERA_LABELS as Record<string, string>)[era]) || era || ''
+
+function useEraLabel(): (era: string | null) => string {
+  const t = useTranslations('Scores.filters')
+  return (era) => {
+    if (!era) return ''
+    if ((ERA_KEYS as readonly string[]).includes(era)) return t(era as never)
+    return era
+  }
+}
 
 function Crumbs() {
+  const t = useTranslations('Crumbs')
   return (
     <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-14">
       <Link href="/" className="transition-colors hover:text-accent">
-        Home
+        {t('home')}
       </Link>
       <span className="opacity-40">/</span>
-      <span className="text-ink">Scores</span>
+      <span className="text-ink">{t('scores')}</span>
     </div>
   )
 }
@@ -126,11 +115,10 @@ function Header({
   copy?: ScoresProps['copy']
   scoresPageAttr: (path: string) => string
 }) {
-  const kicker = copy?.kicker ?? 'A small library'
-  const heading = copy?.heading ?? 'Editions, fingerings, {{working scores}}.'
-  const tagline =
-    copy?.tagline ??
-    "Working editions I've prepared for my own use — most for specific instruments visited in the field notes. Fingerings and registrations are suggestions, not prescriptions. All scores are free to download for non-commercial study."
+  const t = useTranslations('Scores')
+  const kicker = copy?.kicker ?? t('headerKickerFallback')
+  const heading = copy?.heading ?? t('headerHeadingFallback')
+  const tagline = copy?.tagline ?? t('headerTaglineFallback')
   return (
     <>
       <Crumbs />
@@ -171,7 +159,8 @@ function Toolbar({
   sortKey: SortKey
   cycleSort: () => void
 }) {
-  const sortLabel = SORTS.find((s) => s.key === sortKey)?.label ?? 'Composer'
+  const t = useTranslations('Scores')
+  const sortLabel = t(`sortBy.${sortKey}` as never)
   return (
     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-7 mb-9 border-b border-rule-soft">
       <div className="flex flex-wrap gap-1">
@@ -183,17 +172,15 @@ function Toolbar({
             data-active={active === id}
             onClick={() => setActive(id)}
           >
-            {FILTER_LABEL[id]}
+            {t(`filters.${id}` as never)}
             <span className="count">/ {counts[id] ?? 0}</span>
           </button>
         ))}
       </div>
       <div className="flex items-center gap-3.5 font-mono text-[11px] tracking-[0.18em] uppercase text-ink-faint">
-        <span>
-          <span className="text-ink">{total}</span> editions
-        </span>
+        <span>{t('editionsCount', { count: total })}</span>
         <button type="button" className="sort-btn" onClick={cycleSort}>
-          Sort: {sortLabel} <IconCaret />
+          {t('sort', { label: sortLabel })} <IconCaret />
         </button>
       </div>
     </div>
@@ -236,6 +223,8 @@ function ScoreCoverFeatured({ score }: { score: Score }) {
 }
 
 function Featured({ score }: { score: Score }) {
+  const t = useTranslations('Scores')
+  const eraLabel = useEraLabel()
   const composerAttr = scoreAttr(score._id, 'composer')
   const workAttr = scoreAttr(score._id, 'work')
   const blurbAttr = scoreAttr(score._id, 'blurb')
@@ -258,7 +247,10 @@ function Featured({ score }: { score: Score }) {
           className="font-mono text-[10.5px] tracking-[0.32em] uppercase text-accent m-0 mb-[18px] flex items-center gap-3"
         >
           <span className="w-7 h-px bg-current opacity-60" />
-          Featured edition · <span data-sanity={editionNumAttr}>No. {String(score.editionNumber).padStart(2, '0')}</span>
+          {t('featuredHeader')} ·{' '}
+          <span data-sanity={editionNumAttr}>
+            {t('editionNumber', { number: String(score.editionNumber).padStart(2, '0') })}
+          </span>
         </p>
         <h2
           className="font-serif font-light text-balance m-0 mb-5"
@@ -285,10 +277,10 @@ function Featured({ score }: { score: Score }) {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-y-[18px] gap-x-9 mb-7 pb-5 border-b border-rule-soft">
           {(
             [
-              ['Catalog', score.catalog, 'catalog'],
-              ['Period', periodLabel || null, 'era'],
-              ['Pages', score.pages ? String(score.pages) : null, 'pages'],
-              ['Edition', score.edition, 'edition'],
+              [t('meta.catalog'), score.catalog, 'catalog'],
+              [t('meta.period'), periodLabel || null, 'era'],
+              [t('meta.pages'), score.pages ? String(score.pages) : null, 'pages'],
+              [t('meta.edition'), score.edition, 'edition'],
             ] as const
           ).map(([k, v, field]) =>
             v ? (
@@ -310,11 +302,11 @@ function Featured({ score }: { score: Score }) {
               rel="noopener noreferrer"
               className="action-btn no-underline"
             >
-              <IconDownload /> Download PDF
+              <IconDownload /> {t('downloadPdf')}
             </a>
           ) : (
             <span className="action-btn ghost opacity-60 cursor-not-allowed">
-              <IconDownload /> No PDF yet
+              <IconDownload /> {t('noPdfYet')}
             </span>
           )}
         </div>
@@ -324,6 +316,8 @@ function Featured({ score }: { score: Score }) {
 }
 
 function ScoreCard({ score }: { score: Score }) {
+  const t = useTranslations('Scores')
+  const eraLabel = useEraLabel()
   return (
     <a
       href={score.pdfUrl ?? undefined}
@@ -402,7 +396,7 @@ function ScoreCard({ score }: { score: Score }) {
           <span>
             {score.pages != null && (
               <span data-sanity={scoreAttr(score._id, 'pages')}>
-                {`${score.pages} pp`}
+                {t('pagesShort', { count: score.pages })}
               </span>
             )}
             {score.pages == null && '—'}
@@ -417,7 +411,7 @@ function ScoreCard({ score }: { score: Score }) {
             data-sanity={scoreAttr(score._id, 'pdfFile')}
             className="text-ink inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-accent"
           >
-            <IconDownload /> {score.pdfUrl ? 'PDF' : 'soon'}
+            <IconDownload /> {score.pdfUrl ? t('pdfTag') : t('comingSoon')}
           </span>
         </div>
       </div>
@@ -426,19 +420,22 @@ function ScoreCard({ score }: { score: Score }) {
 }
 
 function Grid({ scores, total }: { scores: Score[]; total: number }) {
+  const t = useTranslations('Scores')
   return (
     <section data-screen-label="grid">
       <div className="flex items-baseline justify-between gap-6 mb-7">
         <h3 className="font-serif font-normal text-3xl m-0" style={{ letterSpacing: '-0.005em' }}>
-          The <em className="italic">library</em>
+          {t.rich('libraryHeading', {
+            em: (chunks) => <em className="italic">{chunks}</em>,
+          })}
         </h3>
         <span className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
-          Showing {scores.length} of {total}
+          {t('showing', { shown: scores.length, total })}
         </span>
       </div>
       {scores.length === 0 ? (
         <p className="font-serif italic text-ink-faint text-lg pb-24">
-          Nothing in this category yet — try another filter.
+          {t('emptyFilter')}
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-9 gap-x-8 pb-24">
@@ -473,10 +470,9 @@ function Notice({
     type: 'settings',
     path: 'scoresEditionLine',
   }).toString()
-  const text =
-    body ??
-    'These scores are shared for personal study and church use. If you would like to perform or record one, a short email is appreciated — and please credit the edition.'
-  const editionPrefix = editionLine ?? 'Edition Webbink'
+  const t = useTranslations('Scores')
+  const text = body ?? t('noticeBodyFallback')
+  const editionPrefix = editionLine ?? t('noticeEditionLineFallback')
   const href = contactHref ?? 'mailto:bert@webbink.nl'
   return (
     <section
@@ -502,20 +498,21 @@ function Notice({
         </small>
       </div>
       <a className="action-btn ghost not-italic no-underline" href={href}>
-        Write to me
+        {t('writeToMe')}
       </a>
     </section>
   )
 }
 
 function EmptyLibrary() {
+  const t = useTranslations('Scores')
   return (
     <section className="pt-2 pb-24 text-center">
       <p className="font-serif italic text-2xl text-ink-soft m-0 mb-4 max-w-[40ch] mx-auto">
-        The library is just being set up.
+        {t('emptyTitle')}
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
-        Editions will appear here as I prepare them. Check back, or write to me below.
+        {t('emptyBody')}
       </p>
     </section>
   )
@@ -524,7 +521,7 @@ function EmptyLibrary() {
 export function Scores({ locale, scores, copy }: ScoresProps) {
   const [active, setActive] = useState<FilterKey>('all')
   const [sortIdx, setSortIdx] = useState(0)
-  const sortKey = SORTS[sortIdx].key
+  const sortKey = SORT_KEYS[sortIdx]
   const scoresPageAttr = makeScoresPageAttr(locale)
 
   const counts = useMemo(() => {
@@ -559,7 +556,7 @@ export function Scores({ locale, scores, copy }: ScoresProps) {
     })
   }, [scores, active, sortKey])
 
-  const cycleSort = () => setSortIdx((i) => (i + 1) % SORTS.length)
+  const cycleSort = () => setSortIdx((i) => (i + 1) % SORT_KEYS.length)
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Image } from 'next-sanity/image'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
@@ -77,13 +78,14 @@ const letterComponents = {
 }
 
 function Crumbs() {
+  const tCrumbs = useTranslations('Crumbs')
   return (
     <div className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint flex items-center gap-3 mb-14">
       <Link href="/" className="transition-colors hover:text-accent">
-        Home
+        {tCrumbs('home')}
       </Link>
       <span className="opacity-40">/</span>
-      <span className="text-ink">About me</span>
+      <span className="text-ink">{tCrumbs('about')}</span>
     </div>
   )
 }
@@ -393,12 +395,15 @@ function Timeline({
   entries: TimelineEntry[] | null
   attr: StegaAttr
 }) {
+  const t = useTranslations('About')
   if (!entries || entries.length === 0) return null
   const summaryLines = (summary ?? '').split('\n').filter(Boolean)
   return (
     <section className="max-w-[1240px] mx-auto px-6 md:px-12 pt-24" data-screen-label="timeline">
-      <SecHead num="01" label="Trajectory">
-        Een korte <em className="italic font-normal">chronologie</em> — hoe ik hier kwam.
+      <SecHead num={t('trajectoryNum')} label={t('trajectoryLabel')}>
+        {t.rich('trajectoryHeading', {
+          em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+        })}
       </SecHead>
       <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 lg:gap-16 items-start">
         {summaryLines.length > 0 && (
@@ -448,11 +453,14 @@ function Repertoire({
   cards: RepertoireCard[] | null
   attr: StegaAttr
 }) {
+  const t = useTranslations('About')
   if (!cards || cards.length === 0) return null
   return (
     <section className="max-w-[1240px] mx-auto px-6 md:px-12 pt-24" data-screen-label="repertoire">
-      <SecHead num="02" label="What I play">
-        Repertoire waar ik naar <em className="italic font-normal">terugkeer</em>.
+      <SecHead num={t('repertoireNum')} label={t('repertoireLabel')}>
+        {t.rich('repertoireHeading', {
+          em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+        })}
       </SecHead>
       <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 lg:gap-16">
         {intro && (
@@ -579,6 +587,7 @@ function Contact({
 }
 
 function EmptyState() {
+  const t = useTranslations('About')
   return (
     <section className="max-w-[840px] mx-auto px-6 md:px-12 py-32 text-center">
       <Crumbs />
@@ -586,14 +595,17 @@ function EmptyState() {
         className="font-serif font-light leading-none m-0 mb-8 text-balance"
         style={{ fontSize: 'clamp(40px, 5vw, 64px)', letterSpacing: '-0.012em' }}
       >
-        About me
+        {t('emptyTitle')}
       </h1>
       <p className="font-serif italic text-2xl text-ink-soft m-0 mb-4 max-w-[40ch] mx-auto">
-        Deze pagina is nog niet ingericht in de Studio.
+        {t('emptyBody')}
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
-        Open <span className="not-italic font-mono text-sm text-ink">/admin → About page</span>{' '}
-        om de inhoud toe te voegen.
+        {t.rich('emptyHint', {
+          code: (chunks) => (
+            <span className="not-italic font-mono text-sm text-ink">{chunks}</span>
+          ),
+        })}
       </p>
     </section>
   )

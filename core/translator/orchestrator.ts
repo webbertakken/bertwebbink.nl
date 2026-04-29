@@ -3,6 +3,7 @@ import type { SanityClient } from '@sanity/client'
 import { LOCALES, type Locale } from '@/core/i18n/locales'
 
 import { combineTranslations, diffUnits } from './diff'
+import { applyTranslatedSlug } from './slug'
 import type { Translator } from './types'
 import { applyAll, extractAll } from './walkers/registry'
 
@@ -206,9 +207,13 @@ async function translateDocPerLocale(
     : (previousSiblingId ?? `${sourceType}-${target}-${cryptoRandomShort()}`)
 
   // Build the target doc body: start from a deep clone of the source,
-  // apply translations, swap language + id + provenance.
+  // apply translations, swap language + id + provenance, derive slug.
   const baseDoc = applyAll(sourceDoc, sourceType, finalUnits, target) as Record<string, unknown>
-  const targetDoc: Record<string, unknown> = stripSystemFields(baseDoc)
+  const slugged =
+    sourceType === 'journal' || sourceType === 'organ'
+      ? applyTranslatedSlug(baseDoc, previousSibling, finalUnits)
+      : baseDoc
+  const targetDoc: Record<string, unknown> = stripSystemFields(slugged)
   targetDoc._id = targetId
   targetDoc._type = sourceType
   targetDoc.language = target
