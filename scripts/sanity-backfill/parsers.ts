@@ -240,6 +240,19 @@ function looksLikeCouplingContinuation(line: string): boolean {
   return /^[A-Z][A-Za-z]+\s+[-–]\s+[A-Z]/.test(line) && /\.\s*$/.test(line)
 }
 
+// Lines that signal the post has left the disposition section and entered
+// editor metadata about the audio recordings ("Bert: 1", "Ab Kristiaans-orgel
+// ...", "Hieronder enkele audio-opnames", "Bron:", etc.).
+function isEditorMeta(line: string): boolean {
+  return (
+    /^(Bert|Ab)(\s|:|$)/i.test(line) ||
+    /^(Bron|Improvisatie|Hieronder|Luistervoorbeeld|Het\s+(H\.|Deetlef|Hendrik)|Hendrik\s+Jan)\b/i.test(
+      line,
+    ) ||
+    /^[123456789],?\s*[A-Za-z\d,\s]*\b(Bert|Ab)\b/i.test(line)
+  )
+}
+
 function isTabularLine(line: string): boolean {
   // Two-column tabular dispositions are visually formatted with runs of 6+
   // spaces between columns. Real prose / stop lists never have that gap.
@@ -693,16 +706,6 @@ export function parseDispositionFromContent(content: any[] | undefined): {
   const registers: ParsedKeyboard[] = []
   const couplings: ParsedNamed[] = []
   const accessories: ParsedNamed[] = []
-
-  // Lines that signal we've left the disposition section and entered editor
-  // metadata about the audio recordings ("Bert: 1", "Ab Kristiaans-orgel ...",
-  // "Hieronder enkele audio-opnames", "Bron:", etc.).
-  const isEditorMeta = (line: string) =>
-    /^(Bert|Ab)(\s|:|$)/i.test(line) ||
-    /^(Bron|Improvisatie|Hieronder|Luistervoorbeeld|Het\s+(H\.|Deetlef|Hendrik)|Hendrik\s+Jan)\b/i.test(
-      line,
-    ) ||
-    /^[123456789],?\s*[A-Za-z\d,\s]*\b(Bert|Ab)\b/i.test(line)
 
   let lastTrack: 'register' | 'coupling' | 'accessory' | null = null
   let tabularCount = 0

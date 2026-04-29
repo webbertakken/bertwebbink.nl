@@ -20,7 +20,7 @@ export const urlForImage = (source: any) => {
   // get the image's og dimensions
   const { width, height } = getImageDimensions(imageRef)
 
-  if (Boolean(crop)) {
+  if (crop) {
     // compute the cropped image's area
     const croppedWidth = Math.floor(width * (1 - (crop.right + crop.left)))
 

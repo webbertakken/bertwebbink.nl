@@ -61,13 +61,6 @@ const fmtLong = (iso: string) =>
     year: 'numeric',
   })
 
-const fmtShort = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  })
-
 function readMinutes(content: PortableTextBlock[] | null): number {
   if (!content) return 0
   let words = 0

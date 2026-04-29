@@ -47,11 +47,9 @@ function sanitiseCell(raw: string, warnings: Warning[]): string | null {
   // Strip remaining HTML tags
   s = s.replace(/<[^>]*>/g, '')
   s = decodeEntities(s)
-  // Drop control / zero-width characters
-  s = s.replace(
-    /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u2028-\u202F\u2060-\u206F\uFEFF]/g,
-    '',
-  )
+  // Drop control / zero-width characters (intentional control-char regex).
+  /* eslint-disable-next-line no-control-regex */
+  s = s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u2028-\u202F\u2060-\u206F\uFEFF]/g, '')
   // Collapse whitespace
   s = s.replace(/\s+/g, ' ').trim()
   if (!s) return null
