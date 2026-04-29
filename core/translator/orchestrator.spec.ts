@@ -516,6 +516,41 @@ describe('runTranslation \u2014 score (field-level)', () => {
 
 
 
+  it('captures and isolates per-locale failures on score docs (sequential path)', async () => {
+    class FailingTranslator implements Translator {
+      readonly name = 'failing'
+      readonly model = 'fail'
+      async translate(req: TranslateRequest) {
+        if (req.targetLocale === 'fr') throw new Error('upstream 503')
+        return {
+          units: req.units.map((u) => ({
+            id: u.id,
+            sourceText: `[${req.targetLocale}] ${u.sourceText}`,
+          })),
+        }
+      }
+    }
+    const client = makeClient([
+      {
+        _id: 'score-1',
+        _rev: 'r',
+        _type: 'score',
+        composer: 'C',
+        forInstrument: [
+          { _key: 'k', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'Voor orgel' },
+        ],
+      },
+    ])
+    const results = await runTranslation(adapt(client), new FailingTranslator(), 'score-1', {
+      targetLocales: ['en', 'fr', 'de'],
+    })
+    const byLocale = Object.fromEntries(results.map((r) => [r.locale, r]))
+    expect(byLocale.fr.status).toBe('failed')
+    expect(byLocale.fr.error).toMatch(/upstream 503/)
+    expect(byLocale.en.status).toBe('created')
+    expect(byLocale.de.status).toBe('created')
+  })
+
   it('emits translator:usage events when the LLM reports timing/tokens', async () => {
     class TimedTranslator implements Translator {
       readonly name = 'timed'

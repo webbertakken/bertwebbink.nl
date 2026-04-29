@@ -100,16 +100,38 @@ export async function runTranslation(
     ctx.siblings = await loadSiblings(client, sourceDocId)
   }
 
-  const results: PerLocaleResult[] = []
-  for (const target of targets) {
+  // Score docs are patched in place — parallel writes would race on the
+  // same `_translationProvenance` map and i18n arrays, so we keep them
+  // sequential. Doc-per-locale types each write to their own sibling id,
+  // so we fan them out in parallel and serialise only the shared
+  // `translation.metadata` write step that comes after.
+  if (sourceType === 'score') {
+    const results: PerLocaleResult[] = []
+    for (const target of targets) {
+      options.onProgress?.({ type: 'locale:start', locale: target })
+      let result: PerLocaleResult
+      try {
+        result = await translateScoreInPlace(client, translator, ctx, target, options)
+      } catch (err) {
+        result = {
+          locale: target,
+          docId: 'unknown',
+          status: 'failed',
+          /* v8 ignore next */
+          error: err instanceof Error ? err.message : String(err),
+        }
+      }
+      options.onProgress?.({ type: 'locale:done', result })
+      results.push(result)
+    }
+    return results
+  }
+
+  const tasks = targets.map(async (target) => {
     options.onProgress?.({ type: 'locale:start', locale: target })
     let result: PerLocaleResult
     try {
-      if (sourceType === 'score') {
-        result = await translateScoreInPlace(client, translator, ctx, target, options)
-      } else {
-        result = await translateDocPerLocale(client, translator, ctx, target, options)
-      }
+      result = await translateDocPerLocale(client, translator, ctx, target, options)
     } catch (err) {
       result = {
         locale: target,
@@ -120,7 +142,24 @@ export async function runTranslation(
       }
     }
     options.onProgress?.({ type: 'locale:done', result })
-    results.push(result)
+    return result
+  })
+  const results = await Promise.all(tasks)
+
+  // Sequential metadata updates so concurrent patches don't lose entries.
+  // ctx.siblings is always set for the doc-per-locale path (assigned in
+  // the `if (DOC_PER_LOCALE_TYPES.has(sourceType))` block above).
+  const siblingIds = listSiblingIds(ctx.siblings as Map<Locale, Record<string, unknown>>)
+  for (const result of results) {
+    if (result.status === 'failed' || result.status === 'skipped') continue
+    if (result.status === 'unchanged') continue
+    await ensureTranslationMetadata(client, siblingIds, {
+      sourceId: sourceDoc._id as string,
+      sourceLocale,
+      siblingId: result.docId,
+      siblingLocale: result.locale,
+      schemaType: sourceType,
+    })
   }
   return results
 }
@@ -223,15 +262,8 @@ async function translateDocPerLocale(
   // Use createOrReplace so re-runs are idempotent and predictable.
   await client.createOrReplace(targetDoc as never)
 
-  // Update the translation.metadata document linking source + sibling.
-  await ensureTranslationMetadata(client, listSiblingIds(siblings), {
-    sourceId: sourceDoc._id as string,
-    sourceLocale,
-    siblingId: targetId,
-    siblingLocale: target,
-    schemaType: sourceType,
-  })
-
+  // Note: metadata update is hoisted to `runTranslation` so concurrent
+  // sibling writes don't race on the shared `translation.metadata` doc.
   return {
     locale: target,
     docId: targetId,
