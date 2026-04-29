@@ -236,7 +236,7 @@ function NeighborLink({ side, entry }: { side: 'prev' | 'next'; entry: JournalNe
         {side === 'prev' ? t('previousEntry') : t('nextEntry')}
       </p>
       <Link
-        href={`/journal/${entry.slug}`}
+        href={{ pathname: '/journal/[slug]', params: { slug: entry.slug } }}
         className={`block transition-all duration-300 hover:text-accent ${
           side === 'next' ? 'md:hover:pr-1.5' : 'hover:pl-1.5'
         }`}

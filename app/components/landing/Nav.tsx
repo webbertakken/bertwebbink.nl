@@ -32,10 +32,10 @@ export function Nav({ locale, active, wordmark, tagline }: NavProps) {
     dataAttr({ id: SETTINGS_ID, type: 'settings', path }).toString()
   const ITEMS = useMemo(
     () => [
-      { id: 'organs' as const, label: t('items.organs'), href: '/organs' },
-      { id: 'scores' as const, label: t('items.scores'), href: '/scores' },
-      { id: 'about' as const, label: t('items.about'), href: '/about' },
-      { id: 'elsewhere' as const, label: t('items.elsewhere'), href: '/elsewhere' },
+      { id: 'organs' as const, label: t('items.organs'), href: '/organs' as const },
+      { id: 'scores' as const, label: t('items.scores'), href: '/scores' as const },
+      { id: 'about' as const, label: t('items.about'), href: '/about' as const },
+      { id: 'elsewhere' as const, label: t('items.elsewhere'), href: '/elsewhere' as const },
     ],
     [t],
   )

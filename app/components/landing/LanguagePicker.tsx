@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useTransition } from 'react'
+import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 import { LOCALES, LOCALE_ENDONYMS, type Locale } from '@/core/i18n/locales'
@@ -55,11 +56,22 @@ export function LanguagePicker({ locale, className }: LanguagePickerProps) {
     }
   }, [open])
 
+  // For localised pathnames, `usePathname()` returns the canonical
+  // template form (e.g. `/journal/[slug]`); switching locales needs
+  // both the template + the resolved params so the new URL is built
+  // correctly. The cast is required because the router's typed `href`
+  // is the union of all known pathname keys, but TypeScript can't
+  // narrow `pathname` (a runtime string) to one of them.
+  const params = useParams()
   const switchTo = (target: Locale) => {
     setOpen(false)
     if (target === locale) return
     startTransition(() => {
-      router.replace(pathname, { locale: target })
+      router.replace(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { pathname, params } as any,
+        { locale: target },
+      )
     })
   }
 

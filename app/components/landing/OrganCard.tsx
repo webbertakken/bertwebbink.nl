@@ -172,7 +172,7 @@ export function OrganCard({ organ, index = 1, totalCount }: OrganCardProps) {
 
       {/* Stretched link — sits above visuals, below pointer-events-none badges. */}
       <Link
-        href={`/organs/${organ.slug}`}
+        href={{ pathname: '/organs/[slug]', params: { slug: organ.slug } }}
         className="absolute inset-0 z-[1]"
         aria-label={organ.title}
       >

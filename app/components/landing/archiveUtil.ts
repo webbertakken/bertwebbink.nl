@@ -49,11 +49,15 @@ export function yearTotals(organs: LandingOrgan[]): Array<{ year: number; count:
 
 /**
  * Build the destination URL for a city sidebar link. Empty city clears the
- * filter; any other value sets `?city=<encoded>`.
+ * filter; any other value sets `?city=<encoded>`. The shape matches
+ * next-intl's typed `Link` href so `/organs` resolves to the
+ * locale-specific segment automatically (`/de/orgeln`, `/ja/オルガン`).
  */
-export function cityHref(city: string): string {
-  if (!city) return '/organs'
-  return `/organs?city=${encodeURIComponent(city)}`
+export function cityHref(
+  city: string,
+): { pathname: '/organs'; query?: { city: string } } {
+  if (!city) return { pathname: '/organs' }
+  return { pathname: '/organs', query: { city } }
 }
 
 /**

@@ -241,7 +241,7 @@ function NeighborLink({ side, organ }: { side: 'prev' | 'next'; organ: NeighborO
         {side === 'prev' ? t('previousVisit') : t('nextVisit')}
       </p>
       <Link
-        href={`/organs/${organ.slug}`}
+        href={{ pathname: '/organs/[slug]', params: { slug: organ.slug } }}
         className={`block transition-all duration-300 hover:text-accent ${
           side === 'next' ? 'md:hover:pr-1.5' : 'hover:pl-1.5'
         }`}

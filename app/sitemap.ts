@@ -4,6 +4,17 @@ import { headers } from 'next/headers'
 import { sanityFetch } from '@/sanity/lib/live'
 import { sitemapData } from '@/sanity/lib/queries'
 import { LOCALES, type Locale } from '@/core/i18n/locales'
+import { pathnames } from '@/i18n/routing'
+
+/** Resolve the canonical path (`/organs`) to the localised segment for a locale. */
+function localisedPath(canonical: string, locale: Locale): string {
+  if (canonical === '' || canonical === '/') return canonical
+  const map = pathnames as Record<string, string | Record<Locale, string>>
+  const entry = map[canonical]
+  if (entry == null) return canonical
+  if (typeof entry === 'string') return entry
+  return entry[locale] ?? canonical
+}
 
 /**
  * Locale-aware sitemap. For every translatable page (singletons + every
@@ -25,27 +36,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const proto = headersList.get('x-forwarded-proto') ?? 'https'
   const baseUrl = host ? `${proto}://${host}` : ''
 
-  const SINGLETON_PATHS = ['', '/organs', '/scores', '/about', '/elsewhere', '/privacy']
+  const SINGLETON_CANONICAL: Array<{ path: string; priority: number }> = [
+    { path: '', priority: 1 },
+    { path: '/organs', priority: 0.7 },
+    { path: '/scores', priority: 0.7 },
+    { path: '/about', priority: 0.7 },
+    { path: '/elsewhere', priority: 0.7 },
+    { path: '/privacy', priority: 0.7 },
+  ]
 
-  const buildAlternates = (path: string) => {
+  /** Build alternates for a canonical singleton route across every locale. */
+  const buildSingletonAlternates = (canonical: string) => {
     const out: Record<string, string> = {}
     for (const loc of LOCALES) {
-      out[loc] = `${baseUrl}/${loc}${path}`
+      out[loc] = `${baseUrl}/${loc}${localisedPath(canonical, loc)}`
     }
     return out
   }
 
   const entries: MetadataRoute.Sitemap = []
 
-  // Singletons \u2014 one URL per (route, locale) pair.
-  for (const path of SINGLETON_PATHS) {
+  // Singletons \u2014 one URL per (route, locale) pair, with the localised
+  // path segment baked into both the loc URL and the alternates map.
+  for (const { path, priority } of SINGLETON_CANONICAL) {
+    const alternates = buildSingletonAlternates(path)
     for (const loc of LOCALES) {
       entries.push({
-        url: `${baseUrl}/${loc}${path || ''}`,
+        url: `${baseUrl}/${loc}${localisedPath(path, loc)}`,
         lastModified: new Date(),
-        priority: path === '' ? 1 : 0.7,
+        priority,
         changeFrequency: 'monthly',
-        alternates: { languages: buildAlternates(path) },
+        alternates: { languages: alternates },
       })
     }
   }
@@ -69,12 +90,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     for (const [key, value] of bySlug) {
       const [type, slug] = key.split(':')
-      const path = type === 'organ' ? `/organs/${slug}` : `/journal/${slug}`
+      // Canonical (English) prefix \u2014 used as the lookup key for `pathnames`.
+      const canonicalPrefix = type === 'organ' ? '/organs/[slug]' : '/journal/[slug]'
       const langs: Record<string, string> = {}
-      for (const loc of value.locales) langs[loc] = `${baseUrl}/${loc}${path}`
       for (const loc of value.locales) {
+        const localised = localisedPath(canonicalPrefix, loc).replace('[slug]', slug)
+        langs[loc] = `${baseUrl}/${loc}${localised}`
+      }
+      for (const loc of value.locales) {
+        const localised = localisedPath(canonicalPrefix, loc).replace('[slug]', slug)
         entries.push({
-          url: `${baseUrl}/${loc}${path}`,
+          url: `${baseUrl}/${loc}${localised}`,
           lastModified: value.lastModified,
           priority: 0.5,
           changeFrequency: 'never',
