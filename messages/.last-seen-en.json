@@ -238,5 +238,13 @@
   },
   "Placeholder": {
     "label": "[ {fallback} ]"
+  },
+  "Lightbox": {
+    "label": "Image viewer",
+    "close": "Close",
+    "previous": "Previous image",
+    "next": "Next image",
+    "open": "Open {alt} in viewer",
+    "untitled": "image"
   }
 }

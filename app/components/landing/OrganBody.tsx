@@ -10,6 +10,7 @@ import { getImageDimensions } from '@sanity/asset-utils'
 import ResolvedLink from '@/app/components/ResolvedLink'
 import { dataset, projectId } from '@/sanity/lib/api'
 import { urlForImage } from '@/sanity/lib/utils'
+import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
 import { AudioBlock } from './AudioBlock'
 import { VideoBlock } from './VideoBlock'
 
@@ -83,15 +84,27 @@ function buildComponents(organId: string): PortableTextComponents {
       if (!value?.asset?._ref) return null
       const dim = getImageDimensions(value)
       const align = ALIGNMENT[value.alignment as string] ?? ALIGNMENT.center
+      const alt = stegaClean(value?.alt) || ''
+      const cleanCaption = stegaClean(value?.caption) || null
+      const src = urlForImage(value)?.url() as string
+      const fullSrc = urlForImage(value)?.width(2400).fit('clip').url() as string
       return (
         <figure className={`my-9 ${align}`}>
-          <Image
-            className="w-full h-auto rounded border border-rule-soft"
-            width={dim.width}
-            height={dim.height}
-            alt={stegaClean(value?.alt) || ''}
-            src={urlForImage(value)?.url() as string}
-          />
+          <LightboxImage
+            fullSrc={fullSrc}
+            fullWidth={dim.width}
+            fullHeight={dim.height}
+            alt={alt}
+            caption={cleanCaption}
+          >
+            <Image
+              className="w-full h-auto rounded border border-rule-soft"
+              width={dim.width}
+              height={dim.height}
+              alt={alt}
+              src={src}
+            />
+          </LightboxImage>
           {value.caption && (
             <figcaption className="mt-3 font-serif italic text-[14.5px] leading-[1.5] text-ink-soft text-center">
               {value.caption}

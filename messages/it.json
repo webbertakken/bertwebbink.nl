@@ -244,6 +244,14 @@
   "Placeholder": {
     "label": "[ {fallback} ]"
   },
+  "Lightbox": {
+    "label": "Visualizzatore immagini",
+    "close": "Chiudi",
+    "previous": "Immagine precedente",
+    "next": "Immagine successiva",
+    "open": "Apri {alt} nel visualizzatore",
+    "untitled": "immagine"
+  },
   "Search": {
     "heading": "Search",
     "placeholder": "Search the site…",

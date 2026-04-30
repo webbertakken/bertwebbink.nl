@@ -244,6 +244,14 @@
   "Placeholder": {
     "label": "[ {fallback} ]"
   },
+  "Lightbox": {
+    "label": "छवि व्यूअर",
+    "close": "बंद करें",
+    "previous": "पिछली छवि",
+    "next": "अगली छवि",
+    "open": "{alt} व्यूअर में खोलें",
+    "untitled": "छवि"
+  },
   "Search": {
     "heading": "Search",
     "placeholder": "Search the site…",

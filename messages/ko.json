@@ -244,6 +244,14 @@
   "Placeholder": {
     "label": "[ {fallback} ]"
   },
+  "Lightbox": {
+    "label": "이미지 뷰어",
+    "close": "닫기",
+    "previous": "이전 이미지",
+    "next": "다음 이미지",
+    "open": "뷰어에서 {alt} 열기",
+    "untitled": "이미지"
+  },
   "Search": {
     "heading": "Search",
     "placeholder": "Search the site…",

@@ -23,6 +23,14 @@
 
     "react/iframe-missing-sandbox": "off"
   },
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"],
+      "rules": {
+        "nextjs/no-img-element": "off"
+      }
+    }
+  ],
   "env": {
     "browser": true,
     "node": true,

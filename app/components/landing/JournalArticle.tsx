@@ -8,6 +8,8 @@ import { stegaClean } from '@sanity/client/stega'
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
 import { Placeholder } from './Placeholder'
 import { OrganBody } from './OrganBody'
+import { LightboxProvider } from '@/app/components/lightbox/LightboxProvider'
+import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
 
 const journalAttr = (id: string, path: string) => dataAttr({ id, type: 'journal', path }).toString()
 
@@ -171,21 +173,31 @@ function Cover({
     }
     const dim = getImageDimensions(imageSource)
     const url = urlForImage(imageSource)?.width(2000).fit('clip').url() as string
+    const fullUrl = urlForImage(imageSource)?.width(2400).fit('clip').url() as string
     const alt = stegaClean(coverImage.alt) || title
+    const cleanCaption = stegaClean(coverImage.caption) || null
     return (
       <div>
         <div
           data-sanity={journalAttr(entryId, 'coverImage')}
           className="relative mx-auto max-w-[1240px] aspect-[16/9] bg-bg-sunk rounded overflow-hidden border border-rule-soft shadow-card"
         >
-          <Image
-            src={url}
+          <LightboxImage
+            fullSrc={fullUrl}
+            fullWidth={dim.width}
+            fullHeight={dim.height}
             alt={alt}
-            width={dim.width}
-            height={dim.height}
-            className="w-full h-full object-cover"
-            priority
-          />
+            caption={cleanCaption}
+          >
+            <Image
+              src={url}
+              alt={alt}
+              width={dim.width}
+              height={dim.height}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </LightboxImage>
         </div>
         {coverImage.caption && (
           <div className="mt-4 mx-auto max-w-[1240px] px-1 flex justify-between gap-6 font-serif italic text-ink-soft text-[14.5px] leading-[1.5]">
@@ -270,7 +282,7 @@ function NextPrev({ prev, next }: { prev: JournalNeighbor; next: JournalNeighbor
 export function JournalArticle({ entry }: { entry: JournalDetail }) {
   const readMin = readMinutes(entry.content)
   return (
-    <>
+    <LightboxProvider>
       <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8" data-screen-label="article">
         <Crumbs />
         <Header
@@ -295,6 +307,6 @@ export function JournalArticle({ entry }: { entry: JournalDetail }) {
         )}
       </div>
       <NextPrev prev={entry.prev} next={entry.next} />
-    </>
+    </LightboxProvider>
   )
 }
