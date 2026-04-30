@@ -4,6 +4,12 @@ Issues that were surfaced during the translations rollout but are
 intentionally left as-is. Each entry states the symptom, the cause,
 and the fix path if/when the time comes.
 
+> **Cost estimates below are best-effort.** This rollout's actual
+> spend ran ~3× the back-of-envelope numbers (the session totalled
+> €42, not the €13 I'd have predicted from token counts alone).
+> Padding factored in where applicable; treat the figures as a
+> floor, not a ceiling.
+
 ## Slug collisions on translation
 
 24 (locale, slug) pairs share a URL because two distinct Dutch source
@@ -23,9 +29,13 @@ retroactively rewrite already-stored slugs. Triggered by re-running
 the translator against the source doc — `--only-disposition` does NOT
 touch slugs.
 
-**Fix path**: full re-translation of the affected organs/journals
-(~€0.50). `scripts/dedup-organs.ts` lists the colliding groups under
-the "legitimate slug collision" diagnostic.
+**Fix path**: full re-translation of the 48 affected organ siblings
+(24 collision groups × 2 distinct nl sources). At measured rates
+(≈ €0.30/organ × 10 locales × 3× the back-of-envelope), budget
+**€10–€15** rather than the €0.50 I originally guessed.
+`scripts/dedup-organs.ts` lists the colliding groups under the
+"legitimate slug collision" diagnostic so you don't have to
+re-derive the set.
 
 ## Journal entries not re-translated since the marker-prompt fix
 
@@ -44,7 +54,9 @@ the PT walker as part of the round-trip.
 There's no evidence of leaked markers in journal bodies today, but a
 fresh re-run with the corrected prompt would be belt-and-braces.
 
-**Fix path**: `yarn translate:content --type journal`. ~€0.50.
+**Fix path**: `yarn translate:content --type journal`. Budget
+**€8–€12** (25 journals × 10 locales, prose-heavy bodies are
+denser than organ docs).
 
 ## Stale dev-server messages module after rapid restart
 
