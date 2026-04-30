@@ -1,4 +1,3 @@
-import { LAUNCH_AT_MS } from '@/core/launch'
 import { LOCALES, type Locale } from '@/core/i18n/locales'
 import { SINGLE_LOCALE_FALLBACK } from '@/core/i18n/featureFlag'
 
@@ -9,7 +8,6 @@ import { SINGLE_LOCALE_FALLBACK } from '@/core/i18n/featureFlag'
  */
 
 export const ALWAYS_ALLOW = [
-  '/under-construction',
   '/admin',
   '/api',
   '/_next',
@@ -20,17 +18,8 @@ export const ALWAYS_ALLOW = [
 
 export function isAlwaysAllowed(pathname: string): boolean {
   if (ALWAYS_ALLOW.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return true
-  // /llms.txt and /llms.{locale}.txt should bypass the gate too.
+  // /llms.txt and /llms.{locale}.txt are always public.
   if (/^\/llms(\.[a-z]{2})?\.txt$/.test(pathname)) return true
-  return false
-}
-
-export function gateIsActive(
-  now: number = Date.now(),
-  env: { UNDER_CONSTRUCTION?: string } = process.env as { UNDER_CONSTRUCTION?: string },
-): boolean {
-  if (env.UNDER_CONSTRUCTION === 'true') return true
-  if (Number.isFinite(LAUNCH_AT_MS) && now < LAUNCH_AT_MS) return true
   return false
 }
 

@@ -38,7 +38,7 @@ async function resolveRootLocale(): Promise<Locale> {
 /**
  * Generate metadata for the page. Per-locale title/description come from
  * the `[locale]` layout's metadata; this is a global fallback for
- * non-localised routes (admin, under-construction).
+ * non-localised routes (e.g. `/admin`).
  */
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await resolveRootLocale()
