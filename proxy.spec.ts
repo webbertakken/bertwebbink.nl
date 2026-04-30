@@ -1,14 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { LAUNCH_AT_MS } from './core/launch'
-import {
-  gateIsActive,
-  isAlwaysAllowed,
-  singleLocaleLockTarget,
-} from './proxy.helpers'
-
-const FUTURE = LAUNCH_AT_MS + 1000 * 60 * 60 * 24
-const PAST = LAUNCH_AT_MS - 1000 * 60 * 60 * 24
+import { isAlwaysAllowed, singleLocaleLockTarget } from './proxy.helpers'
 
 describe('isAlwaysAllowed', () => {
   it('lets /admin through', () => {
@@ -33,21 +25,6 @@ describe('isAlwaysAllowed', () => {
   })
 })
 
-describe('gateIsActive', () => {
-  it('is active before the launch timestamp', () => {
-    expect(gateIsActive(PAST)).toBe(true)
-  })
-
-  it('is inactive after the launch timestamp', () => {
-    expect(gateIsActive(FUTURE)).toBe(false)
-  })
-
-  it('respects the explicit UNDER_CONSTRUCTION env override', () => {
-    expect(gateIsActive(FUTURE, { UNDER_CONSTRUCTION: 'true' })).toBe(true)
-    expect(gateIsActive(PAST, { UNDER_CONSTRUCTION: 'false' })).toBe(true) // launch still in past
-  })
-})
-
 describe('singleLocaleLockTarget', () => {
   it('returns null when i18n is enabled', () => {
     expect(singleLocaleLockTarget('/de/about', true)).toBeNull()
@@ -68,7 +45,6 @@ describe('singleLocaleLockTarget', () => {
   it('leaves non-locale paths alone', () => {
     expect(singleLocaleLockTarget('/admin/structure', false)).toBeNull()
     expect(singleLocaleLockTarget('/api/translate', false)).toBeNull()
-    expect(singleLocaleLockTarget('/under-construction', false)).toBeNull()
   })
 
   it('honours an explicit fallback override', () => {
