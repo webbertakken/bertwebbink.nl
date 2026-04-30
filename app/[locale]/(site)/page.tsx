@@ -4,12 +4,16 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { JournalHero } from '@/app/components/landing/JournalHero'
 import { JournalList, type JournalEntrySummary } from '@/app/components/landing/JournalList'
 import { sanityFetch } from '@/sanity/lib/live'
-import {
-  journalEntriesQuery,
-  journalPageQuery,
-  journalStatsQuery,
-} from '@/sanity/lib/queries'
+import { journalEntriesQuery, journalPageQuery, journalStatsQuery } from '@/sanity/lib/queries'
 import { isLocale, type Locale } from '@/core/i18n/locales'
+
+/** Static rendering with ISR safety net. `force-static` is required because
+ * `next-sanity/live`'s `sanityFetch` calls `draftMode()` internally, which
+ * otherwise forces dynamic rendering. Draft-mode preview still bypasses the
+ * static cache at request time when the cookie is set. Per-doc cache busting
+ * is handled by `revalidateTag` (see `docs/caching-strategy.md`). */
+export const dynamic = 'force-static'
+export const revalidate = 3600
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -46,10 +50,7 @@ export default async function JournalPage({ params }: Props) {
         crumbs={[{ label: t('home') }]}
         copy={page}
       />
-      <JournalList
-        entries={(entries ?? []) as JournalEntrySummary[]}
-        totalCount={totalCount}
-      />
+      <JournalList entries={(entries ?? []) as JournalEntrySummary[]} totalCount={totalCount} />
     </>
   )
 }

@@ -21,14 +21,10 @@ import {
   type DocumentLocation,
 } from 'sanity/presentation'
 import { assertValue } from '@/core/util/assertValue'
-import {
-  DEFAULT_LOCALE,
-  LOCALES,
-  SUPPORTED_LANGUAGES,
-  type Locale,
-} from '@/core/i18n/locales'
+import { DEFAULT_LOCALE, LOCALES, SUPPORTED_LANGUAGES, type Locale } from '@/core/i18n/locales'
 import { publishAllLocalesAction } from '@/sanity/actions/publishAll'
 import { relabelSingleLocalePublish } from '@/sanity/actions/relabelPublish'
+import { withRevalidatePublish } from '@/sanity/actions/withRevalidate'
 import { staleTranslationBadge } from '@/sanity/badges/staleTranslation'
 import { isTranslatableType } from '@/core/translator/orchestrator'
 import { pathnames } from '@/i18n/routing'
@@ -45,8 +41,6 @@ const LOCALIZED_DOC_TYPES = [
   'privacy',
   'settings',
 ] as const
-
-
 
 // Environment variables for project configuration
 const projectId = assertValue(
@@ -183,7 +177,8 @@ export default defineConfig({
         locations: {
           settings: defineLocations({
             locations: [homeLocation],
-            message: 'Drives <head> metadata (title template, description, OG image) on every page.',
+            message:
+              'Drives <head> metadata (title template, description, OG image) on every page.',
             tone: 'positive',
           }),
           journalPage: defineLocations({
@@ -192,16 +187,12 @@ export default defineConfig({
             tone: 'positive',
           }),
           organsPage: defineLocations({
-            locations: [
-              { title: 'Organs', href: '/organs' } satisfies DocumentLocation,
-            ],
+            locations: [{ title: 'Organs', href: '/organs' } satisfies DocumentLocation],
             message: 'Drives the /organs hero copy.',
             tone: 'positive',
           }),
           scoresPage: defineLocations({
-            locations: [
-              { title: 'Scores', href: '/scores' } satisfies DocumentLocation,
-            ],
+            locations: [{ title: 'Scores', href: '/scores' } satisfies DocumentLocation],
             message: 'Drives the /scores hero copy.',
             tone: 'positive',
           }),
@@ -221,21 +212,15 @@ export default defineConfig({
             }),
           }),
           about: defineLocations({
-            locations: [
-              { title: 'About me', href: '/about' } satisfies DocumentLocation,
-            ],
+            locations: [{ title: 'About me', href: '/about' } satisfies DocumentLocation],
             tone: 'positive',
           }),
           elsewhere: defineLocations({
-            locations: [
-              { title: 'Elsewhere', href: '/elsewhere' } satisfies DocumentLocation,
-            ],
+            locations: [{ title: 'Elsewhere', href: '/elsewhere' } satisfies DocumentLocation],
             tone: 'positive',
           }),
           privacy: defineLocations({
-            locations: [
-              { title: 'Privacy', href: '/privacy' } satisfies DocumentLocation,
-            ],
+            locations: [{ title: 'Privacy', href: '/privacy' } satisfies DocumentLocation],
             tone: 'positive',
           }),
           organ: defineLocations({
@@ -292,9 +277,9 @@ export default defineConfig({
   // Schema configuration, imported from ./src/schemaTypes/index.ts
   schema: {
     types: schemaTypes,
-        // Per (translatable type, locale) Initial Value Template so the
-        // "Create new" menu seeds the correct `language` field. Singletons
-        // also pin their id to the symmetric `{type}-{locale}` pattern.
+    // Per (translatable type, locale) Initial Value Template so the
+    // "Create new" menu seeds the correct `language` field. Singletons
+    // also pin their id to the symmetric `{type}-{locale}` pattern.
     templates: (prev) => {
       const SINGLETON_TYPES = new Set([
         'about',
@@ -325,12 +310,19 @@ export default defineConfig({
 
   document: {
     actions: (prev, context) => {
-      if (!isTranslatableType(context.schemaType)) return prev
-      // Multi-locale Publish takes the primary slot (Studio renders the
-      // first action as the prominent button). The built-in single-
-      // locale `publish` stays in the overflow menu as a fallback,
-      // relabeled so editors see at a glance that it skips translation.
-      const relabeled = prev.map((action) =>
+      // For every doc type: wrap the built-in `publish` action so that a
+      // successful single-doc publish busts the matching `sanity:<docId>`
+      // ISR cache tag. See `docs/caching-strategy.md`.
+      const wrappedForRevalidate = prev.map((action) =>
+        (action as unknown as { action?: string }).action === 'publish'
+          ? withRevalidatePublish(action)
+          : action,
+      )
+      if (!isTranslatableType(context.schemaType)) return wrappedForRevalidate
+      // Translatable types: also relabel the single-locale Publish so editors
+      // see it's the fallback, then prepend the multi-locale Publish action
+      // (which busts caches itself via `/api/publish-all`).
+      const relabeled = wrappedForRevalidate.map((action) =>
         (action as unknown as { action?: string }).action === 'publish'
           ? relabelSingleLocalePublish(action)
           : action,

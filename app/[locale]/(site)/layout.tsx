@@ -6,6 +6,10 @@ import { sanityFetch } from '@/sanity/lib/live'
 import { footerContactQuery, navSettingsQuery } from '@/sanity/lib/queries'
 import { isLocale, type Locale } from '@/core/i18n/locales'
 
+/** ISR safety net for the shared nav/footer Sanity fetches; per-doc cache
+ * busting handled by `revalidateTag` (see `docs/caching-strategy.md`). */
+export const revalidate = 3600
+
 type SiteLayoutProps = {
   children: React.ReactNode
   params: Promise<{ locale: string }>
@@ -25,11 +29,7 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
       <div className="relative z-[4] w-full">
         <div className="max-w-[1320px] mx-auto h-px bg-rule-soft" />
       </div>
-      <Nav
-        locale={locale}
-        wordmark={nav?.wordmark ?? null}
-        tagline={nav?.tagline ?? null}
-      />
+      <Nav locale={locale} wordmark={nav?.wordmark ?? null} tagline={nav?.tagline ?? null} />
       <main className="flex-1">{children}</main>
       <Footer contactHref={contact?.href ?? null} />
     </section>

@@ -1,3 +1,4 @@
+import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 import { isLocale, type Locale } from '@/core/i18n/locales'
@@ -45,8 +46,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `Type "${type}" is not translatable` }, { status: 400 })
   }
 
-  const sourceLocale =
-    (sourceDoc as { language?: string }).language as Locale | undefined
+  const sourceLocale = (sourceDoc as { language?: string }).language as Locale | undefined
   if (!sourceLocale) {
     return NextResponse.json(
       { error: 'Source doc has no language; run `yarn migrate:i18n` first' },
@@ -80,6 +80,7 @@ export async function POST(request: Request) {
         const draft = await client.getDocument(draftId)
         if (draft) {
           await commitDraft(client, draft as Record<string, unknown>, docId)
+          revalidateTag(`sanity:${docId}`, 'default')
           send('source', { status: 'published' })
         } else {
           send('source', { status: 'already-published' })
@@ -109,7 +110,7 @@ export async function POST(request: Request) {
       }
 
       // Step 4: publish siblings.
-      const publishedResults: Array<typeof results[number] & { publishStatus: string }> = []
+      const publishedResults: Array<(typeof results)[number] & { publishStatus: string }> = []
       for (const r of results) {
         if (!autoPublish) {
           publishedResults.push({ ...r, publishStatus: 'kept-as-draft' })
@@ -124,10 +125,9 @@ export async function POST(request: Request) {
           const draft = await client.getDocument(draftSiblingId)
           if (draft) {
             await commitDraft(client, draft as Record<string, unknown>, r.docId)
-            publishedResults.push({ ...r, publishStatus: 'published' })
-          } else {
-            publishedResults.push({ ...r, publishStatus: 'published' })
           }
+          revalidateTag(`sanity:${r.docId}`, 'default')
+          publishedResults.push({ ...r, publishStatus: 'published' })
         } catch (err) {
           publishedResults.push({
             ...r,
@@ -197,7 +197,8 @@ function parseLastSummary(buffered: string): unknown {
 
 async function authorize(request: Request) {
   const auth = request.headers.get('authorization') ?? ''
-  if (!auth.startsWith('Bearer ')) return { authorized: false, error: 'Missing Authorization header' }
+  if (!auth.startsWith('Bearer '))
+    return { authorized: false, error: 'Missing Authorization header' }
   const token = auth.slice('Bearer '.length).trim()
   if (!token) return { authorized: false, error: 'Empty bearer token' }
   try {
