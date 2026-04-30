@@ -312,7 +312,7 @@ export default defineConfig({
     actions: (prev, context) => {
       // For every doc type: wrap the built-in `publish` action so that a
       // successful single-doc publish busts the matching `sanity:<docId>`
-      // ISR cache tag. See `docs/caching-strategy.md`.
+      // ISR cache tag. See `docs/architecture/caching-strategy.md`.
       const wrappedForRevalidate = prev.map((action) =>
         (action as unknown as { action?: string }).action === 'publish'
           ? withRevalidatePublish(action)

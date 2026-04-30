@@ -7,7 +7,7 @@ import { footerContactQuery, navSettingsQuery } from '@/sanity/lib/queries'
 import { isLocale, type Locale } from '@/core/i18n/locales'
 
 /** ISR safety net for the shared nav/footer Sanity fetches; per-doc cache
- * busting handled by `revalidateTag` (see `docs/caching-strategy.md`). */
+ * busting handled by `revalidateTag` (see `docs/architecture/caching-strategy.md`). */
 export const revalidate = 3600
 
 type SiteLayoutProps = {
