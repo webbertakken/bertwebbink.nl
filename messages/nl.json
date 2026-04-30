@@ -244,6 +244,12 @@
   "Placeholder": {
     "label": "[ {fallback} ]"
   },
+  "Lightbox": {
+    "label": "Voorbeeld van afbeelding",
+    "close": "Sluiten",
+    "open": "{alt} groter bekijken",
+    "untitled": "afbeelding"
+  },
   "Search": {
     "heading": "Zoeken",
     "placeholder": "Zoek op de site…",

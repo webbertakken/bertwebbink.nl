@@ -8,6 +8,7 @@ import { stegaClean } from '@sanity/client/stega'
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
 import { Placeholder } from './Placeholder'
 import { OrganBody } from './OrganBody'
+import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
 
 const journalAttr = (id: string, path: string) => dataAttr({ id, type: 'journal', path }).toString()
 
@@ -178,14 +179,16 @@ function Cover({
           data-sanity={journalAttr(entryId, 'coverImage')}
           className="relative mx-auto max-w-[1240px] aspect-[16/9] bg-bg-sunk rounded overflow-hidden border border-rule-soft shadow-card"
         >
-          <Image
-            src={url}
-            alt={alt}
-            width={dim.width}
-            height={dim.height}
-            className="w-full h-full object-cover"
-            priority
-          />
+          <LightboxImage src={url} alt={alt}>
+            <Image
+              src={url}
+              alt={alt}
+              width={dim.width}
+              height={dim.height}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </LightboxImage>
         </div>
         {coverImage.caption && (
           <div className="mt-4 mx-auto max-w-[1240px] px-1 flex justify-between gap-6 font-serif italic text-ink-soft text-[14.5px] leading-[1.5]">

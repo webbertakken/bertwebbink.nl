@@ -244,6 +244,12 @@
   "Placeholder": {
     "label": "[ {fallback} ]"
   },
+  "Lightbox": {
+    "label": "图片预览",
+    "close": "关闭",
+    "open": "放大查看 {alt}",
+    "untitled": "图片"
+  },
   "Search": {
     "heading": "Search",
     "placeholder": "Search the site…",

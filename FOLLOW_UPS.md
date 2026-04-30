@@ -54,17 +54,9 @@ Site copy is currently English. Audience is presumably Dutch.
 - Translate hardcoded landing copy
 - Translate Sanity `post` content fields (title, excerpt, content)
 
-## Image lightbox
+## Image lightbox — card/list thumbnails (deferred)
 
-Every image on every public page should be clickable to open a full-screen modal viewer (with
-close-on-Escape, close-on-backdrop, swipe/arrow-key navigation between images on the same page).
-
-Touchpoints:
-
-- Cover images: `OrganArticle` + `JournalArticle`
-- In-body images: the `image` block in `OrganBody`'s portable-text renderer
-- Card / list thumbnails: `OrganCard`, `JournalList`, `About`
-
-Keep the implementation accessible (focus trap, `aria-label`, restore focus on close) and SSR-safe
-(don't ship a heavyweight library client-only without weighing the bundle cost — a small hand-rolled
-dialog is probably fine).
+The full-screen lightbox shipped for cover, in-body, and About photos. The original brief also
+listed card/list thumbnails (`OrganCard`, `JournalList`) but those are wrapped in stretched links
+to the article — adding a lightbox there would conflict with navigation. If we want it later,
+the thumbnails would need a separate "open photo" affordance distinct from the card click target.

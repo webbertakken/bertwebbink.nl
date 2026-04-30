@@ -244,6 +244,12 @@
   "Placeholder": {
     "label": "[ {fallback} ]"
   },
+  "Lightbox": {
+    "label": "画像プレビュー",
+    "close": "閉じる",
+    "open": "{alt} を拡大表示",
+    "untitled": "画像"
+  },
   "Search": {
     "heading": "Search",
     "placeholder": "Search the site…",

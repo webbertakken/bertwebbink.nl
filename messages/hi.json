@@ -244,6 +244,12 @@
   "Placeholder": {
     "label": "[ {fallback} ]"
   },
+  "Lightbox": {
+    "label": "छवि पूर्वावलोकन",
+    "close": "बंद करें",
+    "open": "{alt} बड़ा देखें",
+    "untitled": "छवि"
+  },
   "Search": {
     "heading": "Search",
     "placeholder": "Search the site…",

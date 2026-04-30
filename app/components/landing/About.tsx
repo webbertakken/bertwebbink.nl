@@ -8,6 +8,7 @@ import { stegaClean } from '@sanity/client/stega'
 import { urlForImage } from '@/sanity/lib/utils'
 import { stegaAttrFor, type StegaAttr } from '@/sanity/lib/stegaFactory'
 import type { Locale } from '@/core/i18n/locales'
+import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
 import { renderEmphasised } from './renderEmphasised'
 
 type Fact = { _key: string; label: string; value: string }
@@ -189,14 +190,17 @@ function PhotoCard({
     const src = image as { asset: { _ref: string; _type: 'reference' }; alt?: string }
     const dim = getImageDimensions(src)
     const url = urlForImage(src)?.width(1200).fit('clip').url() as string
+    const altText = stegaClean(image.alt) || 'Bert Webbink'
     media = (
-      <Image
-        className="w-full h-full object-cover"
-        src={url}
-        alt={stegaClean(image.alt) || 'Bert Webbink'}
-        width={dim.width}
-        height={dim.height}
-      />
+      <LightboxImage src={url} alt={altText}>
+        <Image
+          className="w-full h-full object-cover"
+          src={url}
+          alt={altText}
+          width={dim.width}
+          height={dim.height}
+        />
+      </LightboxImage>
     )
   } else {
     media = (
@@ -317,6 +321,7 @@ function SecondaryPlate({
 
   const src = image as { asset: { _ref: string; _type: 'reference' }; alt?: string }
   const url = urlForImage(src)?.width(2400).height(1600).fit('crop').url() as string
+  const altText = stegaClean(image.alt) || 'Bert Webbink'
   const fieldAttr = attr('secondaryImage')
 
   return (
@@ -336,14 +341,16 @@ function SecondaryPlate({
         data-sanity={fieldAttr}
         className="relative w-full overflow-hidden bg-bg-sunk border-y border-rule-soft"
       >
-        <Image
-          className="w-full h-auto block"
-          src={url}
-          alt={stegaClean(image.alt) || 'Bert Webbink'}
-          width={2400}
-          height={1600}
-          sizes="(min-width: 1240px) 1192px, 100vw"
-        />
+        <LightboxImage src={url} alt={altText}>
+          <Image
+            className="w-full h-auto block"
+            src={url}
+            alt={altText}
+            width={2400}
+            height={1600}
+            sizes="(min-width: 1240px) 1192px, 100vw"
+          />
+        </LightboxImage>
       </div>
 
       {caption && (
