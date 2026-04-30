@@ -45,3 +45,7 @@ next-env.d.ts
 
 # VS Code
 .vscode
+
+# agent skill mirrors (symlinks into .agents/skills)
+/.pi/skills
+/.claude/skills
