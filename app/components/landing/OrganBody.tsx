@@ -85,18 +85,12 @@ function buildComponents(organId: string): PortableTextComponents {
       const dim = getImageDimensions(value)
       const align = ALIGNMENT[value.alignment as string] ?? ALIGNMENT.center
       const alt = stegaClean(value?.alt) || ''
-      const cleanCaption = stegaClean(value?.caption) || null
-      const src = urlForImage(value)?.url() as string
-      const fullSrc = urlForImage(value)?.width(2400).fit('clip').url() as string
+      // Cap inline body images at 2000px wide. Smaller payload for the
+      // page and a Sanity-cached transform that the lightbox reuses.
+      const src = urlForImage(value)?.width(2000).fit('clip').url() as string
       return (
         <figure className={`my-9 ${align}`}>
-          <LightboxImage
-            fullSrc={fullSrc}
-            fullWidth={dim.width}
-            fullHeight={dim.height}
-            alt={alt}
-            caption={cleanCaption}
-          >
+          <LightboxImage src={src} alt={alt}>
             <Image
               className="w-full h-auto rounded border border-rule-soft"
               width={dim.width}

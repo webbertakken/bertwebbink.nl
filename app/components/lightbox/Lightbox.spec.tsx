@@ -3,62 +3,30 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { NextIntlClientProvider } from 'next-intl'
 
 import { LightboxImage } from './LightboxImage'
-import { LightboxProvider } from './LightboxProvider'
-
-vi.mock('next-sanity/image', () => ({
-  Image: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
-    // Render the loaded image so the modal asserts can find it.
-    // Strip non-DOM props that next/image would consume.
-    const {
-      src,
-      alt,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      width,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      height,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      sizes,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      priority,
-      ...rest
-    } = props as Record<string, unknown> as React.ImgHTMLAttributes<HTMLImageElement> & {
-      priority?: boolean
-    }
-    return <img src={src as string} alt={alt as string} {...rest} />
-  },
-}))
 
 const messages = {
   Lightbox: {
-    label: 'Image viewer',
+    label: 'Image preview',
     close: 'Close',
-    previous: 'Previous image',
-    next: 'Next image',
-    open: 'Open {alt} in viewer',
+    open: 'View {alt} larger',
     untitled: 'image',
   },
 }
 
-function Page() {
-  return (
+function renderLightbox(props?: { src?: string; alt?: string }) {
+  const { src = '/photo.jpg', alt = 'A handsome organ' } = props ?? {}
+  return render(
     <NextIntlClientProvider locale="en" messages={messages}>
-      <LightboxProvider>
-        <LightboxImage fullSrc="/full-1.jpg" alt="Plate I" caption="One">
-          <img src="/thumb-1.jpg" alt="Plate I" />
-        </LightboxImage>
-        <LightboxImage fullSrc="/full-2.jpg" alt="Plate II">
-          <img src="/thumb-2.jpg" alt="Plate II" />
-        </LightboxImage>
-        <LightboxImage fullSrc="/full-3.jpg" alt="Plate III">
-          <img src="/thumb-3.jpg" alt="Plate III" />
-        </LightboxImage>
-      </LightboxProvider>
-    </NextIntlClientProvider>
+      <LightboxImage src={src} alt={alt}>
+        <img src={src} alt={alt} data-testid="thumb" />
+      </LightboxImage>
+    </NextIntlClientProvider>,
   )
 }
 
 beforeEach(() => {
-  // jsdom lacks rAF; use a synchronous shim so mount-time effects flush.
+  // jsdom does not implement requestAnimationFrame consistently; shim
+  // so any rAF-driven mount work flushes synchronously.
   vi.stubGlobal(
     'requestAnimationFrame',
     (cb: FrameRequestCallback) => setTimeout(() => cb(0), 0) as unknown as number,
@@ -70,133 +38,119 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-function getTrigger(altText: string) {
-  return screen.getByRole('button', { name: `Open ${altText} in viewer` })
+function getTrigger() {
+  return screen.getByRole('button', { name: 'View A handsome organ larger' })
 }
 
-describe('Lightbox', () => {
-  it('renders triggers for every image without opening the modal', () => {
-    render(<Page />)
-    expect(getTrigger('Plate I')).toBeTruthy()
-    expect(getTrigger('Plate II')).toBeTruthy()
-    expect(getTrigger('Plate III')).toBeTruthy()
+describe('LightboxImage', () => {
+  it('renders the trigger and thumbnail without opening the modal', () => {
+    renderLightbox()
+    expect(getTrigger()).toBeTruthy()
+    expect(screen.getByTestId('thumb')).toBeTruthy()
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it('opens the modal showing the clicked image and its caption', async () => {
-    render(<Page />)
+  it('opens the modal showing the same image source as the thumbnail', async () => {
+    renderLightbox()
     await act(async () => {
-      fireEvent.click(getTrigger('Plate I'))
+      fireEvent.click(getTrigger())
     })
-    const dialog = screen.getByRole('dialog', { name: 'Image viewer' })
-    expect(dialog).toBeTruthy()
-    expect(dialog.querySelector('img')?.getAttribute('src')).toBe('/full-1.jpg')
-    expect(screen.getByText('One')).toBeTruthy()
-    expect(screen.getByText('1 / 3')).toBeTruthy()
+    const dialog = screen.getByRole('dialog', { name: 'Image preview' })
+    const img = dialog.querySelector('img')
+    expect(img?.getAttribute('src')).toBe('/photo.jpg')
+    expect(img?.getAttribute('alt')).toBe('A handsome organ')
   })
 
-  it('navigates with the right arrow key and wraps around', async () => {
-    render(<Page />)
-    await act(async () => {
-      fireEvent.click(getTrigger('Plate III'))
-    })
-    expect(screen.getByText('3 / 3')).toBeTruthy()
-    await act(async () => {
-      fireEvent.keyDown(window, { key: 'ArrowRight' })
-    })
-    expect(screen.getByText('1 / 3')).toBeTruthy()
-    await act(async () => {
-      fireEvent.keyDown(window, { key: 'ArrowLeft' })
-    })
-    expect(screen.getByText('3 / 3')).toBeTruthy()
-  })
-
-  it('closes on Escape and restores focus to the trigger', async () => {
-    render(<Page />)
-    const trigger = getTrigger('Plate II')
+  it('moves focus to the close button on open and restores it on close', async () => {
+    renderLightbox()
+    const trigger = getTrigger()
     await act(async () => {
       fireEvent.click(trigger)
+    })
+    const closeButton = screen.getByRole('button', { name: 'Close' })
+    expect(document.activeElement).toBe(closeButton)
+    await act(async () => {
+      fireEvent.click(closeButton)
+    })
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(document.activeElement).toBe(trigger)
+  })
+
+  it('closes when the Escape key is pressed', async () => {
+    renderLightbox()
+    await act(async () => {
+      fireEvent.click(getTrigger())
     })
     expect(screen.getByRole('dialog')).toBeTruthy()
     await act(async () => {
       fireEvent.keyDown(window, { key: 'Escape' })
     })
     expect(screen.queryByRole('dialog')).toBeNull()
-    expect(document.activeElement).toBe(trigger)
   })
 
-  it('closes when the backdrop is clicked but not when the image is clicked', async () => {
-    render(<Page />)
+  it('closes when the backdrop is clicked', async () => {
+    renderLightbox()
     await act(async () => {
-      fireEvent.click(getTrigger('Plate I'))
+      fireEvent.click(getTrigger())
     })
     const dialog = screen.getByRole('dialog')
     await act(async () => {
-      fireEvent.mouseDown(dialog.querySelector('img') as HTMLElement)
-    })
-    expect(screen.queryByRole('dialog')).toBeTruthy()
-    await act(async () => {
-      fireEvent.mouseDown(dialog)
+      fireEvent.click(dialog)
     })
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it('closes when the close button is clicked', async () => {
-    render(<Page />)
+  it('closes when the image itself is clicked', async () => {
+    renderLightbox()
     await act(async () => {
-      fireEvent.click(getTrigger('Plate I'))
+      fireEvent.click(getTrigger())
     })
+    const dialog = screen.getByRole('dialog')
+    const img = dialog.querySelector('img') as HTMLElement
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+      fireEvent.click(img)
     })
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it('navigates on touch swipe', async () => {
-    render(<Page />)
+  it('keeps Tab focus inside the dialog', async () => {
+    renderLightbox()
     await act(async () => {
-      fireEvent.click(getTrigger('Plate I'))
+      fireEvent.click(getTrigger())
     })
     const dialog = screen.getByRole('dialog')
+    const closeButton = screen.getByRole('button', { name: 'Close' })
+    expect(document.activeElement).toBe(closeButton)
     await act(async () => {
-      fireEvent.touchStart(dialog, { touches: [{ clientX: 200, clientY: 100 }] })
-      fireEvent.touchEnd(dialog, { changedTouches: [{ clientX: 100, clientY: 100 }] })
+      fireEvent.keyDown(dialog, { key: 'Tab' })
     })
-    expect(screen.getByText('2 / 3')).toBeTruthy()
+    expect(document.activeElement).toBe(closeButton)
     await act(async () => {
-      fireEvent.touchStart(dialog, { touches: [{ clientX: 100, clientY: 100 }] })
-      fireEvent.touchEnd(dialog, { changedTouches: [{ clientX: 200, clientY: 100 }] })
+      fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: true })
     })
-    expect(screen.getByText('1 / 3')).toBeTruthy()
+    expect(document.activeElement).toBe(closeButton)
   })
 
-  it('hides the prev/next chrome and counter when there is only one image', async () => {
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <LightboxProvider>
-          <LightboxImage fullSrc="/only.jpg" alt="Solitary plate">
-            <img src="/thumb.jpg" alt="Solitary plate" />
-          </LightboxImage>
-        </LightboxProvider>
-      </NextIntlClientProvider>,
-    )
+  it('locks body scroll while open and restores it on close', async () => {
+    document.body.style.overflow = 'auto'
+    renderLightbox()
     await act(async () => {
-      fireEvent.click(getTrigger('Solitary plate'))
+      fireEvent.click(getTrigger())
     })
-    expect(screen.queryByRole('button', { name: 'Previous image' })).toBeNull()
-    expect(screen.queryByRole('button', { name: 'Next image' })).toBeNull()
-    expect(screen.queryByText(/1 \/ 1/)).toBeNull()
+    expect(document.body.style.overflow).toBe('hidden')
+    await act(async () => {
+      fireEvent.keyDown(window, { key: 'Escape' })
+    })
+    expect(document.body.style.overflow).toBe('auto')
   })
 
-  it('renders raw children outside a provider so the page is still readable', () => {
-    render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <LightboxImage fullSrc="/full.jpg" alt="Standalone">
-          <img src="/thumb.jpg" alt="Standalone" data-testid="standalone" />
-        </LightboxImage>
-      </NextIntlClientProvider>,
-    )
-    expect(screen.getByTestId('standalone')).toBeTruthy()
-    expect(screen.queryByRole('button')).toBeNull()
+  it('falls back to a generic accessible name when the alt is empty', () => {
+    renderLightbox({ alt: '' })
+    expect(screen.getByRole('button', { name: 'View image larger' })).toBeTruthy()
+  })
+
+  it('exposes aria-haspopup="dialog" on the trigger', () => {
+    renderLightbox()
+    expect(getTrigger().getAttribute('aria-haspopup')).toBe('dialog')
   })
 })

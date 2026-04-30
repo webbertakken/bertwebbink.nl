@@ -245,11 +245,9 @@
     "label": "[ {fallback} ]"
   },
   "Lightbox": {
-    "label": "Image viewer",
+    "label": "Image preview",
     "close": "Close",
-    "previous": "Previous image",
-    "next": "Next image",
-    "open": "Open {alt} in viewer",
+    "open": "View {alt} larger",
     "untitled": "image"
   },
   "Search": {

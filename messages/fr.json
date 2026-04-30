@@ -245,11 +245,9 @@
     "label": "[ {fallback} ]"
   },
   "Lightbox": {
-    "label": "Visionneuse d’images",
+    "label": "Aperçu de l’image",
     "close": "Fermer",
-    "previous": "Image précédente",
-    "next": "Image suivante",
-    "open": "Ouvrir {alt} dans la visionneuse",
+    "open": "Agrandir {alt}",
     "untitled": "image"
   },
   "Search": {

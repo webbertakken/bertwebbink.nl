@@ -245,11 +245,9 @@
     "label": "[ {fallback} ]"
   },
   "Lightbox": {
-    "label": "Visualizzatore immagini",
+    "label": "Anteprima immagine",
     "close": "Chiudi",
-    "previous": "Immagine precedente",
-    "next": "Immagine successiva",
-    "open": "Apri {alt} nel visualizzatore",
+    "open": "Ingrandisci {alt}",
     "untitled": "immagine"
   },
   "Search": {

@@ -245,11 +245,9 @@
     "label": "[ {fallback} ]"
   },
   "Lightbox": {
-    "label": "छवि व्यूअर",
+    "label": "छवि पूर्वावलोकन",
     "close": "बंद करें",
-    "previous": "पिछली छवि",
-    "next": "अगली छवि",
-    "open": "{alt} व्यूअर में खोलें",
+    "open": "{alt} बड़ा देखें",
     "untitled": "छवि"
   },
   "Search": {

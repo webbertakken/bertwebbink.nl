@@ -64,32 +64,41 @@ export function SearchBox({ variant = 'inline' }: SearchBoxProps) {
     }
   }
 
+  // Inline mode: the form footprint is just the icon (w-8). The input
+  // is absolute-positioned to the LEFT of the icon so toggling it open
+  // never resizes the form or shifts surrounding nav items.
+  const inlineInputClass = `absolute right-full top-1/2 -translate-y-1/2 mr-2 w-44 lg:w-56 bg-paper text-[13px] text-ink placeholder:text-ink-faint focus-visible:outline-none py-1 px-2 border-b transition-opacity duration-150 ${
+    showInput
+      ? 'border-rule focus-visible:border-accent opacity-100'
+      : 'border-transparent opacity-0 pointer-events-none'
+  }`
+  const expandedInputClass =
+    'flex-1 bg-transparent border border-rule-soft rounded px-3 py-2 text-[13px] text-ink placeholder:text-ink-faint focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2'
+
   return (
     <form
       ref={formRef}
       role="search"
       onSubmit={handleSubmit}
       className={
-        startExpanded ? 'flex items-center gap-2 w-full' : 'flex items-center gap-1.5'
+        startExpanded
+          ? 'flex items-center gap-2 w-full'
+          : 'relative flex items-center'
       }
     >
-      {showInput && (
-        <input
-          ref={inputRef}
-          type="search"
-          name="q"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          aria-label={tSearch('placeholder')}
-          placeholder={tSearch('placeholder')}
-          autoComplete="off"
-          className={
-            startExpanded
-              ? 'flex-1 bg-transparent border border-rule-soft rounded px-3 py-2 text-[13px] text-ink placeholder:text-ink-faint focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2'
-              : 'w-44 lg:w-56 bg-transparent border-b border-rule text-[13px] text-ink placeholder:text-ink-faint focus-visible:outline-none focus-visible:border-accent py-1'
-          }
-        />
-      )}
+      <input
+        ref={inputRef}
+        type="search"
+        name="q"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        aria-label={tSearch('placeholder')}
+        placeholder={tSearch('placeholder')}
+        autoComplete="off"
+        aria-hidden={showInput ? undefined : true}
+        tabIndex={showInput ? 0 : -1}
+        className={startExpanded ? expandedInputClass : inlineInputClass}
+      />
       <button
         type={showInput ? 'submit' : 'button'}
         onClick={!showInput ? () => setOpen(true) : undefined}

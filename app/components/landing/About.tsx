@@ -8,7 +8,6 @@ import { stegaClean } from '@sanity/client/stega'
 import { urlForImage } from '@/sanity/lib/utils'
 import { stegaAttrFor, type StegaAttr } from '@/sanity/lib/stegaFactory'
 import type { Locale } from '@/core/i18n/locales'
-import { LightboxProvider } from '@/app/components/lightbox/LightboxProvider'
 import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
 import { renderEmphasised } from './renderEmphasised'
 
@@ -191,16 +190,9 @@ function PhotoCard({
     const src = image as { asset: { _ref: string; _type: 'reference' }; alt?: string }
     const dim = getImageDimensions(src)
     const url = urlForImage(src)?.width(1200).fit('clip').url() as string
-    const fullUrl = urlForImage(src)?.width(2400).fit('clip').url() as string
     const altText = stegaClean(image.alt) || 'Bert Webbink'
     media = (
-      <LightboxImage
-        fullSrc={fullUrl}
-        fullWidth={dim.width}
-        fullHeight={dim.height}
-        alt={altText}
-        caption={caption}
-      >
+      <LightboxImage src={url} alt={altText}>
         <Image
           className="w-full h-full object-cover"
           src={url}
@@ -329,7 +321,6 @@ function SecondaryPlate({
 
   const src = image as { asset: { _ref: string; _type: 'reference' }; alt?: string }
   const url = urlForImage(src)?.width(2400).height(1600).fit('crop').url() as string
-  const fullUrl = urlForImage(src)?.width(2400).fit('clip').url() as string
   const altText = stegaClean(image.alt) || 'Bert Webbink'
   const fieldAttr = attr('secondaryImage')
 
@@ -350,13 +341,7 @@ function SecondaryPlate({
         data-sanity={fieldAttr}
         className="relative w-full overflow-hidden bg-bg-sunk border-y border-rule-soft"
       >
-        <LightboxImage
-          fullSrc={fullUrl}
-          fullWidth={2400}
-          fullHeight={1600}
-          alt={altText}
-          caption={caption}
-        >
+        <LightboxImage src={url} alt={altText}>
           <Image
             className="w-full h-auto block"
             src={url}
@@ -644,7 +629,7 @@ export function About({
   const aboutId = data._id ?? `about-${locale}`
   const attr = stegaAttrFor(aboutId, 'about')
   return (
-    <LightboxProvider>
+    <>
       <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8" data-screen-label="about">
         <Header eyebrow={data.eyebrow} title={data.title} attr={attr} />
         <div className="mt-14 grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_380px] gap-10 lg:gap-20 items-start">
@@ -677,6 +662,6 @@ export function About({
         rows={data.contactRows}
         attr={attr}
       />
-    </LightboxProvider>
+    </>
   )
 }

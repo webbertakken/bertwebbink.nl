@@ -245,11 +245,9 @@
     "label": "[ {fallback} ]"
   },
   "Lightbox": {
-    "label": "画像ビューアー",
+    "label": "画像プレビュー",
     "close": "閉じる",
-    "previous": "前の画像",
-    "next": "次の画像",
-    "open": "{alt} をビューアーで開く",
+    "open": "{alt} を拡大表示",
     "untitled": "画像"
   },
   "Search": {

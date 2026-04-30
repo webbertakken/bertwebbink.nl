@@ -245,11 +245,9 @@
     "label": "[ {fallback} ]"
   },
   "Lightbox": {
-    "label": "Afbeelding bekijken",
+    "label": "Voorbeeld van afbeelding",
     "close": "Sluiten",
-    "previous": "Vorige afbeelding",
-    "next": "Volgende afbeelding",
-    "open": "{alt} openen in viewer",
+    "open": "{alt} groter bekijken",
     "untitled": "afbeelding"
   },
   "Search": {
