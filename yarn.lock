@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10
 
 "@acemir/cssom@npm:^0.9.31":
@@ -7585,6 +7585,19 @@ __metadata:
     vite: "npm:^6.3.5"
     vite-tsconfig-paths: "npm:^5.1.4"
     vitest: "npm:^3.2.2"
+  dependenciesMeta:
+    "@parcel/watcher":
+      built: true
+    "@swc/core":
+      built: true
+    "@tailwindcss/oxide":
+      built: true
+    "@vercel/speed-insights":
+      built: true
+    esbuild:
+      built: true
+    sharp:
+      built: true
   languageName: unknown
   linkType: soft
 
