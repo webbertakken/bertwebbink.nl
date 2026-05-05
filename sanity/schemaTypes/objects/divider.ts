@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 /**
  * Horizontal-rule-style separator.
@@ -17,7 +17,7 @@ export const divider = defineType({
       title: 'Style',
       type: 'string',
       options: {
-        list: [{title: 'Default separator', value: 'default'}],
+        list: [{ title: 'Default separator', value: 'default' }],
       },
       initialValue: 'default',
       readOnly: true,
@@ -25,6 +25,6 @@ export const divider = defineType({
     }),
   ],
   preview: {
-    prepare: () => ({title: '———'}),
+    prepare: () => ({ title: '———' }),
   },
 })

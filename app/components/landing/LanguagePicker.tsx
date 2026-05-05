@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState, useTransition } from 'react'
-import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-
+import { useParams } from 'next/navigation'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { LOCALES, LOCALE_ENDONYMS, type Locale } from '@/core/i18n/locales'
 import { usePathname, useRouter } from '@/i18n/navigation'
 
@@ -98,9 +97,7 @@ export function LanguagePicker({ locale, className }: LanguagePickerProps) {
     if (target === locale) return
     const slugRoute = SLUGGED_ROUTES[pathname as SluggedPathname]
     const slug = typeof params.slug === 'string' ? params.slug : null
-    let nextHref:
-      | { pathname: string; params?: Record<string, string | string[]> }
-      | string
+    let nextHref: { pathname: string; params?: Record<string, string | string[]> } | string
     if (slugRoute && slug) {
       const siblingSlug = await fetchSiblingSlug(slugRoute.type, locale, slug, target)
       nextHref = siblingSlug

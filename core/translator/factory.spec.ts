@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it } from 'vitest'
-
 import { getTranslator } from './factory'
 
 const ORIGINAL_ENV = { ...process.env }

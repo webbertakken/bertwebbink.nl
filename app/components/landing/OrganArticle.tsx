@@ -1,15 +1,14 @@
-import { useFormatter, useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-import { Image } from 'next-sanity/image'
-import type { PortableTextBlock } from 'next-sanity'
 import { getImageDimensions } from '@sanity/asset-utils'
 import { stegaClean } from '@sanity/client/stega'
-
-import { dataAttr, urlForImage } from '@/sanity/lib/utils'
-import { Placeholder } from './Placeholder'
-import { OrganBody } from './OrganBody'
-import { Specs, hasSpecs } from './Specs'
+import { useFormatter, useTranslations } from 'next-intl'
+import type { PortableTextBlock } from 'next-sanity'
+import { Image } from 'next-sanity/image'
 import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
+import { Link } from '@/i18n/navigation'
+import { dataAttr, urlForImage } from '@/sanity/lib/utils'
+import { OrganBody } from './OrganBody'
+import { Placeholder } from './Placeholder'
+import { Specs, hasSpecs } from './Specs'
 
 const organAttr = (id: string, path: string) => dataAttr({ id, type: 'organ', path }).toString()
 

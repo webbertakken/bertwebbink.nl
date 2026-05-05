@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { applyTranslatedSlug, nextSlugForTranslation, slugify } from './slug'
 
 describe('slugify', () => {
@@ -28,9 +27,7 @@ describe('slugify', () => {
 
 describe('nextSlugForTranslation', () => {
   it('derives a fresh slug when there is no previous slug', () => {
-    expect(
-      nextSlugForTranslation({ newTranslatedTitle: 'Hello World' }),
-    ).toBe('hello-world')
+    expect(nextSlugForTranslation({ newTranslatedTitle: 'Hello World' })).toBe('hello-world')
   })
 
   it('refreshes when the previous slug looks machine-generated', () => {
@@ -86,9 +83,7 @@ describe('applyTranslatedSlug', () => {
   it('writes a fresh slug when the previous sibling slug matches the auto value', () => {
     const doc = { title: '[en] Nieuw', slug: { _type: 'slug', current: 'nieuw' } }
     const prev = { title: 'Nieuw', slug: { _type: 'slug', current: 'nieuw' } }
-    const result = applyTranslatedSlug(doc, prev, [
-      { id: 'title', sourceText: '[en] Nieuw' },
-    ])
+    const result = applyTranslatedSlug(doc, prev, [{ id: 'title', sourceText: '[en] Nieuw' }])
     const slug = (result as { slug: { current: string } }).slug
     expect(slug.current).toBe('en-nieuw')
   })
@@ -96,9 +91,7 @@ describe('applyTranslatedSlug', () => {
   it('keeps a manual slug when previous sibling slug diverges from auto', () => {
     const doc = { title: '[en] Nieuw' }
     const prev = { title: 'Nieuw', slug: { _type: 'slug', current: 'editor-pinned' } }
-    const result = applyTranslatedSlug(doc, prev, [
-      { id: 'title', sourceText: '[en] Nieuw' },
-    ])
+    const result = applyTranslatedSlug(doc, prev, [{ id: 'title', sourceText: '[en] Nieuw' }])
     expect((result as { slug?: { current?: string } }).slug).toBeUndefined()
   })
 
@@ -110,9 +103,7 @@ describe('applyTranslatedSlug', () => {
       [{ id: 'title', sourceText: 'Daarle Reformed Church' }],
       new Set(['daarle-reformed-church']),
     )
-    expect((result as { slug: { current: string } }).slug.current).toBe(
-      'daarle-reformed-church-2',
-    )
+    expect((result as { slug: { current: string } }).slug.current).toBe('daarle-reformed-church-2')
   })
 
   it('skips occupied numeric suffixes until it finds a free one', () => {

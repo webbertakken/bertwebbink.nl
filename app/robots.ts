@@ -1,9 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
-
+import { UI_DEFAULT_LOCALE } from '@/core/i18n/locales'
 import { sanityFetch } from '@/sanity/lib/live'
 import { settingsQuery } from '@/sanity/lib/queries'
-import { UI_DEFAULT_LOCALE } from '@/core/i18n/locales'
 
 /**
  * Crawlers that exist primarily to feed model *training* data — content

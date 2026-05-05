@@ -1,17 +1,12 @@
 import { describe, expect, it } from 'vitest'
-
 import { applyAll, extractAll, walkersFor } from './registry'
 
 describe('walker registry', () => {
   it('exposes a derivedFields entry for organ stop names', () => {
     const spec = walkersFor('organ')
     if (!spec) throw new Error('organ spec missing')
-    expect(spec.derivedFields?.[0]?.readPath).toBe(
-      'disposition.registers[*].stops[*].name',
-    )
-    expect(spec.derivedFields?.[0]?.writePath).toBe(
-      'disposition.registers[*].stops[*].translation',
-    )
+    expect(spec.derivedFields?.[0]?.readPath).toBe('disposition.registers[*].stops[*].name')
+    expect(spec.derivedFields?.[0]?.writePath).toBe('disposition.registers[*].stops[*].translation')
   })
 
   it('returns walker specs for every translatable type', () => {
@@ -137,31 +132,21 @@ describe('walker registry', () => {
             ],
           },
         ],
-        couplings: [
-          { _key: 'c1', name: 'Hoofdwerk – Bovenwerk', note: "4'" },
-        ],
+        couplings: [{ _key: 'c1', name: 'Hoofdwerk – Bovenwerk', note: "4'" }],
         accessories: [{ _key: 'a1', name: 'Tremulant' }],
       },
     }
     const { units } = extractAll(doc, 'organ', 'nl')
     const ids = units.map((u) => u.id)
     expect(ids).toContain('disposition.registers[_key=="r1"].name')
-    expect(ids).toContain(
-      'disposition.registers[_key=="r1"].stops[_key=="s1"].note',
-    )
+    expect(ids).toContain('disposition.registers[_key=="r1"].stops[_key=="s1"].note')
     expect(ids).toContain('disposition.couplings[_key=="c1"].name')
     expect(ids).toContain('disposition.couplings[_key=="c1"].note')
     expect(ids).toContain('disposition.accessories[_key=="a1"].name')
     // Stop names land on the derived `translation` path, not on `name`.
-    expect(ids).toContain(
-      'disposition.registers[_key=="r1"].stops[_key=="s1"].translation',
-    )
-    expect(ids).toContain(
-      'disposition.registers[_key=="r1"].stops[_key=="s2"].translation',
-    )
-    expect(ids).not.toContain(
-      'disposition.registers[_key=="r1"].stops[_key=="s1"].name',
-    )
+    expect(ids).toContain('disposition.registers[_key=="r1"].stops[_key=="s1"].translation')
+    expect(ids).toContain('disposition.registers[_key=="r1"].stops[_key=="s2"].translation')
+    expect(ids).not.toContain('disposition.registers[_key=="r1"].stops[_key=="s1"].name')
   })
 
   it('round-trips an organ disposition: register names overwrite, stop names go to translation', () => {
@@ -175,9 +160,7 @@ describe('walker registry', () => {
           {
             _key: 'r1',
             name: 'Hoofdwerk',
-            stops: [
-              { _key: 's1', name: 'Bordun', pitch: "16'" },
-            ],
+            stops: [{ _key: 's1', name: 'Bordun', pitch: "16'" }],
           },
         ],
       },
@@ -194,9 +177,11 @@ describe('walker registry', () => {
     expect(next.disposition.registers[0].stops[0].name).toBe('Bordun')
     // Translation written to the derived field.
     expect(
-      (next.disposition.registers[0].stops[0] as unknown as {
-        translation?: string
-      }).translation,
+      (
+        next.disposition.registers[0].stops[0] as unknown as {
+          translation?: string
+        }
+      ).translation,
     ).toBe('[ja] Bordun')
     // Pitch (numeric notation) is left alone.
     expect(next.disposition.registers[0].stops[0].pitch).toBe("16'")
@@ -208,13 +193,28 @@ describe('walker registry', () => {
       _type: 'score',
       composer: 'Buxtehude',
       forInstrument: [
-        { _key: 'k1', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'Voor orgel' },
+        {
+          _key: 'k1',
+          _type: 'internationalizedArrayStringValue',
+          language: 'nl',
+          value: 'Voor orgel',
+        },
       ],
       edition: [
-        { _key: 'k2', _type: 'internationalizedArrayStringValue', language: 'nl', value: '1e editie' },
+        {
+          _key: 'k2',
+          _type: 'internationalizedArrayStringValue',
+          language: 'nl',
+          value: '1e editie',
+        },
       ],
       blurb: [
-        { _key: 'k3', _type: 'internationalizedArrayTextValue', language: 'nl', value: 'Een werk in g.' },
+        {
+          _key: 'k3',
+          _type: 'internationalizedArrayTextValue',
+          language: 'nl',
+          value: 'Een werk in g.',
+        },
       ],
     }
     const { units } = extractAll(doc, 'score', 'nl')

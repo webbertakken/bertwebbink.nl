@@ -15,15 +15,9 @@
  */
 
 import 'dotenv/config'
-
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-
-import {
-  LOCALES,
-  UI_DEFAULT_LOCALE,
-  type Locale,
-} from '@/core/i18n/locales'
+import { LOCALES, UI_DEFAULT_LOCALE, type Locale } from '@/core/i18n/locales'
 import { getTranslator } from '@/core/translator/factory'
 import type { TranslationUnit } from '@/core/translator/types'
 

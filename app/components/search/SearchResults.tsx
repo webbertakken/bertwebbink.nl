@@ -1,11 +1,9 @@
-import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
-
-import { getPathname } from '@/i18n/navigation'
-import { searchResultHref, type SearchHitInput } from '@/core/search/url'
+import Link from 'next/link'
 import type { Locale } from '@/core/i18n/locales'
+import { searchResultHref, type SearchHitInput } from '@/core/search/url'
+import { getPathname } from '@/i18n/navigation'
 import type { SearchQueryResult } from '@/sanity.types'
-
 import { highlight } from './highlight'
 
 type SearchResultsProps = {
@@ -59,10 +57,7 @@ export async function SearchResults({ locale, query, tokens, results }: SearchRe
       {renderable.map(({ hit, url }) => {
         const typeLabel = t(`typeLabels.${TYPE_LABEL_KEYS[hit._type]}`)
         return (
-          <li
-            key={hit._id}
-            className="border-t border-rule-soft py-7 first:border-t-0 first:pt-0"
-          >
+          <li key={hit._id} className="border-t border-rule-soft py-7 first:border-t-0 first:pt-0">
             <Link
               href={url}
               className="block group transition-transform duration-[300ms] ease-[cubic-bezier(0.2,0.6,0.2,1)] hover:scale-[1.005]"

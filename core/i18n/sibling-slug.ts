@@ -9,10 +9,7 @@ export const SLUGGED_LOCALISED_TYPES = ['journal', 'organ'] as const
 export type SluggedLocalisedType = (typeof SLUGGED_LOCALISED_TYPES)[number]
 
 export function isSluggedLocalisedType(value: unknown): value is SluggedLocalisedType {
-  return (
-    typeof value === 'string' &&
-    (SLUGGED_LOCALISED_TYPES as readonly string[]).includes(value)
-  )
+  return typeof value === 'string' && (SLUGGED_LOCALISED_TYPES as readonly string[]).includes(value)
 }
 
 export type SiblingSlugClient = {

@@ -1,11 +1,10 @@
 'use client'
 
-import { useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-
-import { dataAttr } from '@/sanity/lib/utils'
+import { useMemo, useState } from 'react'
 import type { Locale } from '@/core/i18n/locales'
+import { Link } from '@/i18n/navigation'
+import { dataAttr } from '@/sanity/lib/utils'
 import { renderEmphasised, renderInlineItalic } from './renderEmphasised'
 
 export type Score = {
@@ -80,8 +79,7 @@ const makeScoresPageAttr = (locale: Locale) => (path: string) =>
     type: SCORES_PAGE_TYPE,
     path,
   }).toString()
-const scoreAttr = (id: string, path: string) =>
-  dataAttr({ id, type: 'score', path }).toString()
+const scoreAttr = (id: string, path: string) => dataAttr({ id, type: 'score', path }).toString()
 
 const fmtEdition = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
 const fmtEditionShort = (n: number) => `Ed. Webbink · No. ${String(n).padStart(2, '0')}`
@@ -209,9 +207,7 @@ function ScoreCoverFeatured({ score }: { score: Score }) {
           <span className="w-6 h-px bg-current opacity-60" />
         </div>
         {score.catalog && (
-          <div className="font-serif italic font-normal text-lg text-ink-soft">
-            {score.catalog}
-          </div>
+          <div className="font-serif italic font-normal text-lg text-ink-soft">{score.catalog}</div>
         )}
       </div>
       <div className="flex flex-col items-center gap-1.5 font-mono text-[9px] tracking-[0.22em] uppercase text-ink-faint">
@@ -228,9 +224,7 @@ function ScoreCoverFeatured({ score }: { score: Score }) {
 }
 
 function editionAnchorId(editionNumber: number | null | undefined): string | undefined {
-  return editionNumber == null
-    ? undefined
-    : `ed-${String(editionNumber).padStart(2, '0')}`
+  return editionNumber == null ? undefined : `ed-${String(editionNumber).padStart(2, '0')}`
 }
 
 function Featured({ score }: { score: Score }) {
@@ -389,9 +383,7 @@ function ScoreCard({ score }: { score: Score }) {
           <span data-sanity={scoreAttr(score._id, 'era')} className="text-accent">
             {eraLabel(score.era)}
           </span>
-          {score.year && (
-            <span data-sanity={scoreAttr(score._id, 'year')}>{score.year}</span>
-          )}
+          {score.year && <span data-sanity={scoreAttr(score._id, 'year')}>{score.year}</span>}
         </div>
         <h4
           data-sanity={scoreAttr(score._id, 'work')}
@@ -447,9 +439,7 @@ function Grid({ scores, total }: { scores: Score[]; total: number }) {
         </span>
       </div>
       {scores.length === 0 ? (
-        <p className="font-serif italic text-ink-faint text-lg pb-24">
-          {t('emptyFilter')}
-        </p>
+        <p className="font-serif italic text-ink-faint text-lg pb-24">{t('emptyFilter')}</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-9 gap-x-8 pb-24">
           {scores.map((s) => (

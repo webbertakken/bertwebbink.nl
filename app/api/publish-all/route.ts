@@ -1,6 +1,5 @@
 import { revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
-
 import { isLocale, type Locale } from '@/core/i18n/locales'
 import { getTranslator } from '@/core/translator/factory'
 import {

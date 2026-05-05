@@ -1,4 +1,3 @@
-import type { Translator, TranslateRequest, TranslateResult } from './types'
 import {
   buildSystemPrompt,
   buildUserPayload,
@@ -6,6 +5,7 @@ import {
   responseSchema,
   type RawTranslatorResponse,
 } from './prompts'
+import type { Translator, TranslateRequest, TranslateResult } from './types'
 
 /**
  * Default LLM translator: Google Gemini 2.5 Pro via the Google AI Studio
@@ -23,11 +23,7 @@ export class GeminiTranslator implements Translator {
   private readonly apiKey: string
   private readonly baseUrl: string
 
-  constructor(opts?: {
-    apiKey?: string
-    model?: string
-    baseUrl?: string
-  }) {
+  constructor(opts?: { apiKey?: string; model?: string; baseUrl?: string }) {
     const apiKey = opts?.apiKey ?? process.env.GOOGLE_AI_API_KEY ?? process.env.GEMINI_API_KEY
     if (!apiKey) throw new Error('GeminiTranslator: missing GOOGLE_AI_API_KEY / GEMINI_API_KEY')
     this.apiKey = apiKey
@@ -35,8 +31,7 @@ export class GeminiTranslator implements Translator {
     // and quality is fine for our shape of work. Override per call via
     // `GEMINI_MODEL` or constructor opts.
     this.model = opts?.model ?? process.env.GEMINI_MODEL ?? 'gemini-2.5-flash'
-    this.baseUrl =
-      opts?.baseUrl ?? 'https://generativelanguage.googleapis.com/v1beta'
+    this.baseUrl = opts?.baseUrl ?? 'https://generativelanguage.googleapis.com/v1beta'
   }
 
   async translate(req: TranslateRequest): Promise<TranslateResult> {
@@ -65,18 +60,26 @@ export class GeminiTranslator implements Translator {
     })
     if (!resp.ok) {
       const text = await resp.text().catch(() => '')
-      throw new Error(`GeminiTranslator: HTTP ${resp.status} ${resp.statusText} \u2014 ${text.slice(0, 500)}`)
+      throw new Error(
+        `GeminiTranslator: HTTP ${resp.status} ${resp.statusText} \u2014 ${text.slice(0, 500)}`,
+      )
     }
     const json = (await resp.json()) as {
       candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>
-      usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number }
+      usageMetadata?: {
+        promptTokenCount?: number
+        candidatesTokenCount?: number
+        totalTokenCount?: number
+      }
     }
     const text = json?.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
     let parsed: RawTranslatorResponse
     try {
       parsed = JSON.parse(text)
     } catch (cause) {
-      throw new Error(`GeminiTranslator: response was not valid JSON: ${text.slice(0, 200)}`, { cause })
+      throw new Error(`GeminiTranslator: response was not valid JSON: ${text.slice(0, 200)}`, {
+        cause,
+      })
     }
     return {
       units: decodeResponse(parsed, req),

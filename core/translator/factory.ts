@@ -23,7 +23,9 @@ const PROVIDERS: Record<TranslatorProvider, () => Translator> = {
  * silent fallback.
  */
 export function getTranslator(provider?: TranslatorProvider): Translator {
-  const requested = (provider ?? (process.env.TRANSLATOR_PROVIDER as TranslatorProvider) ?? 'gemini') as TranslatorProvider
+  const requested = (provider ??
+    (process.env.TRANSLATOR_PROVIDER as TranslatorProvider) ??
+    'gemini') as TranslatorProvider
   const factory = PROVIDERS[requested]
   if (!factory) throw new Error(`getTranslator: unknown provider "${requested}"`)
   return factory()

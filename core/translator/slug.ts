@@ -85,10 +85,7 @@ export function nextSlugForTranslation(args: {
  * (type, locale) bucket) the caller surfaces a duplicate, which is
  * better than silently erasing data.
  */
-export function makeUniqueSlug(
-  base: string,
-  taken: ReadonlySet<string>,
-): string {
+export function makeUniqueSlug(base: string, taken: ReadonlySet<string>): string {
   if (!taken.has(base)) return base
   for (let n = 2; n < 1000; n++) {
     const suffixed = `${base}-${n}`

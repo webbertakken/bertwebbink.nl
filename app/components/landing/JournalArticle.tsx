@@ -1,14 +1,13 @@
-import { useFormatter, useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-import { Image } from 'next-sanity/image'
-import type { PortableTextBlock } from 'next-sanity'
 import { getImageDimensions } from '@sanity/asset-utils'
 import { stegaClean } from '@sanity/client/stega'
-
-import { dataAttr, urlForImage } from '@/sanity/lib/utils'
-import { Placeholder } from './Placeholder'
-import { OrganBody } from './OrganBody'
+import { useFormatter, useTranslations } from 'next-intl'
+import type { PortableTextBlock } from 'next-sanity'
+import { Image } from 'next-sanity/image'
 import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
+import { Link } from '@/i18n/navigation'
+import { dataAttr, urlForImage } from '@/sanity/lib/utils'
+import { OrganBody } from './OrganBody'
+import { Placeholder } from './Placeholder'
 
 const journalAttr = (id: string, path: string) => dataAttr({ id, type: 'journal', path }).toString()
 
@@ -78,9 +77,9 @@ function readMinutes(content: PortableTextBlock[] | null): number {
 function useCategoryLabel(): (category: JournalCategory | null) => string {
   const t = useTranslations('JournalArticle.categories')
   return (category) => {
-    const key = (category && (CATEGORY_KEYS as readonly string[]).includes(category)
-      ? category
-      : 'other') as CategoryKey
+    const key = (
+      category && (CATEGORY_KEYS as readonly string[]).includes(category) ? category : 'other'
+    ) as CategoryKey
     return t(key as never)
   }
 }

@@ -1,9 +1,8 @@
 import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
 import { PortableText, type PortableTextBlock } from 'next-sanity'
-
-import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
 import type { Locale } from '@/core/i18n/locales'
+import { Link } from '@/i18n/navigation'
+import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
 
 type LinkItem = {
   _key: string
@@ -35,9 +34,7 @@ const introComponents = {
     ),
   },
   marks: {
-    em: ({ children }: { children?: React.ReactNode }) => (
-      <em className="italic">{children}</em>
-    ),
+    em: ({ children }: { children?: React.ReactNode }) => <em className="italic">{children}</em>,
   },
 }
 
@@ -70,22 +67,14 @@ function EmptyState() {
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
         {t.rich('emptyHint', {
-          code: (chunks) => (
-            <span className="not-italic font-mono text-sm text-ink">{chunks}</span>
-          ),
+          code: (chunks) => <span className="not-italic font-mono text-sm text-ink">{chunks}</span>,
         })}
       </p>
     </section>
   )
 }
 
-export function Elsewhere({
-  locale,
-  data,
-}: {
-  locale: Locale
-  data: ElsewhereContent | null
-}) {
+export function Elsewhere({ locale, data }: { locale: Locale; data: ElsewhereContent | null }) {
   if (!data) return <EmptyState />
   const elsewhereId = data._id ?? `elsewhere-${locale}`
   const elsewhereAttr = stegaAttrFor(elsewhereId, 'elsewhere')

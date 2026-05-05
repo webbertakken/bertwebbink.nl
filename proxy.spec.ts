@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { isAlwaysAllowed, singleLocaleLockTarget } from './proxy.helpers'
 
 describe('isAlwaysAllowed', () => {

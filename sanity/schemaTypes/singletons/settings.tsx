@@ -1,6 +1,5 @@
 import { CogIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
-
 import * as demo from '../../lib/initialValues'
 import { languageField } from '../fields/language'
 
@@ -62,7 +61,8 @@ export const settings = defineType({
     }),
     defineField({
       name: 'title',
-      description: 'Site name. Used in the browser tab title ("%s | Site name") and as the default page title.',
+      description:
+        'Site name. Used in the browser tab title ("%s | Site name") and as the default page title.',
       title: 'Title',
       type: 'string',
       group: 'general',
@@ -110,7 +110,8 @@ export const settings = defineType({
     }),
     defineField({
       name: 'description',
-      description: 'Site-wide meta description. Used in the homepage <meta name="description"> tag and as a fallback for pages that don\u2019t set their own.',
+      description:
+        'Site-wide meta description. Used in the homepage <meta name="description"> tag and as a fallback for pages that don\u2019t set their own.',
       title: 'Description',
       type: 'array',
       group: 'seo',

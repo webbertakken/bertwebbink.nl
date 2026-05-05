@@ -1,6 +1,5 @@
 import { LockIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
-
 import { languageField } from '../fields/language'
 
 /**

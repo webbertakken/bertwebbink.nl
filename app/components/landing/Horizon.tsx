@@ -61,7 +61,12 @@ export function Horizon({ variant = 'fields', showSun = true }: HorizonProps) {
           <stop offset="100%" stopColor="oklch(0.97 0.008 80)" stopOpacity="0" />
         </radialGradient>
         <filter id="grain" x="0" y="0" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves={2} stitchTiles="stitch" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.85"
+            numOctaves={2}
+            stitchTiles="stitch"
+          />
           <feColorMatrix values="0 0 0 0 0.18  0 0 0 0 0.16  0 0 0 0 0.14  0 0 0 0.05 0" />
           <feComposite in2="SourceGraphic" operator="in" />
         </filter>
@@ -275,18 +280,39 @@ export function Horizon({ variant = 'fields', showSun = true }: HorizonProps) {
           {/* Foreground grove — left of centre, balancing the sun on the right. */}
           <g opacity="0.78">
             {/* tree 1 — tall poplar */}
-            <line x1="446" y1="430" x2="446" y2="364" stroke="oklch(0.36 0.022 58)" strokeWidth="2" />
+            <line
+              x1="446"
+              y1="430"
+              x2="446"
+              y2="364"
+              stroke="oklch(0.36 0.022 58)"
+              strokeWidth="2"
+            />
             <ellipse cx="446" cy="378" rx="14" ry="32" fill="oklch(0.42 0.024 58)" />
             <ellipse cx="446" cy="368" rx="9" ry="20" fill="oklch(0.38 0.024 56)" opacity="0.85" />
 
             {/* tree 2 — broad oak, foreground of the cluster */}
-            <line x1="478" y1="430" x2="478" y2="392" stroke="oklch(0.36 0.022 58)" strokeWidth="2" />
+            <line
+              x1="478"
+              y1="430"
+              x2="478"
+              y2="392"
+              stroke="oklch(0.36 0.022 58)"
+              strokeWidth="2"
+            />
             <ellipse cx="478" cy="394" rx="22" ry="18" fill="oklch(0.42 0.024 58)" />
             <ellipse cx="472" cy="390" rx="10" ry="9" fill="oklch(0.38 0.024 56)" opacity="0.85" />
             <ellipse cx="486" cy="392" rx="9" ry="8" fill="oklch(0.38 0.024 56)" opacity="0.8" />
 
             {/* tree 3 — second poplar */}
-            <line x1="514" y1="430" x2="514" y2="372" stroke="oklch(0.36 0.022 58)" strokeWidth="2" />
+            <line
+              x1="514"
+              y1="430"
+              x2="514"
+              y2="372"
+              stroke="oklch(0.36 0.022 58)"
+              strokeWidth="2"
+            />
             <ellipse cx="514" cy="386" rx="12" ry="28" fill="oklch(0.42 0.024 58)" />
             <ellipse cx="514" cy="378" rx="7" ry="17" fill="oklch(0.38 0.024 56)" opacity="0.85" />
 
@@ -302,9 +328,23 @@ export function Horizon({ variant = 'fields', showSun = true }: HorizonProps) {
 
           {/* Smaller pair on the far right — balances the sun if shown. */}
           <g opacity="0.6">
-            <line x1="1330" y1="430" x2="1330" y2="404" stroke="oklch(0.46 0.022 60)" strokeWidth="1.4" />
+            <line
+              x1="1330"
+              y1="430"
+              x2="1330"
+              y2="404"
+              stroke="oklch(0.46 0.022 60)"
+              strokeWidth="1.4"
+            />
             <ellipse cx="1330" cy="408" rx="6" ry="10" fill="oklch(0.46 0.022 60)" />
-            <line x1="1346" y1="430" x2="1346" y2="412" stroke="oklch(0.46 0.022 60)" strokeWidth="1.4" />
+            <line
+              x1="1346"
+              y1="430"
+              x2="1346"
+              y2="412"
+              stroke="oklch(0.46 0.022 60)"
+              strokeWidth="1.4"
+            />
             <ellipse cx="1346" cy="416" rx="5" ry="8" fill="oklch(0.46 0.022 60)" />
           </g>
 

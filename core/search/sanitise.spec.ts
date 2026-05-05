@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { extractTokens, sanitiseQuery } from './sanitise'
 
 describe('sanitiseQuery', () => {

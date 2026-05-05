@@ -41,8 +41,8 @@ jobs:
             ${{ steps.yarn-config.outputs.cacheFolder }}
             .yarn/install-state.gz
           key:
-            yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-${{
-            hashFiles('yarn.lock') }}
+            yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-${{ hashFiles('yarn.lock')
+            }}
           restore-keys: |
             yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-
 
@@ -92,8 +92,8 @@ jobs:
             ${{ steps.yarn-config.outputs.cacheFolder }}
             .yarn/install-state.gz
           key:
-            yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-${{
-            hashFiles('yarn.lock') }}
+            yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-${{ hashFiles('yarn.lock')
+            }}
           restore-keys: |
             yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-
 
@@ -143,8 +143,8 @@ jobs:
             ${{ steps.yarn-config.outputs.cacheFolder }}
             .yarn/install-state.gz
           key:
-            yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-${{
-            hashFiles('yarn.lock') }}
+            yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-${{ hashFiles('yarn.lock')
+            }}
           restore-keys: |
             yarn-${{ runner.os }}-node${{ steps.node.outputs.version }}-
 

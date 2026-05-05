@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { withRevalidatePublish } from './withRevalidate'
 
 const useClientMock = vi.fn()

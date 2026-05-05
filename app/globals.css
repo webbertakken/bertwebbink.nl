@@ -51,7 +51,9 @@
   body {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    font-feature-settings: 'kern' 1, 'liga' 1;
+    font-feature-settings:
+      'kern' 1,
+      'liga' 1;
   }
   ::selection {
     background: oklch(0.85 0.04 45 / 0.6);

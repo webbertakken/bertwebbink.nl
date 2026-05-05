@@ -26,9 +26,9 @@
  *   tsx scripts/cleanup-pre-i18n.ts --env <path> --apply
  */
 
+import { createClient } from '@sanity/client'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { createClient } from '@sanity/client'
 
 interface Target {
   id: string
@@ -58,7 +58,8 @@ const TARGETS: Target[] = [
     expectedDraftType: 'blog',
     publishedId: 'v2I8xbswIO3h0NWvyLCPIC',
     expectedPublishedType: 'journal',
-    rationale: 'Dead-type ghost of Orgelpad Vollenhove; 15/15 blocks identical to published journal.',
+    rationale:
+      'Dead-type ghost of Orgelpad Vollenhove; 15/15 blocks identical to published journal.',
   },
 ]
 
@@ -134,7 +135,9 @@ async function main(): Promise<void> {
     useCdn: false,
   })
 
-  console.log(`Project: ${projectId}    Dataset: ${dataset}    Mode: ${args.apply ? 'APPLY' : 'DRY-RUN'}`)
+  console.log(
+    `Project: ${projectId}    Dataset: ${dataset}    Mode: ${args.apply ? 'APPLY' : 'DRY-RUN'}`,
+  )
   console.log('')
 
   const violations: string[] = []
@@ -200,7 +203,9 @@ async function main(): Promise<void> {
 
   if (!args.apply) {
     console.log('')
-    console.log(`Dry-run complete. ${planned.length} delete(s) would be performed. Pass --apply to execute.`)
+    console.log(
+      `Dry-run complete. ${planned.length} delete(s) would be performed. Pass --apply to execute.`,
+    )
     return
   }
 

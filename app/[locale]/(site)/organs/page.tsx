@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-
-import { Hero } from '@/app/components/landing/Hero'
-import { OrgansArchive } from '@/app/components/landing/OrgansArchive'
-import type { LandingOrgan } from '@/app/components/landing/OrganCard'
 import { countCitiesFromRows, normaliseCityParam } from '@/app/components/landing/archiveUtil'
+import { Hero } from '@/app/components/landing/Hero'
+import type { LandingOrgan } from '@/app/components/landing/OrganCard'
+import { OrgansArchive } from '@/app/components/landing/OrgansArchive'
+import { isLocale, type Locale } from '@/core/i18n/locales'
+import { sanityFetch } from '@/sanity/lib/live'
 import {
   archiveOrgansCountQuery,
   archiveOrgansQuery,
@@ -12,8 +13,6 @@ import {
   landingStatsQuery,
   organsPageQuery,
 } from '@/sanity/lib/queries'
-import { sanityFetch } from '@/sanity/lib/live'
-import { isLocale, type Locale } from '@/core/i18n/locales'
 
 const PAGE_SIZE = 24
 

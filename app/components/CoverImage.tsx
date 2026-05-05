@@ -1,6 +1,6 @@
+import { getImageDimensions } from '@sanity/asset-utils'
 import { stegaClean } from '@sanity/client/stega'
 import { Image } from 'next-sanity/image'
-import { getImageDimensions } from '@sanity/asset-utils'
 import { urlForImage } from '@/sanity/lib/utils'
 
 interface CoverImageProps {

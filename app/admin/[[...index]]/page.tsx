@@ -18,10 +18,9 @@ import config from '@/sanity.config'
  * client-only editing tool — there is nothing to gain from SSR-ing it,
  * and the Studio shows its own loader while the bundle resolves.
  */
-const NextStudio = dynamic(
-  () => import('next-sanity/studio').then((mod) => mod.NextStudio),
-  { ssr: false },
-)
+const NextStudio = dynamic(() => import('next-sanity/studio').then((mod) => mod.NextStudio), {
+  ssr: false,
+})
 
 export default function AdminPage() {
   return <NextStudio config={config} />

@@ -1,10 +1,9 @@
 import { setRequestLocale } from 'next-intl/server'
-
-import { Nav } from '@/app/components/landing/Nav'
 import { Footer } from '@/app/components/landing/Footer'
+import { Nav } from '@/app/components/landing/Nav'
+import { isLocale, type Locale } from '@/core/i18n/locales'
 import { sanityFetch } from '@/sanity/lib/live'
 import { footerContactQuery, navSettingsQuery } from '@/sanity/lib/queries'
-import { isLocale, type Locale } from '@/core/i18n/locales'
 
 /** ISR safety net for the shared nav/footer Sanity fetches; per-doc cache
  * busting handled by `revalidateTag` (see `docs/architecture/caching-strategy.md`). */

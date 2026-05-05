@@ -57,6 +57,6 @@ Site copy is currently English. Audience is presumably Dutch.
 ## Image lightbox — card/list thumbnails (deferred)
 
 The full-screen lightbox shipped for cover, in-body, and About photos. The original brief also
-listed card/list thumbnails (`OrganCard`, `JournalList`) but those are wrapped in stretched links
-to the article — adding a lightbox there would conflict with navigation. If we want it later,
-the thumbnails would need a separate "open photo" affordance distinct from the card click target.
+listed card/list thumbnails (`OrganCard`, `JournalList`) but those are wrapped in stretched links to
+the article — adding a lightbox there would conflict with navigation. If we want it later, the
+thumbnails would need a separate "open photo" affordance distinct from the card click target.

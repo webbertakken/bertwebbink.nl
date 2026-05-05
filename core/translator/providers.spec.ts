@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-
 import { AnthropicTranslator } from './anthropic'
 import { GeminiTranslator } from './gemini'
 import { OpenAITranslator } from './openai'
@@ -26,9 +25,7 @@ describe('GeminiTranslator', () => {
                 parts: [
                   {
                     text: JSON.stringify({
-                      units: [
-                        { id: 'title', translatedText: 'Bonjour' },
-                      ],
+                      units: [{ id: 'title', translatedText: 'Bonjour' }],
                     }),
                   },
                 ],
@@ -140,10 +137,9 @@ describe('OpenAITranslator', () => {
 
   it('throws on invalid JSON', async () => {
     fetchSpy.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({ choices: [{ message: { content: 'not json' } }] }),
-        { status: 200 },
-      ),
+      new Response(JSON.stringify({ choices: [{ message: { content: 'not json' } }] }), {
+        status: 200,
+      }),
     )
     const t = new OpenAITranslator({ apiKey: 'test' })
     await expect(
@@ -181,10 +177,7 @@ describe('AnthropicTranslator — error paths', () => {
 
   it('throws when the response has no tool_use', async () => {
     fetchSpy.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({ content: [{ type: 'text', text: 'oops' }] }),
-        { status: 200 },
-      ),
+      new Response(JSON.stringify({ content: [{ type: 'text', text: 'oops' }] }), { status: 200 }),
     )
     const t = new AnthropicTranslator({ apiKey: 'test' })
     await expect(
@@ -210,10 +203,7 @@ describe('AnthropicTranslator — error paths', () => {
 describe('Provider edge cases', () => {
   it('GeminiTranslator handles a missing candidate body', async () => {
     fetchSpy.mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({ candidates: [], usageMetadata: {} }),
-        { status: 200 },
-      ),
+      new Response(JSON.stringify({ candidates: [], usageMetadata: {} }), { status: 200 }),
     )
     const t = new GeminiTranslator({ apiKey: 'test' })
     await expect(
@@ -226,9 +216,7 @@ describe('Provider edge cases', () => {
   })
 
   it('OpenAITranslator handles a missing message body', async () => {
-    fetchSpy.mockResolvedValueOnce(
-      new Response(JSON.stringify({ choices: [] }), { status: 200 }),
-    )
+    fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify({ choices: [] }), { status: 200 }))
     const t = new OpenAITranslator({ apiKey: 'test' })
     await expect(
       t.translate({

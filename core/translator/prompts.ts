@@ -1,5 +1,4 @@
 import { LOCALE_LABELS_EN, type Locale } from '@/core/i18n/locales'
-
 import { DO_NOT_TRANSLATE, type TranslateRequest } from './types'
 
 /**
@@ -69,9 +68,7 @@ export function buildSystemPrompt(req: TranslateRequest): string {
       )
     }
     if (literal.length > 0) {
-      lines.push(
-        'Glossary \u2014 use these exact translations when the source term appears:',
-      )
+      lines.push('Glossary \u2014 use these exact translations when the source term appears:')
       for (const [term, target] of literal) {
         lines.push(`  ${term} \u2192 ${target}`)
       }

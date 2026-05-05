@@ -1,7 +1,6 @@
 import { PublishIcon } from '@sanity/icons'
 import { useState } from 'react'
 import { useClient, type DocumentActionDescription, type DocumentActionProps } from 'sanity'
-
 import { LOCALES } from '@/core/i18n/locales'
 import { shouldShowTranslateAction } from './visibility'
 
@@ -23,9 +22,7 @@ export function publishAllLocalesAction(
   return usePublishAllLocalesAction(props)
 }
 
-function usePublishAllLocalesAction(
-  props: DocumentActionProps,
-): DocumentActionDescription | null {
+function usePublishAllLocalesAction(props: DocumentActionProps): DocumentActionDescription | null {
   const { id, type, draft, published } = props
   const client = useClient({ apiVersion: '2024-10-28' })
   const [busy, setBusy] = useState(false)
@@ -50,9 +47,9 @@ function usePublishAllLocalesAction(
       content: (
         <>
           <p style={{ fontSize: 13, lineHeight: 1.5, margin: '0 0 12px' }}>
-            Publishes this document, then translates and publishes every
-            other locale. Set \u201cAuto-publish translated siblings\u201d
-            to off in Site Settings to keep them as drafts instead.
+            Publishes this document, then translates and publishes every other locale. Set
+            \u201cAuto-publish translated siblings\u201d to off in Site Settings to keep them as
+            drafts instead.
           </p>
           <pre style={{ fontSize: 12, lineHeight: 1.4, maxHeight: 360, overflow: 'auto' }}>
             {output || 'Starting\u2026'}
@@ -67,8 +64,7 @@ function usePublishAllLocalesAction(
     setBusy(true)
     setOutput('Authenticating\u2026\n')
     try {
-      const token = (client as unknown as { config?: () => { token?: string } }).config?.()
-        ?.token
+      const token = (client as unknown as { config?: () => { token?: string } }).config?.()?.token
       if (!token) throw new Error('Could not resolve Studio session token')
       setOutput((s) => s + 'POST /api/publish-all\u2026\n')
       const resp = await fetch('/api/publish-all', {

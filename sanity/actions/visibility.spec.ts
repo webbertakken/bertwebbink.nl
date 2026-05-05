@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { shouldShowTranslateAction } from './visibility'
 
 describe('shouldShowTranslateAction', () => {

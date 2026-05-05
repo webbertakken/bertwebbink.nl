@@ -117,16 +117,13 @@ export function AudioBlock({
     a.currentTime = Math.max(0, Math.min(total, frac * total))
   }
 
-  const totalLabel = total > 0 ? fmtTime(total) : duration ?? '—'
+  const totalLabel = total > 0 ? fmtTime(total) : (duration ?? '—')
   const kindLabel = kind || 'Recording'
 
   return (
     <figure className="my-9 mb-8 px-6 py-[22px] bg-paper border border-rule-soft rounded shadow-[inset_0_1px_0_oklch(1_0_0/0.6)]">
       <div className="flex items-center justify-between gap-4 mb-3.5">
-        <p
-          data-sanity={editAttrs.title}
-          className="font-serif italic text-lg text-ink m-0"
-        >
+        <p data-sanity={editAttrs.title} className="font-serif italic text-lg text-ink m-0">
           {title || 'Recording'}
         </p>
         <span

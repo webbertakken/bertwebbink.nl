@@ -18,7 +18,6 @@
  */
 
 import 'dotenv/config'
-
 import { createClient } from '@sanity/client'
 
 const projectId = required('NEXT_PUBLIC_SANITY_PROJECT_ID')

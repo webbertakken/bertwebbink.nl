@@ -7,19 +7,7 @@
  * one-line change here plus a translation pass.
  */
 
-export const LOCALES = [
-  'nl',
-  'en',
-  'de',
-  'fr',
-  'es',
-  'it',
-  'pt',
-  'hi',
-  'ja',
-  'zh',
-  'ko',
-] as const
+export const LOCALES = ['nl', 'en', 'de', 'fr', 'es', 'it', 'pt', 'hi', 'ja', 'zh', 'ko'] as const
 
 export type Locale = (typeof LOCALES)[number]
 

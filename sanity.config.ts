@@ -3,31 +3,31 @@
  * Learn more: https://www.sanity.io/docs/configuration
  */
 
-import { defineConfig } from 'sanity'
-import { structureTool } from 'sanity/structure'
-import { visionTool } from '@sanity/vision'
-import { schemaTypes } from '@/sanity/schemaTypes'
-import { structure } from '@/sanity/structure'
-import { StudioLayout } from '@/sanity/studio/StudioLayout'
-import { media } from 'sanity-plugin-media'
-import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import { documentInternationalization } from '@sanity/document-internationalization'
-import { internationalizedArray } from 'sanity-plugin-internationalized-array'
 import { languageFilter } from '@sanity/language-filter'
+import { visionTool } from '@sanity/vision'
+import { defineConfig } from 'sanity'
+import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
+import { internationalizedArray } from 'sanity-plugin-internationalized-array'
+import { media } from 'sanity-plugin-media'
 import {
   presentationTool,
   defineDocuments,
   defineLocations,
   type DocumentLocation,
 } from 'sanity/presentation'
-import { assertValue } from '@/core/util/assertValue'
+import { structureTool } from 'sanity/structure'
 import { DEFAULT_LOCALE, LOCALES, SUPPORTED_LANGUAGES, type Locale } from '@/core/i18n/locales'
+import { isTranslatableType } from '@/core/translator/orchestrator'
+import { assertValue } from '@/core/util/assertValue'
+import { pathnames } from '@/i18n/routing'
 import { publishAllLocalesAction } from '@/sanity/actions/publishAll'
 import { relabelSingleLocalePublish } from '@/sanity/actions/relabelPublish'
 import { withRevalidatePublish } from '@/sanity/actions/withRevalidate'
 import { staleTranslationBadge } from '@/sanity/badges/staleTranslation'
-import { isTranslatableType } from '@/core/translator/orchestrator'
-import { pathnames } from '@/i18n/routing'
+import { schemaTypes } from '@/sanity/schemaTypes'
+import { structure } from '@/sanity/structure'
+import { StudioLayout } from '@/sanity/studio/StudioLayout'
 
 /** Document types that use document-per-locale (one full document per language). */
 const LOCALIZED_DOC_TYPES = [

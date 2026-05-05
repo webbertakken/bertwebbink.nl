@@ -1,6 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { render } from '@testing-library/react'
-
+import { describe, expect, it } from 'vitest'
 import { highlight } from './highlight'
 
 function html(node: unknown) {
@@ -93,17 +92,29 @@ describe('highlight', () => {
       // CJK content has no inter-char whitespace — the entire string is one
       // GROQ token. Highlighting the whole run mirrors what `match $token*`
       // actually matched on the server.
-      const out = html(highlight('\u30d0\u30c3\u30cf\u3068\u30e2\u30fc\u30c4\u30a1\u30eb\u30c8', ['\u30d0\u30c3\u30cf']))
+      const out = html(
+        highlight('\u30d0\u30c3\u30cf\u3068\u30e2\u30fc\u30c4\u30a1\u30eb\u30c8', [
+          '\u30d0\u30c3\u30cf',
+        ]),
+      )
       expect(out).toBe('<mark>\u30d0\u30c3\u30cf\u3068\u30e2\u30fc\u30c4\u30a1\u30eb\u30c8</mark>')
     })
 
     it('separates CJK runs by whitespace', () => {
-      const out = html(highlight('\u30d0\u30c3\u30cf \u30e2\u30fc\u30c4\u30a1\u30eb\u30c8', ['\u30d0\u30c3\u30cf']))
+      const out = html(
+        highlight('\u30d0\u30c3\u30cf \u30e2\u30fc\u30c4\u30a1\u30eb\u30c8', [
+          '\u30d0\u30c3\u30cf',
+        ]),
+      )
       expect(out).toBe('<mark>\u30d0\u30c3\u30cf</mark> \u30e2\u30fc\u30c4\u30a1\u30eb\u30c8')
     })
 
     it('highlights Devanagari with combining marks intact', () => {
-      const out = html(highlight('\u0939\u093f\u0928\u094d\u0926\u0940 \u092d\u093e\u0937\u093e', ['\u0939\u093f\u0928\u094d\u0926\u0940']))
+      const out = html(
+        highlight('\u0939\u093f\u0928\u094d\u0926\u0940 \u092d\u093e\u0937\u093e', [
+          '\u0939\u093f\u0928\u094d\u0926\u0940',
+        ]),
+      )
       expect(out).toContain('<mark>\u0939\u093f\u0928\u094d\u0926\u0940</mark>')
     })
   })

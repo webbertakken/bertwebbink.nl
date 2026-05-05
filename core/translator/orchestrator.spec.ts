@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { EchoTranslator } from './echo'
 import {
   isTranslatableType,
@@ -95,18 +94,16 @@ describe('translatable type registry', () => {
 describe('runTranslation \u2014 input validation', () => {
   it('throws when the source document does not exist', async () => {
     const client = makeClient([])
-    await expect(
-      runTranslation(adapt(client), new EchoTranslator(), 'missing'),
-    ).rejects.toThrow(/not found/)
+    await expect(runTranslation(adapt(client), new EchoTranslator(), 'missing')).rejects.toThrow(
+      /not found/,
+    )
   })
 
   it('throws when the source type is not translatable', async () => {
-    const client = makeClient([
-      { _id: 'asset-1', _type: 'sanity.imageAsset' },
-    ])
-    await expect(
-      runTranslation(adapt(client), new EchoTranslator(), 'asset-1'),
-    ).rejects.toThrow(/is not translatable/)
+    const client = makeClient([{ _id: 'asset-1', _type: 'sanity.imageAsset' }])
+    await expect(runTranslation(adapt(client), new EchoTranslator(), 'asset-1')).rejects.toThrow(
+      /is not translatable/,
+    )
   })
 })
 
@@ -197,12 +194,9 @@ describe('runTranslation \u2014 document-per-locale', () => {
         ],
       },
     ])
-    const results = await runTranslation(
-      adapt(client),
-      new EchoTranslator(),
-      'about-nl',
-      { targetLocales: ['en'] },
-    )
+    const results = await runTranslation(adapt(client), new EchoTranslator(), 'about-nl', {
+      targetLocales: ['en'],
+    })
     expect(results[0].status).toBe('updated')
     // The sibling now reflects a fresh re-translation off the source.
     expect((client.__store.get('about-en') as { title: string }).title).toBe('[en] A')
@@ -242,12 +236,9 @@ describe('runTranslation \u2014 document-per-locale', () => {
         ],
       },
     ])
-    const results = await runTranslation(
-      adapt(client),
-      new EchoTranslator(),
-      'about-nl',
-      { targetLocales: ['en'] },
-    )
+    const results = await runTranslation(adapt(client), new EchoTranslator(), 'about-nl', {
+      targetLocales: ['en'],
+    })
     expect(results[0].status).toBe('updated')
     expect((client.__store.get('about-en') as { title: string }).title).toBe('[en] A')
   })
@@ -294,7 +285,10 @@ describe('runTranslation \u2014 document-per-locale', () => {
       async translate(req: TranslateRequest) {
         if (req.targetLocale === 'fr') throw new Error('upstream 503')
         return {
-          units: req.units.map((u) => ({ id: u.id, sourceText: `[${req.targetLocale}] ${u.sourceText}` })),
+          units: req.units.map((u) => ({
+            id: u.id,
+            sourceText: `[${req.targetLocale}] ${u.sourceText}`,
+          })),
         }
       }
     }
@@ -383,12 +377,9 @@ describe('runTranslation — non-singleton documents (organ/journal)', () => {
         },
       },
     ])
-    const results = await runTranslation(
-      adapt(client),
-      new EchoTranslator(),
-      'organ-source-disp',
-      { targetLocales: ['ja'] },
-    )
+    const results = await runTranslation(adapt(client), new EchoTranslator(), 'organ-source-disp', {
+      targetLocales: ['ja'],
+    })
     expect(results[0].status).toBe('created')
     const sibling = client.__store.get(results[0].docId) as {
       disposition: {
@@ -502,13 +493,28 @@ describe('runTranslation \u2014 score (field-level)', () => {
         composer: 'Buxtehude',
         year: 1689,
         forInstrument: [
-          { _key: 'k1', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'Voor orgel' },
+          {
+            _key: 'k1',
+            _type: 'internationalizedArrayStringValue',
+            language: 'nl',
+            value: 'Voor orgel',
+          },
         ],
         edition: [
-          { _key: 'k2', _type: 'internationalizedArrayStringValue', language: 'nl', value: '1e editie' },
+          {
+            _key: 'k2',
+            _type: 'internationalizedArrayStringValue',
+            language: 'nl',
+            value: '1e editie',
+          },
         ],
         blurb: [
-          { _key: 'k3', _type: 'internationalizedArrayTextValue', language: 'nl', value: 'Een werk in g.' },
+          {
+            _key: 'k3',
+            _type: 'internationalizedArrayTextValue',
+            language: 'nl',
+            value: 'Een werk in g.',
+          },
         ],
       },
     ])
@@ -548,12 +554,9 @@ describe('runTranslation \u2014 score (field-level)', () => {
         ],
       },
     ])
-    const results = await runTranslation(
-      adapt(client),
-      new EchoTranslator(),
-      'score-stack',
-      { targetLocales: ['en', 'de', 'fr'] },
-    )
+    const results = await runTranslation(adapt(client), new EchoTranslator(), 'score-stack', {
+      targetLocales: ['en', 'de', 'fr'],
+    })
     expect(results.map((r) => r.status)).toEqual(['created', 'created', 'created'])
     const stored = client.__store.get('score-stack')!
     const inst = stored.forInstrument as Array<{ language: string; value: string }>
@@ -577,7 +580,12 @@ describe('runTranslation \u2014 score (field-level)', () => {
         _type: 'score',
         composer: 'Buxtehude',
         forInstrument: [
-          { _key: 'k1', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'Voor orgel' },
+          {
+            _key: 'k1',
+            _type: 'internationalizedArrayStringValue',
+            language: 'nl',
+            value: 'Voor orgel',
+          },
         ],
         _translationProvenance: { en: { sourceRev: 'rev-s-1', updatedAt: 'now' } },
       },
@@ -597,7 +605,12 @@ describe('runTranslation \u2014 score (field-level)', () => {
         composer: 'C',
         forInstrument: [
           { _key: 'k1', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'NL' },
-          { _key: 'k2', _type: 'internationalizedArrayStringValue', language: 'en', value: 'old EN' },
+          {
+            _key: 'k2',
+            _type: 'internationalizedArrayStringValue',
+            language: 'en',
+            value: 'old EN',
+          },
         ],
         _translationProvenance: { en: { sourceRev: 'old-rev', updatedAt: 't1' } },
       },
@@ -612,9 +625,7 @@ describe('runTranslation \u2014 score (field-level)', () => {
   })
 
   it('returns "skipped" for a score with no translatable units', async () => {
-    const client = makeClient([
-      { _id: 'score-empty', _rev: 'r', _type: 'score', composer: 'A' },
-    ])
+    const client = makeClient([{ _id: 'score-empty', _rev: 'r', _type: 'score', composer: 'A' }])
     const results = await runTranslation(adapt(client), new EchoTranslator(), 'score-empty', {
       targetLocales: ['en'],
     })
@@ -630,7 +641,12 @@ describe('runTranslation \u2014 score (field-level)', () => {
         _type: 'score',
         composer: 'X',
         forInstrument: [
-          { _key: 'k', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'Voor orgel' },
+          {
+            _key: 'k',
+            _type: 'internationalizedArrayStringValue',
+            language: 'nl',
+            value: 'Voor orgel',
+          },
         ],
       },
     ])
@@ -669,8 +685,6 @@ describe('runTranslation \u2014 score (field-level)', () => {
     expect(results[0].status).toBe('created')
   })
 
-
-
   it('captures and isolates per-locale failures on score docs (sequential path)', async () => {
     class FailingTranslator implements Translator {
       readonly name = 'failing'
@@ -692,7 +706,12 @@ describe('runTranslation \u2014 score (field-level)', () => {
         _type: 'score',
         composer: 'C',
         forInstrument: [
-          { _key: 'k', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'Voor orgel' },
+          {
+            _key: 'k',
+            _type: 'internationalizedArrayStringValue',
+            language: 'nl',
+            value: 'Voor orgel',
+          },
         ],
       },
     ])
@@ -727,7 +746,12 @@ describe('runTranslation \u2014 score (field-level)', () => {
         _type: 'score',
         composer: 'C',
         forInstrument: [
-          { _key: 'k1', _type: 'internationalizedArrayStringValue', language: 'nl', value: 'Voor orgel' },
+          {
+            _key: 'k1',
+            _type: 'internationalizedArrayStringValue',
+            language: 'nl',
+            value: 'Voor orgel',
+          },
         ],
       },
     ])
@@ -895,12 +919,9 @@ describe('runDispositionOnlyTranslation', () => {
   it('throws when the source doc id does not exist', async () => {
     const client = makeClient([])
     await expect(
-      runDispositionOnlyTranslation(
-        adapt(client),
-        new EchoTranslator(),
-        'organ-nope',
-        { targetLocales: ['en'] },
-      ),
+      runDispositionOnlyTranslation(adapt(client), new EchoTranslator(), 'organ-nope', {
+        targetLocales: ['en'],
+      }),
     ).rejects.toThrow(/not found/i)
   })
 
@@ -909,12 +930,9 @@ describe('runDispositionOnlyTranslation', () => {
       { _id: 'journal-nl', _rev: 'r', _type: 'journal', language: 'nl', title: 'A' },
     ])
     await expect(
-      runDispositionOnlyTranslation(
-        adapt(client),
-        new EchoTranslator(),
-        'journal-nl',
-        { targetLocales: ['en'] },
-      ),
+      runDispositionOnlyTranslation(adapt(client), new EchoTranslator(), 'journal-nl', {
+        targetLocales: ['en'],
+      }),
     ).rejects.toThrow(/disposition-only/i)
   })
 
@@ -925,7 +943,10 @@ describe('runDispositionOnlyTranslation', () => {
       async translate(req: TranslateRequest) {
         if (req.targetLocale === 'de') throw new Error('boom')
         return {
-          units: req.units.map((u) => ({ id: u.id, sourceText: `[${req.targetLocale}] ${u.sourceText}` })),
+          units: req.units.map((u) => ({
+            id: u.id,
+            sourceText: `[${req.targetLocale}] ${u.sourceText}`,
+          })),
         }
       }
     }
@@ -986,9 +1007,7 @@ describe('runDispositionOnlyTranslation', () => {
     expect(byLocale.de.status).toBe('failed')
     expect(byLocale.de.error).toBe('boom')
     // The locale:done event for the failed locale should fire too.
-    const failedDone = events.find(
-      (e) => e.type === 'locale:done' && e.result?.status === 'failed',
-    )
+    const failedDone = events.find((e) => e.type === 'locale:done' && e.result?.status === 'failed')
     expect(failedDone).toBeDefined()
   })
 
@@ -1026,15 +1045,10 @@ describe('runDispositionOnlyTranslation', () => {
       },
     ])
     const events: Array<{ type: string; tokens?: number; durationMs?: number }> = []
-    await runDispositionOnlyTranslation(
-      adapt(client),
-      new TimedEcho(),
-      'organ-source-disp',
-      {
-        targetLocales: ['en'],
-        onProgress: (e) => events.push(e as never),
-      },
-    )
+    await runDispositionOnlyTranslation(adapt(client), new TimedEcho(), 'organ-source-disp', {
+      targetLocales: ['en'],
+      onProgress: (e) => events.push(e as never),
+    })
     expect(events.find((e) => e.type === 'locale:start')).toBeDefined()
     expect(events.find((e) => e.type === 'locale:done')).toBeDefined()
     const usage = events.find((e) => e.type === 'translator:usage')!
@@ -1045,15 +1059,10 @@ describe('runDispositionOnlyTranslation', () => {
   it('emits a locale:done event for skipped siblings too', async () => {
     const client = makeClient([sourceOrgan])
     const events: Array<{ type: string }> = []
-    await runDispositionOnlyTranslation(
-      adapt(client),
-      new EchoTranslator(),
-      'organ-source-disp',
-      {
-        targetLocales: ['de'],
-        onProgress: (e) => events.push(e as never),
-      },
-    )
+    await runDispositionOnlyTranslation(adapt(client), new EchoTranslator(), 'organ-source-disp', {
+      targetLocales: ['de'],
+      onProgress: (e) => events.push(e as never),
+    })
     expect(events.filter((e) => e.type === 'locale:done')).toHaveLength(1)
   })
 

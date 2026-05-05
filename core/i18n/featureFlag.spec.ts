@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it } from 'vitest'
-
 import { isI18nEnabled, SINGLE_LOCALE_FALLBACK } from './featureFlag'
 
 const ORIGINAL = process.env.NEXT_PUBLIC_I18N_ENABLED

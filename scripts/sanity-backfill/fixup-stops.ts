@@ -13,9 +13,9 @@
  *     [--apply]
  */
 
-import { readFileSync } from 'node:fs'
-import { randomBytes } from 'node:crypto'
 import { createClient, type SanityClient } from '@sanity/client'
+import { randomBytes } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 
 interface Args {
   env?: string

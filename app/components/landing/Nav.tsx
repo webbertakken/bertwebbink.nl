@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
-
-import { dataAttr } from '@/sanity/lib/utils'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { Locale } from '@/core/i18n/locales'
 import { Link, usePathname } from '@/i18n/navigation'
+import { dataAttr } from '@/sanity/lib/utils'
 import { LanguagePicker } from './LanguagePicker'
 import { SearchBox } from './SearchBox'
-import type { Locale } from '@/core/i18n/locales'
 
 type NavProps = {
   locale: Locale
@@ -74,105 +73,105 @@ export function Nav({ locale, active, wordmark, tagline }: NavProps) {
   return (
     <nav className="relative z-[5] w-full">
       <div className="max-w-[1320px] mx-auto px-6 md:px-12 pt-8 pb-3.5 flex items-center justify-between gap-6 md:gap-10">
-      <Link
-        href="/"
-        className="font-serif text-2xl font-medium text-ink whitespace-nowrap inline-flex items-baseline gap-2.5"
-        style={{ letterSpacing: '0.005em' }}
-      >
-        <span data-sanity={settingsAttr('wordmark')}>{wordmark || t('wordmarkFallback')}</span>
-        <span
-          data-sanity={settingsAttr('tagline')}
-          className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint border-l border-rule pl-2.5 ml-0.5 font-normal"
+        <Link
+          href="/"
+          className="font-serif text-2xl font-medium text-ink whitespace-nowrap inline-flex items-baseline gap-2.5"
+          style={{ letterSpacing: '0.005em' }}
         >
-          {tagline || t('taglineFallback')}
-        </span>
-      </Link>
-
-      {/* Desktop links */}
-      <div className="hidden md:flex gap-10 text-[13px] text-ink-soft tracking-[0.04em]">
-        {ITEMS.map((it) => (
-          <Link
-            key={it.id}
-            href={it.href}
-            className="nav-link"
-            data-active={current === it.id}
-            style={{ color: current === it.id ? 'var(--color-ink)' : undefined }}
+          <span data-sanity={settingsAttr('wordmark')}>{wordmark || t('wordmarkFallback')}</span>
+          <span
+            data-sanity={settingsAttr('tagline')}
+            className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-faint border-l border-rule pl-2.5 ml-0.5 font-normal"
           >
-            {it.label}
-          </Link>
-        ))}
-      </div>
+            {tagline || t('taglineFallback')}
+          </span>
+        </Link>
 
-      {/* Search + language picker (desktop) */}
-      <div className="hidden md:flex items-center gap-4">
-        <SearchBox />
-        <LanguagePicker locale={locale} />
-      </div>
-
-      {/* Mobile hamburger */}
-      <button
-        ref={btnRef}
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? t('closeMenu') : t('openMenu')}
-        aria-expanded={open}
-        aria-controls="mobile-nav-panel"
-        className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2.5 text-ink cursor-pointer"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          width="22"
-          height="22"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          {open ? (
-            <>
-              <path d="M5 5 L19 19" />
-              <path d="M5 19 L19 5" />
-            </>
-          ) : (
-            <>
-              <path d="M3 7 H21" />
-              <path d="M3 12 H21" />
-              <path d="M3 17 H21" />
-            </>
-          )}
-        </svg>
-      </button>
-
-      {/* Mobile panel — absolute, drops below the nav */}
-      {open && (
-        <div
-          ref={panelRef}
-          id="mobile-nav-panel"
-          className="md:hidden absolute left-6 right-6 top-full mt-2 bg-paper border border-rule-soft rounded shadow-card-hover overflow-hidden"
-        >
-          <ul className="flex flex-col py-2 m-0 list-none">
-            {ITEMS.map((it) => {
-              const isActive = current === it.id
-              return (
-                <li key={it.id}>
-                  <Link
-                    href={it.href}
-                    data-active={isActive}
-                    className="block px-5 py-3 font-serif text-lg text-ink transition-colors duration-200 hover:bg-bg-sunk data-[active=true]:text-accent"
-                  >
-                    {it.label}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-          <div className="border-t border-rule-soft px-3 py-3 flex flex-col gap-3">
-            <SearchBox variant="expanded" />
-            <LanguagePicker locale={locale} />
-          </div>
+        {/* Desktop links */}
+        <div className="hidden md:flex gap-10 text-[13px] text-ink-soft tracking-[0.04em]">
+          {ITEMS.map((it) => (
+            <Link
+              key={it.id}
+              href={it.href}
+              className="nav-link"
+              data-active={current === it.id}
+              style={{ color: current === it.id ? 'var(--color-ink)' : undefined }}
+            >
+              {it.label}
+            </Link>
+          ))}
         </div>
-      )}
+
+        {/* Search + language picker (desktop) */}
+        <div className="hidden md:flex items-center gap-4">
+          <SearchBox />
+          <LanguagePicker locale={locale} />
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          ref={btnRef}
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? t('closeMenu') : t('openMenu')}
+          aria-expanded={open}
+          aria-controls="mobile-nav-panel"
+          className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2.5 text-ink cursor-pointer"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            {open ? (
+              <>
+                <path d="M5 5 L19 19" />
+                <path d="M5 19 L19 5" />
+              </>
+            ) : (
+              <>
+                <path d="M3 7 H21" />
+                <path d="M3 12 H21" />
+                <path d="M3 17 H21" />
+              </>
+            )}
+          </svg>
+        </button>
+
+        {/* Mobile panel — absolute, drops below the nav */}
+        {open && (
+          <div
+            ref={panelRef}
+            id="mobile-nav-panel"
+            className="md:hidden absolute left-6 right-6 top-full mt-2 bg-paper border border-rule-soft rounded shadow-card-hover overflow-hidden"
+          >
+            <ul className="flex flex-col py-2 m-0 list-none">
+              {ITEMS.map((it) => {
+                const isActive = current === it.id
+                return (
+                  <li key={it.id}>
+                    <Link
+                      href={it.href}
+                      data-active={isActive}
+                      className="block px-5 py-3 font-serif text-lg text-ink transition-colors duration-200 hover:bg-bg-sunk data-[active=true]:text-accent"
+                    >
+                      {it.label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+            <div className="border-t border-rule-soft px-3 py-3 flex flex-col gap-3">
+              <SearchBox variant="expanded" />
+              <LanguagePicker locale={locale} />
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )

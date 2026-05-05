@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest'
-
-import {
-  applyI18nArrayUnits,
-  extractI18nArrayUnits,
-  type I18nArrayPathConfig,
-} from './i18n-array'
+import { applyI18nArrayUnits, extractI18nArrayUnits, type I18nArrayPathConfig } from './i18n-array'
 
 const cfg: I18nArrayPathConfig[] = [
   { path: 'blurb', entryType: 'internationalizedArrayTextValue' },
@@ -15,11 +10,26 @@ describe('i18n-array walker', () => {
   it('extracts the entry matching the source locale', () => {
     const doc = {
       blurb: [
-        { _key: 'k1', _type: 'internationalizedArrayTextValue', language: 'nl', value: 'Een korte beschrijving.' },
-        { _key: 'k2', _type: 'internationalizedArrayTextValue', language: 'en', value: 'A short blurb.' },
+        {
+          _key: 'k1',
+          _type: 'internationalizedArrayTextValue',
+          language: 'nl',
+          value: 'Een korte beschrijving.',
+        },
+        {
+          _key: 'k2',
+          _type: 'internationalizedArrayTextValue',
+          language: 'en',
+          value: 'A short blurb.',
+        },
       ],
       edition: [
-        { _key: 'k3', _type: 'internationalizedArrayStringValue', language: 'nl', value: '1e editie' },
+        {
+          _key: 'k3',
+          _type: 'internationalizedArrayStringValue',
+          language: 'nl',
+          value: '1e editie',
+        },
       ],
     }
     expect(extractI18nArrayUnits(doc, cfg, 'nl')).toEqual([
@@ -105,9 +115,7 @@ describe('i18n-array walker', () => {
 
   it('apply ignores units for paths not in the config', () => {
     const doc = {
-      blurb: [
-        { _key: 'k', _type: 'internationalizedArrayTextValue', language: 'nl', value: 'A' },
-      ],
+      blurb: [{ _key: 'k', _type: 'internationalizedArrayTextValue', language: 'nl', value: 'A' }],
     }
     const result = applyI18nArrayUnits(
       doc,
@@ -127,9 +135,7 @@ describe('i18n-array walker', () => {
       'en',
     )
     const arr = result.blurb as Array<{ language: string; value: string }>
-    expect(arr).toEqual([
-      expect.objectContaining({ language: 'en', value: 'EN.' }),
-    ])
+    expect(arr).toEqual([expect.objectContaining({ language: 'en', value: 'EN.' })])
   })
 
   it('does not mutate the input', () => {
