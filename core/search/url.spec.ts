@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { searchResultHref } from './url'
 
 describe('searchResultHref', () => {

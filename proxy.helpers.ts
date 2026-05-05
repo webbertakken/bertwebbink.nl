@@ -1,5 +1,5 @@
-import { LOCALES, type Locale } from '@/core/i18n/locales'
 import { SINGLE_LOCALE_FALLBACK } from '@/core/i18n/featureFlag'
+import { LOCALES, type Locale } from '@/core/i18n/locales'
 
 /**
  * Pure helpers for the proxy middleware. Lives in its own file so the

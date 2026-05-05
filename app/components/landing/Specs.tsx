@@ -1,9 +1,7 @@
 import { useTranslations } from 'next-intl'
-
 import { dataAttr } from '@/sanity/lib/utils'
 
-const organAttr = (id: string, path: string) =>
-  dataAttr({ id, type: 'organ', path }).toString()
+const organAttr = (id: string, path: string) => dataAttr({ id, type: 'organ', path }).toString()
 
 type NamedItem = { _key?: string; name: string; note?: string | null }
 type Stop = {
@@ -46,14 +44,14 @@ export function hasSpecs({ builder, year, disposition }: SpecsProps): boolean {
   if (!disposition) return false
   return Boolean(
     disposition.manuals ||
-      disposition.stops ||
-      disposition.pitch ||
-      disposition.temperament ||
-      disposition.action ||
-      disposition.restoredYear ||
-      (disposition.registers && disposition.registers.length > 0) ||
-      (disposition.couplings && disposition.couplings.length > 0) ||
-      (disposition.accessories && disposition.accessories.length > 0),
+    disposition.stops ||
+    disposition.pitch ||
+    disposition.temperament ||
+    disposition.action ||
+    disposition.restoredYear ||
+    (disposition.registers && disposition.registers.length > 0) ||
+    (disposition.couplings && disposition.couplings.length > 0) ||
+    (disposition.accessories && disposition.accessories.length > 0),
   )
 }
 
@@ -68,9 +66,7 @@ function NamedList({
   organId?: string
   field: 'couplings' | 'accessories'
 }) {
-  const listAttr = organId
-    ? organAttr(organId, `disposition.${field}`)
-    : undefined
+  const listAttr = organId ? organAttr(organId, `disposition.${field}`) : undefined
   return (
     <div className="mb-[22px]">
       <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-accent m-0 mb-2">
@@ -80,10 +76,7 @@ function NamedList({
         {items.map((item, i) => {
           const itemAttr =
             organId && item._key
-              ? organAttr(
-                  organId,
-                  `disposition.${field}[_key=="${item._key}"]`,
-                )
+              ? organAttr(organId, `disposition.${field}[_key=="${item._key}"]`)
               : undefined
           return (
             <li
@@ -115,8 +108,7 @@ export function Specs({ organId, builder, year, disposition }: SpecsProps) {
     stats.push({ key: 'manuals', label: t('manuals'), value: String(d.manuals), field: 'manuals' })
   if (d.stops != null)
     stats.push({ key: 'stops', label: t('stops'), value: String(d.stops), field: 'stops' })
-  if (d.pitch)
-    stats.push({ key: 'pitch', label: t('pitch'), value: d.pitch, field: 'pitch' })
+  if (d.pitch) stats.push({ key: 'pitch', label: t('pitch'), value: d.pitch, field: 'pitch' })
   if (d.temperament)
     stats.push({
       key: 'temperament',
@@ -124,8 +116,7 @@ export function Specs({ organId, builder, year, disposition }: SpecsProps) {
       value: d.temperament,
       field: 'temperament',
     })
-  if (d.action)
-    stats.push({ key: 'action', label: t('action'), value: d.action, field: 'action' })
+  if (d.action) stats.push({ key: 'action', label: t('action'), value: d.action, field: 'action' })
 
   const builtLine = [
     year ? t('built', { year }) : null,
@@ -183,11 +174,7 @@ export function Specs({ organId, builder, year, disposition }: SpecsProps) {
                 ? organAttr(organId, `disposition.registers[_key=="${sec._key}"]`)
                 : undefined
             return (
-              <div
-                key={sec._key ?? sec.name}
-                data-sanity={sectionAttr}
-                className="mb-[22px]"
-              >
+              <div key={sec._key ?? sec.name} data-sanity={sectionAttr} className="mb-[22px]">
                 <p className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-accent m-0 mb-2">
                   {sec.name}
                   {sec.range && (

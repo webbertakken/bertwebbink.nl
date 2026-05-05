@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { combineTranslations, diffUnits } from './diff'
 
 describe('diff-aware updates', () => {
@@ -61,9 +60,7 @@ describe('diff-aware updates', () => {
     // that was deep-cloned from the source and never sent to the LLM.
     // Without the deep-clone check, the diff would happily "reuse"
     // the un-translated value forever.
-    const current = [
-      { id: 'disposition.registers[_key=="r1"].name', sourceText: 'Hoofdwerk' },
-    ]
+    const current = [{ id: 'disposition.registers[_key=="r1"].name', sourceText: 'Hoofdwerk' }]
     const previousSource = [
       { id: 'disposition.registers[_key=="r1"].name', sourceText: 'Hoofdwerk' },
     ]

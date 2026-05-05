@@ -1,9 +1,8 @@
+import { toPlainText } from 'next-sanity'
 import { headers } from 'next/headers'
-
+import { UI_DEFAULT_LOCALE, isLocale, type Locale } from '@/core/i18n/locales'
 import { sanityFetch } from '@/sanity/lib/live'
 import { llmsTxtIndexQuery, settingsQuery } from '@/sanity/lib/queries'
-import { toPlainText } from 'next-sanity'
-import { UI_DEFAULT_LOCALE, isLocale, type Locale } from '@/core/i18n/locales'
 
 /**
  * /llms.txt — runtime context for AI agents.
@@ -57,9 +56,7 @@ export async function GET(request: Request) {
     lines.push('## Field notes — organ visits')
     for (const o of organs) {
       const desc = o.excerpt?.trim()
-      lines.push(
-        `- [${o.title}](${baseUrl}/${locale}/organs/${o.slug})${desc ? `: ${desc}` : ''}`,
-      )
+      lines.push(`- [${o.title}](${baseUrl}/${locale}/organs/${o.slug})${desc ? `: ${desc}` : ''}`)
     }
     lines.push('')
   }
@@ -69,9 +66,7 @@ export async function GET(request: Request) {
     lines.push('## Journal entries')
     for (const j of journal) {
       const desc = j.excerpt?.trim()
-      lines.push(
-        `- [${j.title}](${baseUrl}/${locale}/journal/${j.slug})${desc ? `: ${desc}` : ''}`,
-      )
+      lines.push(`- [${j.title}](${baseUrl}/${locale}/journal/${j.slug})${desc ? `: ${desc}` : ''}`)
     }
     lines.push('')
   }

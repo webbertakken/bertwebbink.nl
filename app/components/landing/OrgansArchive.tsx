@@ -1,13 +1,12 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Locale } from '@/core/i18n/locales'
 import { Link } from '@/i18n/navigation'
-
-import { OrganCard, type LandingOrgan } from './OrganCard'
 import { loadMoreOrgans } from './archiveActions'
 import { cityHref, sortedCitiesForSidebar, withYearGroups, type YearGroupItem } from './archiveUtil'
+import { OrganCard, type LandingOrgan } from './OrganCard'
 
 const PAGE_SIZE = 24
 
@@ -181,9 +180,7 @@ function ArchiveHeader({
       >
         {filterActive
           ? t.rich('filteredTitle', {
-              city: () => (
-                <span className="not-italic font-normal text-ink">{city}</span>
-              ),
+              city: () => <span className="not-italic font-normal text-ink">{city}</span>,
             })
           : t('title')}
       </h2>

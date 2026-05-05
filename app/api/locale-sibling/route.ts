@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-
 import { isLocale } from '@/core/i18n/locales'
 import { findSiblingSlug, isSluggedLocalisedType } from '@/core/i18n/sibling-slug'
 import { client } from '@/sanity/lib/client'
@@ -39,8 +38,5 @@ export async function GET(request: Request) {
     targetLocale: to,
   })
 
-  return NextResponse.json(
-    { slug: sibling },
-    { headers: { 'Cache-Control': 'no-store' } },
-  )
+  return NextResponse.json({ slug: sibling }, { headers: { 'Cache-Control': 'no-store' } })
 }

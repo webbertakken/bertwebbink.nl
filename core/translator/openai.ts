@@ -1,4 +1,3 @@
-import type { Translator, TranslateRequest, TranslateResult } from './types'
 import {
   buildSystemPrompt,
   buildUserPayload,
@@ -6,6 +5,7 @@ import {
   responseSchema,
   type RawTranslatorResponse,
 } from './prompts'
+import type { Translator, TranslateRequest, TranslateResult } from './types'
 
 /**
  * OpenAI GPT-4o translator. Uses `response_format: { type: 'json_schema' }`
@@ -69,7 +69,9 @@ export class OpenAITranslator implements Translator {
     try {
       parsed = JSON.parse(text)
     } catch (cause) {
-      throw new Error(`OpenAITranslator: response was not valid JSON: ${text.slice(0, 200)}`, { cause })
+      throw new Error(`OpenAITranslator: response was not valid JSON: ${text.slice(0, 200)}`, {
+        cause,
+      })
     }
     return {
       units: decodeResponse(parsed, req),

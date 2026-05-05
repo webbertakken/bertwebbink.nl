@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server'
-
 import { Link } from '@/i18n/navigation'
 
 type FooterProps = {

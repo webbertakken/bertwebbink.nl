@@ -10,17 +10,11 @@
     "react/react-in-jsx-scope": "off",
     "eslint/no-await-in-loop": "off",
     "vitest/require-mock-type-parameters": "off",
-
     "eslint/no-underscore-dangle": "off",
-
     "react/no-array-index-key": "off",
-
     "unicorn/no-array-sort": "off",
-
     "jsx-a11y/media-has-caption": "off",
-
     "jsx-a11y/iframe-has-title": "off",
-
     "react/iframe-missing-sandbox": "off"
   },
   "overrides": [
@@ -28,6 +22,12 @@
       "files": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"],
       "rules": {
         "nextjs/no-img-element": "off"
+      }
+    },
+    {
+      "files": ["scripts/sanity-backfill/**/*.ts"],
+      "rules": {
+        "no-control-regex": "off"
       }
     }
   ],

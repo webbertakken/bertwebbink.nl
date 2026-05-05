@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import {
   DEFAULT_LOCALE,
   I18N_ARRAY_LANGUAGES,

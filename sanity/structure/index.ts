@@ -12,13 +12,12 @@ import {
   TranslateIcon,
   UserIcon,
 } from '@sanity/icons'
+import pluralize from 'pluralize-esm'
 import type {
   StructureBuilder,
   StructureResolver,
   StructureResolverContext,
 } from 'sanity/structure'
-import pluralize from 'pluralize-esm'
-
 import { LOCALES, LOCALE_LABELS_EN, type Locale } from '@/core/i18n/locales'
 
 /**
@@ -64,10 +63,7 @@ const SINGLETON_SPECS: SingletonSpec[] = [
  * Returns one structure node per locale for a given singleton type.
  * Each node opens the symmetric `{type}-{locale}` document.
  */
-function localizedSingletonItem(
-  S: StructureBuilder,
-  spec: SingletonSpec,
-) {
+function localizedSingletonItem(S: StructureBuilder, spec: SingletonSpec) {
   return S.listItem()
     .id(spec.type)
     .title(spec.title)
@@ -156,9 +152,7 @@ export const structure: StructureResolver = (
         .id('translation-metadata')
         .title('Translation links')
         .icon(TranslateIcon)
-        .child(
-          S.documentTypeList('translation.metadata').title('Translation links'),
-        ),
+        .child(S.documentTypeList('translation.metadata').title('Translation links')),
 
       // \u2500\u2500\u2500 Catch-all \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
       ...S.documentTypeListItems()

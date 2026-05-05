@@ -1,6 +1,5 @@
 import { MasterDetailIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
-
 import { languageField } from '../fields/language'
 
 /**
@@ -51,8 +50,7 @@ export const organsPage = defineType({
     defineField({
       name: 'tagline',
       title: 'Tagline',
-      description:
-        'Italic intro paragraph beneath the title — a sentence or two, not a slogan.',
+      description: 'Italic intro paragraph beneath the title — a sentence or two, not a slogan.',
       type: 'text',
       rows: 3,
       group: 'hero',
@@ -69,8 +67,7 @@ export const organsPage = defineType({
     defineField({
       name: 'cornerRightSub',
       title: 'Top-right subtitle',
-      description:
-        'Italic subtitle under the coordinates in the top-right meta line.',
+      description: 'Italic subtitle under the coordinates in the top-right meta line.',
       type: 'string',
       group: 'hero',
       initialValue: 'The low countries',

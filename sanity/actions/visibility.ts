@@ -1,5 +1,5 @@
-import { isTranslatableType } from '@/core/translator/orchestrator'
 import { DEFAULT_LOCALE } from '@/core/i18n/locales'
+import { isTranslatableType } from '@/core/translator/orchestrator'
 
 /**
  * Decide whether the "Translate to all locales" / "Publish to all locales"

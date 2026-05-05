@@ -24,15 +24,10 @@
  */
 
 import 'dotenv/config'
-
 import { createClient } from '@sanity/client'
-
 import { LOCALES, type Locale } from '../core/i18n/locales'
 import { getTranslator } from '../core/translator/factory'
-import {
-  runDispositionOnlyTranslation,
-  runTranslation,
-} from '../core/translator/orchestrator'
+import { runDispositionOnlyTranslation, runTranslation } from '../core/translator/orchestrator'
 
 const projectId = required('NEXT_PUBLIC_SANITY_PROJECT_ID')
 const dataset = required('NEXT_PUBLIC_SANITY_DATASET')
@@ -49,10 +44,7 @@ const SINGLETON_TYPES = [
   'settings',
 ] as const
 
-type Mode =
-  | { kind: 'id'; id: string }
-  | { kind: 'type'; type: string }
-  | { kind: 'all' }
+type Mode = { kind: 'id'; id: string } | { kind: 'type'; type: string } | { kind: 'all' }
 
 function required(name: string): string {
   const value = process.env[name]
@@ -74,9 +66,9 @@ function parseArgs(): {
   const onlyDisposition = args.includes('--only-disposition')
   const localesArg = pluck(args, '--locales')
   const targetLocales = localesArg
-    ? (localesArg.split(',').filter((l): l is Locale =>
-        (LOCALES as readonly string[]).includes(l),
-      ) as Locale[])
+    ? (localesArg
+        .split(',')
+        .filter((l): l is Locale => (LOCALES as readonly string[]).includes(l)) as Locale[])
     : undefined
   if (args.includes('--all'))
     return { mode: { kind: 'all' }, dryRun, targetLocales, onlyDisposition }
@@ -138,15 +130,13 @@ async function main() {
         ? await runDispositionOnlyTranslation(client, translator, id, {
             targetLocales,
             onProgress: (event) => {
-              if (event.type === 'translator:usage' && event.tokens)
-                totalTokens += event.tokens
+              if (event.type === 'translator:usage' && event.tokens) totalTokens += event.tokens
             },
           })
         : await runTranslation(client, translator, id, {
             targetLocales,
             onProgress: (event) => {
-              if (event.type === 'translator:usage' && event.tokens)
-                totalTokens += event.tokens
+              if (event.type === 'translator:usage' && event.tokens) totalTokens += event.tokens
             },
           })
       const summary = results
@@ -184,9 +174,7 @@ async function resolveDocIds(
     }
     if (mode.type === 'score') {
       // Field-level: every published score doc is its own translation target.
-      return await client.fetch<string[]>(
-        `*[_type == "score" && !(_id in path("drafts.**"))]._id`,
-      )
+      return await client.fetch<string[]>(`*[_type == "score" && !(_id in path("drafts.**"))]._id`)
     }
     // Doc-per-locale: only translate the published source-language (NL) docs.
     return await client.fetch<string[]>(
@@ -204,9 +192,7 @@ async function resolveDocIds(
     )),
   )
   ids.push(
-    ...(await client.fetch<string[]>(
-      `*[_type == "score" && !(_id in path("drafts.**"))]._id`,
-    )),
+    ...(await client.fetch<string[]>(`*[_type == "score" && !(_id in path("drafts.**"))]._id`)),
   )
   return ids
 }

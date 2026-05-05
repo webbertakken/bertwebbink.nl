@@ -1,10 +1,9 @@
 import type { MetadataRoute } from 'next'
 import { headers } from 'next/headers'
-
-import { sanityFetch } from '@/sanity/lib/live'
-import { sitemapData } from '@/sanity/lib/queries'
 import { LOCALES, type Locale } from '@/core/i18n/locales'
 import { pathnames } from '@/i18n/routing'
+import { sanityFetch } from '@/sanity/lib/live'
+import { sitemapData } from '@/sanity/lib/queries'
 
 /** Resolve the canonical path (`/organs`) to the localised segment for a locale. */
 function localisedPath(canonical: string, locale: Locale): string {

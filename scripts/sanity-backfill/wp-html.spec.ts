@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { extractFirstTable, parseDispositionFromWpHtml, tableToDisposition } from './wp-html'
 
 describe('extractFirstTable', () => {

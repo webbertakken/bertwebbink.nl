@@ -1,7 +1,6 @@
 import type { DocumentBadgeComponent, DocumentBadgeProps } from 'sanity'
-
-import { isTranslatableType } from '@/core/translator/orchestrator'
 import { DEFAULT_LOCALE } from '@/core/i18n/locales'
+import { isTranslatableType } from '@/core/translator/orchestrator'
 
 /**
  * Document badge that flags a translation as stale when the source has
@@ -15,9 +14,7 @@ import { DEFAULT_LOCALE } from '@/core/i18n/locales'
  *
  * The badge is purely informational; it does NOT block publishing.
  */
-export const staleTranslationBadge: DocumentBadgeComponent = (
-  props: DocumentBadgeProps,
-) => {
+export const staleTranslationBadge: DocumentBadgeComponent = (props: DocumentBadgeProps) => {
   const { type, draft, published } = props
   if (!isTranslatableType(type)) return null
 

@@ -1,11 +1,10 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useFormatter, useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-import { Image } from 'next-sanity/image'
 import { stegaClean } from '@sanity/client/stega'
-
+import { useFormatter, useTranslations } from 'next-intl'
+import { Image } from 'next-sanity/image'
+import { useMemo, useState } from 'react'
+import { Link } from '@/i18n/navigation'
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
 
 export type JournalEntrySummary = {
@@ -109,7 +108,7 @@ function EntryRow({ entry, index }: { entry: JournalEntrySummary; index: number 
   const cat = (entry.category ?? 'other') as CategoryKey
   const kind = (CATEGORY_KEYS as readonly string[]).includes(cat)
     ? t(`categoryKinds.${cat}`)
-    : entry.category ?? 'other'
+    : (entry.category ?? 'other')
   return (
     <Link
       href={{ pathname: '/journal/[slug]', params: { slug: entry.slug } }}
@@ -180,9 +179,7 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
 
   const filtered = useMemo(
     () =>
-      activeCat === 'all'
-        ? entries
-        : entries.filter((p) => (p.category ?? 'other') === activeCat),
+      activeCat === 'all' ? entries : entries.filter((p) => (p.category ?? 'other') === activeCat),
     [entries, activeCat],
   )
 
@@ -196,7 +193,7 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
     setPage(1)
   }
 
-  const baseCount = activeCat === 'all' ? entries.length : counts[activeCat] ?? 0
+  const baseCount = activeCat === 'all' ? entries.length : (counts[activeCat] ?? 0)
 
   return (
     <section
@@ -205,65 +202,67 @@ export function JournalList({ entries, totalCount }: JournalListProps) {
       data-screen-label="journal"
     >
       <div className="max-w-[1240px] mx-auto px-6 md:px-12">
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-y border-rule-soft py-3.5 mb-14">
-        <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint mr-3">
-          {t('filter')}
-        </span>
-        <FilterButton
-          label={t('all')}
-          count={counts.all ?? 0}
-          active={activeCat === 'all'}
-          onClick={() => setCat('all')}
-        />
-        {categories.map((c) => (
-          <FilterButton
-            key={c}
-            label={(CATEGORY_KEYS as readonly string[]).includes(c) ? t(`categories.${c}` as never) : c}
-            count={counts[c] ?? 0}
-            active={activeCat === c}
-            onClick={() => setCat(c)}
-          />
-        ))}
-        <span className="ml-auto font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
-          {t('entriesCount', { count: baseCount })}
-        </span>
-      </div>
-
-      <div className="flex flex-col mb-12">
-        {visible.length === 0 ? (
-          <p className="font-serif italic text-ink-faint text-lg py-16 text-center">
-            {t('emptyCategory')}
-          </p>
-        ) : (
-          visible.map((p, i) => (
-            <EntryRow key={p._id} entry={p} index={totalCount - (start + i)} />
-          ))
-        )}
-      </div>
-
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-rule-soft pt-7 -mt-px pb-4">
-          <button
-            type="button"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={safePage === 1}
-            className="font-serif italic text-[18px] text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent disabled:opacity-50 disabled:pointer-events-none disabled:border-rule-soft cursor-pointer disabled:cursor-default bg-transparent border-x-0 border-t-0"
-          >
-            {t('pagination.newer')}
-          </button>
-          <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
-            {t('pagination.pageOf', { current: safePage, total: totalPages })}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-y border-rule-soft py-3.5 mb-14">
+          <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint mr-3">
+            {t('filter')}
           </span>
-          <button
-            type="button"
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={safePage === totalPages}
-            className="font-serif italic text-[18px] text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent disabled:opacity-50 disabled:pointer-events-none disabled:border-rule-soft cursor-pointer disabled:cursor-default bg-transparent border-x-0 border-t-0"
-          >
-            {t('pagination.older')}
-          </button>
+          <FilterButton
+            label={t('all')}
+            count={counts.all ?? 0}
+            active={activeCat === 'all'}
+            onClick={() => setCat('all')}
+          />
+          {categories.map((c) => (
+            <FilterButton
+              key={c}
+              label={
+                (CATEGORY_KEYS as readonly string[]).includes(c) ? t(`categories.${c}` as never) : c
+              }
+              count={counts[c] ?? 0}
+              active={activeCat === c}
+              onClick={() => setCat(c)}
+            />
+          ))}
+          <span className="ml-auto font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
+            {t('entriesCount', { count: baseCount })}
+          </span>
         </div>
-      )}
+
+        <div className="flex flex-col mb-12">
+          {visible.length === 0 ? (
+            <p className="font-serif italic text-ink-faint text-lg py-16 text-center">
+              {t('emptyCategory')}
+            </p>
+          ) : (
+            visible.map((p, i) => (
+              <EntryRow key={p._id} entry={p} index={totalCount - (start + i)} />
+            ))
+          )}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between border-t border-rule-soft pt-7 -mt-px pb-4">
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+              className="font-serif italic text-[18px] text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent disabled:opacity-50 disabled:pointer-events-none disabled:border-rule-soft cursor-pointer disabled:cursor-default bg-transparent border-x-0 border-t-0"
+            >
+              {t('pagination.newer')}
+            </button>
+            <span className="font-mono text-[10.5px] tracking-[0.22em] uppercase text-ink-faint">
+              {t('pagination.pageOf', { current: safePage, total: totalPages })}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+              className="font-serif italic text-[18px] text-ink-soft border-b border-rule pb-[3px] transition-colors duration-200 hover:text-accent hover:border-accent disabled:opacity-50 disabled:pointer-events-none disabled:border-rule-soft cursor-pointer disabled:cursor-default bg-transparent border-x-0 border-t-0"
+            >
+              {t('pagination.older')}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

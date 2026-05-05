@@ -1,10 +1,5 @@
 import type { Locale } from '@/core/i18n/locales'
-
 import type { TranslationUnit, DocumentShape } from '../types'
-import {
-  applyPortableTextUnits,
-  extractPortableTextUnits,
-} from './portable-text'
 import {
   applyStringFields,
   type DerivedFieldSpec,
@@ -12,11 +7,8 @@ import {
   extractStringFields,
   specPathMatches,
 } from './fields'
-import {
-  applyI18nArrayUnits,
-  extractI18nArrayUnits,
-  type I18nArrayPathConfig,
-} from './i18n-array'
+import { applyI18nArrayUnits, extractI18nArrayUnits, type I18nArrayPathConfig } from './i18n-array'
+import { applyPortableTextUnits, extractPortableTextUnits } from './portable-text'
 
 type AnyDoc = Record<string, unknown>
 
@@ -48,12 +40,7 @@ export type WalkerSpec = {
  */
 const WALKERS: Record<string, WalkerSpec> = {
   journal: {
-    stringFields: [
-      'title',
-      'excerpt',
-      'coverImage.alt',
-      'coverImage.caption',
-    ],
+    stringFields: ['title', 'excerpt', 'coverImage.alt', 'coverImage.caption'],
     portableTextFields: ['content'],
     shape: 'mixed',
   },
@@ -153,13 +140,7 @@ const WALKERS: Record<string, WalkerSpec> = {
     shape: 'field-level',
   },
   settings: {
-    stringFields: [
-      'title',
-      'wordmark',
-      'tagline',
-      'scoresNoticeBody',
-      'scoresEditionLine',
-    ],
+    stringFields: ['title', 'wordmark', 'tagline', 'scoresNoticeBody', 'scoresEditionLine'],
     shape: 'field-level',
   },
   score: {
@@ -183,11 +164,7 @@ export type ExtractedUnits = {
 }
 
 /** Extract all translatable units from a doc per its registered walker. */
-export function extractAll(
-  doc: AnyDoc,
-  type: string,
-  sourceLocale: Locale,
-): ExtractedUnits {
+export function extractAll(doc: AnyDoc, type: string, sourceLocale: Locale): ExtractedUnits {
   const spec = walkersFor(type)
   if (!spec) return { units: [], shape: 'mixed' }
   const units: TranslationUnit[] = []
@@ -239,7 +216,11 @@ export function applyAll(
       const blockUnits: TranslationUnit[] = []
       for (const u of units) {
         if (u.id.startsWith(prefix)) {
-          blockUnits.push({ id: u.id.slice(prefix.length), sourceText: u.sourceText, context: u.context })
+          blockUnits.push({
+            id: u.id.slice(prefix.length),
+            sourceText: u.sourceText,
+            context: u.context,
+          })
         }
       }
       const original = (result[field] as unknown[]) ?? []
@@ -249,9 +230,7 @@ export function applyAll(
   }
 
   if (spec.i18nArrayFields) {
-    const arrUnits = units.filter((u) =>
-      spec.i18nArrayFields!.some((c) => c.path === u.id),
-    )
+    const arrUnits = units.filter((u) => spec.i18nArrayFields!.some((c) => c.path === u.id))
     result = applyI18nArrayUnits(result, spec.i18nArrayFields, arrUnits, targetLocale)
   }
 

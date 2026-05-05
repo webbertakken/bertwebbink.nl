@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, render, screen, within } from '@testing-library/react'
 import { NextIntlClientProvider } from 'next-intl'
-
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LanguagePicker } from './LanguagePicker'
 
 let mockPathname = '/about'
@@ -93,7 +92,9 @@ describe('LanguagePicker', () => {
       screen.getByRole('button', { name: /Language/i }).click()
       const listbox = await screen.findByRole('listbox', { name: /Language/i })
       await act(async () => {
-        within(listbox).getByRole('option', { name: /Switch to English/i }).click()
+        within(listbox)
+          .getByRole('option', { name: /Switch to English/i })
+          .click()
       })
 
       await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1))
@@ -126,14 +127,13 @@ describe('LanguagePicker', () => {
       screen.getByRole('button', { name: /Language/i }).click()
       const listbox = await screen.findByRole('listbox', { name: /Language/i })
       await act(async () => {
-        within(listbox).getByRole('option', { name: /Switch to Deutsch/i }).click()
+        within(listbox)
+          .getByRole('option', { name: /Switch to Deutsch/i })
+          .click()
       })
 
       await vi.waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1))
-      expect(mockReplace).toHaveBeenCalledWith(
-        { pathname: '/organs' },
-        { locale: 'de' },
-      )
+      expect(mockReplace).toHaveBeenCalledWith({ pathname: '/organs' }, { locale: 'de' })
     })
 
     it('falls back to the listing when the sibling lookup throws', async () => {
@@ -150,14 +150,13 @@ describe('LanguagePicker', () => {
       screen.getByRole('button', { name: /Language/i }).click()
       const listbox = await screen.findByRole('listbox', { name: /Language/i })
       await act(async () => {
-        within(listbox).getByRole('option', { name: /Switch to English/i }).click()
+        within(listbox)
+          .getByRole('option', { name: /Switch to English/i })
+          .click()
       })
 
       await vi.waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1))
-      expect(mockReplace).toHaveBeenCalledWith(
-        { pathname: '/' },
-        { locale: 'en' },
-      )
+      expect(mockReplace).toHaveBeenCalledWith({ pathname: '/' }, { locale: 'en' })
     })
 
     it('does not query the API for non-slugged routes', async () => {
@@ -170,15 +169,16 @@ describe('LanguagePicker', () => {
       screen.getByRole('button', { name: /Language/i }).click()
       const listbox = await screen.findByRole('listbox', { name: /Language/i })
       await act(async () => {
-        within(listbox).getByRole('option', { name: /Switch to English/i }).click()
+        within(listbox)
+          .getByRole('option', { name: /Switch to English/i })
+          .click()
       })
 
       await vi.waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1))
       expect(fetchMock).not.toHaveBeenCalled()
-      expect(mockReplace).toHaveBeenCalledWith(
-        expect.objectContaining({ pathname: '/about' }),
-        { locale: 'en' },
-      )
+      expect(mockReplace).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/about' }), {
+        locale: 'en',
+      })
     })
   })
 })

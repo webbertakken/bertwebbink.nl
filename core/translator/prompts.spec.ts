@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import {
   buildSystemPrompt,
   buildUserPayload,
@@ -144,10 +143,7 @@ describe('decodeResponse', () => {
   })
 
   it('falls back to the source text when an id is missing from the response', () => {
-    const decoded = decodeResponse(
-      { units: [{ id: 'title', translatedText: 'Bonjour' }] },
-      baseReq,
-    )
+    const decoded = decodeResponse({ units: [{ id: 'title', translatedText: 'Bonjour' }] }, baseReq)
     expect(decoded[1]).toEqual({ id: 'body', sourceText: 'Wereld' })
   })
 })

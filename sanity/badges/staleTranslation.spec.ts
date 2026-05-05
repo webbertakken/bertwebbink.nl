@@ -1,7 +1,5 @@
-import { describe, expect, it } from 'vitest'
-
 import type { DocumentBadgeProps } from 'sanity'
-
+import { describe, expect, it } from 'vitest'
 import { staleTranslationBadge } from './staleTranslation'
 
 function buildProps(overrides: Partial<DocumentBadgeProps>): DocumentBadgeProps {
@@ -20,7 +18,10 @@ describe('staleTranslationBadge', () => {
   it('returns null for non-translatable types', () => {
     expect(
       staleTranslationBadge(
-        buildProps({ type: 'sanity.imageAsset', published: { _type: 'sanity.imageAsset' } as never }),
+        buildProps({
+          type: 'sanity.imageAsset',
+          published: { _type: 'sanity.imageAsset' } as never,
+        }),
       ),
     ).toBeNull()
   })

@@ -1,6 +1,5 @@
 import { BookIcon } from '@sanity/icons'
 import { defineField, defineType } from 'sanity'
-
 import { languageField } from '../fields/language'
 
 /**
@@ -43,8 +42,7 @@ export const scoresPage = defineType({
     defineField({
       name: 'tagline',
       title: 'Tagline',
-      description:
-        'Italic intro paragraph beneath the title — a sentence or two, not a slogan.',
+      description: 'Italic intro paragraph beneath the title — a sentence or two, not a slogan.',
       type: 'text',
       rows: 4,
       group: 'hero',

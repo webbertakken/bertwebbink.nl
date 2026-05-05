@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-
 import { isLocale, type Locale } from '@/core/i18n/locales'
 import { getTranslator } from '@/core/translator/factory'
 import {
@@ -93,9 +92,7 @@ export async function POST(request: Request) {
  * Verify the caller is an authenticated Sanity user. The Studio sends
  * its session token as `Authorization: Bearer <token>`.
  */
-async function authorize(
-  request: Request,
-): Promise<{ authorized: boolean; error?: string }> {
+async function authorize(request: Request): Promise<{ authorized: boolean; error?: string }> {
   const auth = request.headers.get('authorization') ?? ''
   if (!auth.startsWith('Bearer ')) {
     return { authorized: false, error: 'Missing Authorization header' }

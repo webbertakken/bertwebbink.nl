@@ -26,13 +26,14 @@ export function Crumbs({ items, bare = false, className }: CrumbsProps) {
     <div className={`${ROW_CLASSES}${className ? ` ${className}` : ''}`}>
       {items.map((it, i) => {
         const isLast = i === items.length - 1
-        const node = it.href && !isLast ? (
-          <Link href={it.href} className="transition-colors hover:text-accent">
-            {it.label}
-          </Link>
-        ) : (
-          <span className={isLast ? 'text-ink' : ''}>{it.label}</span>
-        )
+        const node =
+          it.href && !isLast ? (
+            <Link href={it.href} className="transition-colors hover:text-accent">
+              {it.label}
+            </Link>
+          ) : (
+            <span className={isLast ? 'text-ink' : ''}>{it.label}</span>
+          )
         return (
           <Fragment key={i}>
             {node}
@@ -44,7 +45,5 @@ export function Crumbs({ items, bare = false, className }: CrumbsProps) {
   )
 
   if (bare) return row
-  return (
-    <div className="max-w-[1240px] mx-auto px-6 md:px-12 pt-6 pb-2">{row}</div>
-  )
+  return <div className="max-w-[1240px] mx-auto px-6 md:px-12 pt-6 pb-2">{row}</div>
 }

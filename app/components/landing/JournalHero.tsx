@@ -1,10 +1,9 @@
 import { useTranslations } from 'next-intl'
-
-import { Horizon } from './Horizon'
-import { Crumbs, type CrumbItem } from './Crumbs'
-import { renderEmphasised } from './renderEmphasised'
-import { dataAttr } from '@/sanity/lib/utils'
 import type { Locale } from '@/core/i18n/locales'
+import { dataAttr } from '@/sanity/lib/utils'
+import { Crumbs, type CrumbItem } from './Crumbs'
+import { Horizon } from './Horizon'
+import { renderEmphasised } from './renderEmphasised'
 
 const JOURNAL_PAGE_TYPE = 'journalPage'
 

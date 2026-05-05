@@ -111,10 +111,7 @@ function mergeSpansToText(block: PortableTextBlock): {
 }
 
 /** Internal: parse `<mN>...</mN>` segments back out of a translated string. */
-function rebuildBlockFromText(
-  original: PortableTextBlock,
-  translated: string,
-): PortableTextBlock {
+function rebuildBlockFromText(original: PortableTextBlock, translated: string): PortableTextBlock {
   const children: PortableTextSpan[] = []
   const re = /<m(\d+)>([\s\S]*?)<\/m\d+>|([^<]+)/g
   let match: RegExpExecArray | null

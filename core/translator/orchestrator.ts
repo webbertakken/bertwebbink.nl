@@ -1,7 +1,5 @@
 import type { SanityClient } from '@sanity/client'
-
 import { LOCALES, type Locale } from '@/core/i18n/locales'
-
 import { combineTranslations, diffUnits } from './diff'
 import { applyTranslatedSlug } from './slug'
 import type { Translator } from './types'
@@ -17,11 +15,7 @@ const SINGLETON_TYPES = new Set([
   'settings',
 ])
 
-const DOC_PER_LOCALE_TYPES = new Set([
-  ...SINGLETON_TYPES,
-  'journal',
-  'organ',
-])
+const DOC_PER_LOCALE_TYPES = new Set([...SINGLETON_TYPES, 'journal', 'organ'])
 
 /** Document-level types are translated as document-per-locale; `score` is field-level. */
 export function translatableTypes(): string[] {
@@ -32,11 +26,7 @@ export function isTranslatableType(type: string): boolean {
   return DOC_PER_LOCALE_TYPES.has(type) || type === 'score'
 }
 
-export type PerLocaleStatus =
-  | 'created'
-  | 'updated'
-  | 'skipped'
-  | 'failed'
+export type PerLocaleStatus = 'created' | 'updated' | 'skipped' | 'failed'
 
 export type PerLocaleResult = {
   locale: Locale
@@ -347,12 +337,7 @@ async function translateDocPerLocale(
   // same English title).
   let siblingSlugs: Set<string> | undefined
   if (sourceType === 'journal' || sourceType === 'organ') {
-    siblingSlugs = await loadSiblingSlugsForLocale(
-      client,
-      sourceType,
-      target,
-      targetId,
-    )
+    siblingSlugs = await loadSiblingSlugsForLocale(client, sourceType, target, targetId)
   }
 
   // Build the target doc body: start from a deep clone of the source,
@@ -431,8 +416,7 @@ async function translateScoreInPlace(
   })
 
   const next = applyAll(baseDoc, ctx.type, result.units, target) as Record<string, unknown>
-  const provenance =
-    (baseDoc._translationProvenance as Record<string, unknown> | undefined) ?? {}
+  const provenance = (baseDoc._translationProvenance as Record<string, unknown> | undefined) ?? {}
   next._translationProvenance = {
     ...provenance,
     [target]: {
@@ -475,8 +459,7 @@ async function loadSiblings(
   // Also include the source doc itself.
   const source = await client.getDocument(sourceDocId)
   if (source) {
-    const lang =
-      (source as { language?: Locale }).language ?? ('nl' as Locale)
+    const lang = (source as { language?: Locale }).language ?? ('nl' as Locale)
     out.set(lang, source as Record<string, unknown>)
   }
   return out
@@ -542,9 +525,7 @@ async function ensureTranslationMetadata(
     { id: args.sourceId },
   )
   if (existing) {
-    const existingIdx = existing.translations.findIndex(
-      (t) => t.language === args.siblingLocale,
-    )
+    const existingIdx = existing.translations.findIndex((t) => t.language === args.siblingLocale)
     if (existingIdx >= 0 && existing.translations[existingIdx].value._ref === args.siblingId) {
       return // already correct
     }
@@ -604,5 +585,3 @@ function cryptoRandomShort(): string {
   // Uniform short id; not cryptographically meaningful.
   return Math.random().toString(36).slice(2, 10)
 }
-
-

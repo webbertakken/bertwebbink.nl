@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 /**
  * Generic third-party embed.
@@ -27,8 +27,8 @@ export const embed = defineType({
     }),
   ],
   preview: {
-    select: {title: 'caption', subtitle: 'url'},
-    prepare: ({title, subtitle}) => ({
+    select: { title: 'caption', subtitle: 'url' },
+    prepare: ({ title, subtitle }) => ({
       title: title || 'Embed',
       subtitle: subtitle || 'No URL',
     }),

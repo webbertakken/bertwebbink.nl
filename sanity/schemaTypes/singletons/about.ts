@@ -1,6 +1,5 @@
 import { UserIcon } from '@sanity/icons'
 import { defineArrayMember, defineField, defineType } from 'sanity'
-
 import { languageField } from '../fields/language'
 
 /**
@@ -76,9 +75,7 @@ export const about = defineType({
         'Primary portrait shown in the sticky right column. If empty, a striped placeholder is shown. Best practice: re-use an existing asset from the media library rather than re-uploading — Sanity deduplicates by SHA but a shared `_ref` keeps things clean.',
       type: 'image',
       options: { hotspot: true },
-      fields: [
-        defineField({ name: 'alt', type: 'string', title: 'Alt text' }),
-      ],
+      fields: [defineField({ name: 'alt', type: 'string', title: 'Alt text' })],
     }),
     defineField({
       name: 'portraitCaption',
@@ -100,9 +97,7 @@ export const about = defineType({
         'Optional second photo, shown as an inline plate between the Trajectory and Repertoire sections. Same asset-sharing best practice applies.',
       type: 'image',
       options: { hotspot: true },
-      fields: [
-        defineField({ name: 'alt', type: 'string', title: 'Alt text' }),
-      ],
+      fields: [defineField({ name: 'alt', type: 'string', title: 'Alt text' })],
     }),
     defineField({
       name: 'secondaryCaption',

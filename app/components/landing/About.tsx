@@ -1,14 +1,13 @@
-import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-import { Image } from 'next-sanity/image'
-import { PortableText, type PortableTextBlock } from 'next-sanity'
 import { getImageDimensions } from '@sanity/asset-utils'
 import { stegaClean } from '@sanity/client/stega'
-
-import { urlForImage } from '@/sanity/lib/utils'
-import { stegaAttrFor, type StegaAttr } from '@/sanity/lib/stegaFactory'
-import type { Locale } from '@/core/i18n/locales'
+import { useTranslations } from 'next-intl'
+import { PortableText, type PortableTextBlock } from 'next-sanity'
+import { Image } from 'next-sanity/image'
 import { LightboxImage } from '@/app/components/lightbox/LightboxImage'
+import type { Locale } from '@/core/i18n/locales'
+import { Link } from '@/i18n/navigation'
+import { stegaAttrFor, type StegaAttr } from '@/sanity/lib/stegaFactory'
+import { urlForImage } from '@/sanity/lib/utils'
 import { renderEmphasised } from './renderEmphasised'
 
 type Fact = { _key: string; label: string; value: string }
@@ -69,9 +68,7 @@ const letterComponents = {
     ),
   },
   marks: {
-    em: ({ children }: { children?: React.ReactNode }) => (
-      <em className="italic">{children}</em>
-    ),
+    em: ({ children }: { children?: React.ReactNode }) => <em className="italic">{children}</em>,
     strong: ({ children }: { children?: React.ReactNode }) => (
       <strong className="font-semibold">{children}</strong>
     ),
@@ -228,9 +225,7 @@ function PhotoCard({
       </div>
       {(caption || plate) && (
         <div className="mt-3.5 flex justify-between gap-3 font-serif italic text-ink-soft text-sm leading-[1.5]">
-          {caption && (
-            <span data-sanity={attr(captionField)}>{caption}</span>
-          )}
+          {caption && <span data-sanity={attr(captionField)}>{caption}</span>}
           {plate && (
             <span
               data-sanity={attr(plateField)}
@@ -372,7 +367,15 @@ function SecondaryPlate({
   )
 }
 
-function SecHead({ num, label, children }: { num: string; label: string; children: React.ReactNode }) {
+function SecHead({
+  num,
+  label,
+  children,
+}: {
+  num: string
+  label: string
+  children: React.ReactNode
+}) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 lg:gap-16 items-baseline mb-11 pb-[22px] border-b border-rule-soft">
       <div className="flex items-center gap-3 font-mono text-[10.5px] tracking-[0.32em] uppercase text-ink-faint">
@@ -478,7 +481,10 @@ function Repertoire({
             {intro}
           </p>
         )}
-        <div data-sanity={attr('repertoire')} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div
+          data-sanity={attr('repertoire')}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"
+        >
           {cards.map((c) => (
             <article
               key={c._key}
@@ -609,22 +615,14 @@ function EmptyState() {
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
         {t.rich('emptyHint', {
-          code: (chunks) => (
-            <span className="not-italic font-mono text-sm text-ink">{chunks}</span>
-          ),
+          code: (chunks) => <span className="not-italic font-mono text-sm text-ink">{chunks}</span>,
         })}
       </p>
     </section>
   )
 }
 
-export function About({
-  locale,
-  data,
-}: {
-  locale: Locale
-  data: AboutContent | null
-}) {
+export function About({ locale, data }: { locale: Locale; data: AboutContent | null }) {
   if (!data) return <EmptyState />
   const aboutId = data._id ?? `about-${locale}`
   const attr = stegaAttrFor(aboutId, 'about')

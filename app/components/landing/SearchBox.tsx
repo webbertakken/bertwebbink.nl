@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useRouter } from '@/i18n/navigation'
 
 type SearchBoxProps = {
@@ -80,11 +79,7 @@ export function SearchBox({ variant = 'inline' }: SearchBoxProps) {
       ref={formRef}
       role="search"
       onSubmit={handleSubmit}
-      className={
-        startExpanded
-          ? 'flex items-center gap-2 w-full'
-          : 'relative flex items-center'
-      }
+      className={startExpanded ? 'flex items-center gap-2 w-full' : 'relative flex items-center'}
     >
       <input
         ref={inputRef}

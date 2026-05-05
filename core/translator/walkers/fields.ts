@@ -51,7 +51,12 @@ export function writePath(doc: AnyDoc, path: string, value: unknown): AnyDoc {
     if (cursor == null) return out
   }
   const last = segments[segments.length - 1]
-  if (last.kind === 'prop' && typeof cursor === 'object' && !Array.isArray(cursor) && cursor != null) {
+  if (
+    last.kind === 'prop' &&
+    typeof cursor === 'object' &&
+    !Array.isArray(cursor) &&
+    cursor != null
+  ) {
     ;(cursor as AnyDoc)[last.name] = value
   }
   return out
@@ -95,10 +100,7 @@ export type DerivedFieldSpec = {
   context?: string
 }
 
-export function extractDerivedFields(
-  doc: AnyDoc,
-  specs: DerivedFieldSpec[],
-): TranslationUnit[] {
+export function extractDerivedFields(doc: AnyDoc, specs: DerivedFieldSpec[]): TranslationUnit[] {
   const out: TranslationUnit[] = []
   for (const spec of specs) {
     const concrete = expandWildcardPair(doc, spec.readPath, spec.writePath)
@@ -128,10 +130,7 @@ export function specPathMatches(specPath: string, unitId: string): boolean {
 }
 
 /** Re-apply translated string units. Returns a deep-cloned doc. */
-export function applyStringFields(
-  doc: AnyDoc,
-  units: TranslationUnit[],
-): AnyDoc {
+export function applyStringFields(doc: AnyDoc, units: TranslationUnit[]): AnyDoc {
   let result = deepClone(doc)
   for (const unit of units) {
     result = writePath(result, unit.id, unit.sourceText)

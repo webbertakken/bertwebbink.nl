@@ -22,9 +22,7 @@
  */
 
 import 'dotenv/config'
-
 import { createClient } from '@sanity/client'
-
 import { LOCALES, type Locale } from '../core/i18n/locales'
 import { slugify } from '../core/translator/slug'
 

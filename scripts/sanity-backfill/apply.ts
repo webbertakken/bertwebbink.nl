@@ -16,9 +16,9 @@
  *     [--apply] [--batch-size 25]
  */
 
+import { createClient, type Transaction } from '@sanity/client'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { createClient, type Transaction } from '@sanity/client'
 
 interface PerDocPlan {
   _id: string

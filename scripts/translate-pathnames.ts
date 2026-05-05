@@ -23,16 +23,9 @@
  */
 
 import 'dotenv/config'
-
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-
-import {
-  LOCALES,
-  LOCALE_LABELS_EN,
-  UI_DEFAULT_LOCALE,
-  type Locale,
-} from '@/core/i18n/locales'
+import { LOCALES, LOCALE_LABELS_EN, UI_DEFAULT_LOCALE, type Locale } from '@/core/i18n/locales'
 import { slugify } from '@/core/translator/slug'
 
 /**

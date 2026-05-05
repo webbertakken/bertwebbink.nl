@@ -1,4 +1,4 @@
-import {defineArrayMember, defineType, defineField} from 'sanity'
+import { defineArrayMember, defineType, defineField } from 'sanity'
 
 /**
  * This is the schema definition for the rich text fields used for
@@ -33,8 +33,8 @@ export const blockContent = defineType({
                 initialValue: 'href',
                 options: {
                   list: [
-                    {title: 'URL', value: 'href'},
-                    {title: 'Organ', value: 'organ'},
+                    { title: 'URL', value: 'href' },
+                    { title: 'Organ', value: 'organ' },
                   ],
                   layout: 'radio',
                 },
@@ -43,7 +43,7 @@ export const blockContent = defineType({
                 name: 'href',
                 title: 'URL',
                 type: 'url',
-                hidden: ({parent}) => parent?.linkType !== 'href' && parent?.linkType != null,
+                hidden: ({ parent }) => parent?.linkType !== 'href' && parent?.linkType != null,
                 validation: (Rule) =>
                   Rule.custom((value, context: any) => {
                     if (context.parent?.linkType === 'href' && !value) {
@@ -56,8 +56,8 @@ export const blockContent = defineType({
                 name: 'organ',
                 title: 'Organ',
                 type: 'reference',
-                to: [{type: 'organ'}],
-                hidden: ({parent}) => parent?.linkType !== 'organ',
+                to: [{ type: 'organ' }],
+                hidden: ({ parent }) => parent?.linkType !== 'organ',
                 validation: (Rule) =>
                   Rule.custom((value, context: any) => {
                     if (context.parent?.linkType === 'organ' && !value) {
@@ -102,9 +102,9 @@ export const blockContent = defineType({
           description: 'How the image is laid out within the surrounding flow.',
           options: {
             list: [
-              {title: 'Left', value: 'left'},
-              {title: 'Center', value: 'center'},
-              {title: 'Right', value: 'right'},
+              { title: 'Left', value: 'left' },
+              { title: 'Center', value: 'center' },
+              { title: 'Right', value: 'right' },
             ],
             layout: 'radio',
           },
@@ -122,9 +122,9 @@ export const blockContent = defineType({
           type: 'string',
           options: {
             list: [
-              {title: 'YouTube', value: 'youtube'},
-              {title: 'Vimeo', value: 'vimeo'},
-              {title: 'Self-hosted file', value: 'url'},
+              { title: 'YouTube', value: 'youtube' },
+              { title: 'Vimeo', value: 'vimeo' },
+              { title: 'Self-hosted file', value: 'url' },
             ],
             layout: 'radio',
           },
@@ -134,9 +134,8 @@ export const blockContent = defineType({
           name: 'url',
           title: 'Video URL',
           type: 'url',
-          description:
-            'Full external URL (YouTube or Vimeo). Leave empty for self-hosted files.',
-          hidden: ({parent}) => parent?.videoType === 'url',
+          description: 'Full external URL (YouTube or Vimeo). Leave empty for self-hosted files.',
+          hidden: ({ parent }) => parent?.videoType === 'url',
           validation: (Rule) =>
             Rule.custom((value, context: any) => {
               if (context.parent?.videoType !== 'url' && !value) {
@@ -149,9 +148,9 @@ export const blockContent = defineType({
           name: 'videoFile',
           title: 'Video file',
           type: 'file',
-          options: {accept: 'video/*'},
+          options: { accept: 'video/*' },
           description: 'Self-hosted video file. Used when video type is "Self-hosted file".',
-          hidden: ({parent}) => parent?.videoType !== 'url',
+          hidden: ({ parent }) => parent?.videoType !== 'url',
         }),
         defineField({
           name: 'title',
@@ -171,10 +170,10 @@ export const blockContent = defineType({
           type: 'string',
           options: {
             list: [
-              {title: '16:9 (Widescreen)', value: '16:9'},
-              {title: '4:3 (Standard)', value: '4:3'},
-              {title: '1:1 (Square)', value: '1:1'},
-              {title: '9:16 (Vertical)', value: '9:16'},
+              { title: '16:9 (Widescreen)', value: '16:9' },
+              { title: '4:3 (Standard)', value: '4:3' },
+              { title: '1:1 (Square)', value: '1:1' },
+              { title: '9:16 (Vertical)', value: '9:16' },
             ],
           },
           initialValue: '16:9',
@@ -186,7 +185,7 @@ export const blockContent = defineType({
           url: 'url',
           videoType: 'videoType',
         },
-        prepare({title, url, videoType}) {
+        prepare({ title, url, videoType }) {
           return {
             title: title || 'Video',
             subtitle: `${videoType?.toUpperCase() || 'VIDEO'}: ${url || 'No URL'}`,
@@ -256,7 +255,7 @@ export const blockContent = defineType({
           audioFile: 'audioFile',
           duration: 'duration',
         },
-        prepare({title, audioFile, duration}) {
+        prepare({ title, audioFile, duration }) {
           return {
             title: title || 'Audio',
             subtitle: `${audioFile?.originalFilename || 'No file'} ${duration ? `(${duration})` : ''}`,
@@ -267,7 +266,7 @@ export const blockContent = defineType({
     }),
     // Divider and embed are registered as standalone object types
     // (see ./divider.ts and ./embed.ts) and referenced by name here.
-    defineArrayMember({type: 'divider'}),
-    defineArrayMember({type: 'embed'}),
+    defineArrayMember({ type: 'divider' }),
+    defineArrayMember({ type: 'embed' }),
   ],
 })

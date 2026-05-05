@@ -18,7 +18,6 @@
  */
 
 import 'dotenv/config'
-
 import { createClient, type SanityClient, type Transaction } from '@sanity/client'
 import { randomUUID } from 'node:crypto'
 
@@ -183,9 +182,7 @@ async function addLanguageField(client: SanityClient) {
  */
 async function convertScoreFields(client: SanityClient) {
   log('Step 3/3: convert score fields to internationalised arrays...')
-  const scores = await client.fetch<Array<Record<string, unknown>>>(
-    `*[_type == "score"]`,
-  )
+  const scores = await client.fetch<Array<Record<string, unknown>>>(`*[_type == "score"]`)
   let touched = 0
   let skipped = 0
   let tx: Transaction | null = null

@@ -1,6 +1,5 @@
 import { hasLocale } from 'next-intl'
 import { getRequestConfig } from 'next-intl/server'
-
 import { isLocale, UI_DEFAULT_LOCALE } from '@/core/i18n/locales'
 import { routing } from './routing'
 
@@ -12,9 +11,7 @@ import { routing } from './routing'
  */
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale
-  const locale = hasLocale(routing.locales, requested)
-    ? requested
-    : UI_DEFAULT_LOCALE
+  const locale = hasLocale(routing.locales, requested) ? requested : UI_DEFAULT_LOCALE
 
   // We always have an `en.json`. The other locales fall back to it
   // when missing keys (handled by next-intl via `getMessages` config).

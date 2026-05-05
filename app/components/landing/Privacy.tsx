@@ -1,8 +1,7 @@
 import { useFormatter, useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
-
-import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
 import type { Locale } from '@/core/i18n/locales'
+import { Link } from '@/i18n/navigation'
+import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
 
 type Section = {
   _key: string
@@ -68,31 +67,20 @@ function EmptyState() {
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
         {t.rich('emptyHint', {
-          code: (chunks) => (
-            <span className="not-italic font-mono text-sm text-ink">{chunks}</span>
-          ),
+          code: (chunks) => <span className="not-italic font-mono text-sm text-ink">{chunks}</span>,
         })}
       </p>
     </section>
   )
 }
 
-export function Privacy({
-  locale,
-  data,
-}: {
-  locale: Locale
-  data: PrivacyContent | null
-}) {
+export function Privacy({ locale, data }: { locale: Locale; data: PrivacyContent | null }) {
   if (!data) return <EmptyState />
   const privacyId = data._id ?? `privacy-${locale}`
   const privacyAttr = stegaAttrFor(privacyId, 'privacy')
 
   return (
-    <main
-      className="max-w-[840px] mx-auto px-6 md:px-12 pt-8 pb-32"
-      data-screen-label="privacy"
-    >
+    <main className="max-w-[840px] mx-auto px-6 md:px-12 pt-8 pb-32" data-screen-label="privacy">
       <Crumbs />
 
       {data.eyebrow && (
@@ -115,10 +103,7 @@ export function Privacy({
       </h1>
 
       {data.lastUpdated && (
-        <PrivacyLastUpdated
-          attr={privacyAttr('lastUpdated')}
-          date={data.lastUpdated}
-        />
+        <PrivacyLastUpdated attr={privacyAttr('lastUpdated')} date={data.lastUpdated} />
       )}
 
       {data.intro && (

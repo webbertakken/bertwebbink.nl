@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import {
   applyStringFields,
   expandWildcardPair,
@@ -77,9 +76,7 @@ describe('field walker', () => {
   it('writePath traverses index segments en route to a property', () => {
     const doc = { list: [{ value: 'a' }, { value: 'b' }] }
     const result = writePath(doc, 'list[1].value', 'B')
-    expect(
-      (result.list as Array<{ value: string }>)[1].value,
-    ).toBe('B')
+    expect((result.list as Array<{ value: string }>)[1].value).toBe('B')
   })
 
   it('writePath bails when an index segment lands on a non-array intermediate', () => {
@@ -104,11 +101,7 @@ describe('field walker', () => {
   })
 
   it('writePath bails when keyMatch lookup fails', () => {
-    const result = writePath(
-      { list: [{ _key: 'a', value: 1 }] },
-      'list[_key=="missing"].value',
-      99,
-    )
+    const result = writePath({ list: [{ _key: 'a', value: 1 }] }, 'list[_key=="missing"].value', 99)
     expect(result).toEqual({ list: [{ _key: 'a', value: 1 }] })
   })
 
@@ -173,9 +166,7 @@ describe('field walker', () => {
       ],
       nope: 'string-not-array',
     }
-    expect(expandWildcards(doc as never, 'list[*].name')).toEqual([
-      'list[_key=="a"].name',
-    ])
+    expect(expandWildcards(doc as never, 'list[*].name')).toEqual(['list[_key=="a"].name'])
     expect(expandWildcards(doc as never, 'nope[*].x')).toEqual([])
   })
 
@@ -196,12 +187,8 @@ describe('field walker', () => {
   it('specPathMatches matches concrete unit ids against wildcard spec paths', () => {
     expect(specPathMatches('foo.bar', 'foo.bar')).toBe(true)
     expect(specPathMatches('foo.bar', 'foo.baz')).toBe(false)
-    expect(
-      specPathMatches('list[*].name', 'list[_key=="abc"].name'),
-    ).toBe(true)
-    expect(
-      specPathMatches('list[*].name', 'list[_key=="abc"].label'),
-    ).toBe(false)
+    expect(specPathMatches('list[*].name', 'list[_key=="abc"].name')).toBe(true)
+    expect(specPathMatches('list[*].name', 'list[_key=="abc"].label')).toBe(false)
     expect(
       specPathMatches(
         'registers[*].stops[*].translation',
@@ -220,11 +207,7 @@ describe('field walker', () => {
       ],
     }
     expect(
-      expandWildcardPair(
-        doc,
-        'registers[*].stops[*].name',
-        'registers[*].stops[*].translation',
-      ),
+      expandWildcardPair(doc, 'registers[*].stops[*].name', 'registers[*].stops[*].translation'),
     ).toEqual([
       [
         'registers[_key=="r1"].stops[_key=="s1"].name',
@@ -244,30 +227,15 @@ describe('field walker', () => {
   })
 
   it('expandWildcardPair yields nothing when the read prefix is not an array', () => {
-    expect(
-      expandWildcardPair({ x: 'string' }, 'x[*].name', 'x[*].translation'),
-    ).toEqual([])
+    expect(expandWildcardPair({ x: 'string' }, 'x[*].name', 'x[*].translation')).toEqual([])
   })
 
   it('expandWildcardPair skips items with no string `_key`', () => {
     const doc = {
-      list: [
-        { _key: 'a' },
-        { name: 'no-key' },
-        null,
-      ],
+      list: [{ _key: 'a' }, { name: 'no-key' }, null],
     }
-    expect(
-      expandWildcardPair(
-        doc as never,
-        'list[*].name',
-        'list[*].translation',
-      ),
-    ).toEqual([
-      [
-        'list[_key=="a"].name',
-        'list[_key=="a"].translation',
-      ],
+    expect(expandWildcardPair(doc as never, 'list[*].name', 'list[*].translation')).toEqual([
+      ['list[_key=="a"].name', 'list[_key=="a"].translation'],
     ])
   })
 
@@ -305,17 +273,11 @@ describe('field walker', () => {
     const units = extractDerivedFields(doc, [
       { readPath: 'stops[*].name', writePath: 'stops[*].translation' },
     ])
-    expect(units).toEqual([
-      { id: 'stops[_key=="s1"].translation', sourceText: 'Bordun' },
-    ])
+    expect(units).toEqual([{ id: 'stops[_key=="s1"].translation', sourceText: 'Bordun' }])
   })
 
   it('writePath bails when intermediate keyMatch lookup returns undefined', () => {
-    const result = writePath(
-      { list: [{ _key: 'a' }] },
-      'list[_key=="missing"].leaf',
-      'X',
-    )
+    const result = writePath({ list: [{ _key: 'a' }] }, 'list[_key=="missing"].leaf', 'X')
     expect(result).toEqual({ list: [{ _key: 'a' }] })
   })
 })

@@ -1,11 +1,10 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-
-import { extractTokens, sanitiseQuery } from '@/core/search/sanitise'
+import { SearchResults } from '@/app/components/search/SearchResults'
 import { isLocale, type Locale } from '@/core/i18n/locales'
+import { extractTokens, sanitiseQuery } from '@/core/search/sanitise'
 import { sanityFetch } from '@/sanity/lib/live'
 import { searchQuery } from '@/sanity/lib/queries'
-import { SearchResults } from '@/app/components/search/SearchResults'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -61,12 +60,7 @@ export default async function SearchPage({ params, searchParams }: Props) {
           </p>
         )}
       </header>
-      <SearchResults
-        locale={locale}
-        query={rawQuery}
-        tokens={tokens}
-        results={results ?? []}
-      />
+      <SearchResults locale={locale} query={rawQuery} tokens={tokens} results={results ?? []} />
     </article>
   )
 }

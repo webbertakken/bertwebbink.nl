@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-
 import { Scores, type Score } from '@/app/components/landing/Scores'
+import { isLocale, type Locale } from '@/core/i18n/locales'
 import { sanityFetch } from '@/sanity/lib/live'
 import { scoresPageQuery, scoresQuery } from '@/sanity/lib/queries'
-import { isLocale, type Locale } from '@/core/i18n/locales'
 
 /** Static rendering with ISR safety net. `force-static` is required because
  * `next-sanity/live`'s `sanityFetch` calls `draftMode()` internally, which

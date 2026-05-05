@@ -1,20 +1,18 @@
 import './globals.css'
-
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
-import { Inter, Cormorant_Garamond } from 'next/font/google'
-import { draftMode } from 'next/headers'
 import { toPlainText } from 'next-sanity'
 import { VisualEditing } from 'next-sanity/visual-editing'
+import { Inter, Cormorant_Garamond } from 'next/font/google'
+import { draftMode } from 'next/headers'
 import { Toaster } from 'sonner'
-
 import DraftModeToast from '@/app/components/DraftModeToast'
+import { isLocale, UI_DEFAULT_LOCALE, type Locale } from '@/core/i18n/locales'
 import * as demo from '@/sanity/lib/demo'
 import { sanityFetch, SanityLive } from '@/sanity/lib/live'
 import { settingsQuery } from '@/sanity/lib/queries'
 import { resolveOpenGraphImage } from '@/sanity/lib/utils'
 import { handleError } from './client-utils'
-import { isLocale, UI_DEFAULT_LOCALE, type Locale } from '@/core/i18n/locales'
 
 /**
  * Resolve the active locale for the root layout. We can't use route

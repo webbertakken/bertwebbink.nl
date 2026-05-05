@@ -1,4 +1,3 @@
-import type { Translator, TranslateRequest, TranslateResult } from './types'
 import {
   buildSystemPrompt,
   buildUserPayload,
@@ -6,6 +5,7 @@ import {
   responseSchema,
   type RawTranslatorResponse,
 } from './prompts'
+import type { Translator, TranslateRequest, TranslateResult } from './types'
 
 /**
  * Anthropic Claude translator. Uses tool-use (forced tool choice) for

@@ -1,5 +1,4 @@
 import type { Locale } from '@/core/i18n/locales'
-
 import type { TranslationUnit } from '../types'
 import { readPath, writePath } from './fields'
 

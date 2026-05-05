@@ -59,9 +59,9 @@ npm run dev
 
 #### 3. Open the app and sign in to the Studio
 
-Open the app running locally in your browser on [http://localhost:3090](http://localhost:3090).
-You should now see a screen prompting you to log in to the Studio. Use the same service (Google,
-GitHub, or email) that you used when you logged in to the CLI.
+Open the app running locally in your browser on [http://localhost:3090](http://localhost:3090). You
+should now see a screen prompting you to log in to the Studio. Use the same service (Google, GitHub,
+or email) that you used when you logged in to the CLI.
 
 ### Adding content with Sanity
 
@@ -88,9 +88,8 @@ npm run import-sample-data
 
 #### 3. Extending the Sanity schema
 
-The schema for the `Post` document type is defined in the `sanity/schemaTypes/post.ts` file. You
-can [add more document types](https://www.sanity.io/docs/schema-types) to the schema to suit your
-needs.
+The schema for the `Post` document type is defined in the `sanity/schemaTypes/post.ts` file. You can
+[add more document types](https://www.sanity.io/docs/schema-types) to the schema to suit your needs.
 
 ### Deploying your application and inviting editors
 
@@ -106,12 +105,11 @@ GitHub being a popular choice, we'll cover the basics of that approach.
 
 #### 2. Invite a collaborator
 
-Now that you've deployed your application, you can optionally invite a
-collaborator to your Studio. Open up [Manage](https://www.sanity.io/manage), select your project and
-click "Invite project members"
+Now that you've deployed your application, you can optionally invite a collaborator to your Studio.
+Open up [Manage](https://www.sanity.io/manage), select your project and click "Invite project
+members"
 
-They will be able to access the Studio, where you can collaborate together on creating
-content.
+They will be able to access the Studio, where you can collaborate together on creating content.
 
 ## Resources
 

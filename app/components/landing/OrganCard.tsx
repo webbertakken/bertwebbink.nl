@@ -1,6 +1,6 @@
 import { useFormatter, useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
 import { Image } from 'next-sanity/image'
+import { Link } from '@/i18n/navigation'
 import { dataAttr, urlForImage } from '@/sanity/lib/utils'
 import { Placeholder } from './Placeholder'
 

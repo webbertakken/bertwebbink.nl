@@ -1,5 +1,4 @@
 import { stegaClean } from '@sanity/client/stega'
-
 import type { LandingOrgan } from './OrganCard'
 
 /**
@@ -53,9 +52,7 @@ export function yearTotals(organs: LandingOrgan[]): Array<{ year: number; count:
  * next-intl's typed `Link` href so `/organs` resolves to the
  * locale-specific segment automatically (`/de/orgeln`, `/ja/オルガン`).
  */
-export function cityHref(
-  city: string,
-): { pathname: '/organs'; query?: { city: string } } {
+export function cityHref(city: string): { pathname: '/organs'; query?: { city: string } } {
   if (!city) return { pathname: '/organs' }
   return { pathname: '/organs', query: { city } }
 }

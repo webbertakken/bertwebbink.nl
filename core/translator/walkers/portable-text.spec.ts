@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-
 import { applyPortableTextUnits, extractPortableTextUnits } from './portable-text'
 
 describe('portable-text walker', () => {
@@ -128,9 +127,7 @@ describe('portable-text walker', () => {
     // The translated string contains a bare `<` that doesn't match `<mN>`,
     // so the regex breaks the bare-text run into two halves. They must be
     // re-joined into a single plain span (covers `last.text += match[3]`).
-    const back = applyPortableTextUnits(blocks, [
-      { id: 'block[0]', sourceText: 'one < two' },
-    ])
+    const back = applyPortableTextUnits(blocks, [{ id: 'block[0]', sourceText: 'one < two' }])
     const block = back[0] as { children: Array<{ text: string; marks?: string[] }> }
     expect(block.children).toHaveLength(1)
     expect(block.children[0].text).toBe('one  two')
@@ -176,9 +173,7 @@ describe('portable-text walker', () => {
         ],
       },
     ]
-    const back = applyPortableTextUnits(blocks, [
-      { id: 'block[0]', sourceText: 'translated text' },
-    ])
+    const back = applyPortableTextUnits(blocks, [{ id: 'block[0]', sourceText: 'translated text' }])
     const block = back[0] as { children: Array<{ text: string }> }
     expect(block.children).toHaveLength(1)
     expect(block.children[0].text).toBe('translated text')
@@ -194,9 +189,7 @@ describe('portable-text walker', () => {
         children: [{ _key: 's', _type: 'span', text: 'one' }],
       },
     ]
-    const back = applyPortableTextUnits(blocks, [
-      { id: 'block[0]', sourceText: '' },
-    ])
+    const back = applyPortableTextUnits(blocks, [{ id: 'block[0]', sourceText: '' }])
     const block = back[0] as { children: Array<{ text: string }> }
     expect(block.children[0].text).toBe('one')
   })
@@ -232,12 +225,13 @@ describe('portable-text walker', () => {
         _type: 'block',
         style: 'normal',
         markDefs: [],
-        children: [{ _type: 'span', text: 'A ' }, { _type: 'span', text: 'B', marks: ['em'] }],
+        children: [
+          { _type: 'span', text: 'A ' },
+          { _type: 'span', text: 'B', marks: ['em'] },
+        ],
       },
     ]
-    const back = applyPortableTextUnits(blocks, [
-      { id: 'block[0]', sourceText: 'X <m2>Y</m2>' },
-    ])
+    const back = applyPortableTextUnits(blocks, [{ id: 'block[0]', sourceText: 'X <m2>Y</m2>' }])
     const block = back[0] as { children: Array<{ _key?: string; text: string }> }
     expect(block.children[1]._key).toMatch(/span-/)
   })
@@ -274,9 +268,7 @@ describe('portable-text walker', () => {
     ]
     // Translation introduces a fresh bare-text segment; no plain-text source
     // span to crib a `_key` from — falls through to the `?? undefined` path.
-    const back = applyPortableTextUnits(blocks, [
-      { id: 'block[0]', sourceText: '<m1>B</m1> tail' },
-    ])
+    const back = applyPortableTextUnits(blocks, [{ id: 'block[0]', sourceText: '<m1>B</m1> tail' }])
     const block = back[0] as { children: Array<{ _key?: string; text: string }> }
     const tail = block.children[block.children.length - 1]
     expect(tail.text).toContain('tail')
@@ -299,9 +291,7 @@ describe('portable-text walker', () => {
         children: [{ _key: 's', _type: 'span', text: 'two' }],
       },
     ]
-    const back = applyPortableTextUnits(blocks, [
-      { id: 'block[1]', sourceText: 'twee' },
-    ])
+    const back = applyPortableTextUnits(blocks, [{ id: 'block[1]', sourceText: 'twee' }])
     expect((back[0] as { children: Array<{ text: string }> }).children[0].text).toBe('one')
     expect((back[1] as { children: Array<{ text: string }> }).children[0].text).toBe('twee')
   })

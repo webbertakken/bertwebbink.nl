@@ -1,12 +1,11 @@
 import type { Metadata, ResolvingMetadata } from 'next'
-import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
-
+import { notFound } from 'next/navigation'
 import { JournalArticle, type JournalDetail } from '@/app/components/landing/JournalArticle'
+import { isLocale, type Locale } from '@/core/i18n/locales'
 import { sanityFetch } from '@/sanity/lib/live'
 import { journalPagesSlugs, journalQuery } from '@/sanity/lib/queries'
 import { resolveOpenGraphImage } from '@/sanity/lib/utils'
-import { isLocale, type Locale } from '@/core/i18n/locales'
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>
@@ -21,10 +20,7 @@ export async function generateStaticParams() {
   return (data ?? []) as Array<{ locale: string; slug: string }>
 }
 
-export async function generateMetadata(
-  props: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
   const { locale: raw, slug: rawSlug } = await props.params
   const locale: Locale = isLocale(raw) ? raw : 'en'
   const slug = decodeURIComponent(rawSlug).normalize('NFC')

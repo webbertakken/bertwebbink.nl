@@ -22,7 +22,6 @@
  */
 
 import 'dotenv/config'
-
 import { createClient } from '@sanity/client'
 
 const projectId = required('NEXT_PUBLIC_SANITY_PROJECT_ID')
@@ -93,7 +92,9 @@ async function main() {
   }
   const collisions = [...groups.entries()].filter(([, ds]) => ds.length > 1)
   if (collisions.length > 0) {
-    console.log(`\n${collisions.length} legitimate slug collision(s) remain (distinct nl sources translating to the same slug):`)
+    console.log(
+      `\n${collisions.length} legitimate slug collision(s) remain (distinct nl sources translating to the same slug):`,
+    )
     for (const [k, docs] of collisions.slice(0, 10)) {
       console.log(`  ${k}`)
       for (const d of docs) console.log(`    ${d._id}`)

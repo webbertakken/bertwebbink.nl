@@ -1,7 +1,6 @@
 import { ComposeIcon } from '@sanity/icons'
 import { format, parseISO } from 'date-fns'
 import { defineField, defineType } from 'sanity'
-
 import { languageField } from '../fields/language'
 
 /**

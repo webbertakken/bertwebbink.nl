@@ -14,12 +14,10 @@
  */
 
 import 'dotenv/config'
-
-import { createWriteStream, mkdirSync } from 'node:fs'
-import { createGzip } from 'node:zlib'
-import path from 'node:path'
-
 import { createClient } from '@sanity/client'
+import { createWriteStream, mkdirSync } from 'node:fs'
+import path from 'node:path'
+import { createGzip } from 'node:zlib'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
 const defaultDataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
@@ -44,10 +42,7 @@ if (!token) {
   process.exit(1)
 }
 
-const stamp = new Date()
-  .toISOString()
-  .replace(/[:T]/g, '-')
-  .replace(/\..+$/, '')
+const stamp = new Date().toISOString().replace(/[:T]/g, '-').replace(/\..+$/, '')
 const outDir = path.join(outBase, stamp)
 mkdirSync(outDir, { recursive: true })
 const outFile = path.join(outDir, `${dataset}-export.ndjson.gz`)
@@ -106,7 +101,9 @@ async function main() {
     out.on('finish', () => resolve())
     out.on('error', reject)
   })
-  console.log(`\u2713 export complete: ${lines} documents, ${(bytes / 1024 / 1024).toFixed(1)} MiB raw`)
+  console.log(
+    `\u2713 export complete: ${lines} documents, ${(bytes / 1024 / 1024).toFixed(1)} MiB raw`,
+  )
   // Sanity check the doc count from a parallel client query.
   const client = createClient({
     projectId,

@@ -43,14 +43,21 @@ function sanitiseCell(raw: string, warnings: Warning[]): string | null {
   let s = raw
   // Reconstruct fractions written as <span style="font-size: small;">2</span><span style="font-size: xx-small;">2/3</span>.
   // Insert a space before the smaller-text fraction so we don't end up with "22/3".
+  // oxlint-disable-next-line no-control-regex
   s = s.replace(/<\/span>\s*<span[^>]*>(\d+\s*\/\s*\d+)/gi, ' $1')
   // Strip remaining HTML tags
+  // oxlint-disable-next-line no-control-regex
   s = s.replace(/<[^>]*>/g, '')
   s = decodeEntities(s)
   // Drop control / zero-width characters (intentional control-char regex).
   /* eslint-disable-next-line no-control-regex */
-  s = s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u2028-\u202F\u2060-\u206F\uFEFF]/g, '')
+  // oxlint-disable-next-line no-control-regex
+  s = s.replace(
+    /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200F\u2028-\u202F\u2060-\u206F\uFEFF]/g,
+    '',
+  )
   // Collapse whitespace
+  // oxlint-disable-next-line no-control-regex
   s = s.replace(/\s+/g, ' ').trim()
   if (!s) return null
   // Reject anything that still contains tag characters \u2014 means the regex extraction missed something

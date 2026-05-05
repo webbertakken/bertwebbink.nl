@@ -1,11 +1,5 @@
 import { defineRouting } from 'next-intl/routing'
-
-import {
-  DEFAULT_LOCALE,
-  LOCALES,
-  UI_DEFAULT_LOCALE,
-  type Locale,
-} from '@/core/i18n/locales'
+import { DEFAULT_LOCALE, LOCALES, UI_DEFAULT_LOCALE, type Locale } from '@/core/i18n/locales'
 
 /**
  * Per-route, per-locale URL segments.
