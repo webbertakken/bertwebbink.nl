@@ -15,7 +15,7 @@ LLM-driven translation pipeline, no Sanity AI Assist, no SaaS translation servic
 | Locale list                        | Code constant in `core/i18n/locales.ts` — single source of truth for both Sanity i18n plugins, `next-intl` routing, and the language picker. **No `locale` document type in Sanity.**                                                  |
 | Singleton id pattern               | Symmetric `{type}-{locale}` for every locale (`about-nl`, `about-en`, ..., `journalPage-en`). No "default without suffix" exception.                                                                                                   |
 | Translation engine                 | LLM (not conventional MT).                                                                                                                                                                                                             |
-| Default provider                   | Google Gemini, model `gemini-2.5-flash` (~33× cheaper output tokens than Pro; quality is fine for our shape of work).                                                                                                                  |
+| Default provider                   | Google Gemini, model `gemini-3.5-flash-lite` (cheapest tier; quality is fine for our shape of work).                                                                                                                                   |
 | Pluggability                       | `Translator` interface + `GeminiTranslator` (default) + `AnthropicTranslator` + `OpenAITranslator`. Picked by `TRANSLATOR_PROVIDER` env (default `gemini`). Model overridable via `GEMINI_MODEL` / `ANTHROPIC_MODEL` / `OPENAI_MODEL`. |
 | Stale handling                     | Visual indicator badge in Studio + action always re-runs all locales on press. Orchestrator does not short-circuit on a matching `_translationSourceRev`, so walker-spec expansions automatically reach existing siblings.             |
 | UI strings library                 | `next-intl`. Hand-authored `messages/en.json`; other 10 locales seeded via `yarn translate:ui`. Dutch (`messages/nl.json`) authored by hand because it's the content default.                                                          |
@@ -27,8 +27,9 @@ LLM-driven translation pipeline, no Sanity AI Assist, no SaaS translation servic
 
 ## Cost (measured)
 
-Default model is `gemini-2.5-flash` (output $0.30/M tokens). Earlier estimates were on Pro ($10/M
-output) — output dominates the bill 8:1 because Gemini's internal "thinking" tokens count as output.
+Default model is `gemini-3.5-flash-lite`. Costs below were measured on `gemini-2.5-flash` (output
+$0.30/M tokens) and are an upper bound for Flash Lite. Output dominates the bill 8:1 because
+Gemini's internal "thinking" tokens count as output.
 
 | Operation                                      | Approx cost          |
 | ---------------------------------------------- | -------------------- |
