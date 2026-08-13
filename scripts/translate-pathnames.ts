@@ -66,7 +66,7 @@ const OUT_PATH = path.resolve(__dirname, '..', 'i18n', 'pathnames.json')
 type Pathnames = Record<string, Record<Locale, string>>
 
 const apiKey = required('GOOGLE_AI_API_KEY')
-const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
+const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite'
 
 function required(name: string): string {
   const value = process.env[name]

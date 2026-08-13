@@ -27,10 +27,9 @@ export class GeminiTranslator implements Translator {
     const apiKey = opts?.apiKey ?? process.env.GOOGLE_AI_API_KEY ?? process.env.GEMINI_API_KEY
     if (!apiKey) throw new Error('GeminiTranslator: missing GOOGLE_AI_API_KEY / GEMINI_API_KEY')
     this.apiKey = apiKey
-    // Default to 2.5 Flash for cost — ~33× cheaper on output than 2.5 Pro,
-    // and quality is fine for our shape of work. Override per call via
-    // `GEMINI_MODEL` or constructor opts.
-    this.model = opts?.model ?? process.env.GEMINI_MODEL ?? 'gemini-2.5-flash'
+    // Default to 3.5 Flash Lite for cost — quality is fine for our shape of
+    // work. Override per call via `GEMINI_MODEL` or constructor opts.
+    this.model = opts?.model ?? process.env.GEMINI_MODEL ?? 'gemini-3.5-flash-lite'
     this.baseUrl = opts?.baseUrl ?? 'https://generativelanguage.googleapis.com/v1beta'
   }
 
