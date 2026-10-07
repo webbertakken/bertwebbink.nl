@@ -117,5 +117,8 @@
     ],
     "*.@(json|jsonc|json5|md|mdx|yaml|yml|css|scss|sass|html|toml)": "oxfmt --write",
     ".github/workflows/*.@(yml|yaml)": "actionlint"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }
