@@ -93,10 +93,26 @@ describe('LightboxImage', () => {
       fireEvent.click(getTrigger())
     })
     const dialog = screen.getByRole('dialog')
+    // The backdrop is the full-size layer filling the dialog.
+    const backdrop = dialog.firstElementChild as HTMLElement
+    expect(backdrop.contains(dialog.querySelector('img'))).toBe(true)
+    expect(backdrop.className).toContain('h-full')
+    expect(backdrop.className).toContain('w-full')
     await act(async () => {
-      fireEvent.click(dialog)
+      fireEvent.click(backdrop)
     })
     expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
+  it('is a native dialog element', async () => {
+    renderLightbox()
+    await act(async () => {
+      fireEvent.click(getTrigger())
+    })
+    const dialog = screen.getByRole('dialog', { name: 'Image preview' })
+    expect(dialog.tagName).toBe('DIALOG')
+    expect(dialog.hasAttribute('open')).toBe(true)
+    expect(dialog.getAttribute('aria-modal')).toBe('true')
   })
 
   it('closes when the image itself is clicked', async () => {

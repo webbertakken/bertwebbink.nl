@@ -48,13 +48,21 @@ type LanguagePickerProps = {
 }
 
 /**
- * Top-right language picker. Endonyms only (no flags). Mirrors the
+ * Top-right language picker. Endonyms only (no flags). A disclosure: the
+ * button toggles a list of language buttons, the current language marked
+ * with `aria-current`. Mirrors the
  * mobile-panel pattern from `Nav.tsx`: outside-click + Esc + route
  * change close it. Uses `next-intl`'s `useRouter().replace(pathname,
  * { locale })` to swap the URL prefix; the cookie is updated by
  * `next-intl` automatically.
  */
-export function LanguagePicker({ locale, className }: LanguagePickerProps) {
+export function LanguagePicker(props: LanguagePickerProps) {
+  // Phase-1 rollout flag — hide the picker entirely when i18n is off.
+  if (!I18N_ENABLED) return null
+  return <LanguageMenu {...props} />
+}
+
+function LanguageMenu({ locale, className }: LanguagePickerProps) {
   const t = useTranslations('LanguagePicker')
   const router = useRouter()
   const pathname = usePathname()
@@ -62,9 +70,6 @@ export function LanguagePicker({ locale, className }: LanguagePickerProps) {
   const [, startTransition] = useTransition()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
-
-  // Phase-1 rollout flag — hide the picker entirely when i18n is off.
-  if (!I18N_ENABLED) return null
 
   useEffect(() => {
     if (!open) return
@@ -120,7 +125,6 @@ export function LanguagePicker({ locale, className }: LanguagePickerProps) {
       <button
         ref={buttonRef}
         type="button"
-        aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t('label')}
         onClick={() => setOpen((v) => !v)}
@@ -141,19 +145,16 @@ export function LanguagePicker({ locale, className }: LanguagePickerProps) {
       {open && (
         <div
           ref={panelRef}
-          role="listbox"
-          aria-label={t('label')}
           className="absolute right-0 top-full mt-2 z-10 min-w-[10rem] bg-paper border border-rule-soft rounded shadow-card-hover overflow-hidden"
         >
-          <ul className="flex flex-col py-1 m-0 list-none">
+          <ul aria-label={t('label')} className="flex flex-col py-1 m-0 list-none">
             {LOCALES.map((target) => {
               const isActive = target === locale
               return (
                 <li key={target}>
                   <button
                     type="button"
-                    role="option"
-                    aria-selected={isActive}
+                    aria-current={isActive ? 'true' : undefined}
                     aria-label={t('switchTo', { language: LOCALE_ENDONYMS[target] })}
                     onClick={() => {
                       void switchTo(target)

@@ -56,8 +56,8 @@ describe('LanguagePicker', () => {
     renderPicker('nl')
     const button = screen.getByRole('button', { name: /Language/i })
     button.click()
-    const listbox = await screen.findByRole('listbox', { name: /Language/i })
-    const options = within(listbox).getAllByRole('option')
+    const list = await screen.findByRole('list', { name: /Language/i })
+    const options = within(list).getAllByRole('button')
     const labels = options.map((o) => o.textContent)
     expect(labels).toContain('Nederlands')
     expect(labels).toContain('English')
@@ -69,12 +69,31 @@ describe('LanguagePicker', () => {
     }
   })
 
+  it('discloses the list from the trigger and marks the current language', async () => {
+    renderPicker('nl')
+    const button = screen.getByRole('button', { name: /Language/i })
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    await act(async () => {
+      button.click()
+    })
+    expect(button.getAttribute('aria-expanded')).toBe('true')
+    const list = screen.getByRole('list', { name: /Language/i })
+    const current = within(list).getByRole('button', { current: true })
+    expect(current.textContent).toBe('Nederlands')
+    expect(within(list).getByRole('button', { name: /Switch to English/i })).toBeTruthy()
+    expect(
+      within(list)
+        .getAllByRole('button')
+        .filter((b) => b.hasAttribute('aria-current')),
+    ).toHaveLength(1)
+  })
+
   it('renders no buttons with country emoji or flag images', async () => {
     renderPicker('en')
     const button = screen.getByRole('button', { name: /Language/i })
     button.click()
-    const listbox = await screen.findByRole('listbox', { name: /Language/i })
-    const html = listbox.innerHTML
+    const list = await screen.findByRole('list', { name: /Language/i })
+    const html = list.innerHTML
     expect(html).not.toMatch(/[\u{1F1E6}-\u{1F1FF}]/u)
   })
 
@@ -90,10 +109,10 @@ describe('LanguagePicker', () => {
 
       renderPicker('nl')
       screen.getByRole('button', { name: /Language/i }).click()
-      const listbox = await screen.findByRole('listbox', { name: /Language/i })
+      const list = await screen.findByRole('list', { name: /Language/i })
       await act(async () => {
-        within(listbox)
-          .getByRole('option', { name: /Switch to English/i })
+        within(list)
+          .getByRole('button', { name: /Switch to English/i })
           .click()
       })
 
@@ -125,10 +144,10 @@ describe('LanguagePicker', () => {
 
       renderPicker('nl')
       screen.getByRole('button', { name: /Language/i }).click()
-      const listbox = await screen.findByRole('listbox', { name: /Language/i })
+      const list = await screen.findByRole('list', { name: /Language/i })
       await act(async () => {
-        within(listbox)
-          .getByRole('option', { name: /Switch to Deutsch/i })
+        within(list)
+          .getByRole('button', { name: /Switch to Deutsch/i })
           .click()
       })
 
@@ -148,10 +167,10 @@ describe('LanguagePicker', () => {
 
       renderPicker('nl')
       screen.getByRole('button', { name: /Language/i }).click()
-      const listbox = await screen.findByRole('listbox', { name: /Language/i })
+      const list = await screen.findByRole('list', { name: /Language/i })
       await act(async () => {
-        within(listbox)
-          .getByRole('option', { name: /Switch to English/i })
+        within(list)
+          .getByRole('button', { name: /Switch to English/i })
           .click()
       })
 
@@ -167,10 +186,10 @@ describe('LanguagePicker', () => {
 
       renderPicker('nl')
       screen.getByRole('button', { name: /Language/i }).click()
-      const listbox = await screen.findByRole('listbox', { name: /Language/i })
+      const list = await screen.findByRole('list', { name: /Language/i })
       await act(async () => {
-        within(listbox)
-          .getByRole('option', { name: /Switch to English/i })
+        within(list)
+          .getByRole('button', { name: /Switch to English/i })
           .click()
       })
 

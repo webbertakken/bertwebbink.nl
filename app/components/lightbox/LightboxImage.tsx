@@ -64,7 +64,7 @@ export function LightboxImage({ src, alt, className, children }: LightboxImagePr
     wasOpenRef.current = open
   }, [open])
 
-  function onDialogKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  function onDialogKeyDown(event: React.KeyboardEvent<HTMLDialogElement>) {
     if (event.key !== 'Tab') return
     // Single focusable inside the dialog \u2014 keep focus pinned to it so
     // tabbing never lands on background page chrome behind the modal.
@@ -90,36 +90,44 @@ export function LightboxImage({ src, alt, className, children }: LightboxImagePr
       </button>
       {open && typeof document !== 'undefined'
         ? createPortal(
-            <div
-              role="dialog"
+            <dialog
+              open
               aria-modal="true"
               aria-label={t('label')}
-              onClick={() => setOpen(false)}
               onKeyDown={onDialogKeyDown}
-              className="fixed inset-0 z-[100] flex items-center justify-center bg-[oklch(0.18_0.012_70/0.9)] backdrop-blur-sm cursor-zoom-out p-4"
+              className="fixed inset-0 z-[100] m-0 h-full max-h-none w-full max-w-none border-0 p-0 bg-[oklch(0.18_0.012_70/0.9)] backdrop-blur-sm"
             >
-              {/* Visually-hidden close button: discoverable for screen
-                  readers and keyboard users; receives initial focus. */}
-              <button
-                ref={closeRef}
-                type="button"
+              {/* Pointer convenience only: catches clicks bubbling from the
+                  backdrop and the image. Keyboard users close with Escape
+                  or the close button. */}
+              <div
+                role="presentation"
                 onClick={() => setOpen(false)}
-                className="sr-only"
+                className="flex h-full w-full items-center justify-center cursor-zoom-out p-4"
               >
-                {t('close')}
-              </button>
-              {/* Plain <img> intentionally: same URL as the thumbnail so
+                {/* Visually-hidden close button: discoverable for screen
+                  readers and keyboard users; receives initial focus. */}
+                <button
+                  ref={closeRef}
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="sr-only"
+                >
+                  {t('close')}
+                </button>
+                {/* Plain <img> intentionally: same URL as the thumbnail so
                   the browser/CDN serve a warm cache hit. next/image
                   would generate a fresh proxy URL and refetch. */}
-              {/* eslint-disable-next-line nextjs/no-img-element */}
-              <img
-                src={src}
-                alt={alt}
-                decoding="sync"
-                fetchPriority="high"
-                className="block max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain shadow-card rounded"
-              />
-            </div>,
+                {/* eslint-disable-next-line nextjs/no-img-element */}
+                <img
+                  src={src}
+                  alt={alt}
+                  decoding="sync"
+                  fetchPriority="high"
+                  className="block max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain shadow-card rounded"
+                />
+              </div>
+            </dialog>,
             document.body,
           )
         : null}
