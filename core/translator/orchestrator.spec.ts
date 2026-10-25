@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { EchoTranslator } from './echo'
 import {
   isTranslatableType,
@@ -330,6 +330,17 @@ describe('runTranslation \u2014 document-per-locale', () => {
     expect(targetLocales).toContain('de')
     expect(targetLocales).toContain('ja')
     expect(targetLocales).not.toContain('nl')
+  })
+
+  it('writes the sibling without calling the translator when the source has no text', async () => {
+    const client = makeClient([{ _id: 'about-nl', _rev: 'r', _type: 'about', language: 'nl' }])
+    const translator = new EchoTranslator()
+    const translate = vi.spyOn(translator, 'translate')
+    const results = await runTranslation(adapt(client), translator, 'about-nl', {
+      targetLocales: ['en'],
+    })
+    expect(results[0].status).toBe('created')
+    expect(translate).not.toHaveBeenCalled()
   })
 })
 

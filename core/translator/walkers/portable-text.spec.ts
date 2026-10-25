@@ -295,4 +295,24 @@ describe('portable-text walker', () => {
     expect((back[0] as { children: Array<{ text: string }> }).children[0].text).toBe('one')
     expect((back[1] as { children: Array<{ text: string }> }).children[0].text).toBe('twee')
   })
+
+  it('skips caption/alt fields that are blank or not text', () => {
+    const blocks = [{ _key: 'img', _type: 'image', alt: '   ', caption: { nested: true } }]
+    expect(extractPortableTextUnits(blocks)).toEqual([])
+  })
+
+  it('copies the mark definitions of an untranslated block instead of sharing them', () => {
+    const link = { _key: 'l1', _type: 'link', href: 'https://example.org' }
+    const blocks = [
+      {
+        _key: 'a',
+        _type: 'block',
+        markDefs: [link],
+        children: [{ _key: 's', _type: 'span', text: 'one', marks: ['l1'] }],
+      },
+    ]
+    const back = applyPortableTextUnits(blocks, []) as Array<{ markDefs: unknown[] }>
+    expect(back[0].markDefs).toEqual([link])
+    expect(back[0].markDefs[0]).not.toBe(link)
+  })
 })

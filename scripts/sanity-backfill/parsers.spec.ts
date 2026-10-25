@@ -479,6 +479,43 @@ describe('parseTabularDisposition', () => {
     // The Hoofdwerk register accumulates stops from both bands.
     expect(hw.stops.map((s) => s.name)).toEqual(['Bourdon', 'Trompet'])
   })
+
+  it('opens a post-table section from a bare Koppelingen or Speelhulpen heading', () => {
+    const lines = [
+      'Hoofdwerk                                           Bovenwerk',
+      "Prestant 8'                                         Prestant 8'",
+      'Koppelingen:',
+      'Hoofdwerk \u2013 Bovenwerk',
+      'Speelhulpen:',
+      'Tremulant',
+    ]
+    const out = parseTabularDisposition(lines, [])!
+    expect(out.couplings).toEqual([{ name: 'Hoofdwerk \u2013 Bovenwerk' }])
+    expect(out.accessories).toEqual([{ name: 'Tremulant' }])
+  })
+
+  it('flags a pitched single-cell line when the table has no register column', () => {
+    const lines = [
+      'Koppelingen:                                    Speelhulpen:',
+      'Hoofdwerk - Pedaal                              Tremulant',
+      "Prestant 8'",
+    ]
+    const warnings: string[] = []
+    const out = parseTabularDisposition(lines, warnings)!
+    expect(out.registers).toEqual([])
+    expect(warnings).toEqual([`tabular post-section unrecognised: "Prestant 8'"`])
+  })
+
+  it('ignores data cells under an unrecognised column header', () => {
+    const lines = [
+      'Hoofdwerk:                                      Pedaal:                                         Opmerkingen:',
+      "Prestant 8'                                     Subbas 16'                                      gerestaureerd",
+    ]
+    const out = parseTabularDisposition(lines, [])!
+    expect(out.registers.map((r) => r.stops.map((s) => s.name))).toEqual([['Prestant'], ['Subbas']])
+    expect(out.couplings).toEqual([])
+    expect(out.accessories).toEqual([])
+  })
 })
 
 describe('parseDispositionFromContent', () => {
@@ -733,6 +770,30 @@ describe('parseDispositionFromContent', () => {
       block("Manuaal: Bourdon 16', randomstuff, Trompet 8'."),
     ])
     expect(warnings.some((w) => /no pitch parsed \(kept as name only\)/.test(w))).toBe(true)
+  })
+
+  it('drops empty entries from a comma-separated list', () => {
+    const { value } = parseDispositionFromContent([
+      block('Dispositie'),
+      block("Hoofdwerk: Prestant 8'."),
+      block('Koppelingen: ,'),
+      block('Speelhulpen: Tremulant,, Ventiel.'),
+    ])
+    expect(value!.couplings).toEqual([])
+    expect(value!.accessories.map((a) => a.name)).toEqual(['Tremulant', 'Ventiel'])
+  })
+
+  it('falls back to line-by-line parsing when a tabular-looking header yields no rows', () => {
+    const { value, warnings } = parseDispositionFromContent([
+      block('Dispositie'),
+      block('Koppelingen:                                    Speelhulpen:'),
+      block(
+        'Dit orgel werd    gebouwd door de firma Van Oeckelen en zonen in een jaar ver voor de oorlog',
+      ),
+    ])
+    expect(value).toBeNull()
+    expect(warnings[0]).toMatch(/^tabular section terminated at narrative line/)
+    expect(warnings).toContain('no keyboards parsed')
   })
 
   it('flags 3+ tabular two-column lines mixed into otherwise non-tabular content and bails out', () => {
