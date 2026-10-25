@@ -3,6 +3,7 @@ import { PortableText, type PortableTextBlock } from 'next-sanity'
 import type { Locale } from '@/core/i18n/locales'
 import { Link } from '@/i18n/navigation'
 import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
+import { inlineCode } from './richTextTags'
 
 type LinkItem = {
   _key: string
@@ -67,7 +68,7 @@ function EmptyState() {
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
         {t.rich('emptyHint', {
-          code: (chunks) => <span className="not-italic font-mono text-sm text-ink">{chunks}</span>,
+          code: inlineCode,
         })}
       </p>
     </section>
@@ -75,10 +76,10 @@ function EmptyState() {
 }
 
 export function Elsewhere({ locale, data }: { locale: Locale; data: ElsewhereContent | null }) {
+  const t = useTranslations('Elsewhere')
   if (!data) return <EmptyState />
   const elsewhereId = data._id ?? `elsewhere-${locale}`
   const elsewhereAttr = stegaAttrFor(elsewhereId, 'elsewhere')
-  const t = useTranslations('Elsewhere')
 
   return (
     <main className="max-w-[1240px] mx-auto px-6 md:px-12 pt-8 pb-32" data-screen-label="elsewhere">
