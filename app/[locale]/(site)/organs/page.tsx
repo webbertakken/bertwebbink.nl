@@ -5,6 +5,7 @@ import { Hero } from '@/app/components/landing/Hero'
 import type { LandingOrgan } from '@/app/components/landing/OrganCard'
 import { OrgansArchive } from '@/app/components/landing/OrgansArchive'
 import { isLocale, type Locale } from '@/core/i18n/locales'
+import { firstYearOrCurrent } from '@/core/util/calendarYear'
 import { sanityFetch } from '@/sanity/lib/live'
 import {
   archiveOrgansCountQuery,
@@ -56,9 +57,7 @@ export default async function Page({ params, searchParams }: Props) {
   ])
 
   const totalCount = stats?.totalCount ?? 0
-  const firstYear = stats?.firstDate
-    ? new Date(stats.firstDate).getUTCFullYear()
-    : new Date().getUTCFullYear()
+  const firstYear = firstYearOrCurrent(stats?.firstDate)
 
   const cityCounts = countCitiesFromRows(cities)
   const filtered = filteredCount ?? 0

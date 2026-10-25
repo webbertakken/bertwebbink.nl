@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { JournalHero } from '@/app/components/landing/JournalHero'
 import { JournalList, type JournalEntrySummary } from '@/app/components/landing/JournalList'
 import { isLocale, type Locale } from '@/core/i18n/locales'
+import { firstYearOrCurrent } from '@/core/util/calendarYear'
 import { sanityFetch } from '@/sanity/lib/live'
 import { journalEntriesQuery, journalPageQuery, journalStatsQuery } from '@/sanity/lib/queries'
 
@@ -35,9 +36,7 @@ export default async function JournalPage({ params }: Props) {
   ])
 
   const totalCount = stats?.totalCount ?? 0
-  const firstYear = stats?.firstDate
-    ? new Date(stats.firstDate).getUTCFullYear()
-    : new Date().getUTCFullYear()
+  const firstYear = firstYearOrCurrent(stats?.firstDate)
   const t = await getTranslations({ locale, namespace: 'Crumbs' })
 
   return (
