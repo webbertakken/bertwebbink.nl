@@ -286,12 +286,14 @@ describe('GeminiTranslator — error paths', () => {
   })
 })
 
+/** A 502 whose body stream fails when read. */
+function unreadableBody() {
+  const resp = new Response(null, { status: 502, statusText: 'Bad Gateway' })
+  vi.spyOn(resp, 'text').mockRejectedValue(new Error('stream aborted'))
+  return resp
+}
+
 describe('Provider error bodies', () => {
-  const unreadableBody = () => {
-    const resp = new Response(null, { status: 502, statusText: 'Bad Gateway' })
-    vi.spyOn(resp, 'text').mockRejectedValue(new Error('stream aborted'))
-    return resp
-  }
   const request: TranslateRequest = {
     sourceLocale: 'nl',
     targetLocale: 'en',
