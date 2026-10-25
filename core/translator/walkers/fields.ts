@@ -17,7 +17,7 @@ export function readPath(doc: AnyDoc, path: string): unknown {
     } else if (seg.kind === 'index') {
       if (!Array.isArray(value)) return undefined
       value = value[seg.index]
-    } else if (seg.kind === 'keyMatch') {
+    } else {
       if (!Array.isArray(value)) return undefined
       value = (value as Array<AnyDoc>).find((item) => item._key === seg.key)
     }
@@ -44,7 +44,7 @@ export function writePath(doc: AnyDoc, path: string, value: unknown): AnyDoc {
     } else if (seg.kind === 'index') {
       if (!Array.isArray(cursor)) return out
       cursor = cursor[seg.index]
-    } else if (seg.kind === 'keyMatch') {
+    } else {
       if (!Array.isArray(cursor)) return out
       cursor = (cursor as Array<AnyDoc>).find((item) => item._key === seg.key)
     }

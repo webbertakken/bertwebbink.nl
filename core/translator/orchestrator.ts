@@ -86,7 +86,7 @@ export async function runTranslation(
   }
 
   if (DOC_PER_LOCALE_TYPES.has(sourceType)) {
-    ctx.siblings = await loadSiblings(client, sourceDocId)
+    ctx.siblings = await loadSiblings(client, ctx.doc)
   }
 
   // Score docs are patched in place — parallel writes would race on the
@@ -106,7 +106,7 @@ export async function runTranslation(
           locale: target,
           docId: 'unknown',
           status: 'failed',
-          /* v8 ignore next */
+          /* v8 ignore next -- @preserve */
           error: err instanceof Error ? err.message : String(err),
         }
       }
@@ -126,7 +126,7 @@ export async function runTranslation(
         locale: target,
         docId: 'unknown',
         status: 'failed',
-        /* v8 ignore next */
+        /* v8 ignore next -- @preserve */
         error: err instanceof Error ? err.message : String(err),
       }
     }
@@ -197,7 +197,7 @@ export async function runDispositionOnlyTranslation(
     return targets.map((locale) => ({ locale, docId: 'unknown', status: 'skipped' as const }))
   }
 
-  const siblings = await loadSiblings(client, organDocId)
+  const siblings = await loadSiblings(client, sourceDoc as Record<string, unknown>)
 
   const tasks = targets.map(async (target) => {
     options.onProgress?.({ type: 'locale:start', locale: target })
@@ -238,7 +238,7 @@ export async function runDispositionOnlyTranslation(
         locale: target,
         docId: siblingId,
         status: 'failed',
-        /* v8 ignore next */
+        /* v8 ignore next -- @preserve */
         error: err instanceof Error ? err.message : String(err),
       }
       options.onProgress?.({ type: 'locale:done', result: errored })
@@ -384,7 +384,7 @@ async function translateScoreInPlace(
   // (last-locale-wins, the bug that left scores nl+ko-only).
   const docId = ctx.doc._id as string
   const latest = (await client.getDocument(docId)) as Record<string, unknown> | undefined
-  /* v8 ignore next */
+  /* v8 ignore next -- @preserve */
   const baseDoc = latest ?? ctx.doc
   const { units } = extractAll(baseDoc, ctx.type, ctx.sourceLocale)
   if (units.length === 0) {
@@ -438,14 +438,14 @@ async function translateScoreInPlace(
  */
 async function loadSiblings(
   client: SanityClient,
-  sourceDocId: string,
+  sourceDoc: Record<string, unknown>,
 ): Promise<Map<Locale, Record<string, unknown>>> {
   type MetadataRow = {
     translations: Array<{ _key: string; language: Locale; value: { _ref: string } }>
   }
   const rows = await client.fetch<MetadataRow[]>(
     `*[_type == "translation.metadata" && references($id)]`,
-    { id: sourceDocId },
+    { id: sourceDoc._id },
   )
   const out = new Map<Locale, Record<string, unknown>>()
   for (const row of rows) {
@@ -456,22 +456,13 @@ async function loadSiblings(
       if (sibling) out.set(t.language, sibling as Record<string, unknown>)
     }
   }
-  // Also include the source doc itself.
-  const source = await client.getDocument(sourceDocId)
-  if (source) {
-    const lang = (source as { language?: Locale }).language ?? ('nl' as Locale)
-    out.set(lang, source as Record<string, unknown>)
-  }
+  const sourceLocale = (sourceDoc as { language?: Locale }).language ?? ('nl' as Locale)
+  out.set(sourceLocale, sourceDoc)
   return out
 }
 
 function listSiblingIds(siblings: Map<Locale, Record<string, unknown>>): string[] {
-  const ids: string[] = []
-  for (const sibling of siblings.values()) {
-    const id = sibling._id as string | undefined
-    if (id) ids.push(id)
-  }
-  return ids
+  return [...siblings.values()].map((sibling) => sibling._id as string)
 }
 
 /**
