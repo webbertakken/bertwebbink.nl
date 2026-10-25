@@ -5985,7 +5985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sanity/types@npm:5.22.0, @sanity/types@npm:^5.18.0, @sanity/types@npm:^5.2.0, @sanity/types@npm:^5.20.0, @sanity/types@npm:^5.22, @sanity/types@npm:^5.9.0":
+"@sanity/types@npm:5.22.0":
   version: 5.22.0
   resolution: "@sanity/types@npm:5.22.0"
   dependencies:
@@ -6006,6 +6006,18 @@ __metadata:
   peerDependencies:
     "@types/react": ^19.2
   checksum: 10/e740fd33c51ba2ec792164f2d25264fe35ed91c688619a7028ce6d8101672240c504c5971671d340189825ff82d9e62aa0ffbb842afa6ca48d204bd24a031bf1
+  languageName: node
+  linkType: hard
+
+"@sanity/types@npm:^5.18.0, @sanity/types@npm:^5.2.0, @sanity/types@npm:^5.20.0, @sanity/types@npm:^5.22, @sanity/types@npm:^5.9.0":
+  version: 5.31.2
+  resolution: "@sanity/types@npm:5.31.2"
+  dependencies:
+    "@sanity/client": "npm:^7.22.1"
+    "@sanity/media-library-types": "npm:^1.4.0"
+  peerDependencies:
+    "@types/react": ^19.2
+  checksum: 10/3b88d2e7a944ebc62e8e5a84243120cacb7970db62a7268d8a724a725ea20bd86fe3ccad82f71aac348b01e4cb8abbe093c1983743d7b13c5a5d83b7e28f15e7
   languageName: node
   linkType: hard
 
