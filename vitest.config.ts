@@ -3,7 +3,6 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  // @ts-expect-error something is wrong with the types
   plugins: [tsconfigPaths(), react()],
 
   test: {

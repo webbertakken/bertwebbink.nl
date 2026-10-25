@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AnthropicTranslator } from './anthropic'
 import { GeminiTranslator } from './gemini'
 import { OpenAITranslator } from './openai'
+import type { TranslateRequest } from './types'
 
 const fetchSpy = vi.fn<typeof fetch>()
 
@@ -282,5 +283,27 @@ describe('GeminiTranslator — error paths', () => {
       if (origGoogle !== undefined) process.env.GOOGLE_AI_API_KEY = origGoogle
       if (origGemini !== undefined) process.env.GEMINI_API_KEY = origGemini
     }
+  })
+})
+
+describe('Provider error bodies', () => {
+  const unreadableBody = () => {
+    const resp = new Response(null, { status: 502, statusText: 'Bad Gateway' })
+    vi.spyOn(resp, 'text').mockRejectedValue(new Error('stream aborted'))
+    return resp
+  }
+  const request: TranslateRequest = {
+    sourceLocale: 'nl',
+    targetLocale: 'en',
+    units: [{ id: 'x', sourceText: 'y' }],
+  }
+
+  it.each([
+    ['GeminiTranslator', () => new GeminiTranslator({ apiKey: 'test' })],
+    ['AnthropicTranslator', () => new AnthropicTranslator({ apiKey: 'test' })],
+    ['OpenAITranslator', () => new OpenAITranslator({ apiKey: 'test' })],
+  ])('%s still reports the status when the error body cannot be read', async (_, create) => {
+    fetchSpy.mockResolvedValueOnce(unreadableBody())
+    await expect(create().translate(request)).rejects.toThrow(/HTTP 502 Bad Gateway \u2014 $/)
   })
 })

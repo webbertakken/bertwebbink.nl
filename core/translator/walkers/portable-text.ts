@@ -116,7 +116,7 @@ function rebuildBlockFromText(original: PortableTextBlock, translated: string): 
   const re = /<m(\d+)>([\s\S]*?)<\/m\d+>|([^<]+)/g
   let match: RegExpExecArray | null
   while ((match = re.exec(translated))) {
-    if (match[1] != null && match[2] != null) {
+    if (match[1] != null) {
       const idx = Number(match[1]) - 1
       const sourceSpan = original.children?.[idx]
       const marks = sourceSpan?.marks ?? []
@@ -126,7 +126,7 @@ function rebuildBlockFromText(original: PortableTextBlock, translated: string): 
         text: match[2],
         marks: marks.length > 0 ? marks : undefined,
       })
-    } else if (match[3]) {
+    } else {
       const last = children[children.length - 1]
       if (last && (!last.marks || last.marks.length === 0)) {
         last.text += match[3]

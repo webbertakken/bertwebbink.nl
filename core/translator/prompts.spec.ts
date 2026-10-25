@@ -61,6 +61,18 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toMatch(/coupler/)
   })
 
+  it('omits the do-not-translate line when every glossary entry is literal', () => {
+    const prompt = buildSystemPrompt({ ...baseReq, glossary: { koppel: 'coupler' } })
+    expect(prompt).not.toMatch(/do not translate these terms/)
+    expect(prompt).toContain('koppel \u2192 coupler')
+  })
+
+  it('omits the exact-translations line when every glossary entry is do-not-translate', () => {
+    const prompt = buildSystemPrompt({ ...baseReq, glossary: { Hoofdwerk: DO_NOT_TRANSLATE } })
+    expect(prompt).toMatch(/do not translate these terms; reproduce them verbatim: Hoofdwerk\./)
+    expect(prompt).not.toMatch(/use these exact translations/)
+  })
+
   it('adds organ-domain guidance when the doc type is organ or journal', () => {
     const organPrompt = buildSystemPrompt({
       ...baseReq,

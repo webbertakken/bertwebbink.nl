@@ -219,8 +219,9 @@ function matchKeyboard(line: string): { name: string; range?: string; rest: stri
 // are defensive: the only caller already ruled those out before invoking, so
 // those branches are not reachable in practice.
 function looksLikeStopContinuation(line: string): boolean {
-  /* v8 ignore next 2 */
+  /* v8 ignore next -- @preserve */
   if (matchKeyboard(line)) return false
+  /* v8 ignore next -- @preserve */
   if (isKoppelingenLine(line) || isSpeelhulpenLine(line)) return false
   // Must contain at least one pitch-shaped token (e.g. "8'", "III sterk").
   if (!/(?:\d+'|[IVX]+(?:[-–][IVX]+)*\s+(?:sterk|fach|ranks|rangs))/.test(line)) return false
@@ -234,8 +235,9 @@ function looksLikeStopContinuation(line: string): boolean {
 // only caller already ruled those out before invoking, so those branches are
 // not reachable in practice.
 function looksLikeCouplingContinuation(line: string): boolean {
-  /* v8 ignore next 2 */
+  /* v8 ignore next -- @preserve */
   if (matchKeyboard(line)) return false
+  /* v8 ignore next -- @preserve */
   if (isKoppelingenLine(line) || isSpeelhulpenLine(line)) return false
   return /^[A-Z][A-Za-z]+\s+[-–]\s+[A-Z]/.test(line) && /\.\s*$/.test(line)
 }
@@ -375,7 +377,7 @@ export function parseTabularDisposition(
     const cells = splitTabularRow(row)
     // splitTabularRow only returns 0 cells for whitespace-only rows, which the
     // earlier !row.trim() guard already skipped — defensive only.
-    /* v8 ignore next */
+    /* v8 ignore next -- @preserve */
     if (cells.length === 0) continue
 
     // Could be a *second* header band (e.g. Vriezenveen "Pedaal: ... Koppelingen:")
@@ -456,7 +458,7 @@ export function parseTabularDisposition(
     for (let ci = 0; ci < cells.length; ci++) {
       const cell = cells[ci]
       // splitTabularRow already filters empty cells; this guard is defensive only.
-      /* v8 ignore next */
+      /* v8 ignore next -- @preserve */
       if (!cell) continue
       const col = columns[ci]
       if (!col) {
@@ -469,7 +471,7 @@ export function parseTabularDisposition(
         const kb = registerByCol.get(ci)
         // ensureRegister always populates registerByCol for register columns;
         // this guard is defensive against future refactors.
-        /* v8 ignore next */
+        /* v8 ignore next -- @preserve */
         if (!kb) continue
         const normalised = addPitchApostrophe(normaliseVoet(cell))
         const stop = parseStop(normalised)
