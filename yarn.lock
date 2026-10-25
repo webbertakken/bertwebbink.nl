@@ -6063,7 +6063,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sanity/ui@npm:^3.0.5, @sanity/ui@npm:^3.1.10, @sanity/ui@npm:^3.1.11, @sanity/ui@npm:^3.1.13, @sanity/ui@npm:^3.1.14, @sanity/ui@npm:^3.1.6, @sanity/ui@npm:^3.1.8":
+"@sanity/ui@npm:^3.0.5, @sanity/ui@npm:^3.1.10, @sanity/ui@npm:^3.1.11, @sanity/ui@npm:^3.1.14, @sanity/ui@npm:^3.1.6, @sanity/ui@npm:^3.1.8":
   version: 3.1.14
   resolution: "@sanity/ui@npm:3.1.14"
   dependencies:
@@ -13549,16 +13549,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-photo-album@npm:^3.5.1":
-  version: 3.6.0
-  resolution: "react-photo-album@npm:3.6.0"
+"react-photo-album@npm:^3.6.0":
+  version: 3.6.2
+  resolution: "react-photo-album@npm:3.6.2"
   peerDependencies:
     "@types/react": ^18 || ^19
     react: ^18 || ^19
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/70bf3ae8bf06efcae3344779f98eca8d54681a93c0acd6f0daef2b5af1170115052cdb97897439055b35dc257ca76514433429efc9dbe78aac3a97a036039421
+  checksum: 10/2553fd693776002635121585933b7297d9c6c73fa941c82cceadb33522b06e3c71ae7bdd8e9657a97791ede332894e1c02e1e2b320971b0f4e031ceaf6efe6af
   languageName: node
   linkType: hard
 
@@ -14260,18 +14260,18 @@ __metadata:
   linkType: hard
 
 "sanity-plugin-asset-source-unsplash@npm:^7":
-  version: 7.0.5
-  resolution: "sanity-plugin-asset-source-unsplash@npm:7.0.5"
+  version: 7.0.30
+  resolution: "sanity-plugin-asset-source-unsplash@npm:7.0.30"
   dependencies:
-    "@sanity/icons": "npm:^3.7.4"
-    "@sanity/ui": "npm:^3.1.13"
-    lodash-es: "npm:^4.17.23"
-    react-photo-album: "npm:^3.5.1"
+    "@sanity/icons": "npm:^5.2.3"
+    "@sanity/ui": "npm:^4.4.9"
+    lodash-es: "npm:^4.18.1"
+    react-photo-album: "npm:^3.6.0"
   peerDependencies:
     react: ^19.2
-    sanity: ^5
+    sanity: ^5 || ^6.0.0-0
     styled-components: ^6.1
-  checksum: 10/8b9362693285e6acc9a061588b3d5f99953078d4ac3a0d570055f1cf52e58f86aadd3f9a80cd834677b765f51405c597b4f28d964e471105f83dfc12ce045cfe
+  checksum: 10/cc12e8f1143a4df3cd1672c72ff8e8e2d240587a01c62f6d731bbde581c7362f6a9c49920cd4356ee8ca1ce40d183d304953490edab64015de91398dd30a064f
   languageName: node
   linkType: hard
 
