@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { currentYear } from '@/core/util/calendarYear'
 import { Link } from '@/i18n/navigation'
 
 type FooterProps = {
@@ -7,7 +8,7 @@ type FooterProps = {
 }
 
 export async function Footer({ contactHref }: FooterProps = {}) {
-  const year = new Date().getFullYear()
+  const year = currentYear()
   const t = await getTranslations('Footer')
   return (
     <footer className="border-t border-rule-soft px-12 pt-9 pb-12 mt-8 bg-paper">

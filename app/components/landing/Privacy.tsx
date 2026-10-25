@@ -2,6 +2,7 @@ import { useFormatter, useTranslations } from 'next-intl'
 import type { Locale } from '@/core/i18n/locales'
 import { Link } from '@/i18n/navigation'
 import { stegaAttrFor } from '@/sanity/lib/stegaFactory'
+import { inlineCode } from './richTextTags'
 
 type Section = {
   _key: string
@@ -67,7 +68,7 @@ function EmptyState() {
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
         {t.rich('emptyHint', {
-          code: (chunks) => <span className="not-italic font-mono text-sm text-ink">{chunks}</span>,
+          code: inlineCode,
         })}
       </p>
     </section>

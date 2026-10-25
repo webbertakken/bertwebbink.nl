@@ -198,9 +198,7 @@ import { SanityService } from '../sanity.service'
 
 const POST_QUERY = defineQuery(`*[_type == "post" && slug.current == $slug][0]`)
 
-@Component({
-  /* ... */
-})
+@Component({/* ... */})
 export default class PostComponent {
   slug = input.required<string>()
   private sanity = inject(SanityService)
@@ -225,9 +223,7 @@ import { SanityService } from '../sanity.service'
 
 const POSTS_QUERY = defineQuery(`*[_type == "post"] | order(publishedAt desc)`)
 
-@Component({
-  /* ... */
-})
+@Component({/* ... */})
 export class HomeComponent {
   private sanity = inject(SanityService)
   posts = toSignal(from(this.sanity.fetch(POSTS_QUERY)), { initialValue: [] })
@@ -447,9 +443,9 @@ When building with Sanity, leverage these Angular 19+ features:
 Angular 17+ includes built-in SSR support (replacing Angular Universal):
 
 ```typescript
+import { provideClientHydration } from '@angular/platform-browser'
 // app.config.server.ts
 import { provideServerRendering } from '@angular/platform-server'
-import { provideClientHydration } from '@angular/platform-browser'
 
 export const serverConfig = {
   providers: [provideServerRendering(), provideClientHydration()],

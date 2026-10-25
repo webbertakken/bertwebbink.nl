@@ -4,6 +4,7 @@ import { dataAttr } from '@/sanity/lib/utils'
 import { Crumbs, type CrumbItem } from './Crumbs'
 import { Horizon } from './Horizon'
 import { renderEmphasised } from './renderEmphasised'
+import { emphasis } from './richTextTags'
 
 const JOURNAL_PAGE_TYPE = 'journalPage'
 
@@ -44,7 +45,7 @@ export function JournalHero({ locale, totalCount, firstYear, crumbs, copy }: Jou
   const heading = copy?.heading
     ? renderEmphasised(copy.heading)
     : t.rich('headingFallback', {
-        em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+        em: emphasis,
       })
   const tagline = copy?.tagline ?? t('taglineFallback')
   const cornerLeftSub = copy?.cornerLeftSub ?? t('cornerLeftSubFallback')

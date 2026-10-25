@@ -20,13 +20,13 @@ npm install @sanity/svelte-loader @sanity/client @sanity/visual-editing
 Define the client with `stega` enabled for the studio URL.
 
 ```typescript
-import { createClient } from '@sanity/client'
 import {
   PUBLIC_SANITY_PROJECT_ID,
   PUBLIC_SANITY_DATASET,
   PUBLIC_SANITY_API_VERSION,
   PUBLIC_SANITY_STUDIO_URL,
 } from '$env/static/public'
+import { createClient } from '@sanity/client'
 
 export const client = createClient({
   projectId: PUBLIC_SANITY_PROJECT_ID,
@@ -59,9 +59,9 @@ You **must** configure `createRequestHandler` in `src/hooks.server.ts` to handle
 and inject `loadQuery` into locals.
 
 ```typescript
+import { serverClient } from '$lib/server/sanity'
 // src/hooks.server.ts
 import { createRequestHandler, setServerClient } from '@sanity/svelte-loader'
-import { serverClient } from '$lib/server/sanity'
 
 setServerClient(serverClient)
 

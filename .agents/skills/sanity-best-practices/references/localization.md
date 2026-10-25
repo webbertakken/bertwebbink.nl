@@ -251,9 +251,9 @@ export default defineConfig({
 Create a helper to show one singleton per locale in the Structure:
 
 ```typescript
+import { HomeIcon } from '@sanity/icons'
 // src/structure/index.ts
 import { StructureBuilder, StructureResolver } from 'sanity/structure'
-import { HomeIcon } from '@sanity/icons'
 
 const LOCALES = ['en', 'fr', 'de']
 

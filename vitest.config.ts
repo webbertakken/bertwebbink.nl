@@ -33,6 +33,7 @@ export default defineConfig({
         'core/**/*.ts',
         'app/components/landing/Placeholder.tsx',
         'app/components/landing/renderEmphasised.tsx',
+        'app/components/landing/richTextTags.tsx',
         'app/components/landing/archiveUtil.ts',
         'app/components/landing/archiveActions.ts',
         'sanity/badges/**/*.ts',

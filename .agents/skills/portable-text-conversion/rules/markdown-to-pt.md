@@ -171,8 +171,8 @@ See the `portable-text-serialization` skill's `rules/markdown.md` for details on
 import { markdownToPortableText } from '@portabletext/markdown'
 import { createClient } from '@sanity/client'
 import fs from 'fs'
-import path from 'path'
 import matter from 'gray-matter'
+import path from 'path'
 
 const client = createClient({ projectId: 'xxx', dataset: 'production', token: '...' })
 

@@ -61,8 +61,8 @@ export default defineConfig({
 ```typescript
 // web/app/lib/context.ts
 import { createSanityContext, type SanityContext } from 'hydrogen-sanity'
-import { PreviewSession } from 'hydrogen-sanity/preview/session'
 import { isPreviewEnabled } from 'hydrogen-sanity/preview'
+import { PreviewSession } from 'hydrogen-sanity/preview/session'
 
 const sanity = await createSanityContext({
   request,

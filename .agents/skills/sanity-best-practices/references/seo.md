@@ -200,9 +200,9 @@ Create a redirect document type for content team management.
 ### Schema
 
 ```typescript
+import { LinkIcon } from '@sanity/icons'
 // schemaTypes/redirectType.ts
 import { defineField, defineType, SanityDocumentLike } from 'sanity'
-import { LinkIcon } from '@sanity/icons'
 
 function isValidPath(value: string | undefined) {
   if (!value) return 'Required'

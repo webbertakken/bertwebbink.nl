@@ -147,7 +147,10 @@ export const structure: StructureResolver = (
       S.divider(),
 
       // \u2500\u2500\u2500 Site \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-      localizedSingletonItem(S, SINGLETON_SPECS.find((s) => s.type === 'settings')!),
+      localizedSingletonItem(
+        S,
+        SINGLETON_SPECS.find((s) => s.type === 'settings')!,
+      ),
       S.listItem()
         .id('translation-metadata')
         .title('Translation links')

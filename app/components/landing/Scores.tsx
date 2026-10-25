@@ -6,6 +6,7 @@ import type { Locale } from '@/core/i18n/locales'
 import { Link } from '@/i18n/navigation'
 import { dataAttr } from '@/sanity/lib/utils'
 import { renderEmphasised, renderInlineItalic } from './renderEmphasised'
+import { emphasis, italic } from './richTextTags'
 
 export type Score = {
   _id: string
@@ -35,6 +36,8 @@ type ScoresProps = {
     editionLine?: string | null
     contactHref?: string | null
   } | null
+  /** Year printed on the edition notice; read on the server so hydration agrees. */
+  year: number
 }
 
 const ERA_KEYS = ['baroque', 'dutch', 'romantic', 'modern', 'arrangement'] as const
@@ -119,7 +122,7 @@ function Header({
   const heading = copy?.heading
     ? renderEmphasised(copy.heading)
     : t.rich('headerHeadingFallback', {
-        em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+        em: emphasis,
       })
   const tagline = copy?.tagline ?? t('headerTaglineFallback')
   return (
@@ -431,7 +434,7 @@ function Grid({ scores, total }: { scores: Score[]; total: number }) {
       <div className="flex items-baseline justify-between gap-6 mb-7">
         <h3 className="font-serif font-normal text-3xl m-0" style={{ letterSpacing: '-0.005em' }}>
           {t.rich('libraryHeading', {
-            em: (chunks) => <em className="italic">{chunks}</em>,
+            em: italic,
           })}
         </h3>
         <span className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-faint">
@@ -456,11 +459,13 @@ function Notice({
   body,
   editionLine,
   contactHref,
+  year,
 }: {
   locale: Locale
   body?: string | null
   editionLine?: string | null
   contactHref?: string | null
+  year: number
 }) {
   const settingsId = `settings-${locale}`
   const noticeAttr = dataAttr({
@@ -497,7 +502,7 @@ function Notice({
           {text}
         </p>
         <small className="block mt-1 font-mono text-[10px] tracking-[0.22em] uppercase text-ink-faint not-italic">
-          <span data-sanity={editionAttr}>{editionPrefix}</span> · {new Date().getFullYear()}
+          <span data-sanity={editionAttr}>{editionPrefix}</span> · {year}
         </small>
       </div>
       <a className="action-btn ghost not-italic no-underline" href={href}>
@@ -521,7 +526,7 @@ function EmptyLibrary() {
   )
 }
 
-export function Scores({ locale, scores, copy }: ScoresProps) {
+export function Scores({ locale, scores, copy, year }: ScoresProps) {
   const [active, setActive] = useState<FilterKey>('all')
   const [sortIdx, setSortIdx] = useState(0)
   const sortKey = SORT_KEYS[sortIdx]
@@ -587,6 +592,7 @@ export function Scores({ locale, scores, copy }: ScoresProps) {
         body={copy?.noticeBody ?? null}
         editionLine={copy?.editionLine ?? null}
         contactHref={copy?.contactHref ?? null}
+        year={year}
       />
     </>
   )

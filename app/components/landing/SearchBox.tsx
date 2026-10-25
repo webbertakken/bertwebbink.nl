@@ -23,13 +23,15 @@ export function SearchBox({ variant = 'inline' }: SearchBoxProps) {
   const startExpanded = variant === 'expanded'
   const [open, setOpen] = useState(startExpanded)
   const [value, setValue] = useState(urlQuery)
+  const [syncedUrlQuery, setSyncedUrlQuery] = useState(urlQuery)
   const inputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
   // Sync the input with the URL when it changes (browser back/forward, manual edits).
-  useEffect(() => {
+  if (urlQuery !== syncedUrlQuery) {
+    setSyncedUrlQuery(urlQuery)
     setValue(urlQuery)
-  }, [urlQuery])
+  }
 
   // Inline-mode behaviour: focus on open, Esc + outside-click to close.
   useEffect(() => {
@@ -75,45 +77,46 @@ export function SearchBox({ variant = 'inline' }: SearchBoxProps) {
     'flex-1 bg-transparent border border-rule-soft rounded px-3 py-2 text-[13px] text-ink placeholder:text-ink-faint focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2'
 
   return (
-    <form
-      ref={formRef}
-      role="search"
-      onSubmit={handleSubmit}
-      className={startExpanded ? 'flex items-center gap-2 w-full' : 'relative flex items-center'}
-    >
-      <input
-        ref={inputRef}
-        type="search"
-        name="q"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        aria-label={tSearch('placeholder')}
-        placeholder={tSearch('placeholder')}
-        autoComplete="off"
-        aria-hidden={showInput ? undefined : true}
-        tabIndex={showInput ? 0 : -1}
-        className={startExpanded ? expandedInputClass : inlineInputClass}
-      />
-      <button
-        type={showInput ? 'submit' : 'button'}
-        onClick={!showInput ? () => setOpen(true) : undefined}
-        aria-label={showInput ? tSearch('submit') : tNav('openSearch')}
-        className="inline-flex items-center justify-center w-8 h-8 text-ink-soft hover:text-ink transition-colors cursor-pointer"
+    <search>
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className={startExpanded ? 'flex items-center gap-2 w-full' : 'relative flex items-center'}
       >
-        <svg
-          viewBox="0 0 24 24"
-          width="16"
-          height="16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          aria-hidden="true"
+        <input
+          ref={inputRef}
+          type="search"
+          name="q"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          aria-label={tSearch('placeholder')}
+          placeholder={tSearch('placeholder')}
+          autoComplete="off"
+          aria-hidden={showInput ? undefined : true}
+          tabIndex={showInput ? 0 : -1}
+          className={startExpanded ? expandedInputClass : inlineInputClass}
+        />
+        <button
+          type={showInput ? 'submit' : 'button'}
+          onClick={!showInput ? () => setOpen(true) : undefined}
+          aria-label={showInput ? tSearch('submit') : tNav('openSearch')}
+          className="inline-flex items-center justify-center w-8 h-8 text-ink-soft hover:text-ink transition-colors cursor-pointer"
         >
-          <circle cx="11" cy="11" r="7" />
-          <path d="M16.5 16.5 L21 21" />
-        </svg>
-      </button>
-    </form>
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="M16.5 16.5 L21 21" />
+          </svg>
+        </button>
+      </form>
+    </search>
   )
 }

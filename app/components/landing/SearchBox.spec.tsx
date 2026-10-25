@@ -4,13 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SearchBox } from './SearchBox'
 
 const mockPush = vi.fn()
+let mockQuery = ''
 
 vi.mock('@/i18n/navigation', () => ({
   useRouter: () => ({ push: mockPush, replace: vi.fn() }),
 }))
 
 vi.mock('next/navigation', () => ({
-  useSearchParams: () => new URLSearchParams(''),
+  useSearchParams: () => new URLSearchParams(mockQuery),
 }))
 
 const messages = {
@@ -36,6 +37,7 @@ function renderExpanded() {
 
 beforeEach(() => {
   mockPush.mockClear()
+  mockQuery = ''
 })
 
 afterEach(() => {
@@ -43,6 +45,37 @@ afterEach(() => {
 })
 
 describe('SearchBox', () => {
+  it('exposes the form as a search landmark', () => {
+    // Browsers map <search> to the search landmark; aria-query (used by
+    // Testing Library) does not know the element yet, so assert the tag.
+    const { container } = renderExpanded()
+    expect(container.querySelector('search > form input[name="q"]')).toBeTruthy()
+    expect(container.querySelector('form[role]')).toBeNull()
+  })
+
+  it('follows the URL query when it changes, keeping edits in between', () => {
+    mockQuery = 'q=organ'
+    const { rerender } = renderExpanded()
+    const input = screen.getByPlaceholderText('Search the site') as HTMLInputElement
+    expect(input.value).toBe('organ')
+
+    fireEvent.change(input, { target: { value: 'organ zwolle' } })
+    rerender(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <SearchBox variant="expanded" />
+      </NextIntlClientProvider>,
+    )
+    expect(input.value).toBe('organ zwolle')
+
+    mockQuery = 'q=bach'
+    rerender(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <SearchBox variant="expanded" />
+      </NextIntlClientProvider>,
+    )
+    expect(input.value).toBe('bach')
+  })
+
   describe('inline (collapsed) variant', () => {
     it('renders the input in the DOM up front, absolute-positioned so it never resizes the form', () => {
       renderInline()

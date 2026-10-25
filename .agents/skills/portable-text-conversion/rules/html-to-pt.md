@@ -28,8 +28,8 @@ this:
 
 ```ts
 import { htmlToBlocks } from '@portabletext/block-tools'
-import { JSDOM } from 'jsdom'
 import Schema from '@sanity/schema'
+import { JSDOM } from 'jsdom'
 
 // JSDOM is passed to htmlToBlocks via the parseHtml option:
 // htmlToBlocks(html, blockContentType, {
@@ -224,9 +224,7 @@ export default defineMigration({
       const { title, description, body } = preprocessHtml(post.content)
       const blocks = htmlToBlocks(body, blockContentType, {
         parseHtml: (html) => new JSDOM(html).window.document,
-        rules: [
-          /* custom rules */
-        ],
+        rules: [/* custom rules */],
       })
 
       yield createOrReplace({

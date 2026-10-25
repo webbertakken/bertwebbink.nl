@@ -4,6 +4,7 @@ import { dataAttr } from '@/sanity/lib/utils'
 import { Crumbs, type CrumbItem } from './Crumbs'
 import { Horizon } from './Horizon'
 import { renderEmphasised } from './renderEmphasised'
+import { emphasis } from './richTextTags'
 
 const ORGANS_PAGE_TYPE = 'organsPage'
 
@@ -82,7 +83,7 @@ export function Hero({
   const heading = copy?.heading
     ? renderEmphasised(copy.heading)
     : t.rich('headingFallback', {
-        em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+        em: emphasis,
       })
 
   return (

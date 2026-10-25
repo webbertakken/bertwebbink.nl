@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Scores, type Score } from '@/app/components/landing/Scores'
 import { isLocale, type Locale } from '@/core/i18n/locales'
+import { currentYear } from '@/core/util/calendarYear'
 import { sanityFetch } from '@/sanity/lib/live'
 import { scoresPageQuery, scoresQuery } from '@/sanity/lib/queries'
 
@@ -30,5 +31,7 @@ export default async function ScoresPage({ params }: Props) {
     sanityFetch({ query: scoresQuery, params: { locale } }),
     sanityFetch({ query: scoresPageQuery, params: { locale } }),
   ])
-  return <Scores locale={locale} scores={(scores ?? []) as Score[]} copy={page} />
+  return (
+    <Scores locale={locale} scores={(scores ?? []) as Score[]} copy={page} year={currentYear()} />
+  )
 }

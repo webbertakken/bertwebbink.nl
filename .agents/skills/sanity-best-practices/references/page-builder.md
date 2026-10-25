@@ -81,16 +81,14 @@ export const pageBuilderType = defineType({
 Every block should have consistent previews:
 
 ```typescript
-import { defineType } from 'sanity'
 import { BlockContentIcon } from '@sanity/icons'
+import { defineType } from 'sanity'
 
 export const splitImageType = defineType({
   name: 'splitImage',
   type: 'object',
   icon: BlockContentIcon,
-  fields: [
-    /* ... */
-  ],
+  fields: [/* ... */],
   preview: {
     select: { title: 'title', media: 'image' },
     prepare({ title, media }) {

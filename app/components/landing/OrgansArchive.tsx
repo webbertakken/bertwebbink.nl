@@ -7,6 +7,7 @@ import { Link } from '@/i18n/navigation'
 import { loadMoreOrgans } from './archiveActions'
 import { cityHref, sortedCitiesForSidebar, withYearGroups, type YearGroupItem } from './archiveUtil'
 import { OrganCard, type LandingOrgan } from './OrganCard'
+import { highlighted } from './richTextTags'
 
 const PAGE_SIZE = 24
 
@@ -26,34 +27,38 @@ export function OrgansArchive({ initialOrgans, totalCount, cityCounts, city }: O
   const [exhausted, setExhausted] = useState(initialOrgans.length >= totalCount)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  // Reset when the filter changes (Next.js will remount with new initial data).
-  useEffect(() => {
+  // Reset when the server sends a new first page (filter change, live content update).
+  const [firstPage, setFirstPage] = useState({ initialOrgans, totalCount })
+  if (firstPage.initialOrgans !== initialOrgans || firstPage.totalCount !== totalCount) {
+    setFirstPage({ initialOrgans, totalCount })
     setOrgans(initialOrgans)
     setExhausted(initialOrgans.length >= totalCount)
-  }, [initialOrgans, totalCount])
+  }
 
   const fetchMore = useCallback(async () => {
     if (loading || exhausted) return
     setLoading(true)
-    try {
-      const more = await loadMoreOrgans({
-        offset: organs.length,
-        limit: PAGE_SIZE,
-        city,
-        locale,
-      })
-      if (more.length === 0) {
-        setExhausted(true)
-      } else {
-        setOrgans((prev) => {
-          const next = [...prev, ...more]
-          if (next.length >= totalCount) setExhausted(true)
-          return next
-        })
-      }
-    } finally {
+    const more = await loadMoreOrgans({
+      offset: organs.length,
+      limit: PAGE_SIZE,
+      city,
+      locale,
+    }).catch((error: unknown) => {
       setLoading(false)
+      throw error
+    })
+    if (more.length === 0) {
+      setExhausted(true)
+    } else {
+      setOrgans((prev) => {
+        const next = [...prev, ...more]
+        if (next.length >= totalCount) setExhausted(true)
+        return next
+      })
     }
+    // Cleared only after the new page is queued, so the sentinel observer never
+    // sees `loading === false` with the old list and fetches the same page twice.
+    setLoading(false)
   }, [loading, exhausted, organs.length, city, locale, totalCount])
 
   useEffect(() => {
@@ -180,7 +185,7 @@ function ArchiveHeader({
       >
         {filterActive
           ? t.rich('filteredTitle', {
-              city: () => <span className="not-italic font-normal text-ink">{city}</span>,
+              city: highlighted(city),
             })
           : t('title')}
       </h2>

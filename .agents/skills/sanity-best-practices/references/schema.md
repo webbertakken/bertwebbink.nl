@@ -40,8 +40,8 @@ Always use the helper functions from `sanity` for type safety and autocompletion
 - **ALWAYS** use `defineArrayMember` for items inside arrays.
 
 ```typescript
-import { defineType, defineField, defineArrayMember } from 'sanity'
 import { TagIcon } from '@sanity/icons'
+import { defineType, defineField, defineArrayMember } from 'sanity'
 
 export const article = defineType({
   name: 'article',

@@ -47,9 +47,11 @@ export function Nav({ locale, active, wordmark, tagline }: NavProps) {
   const current = active ?? deriveActive(pathname)
 
   // Close on route change
-  useEffect(() => {
+  const [menuPathname, setMenuPathname] = useState(pathname)
+  if (pathname !== menuPathname) {
+    setMenuPathname(pathname)
     setOpen(false)
-  }, [pathname])
+  }
 
   // Esc + outside click while open
   useEffect(() => {
