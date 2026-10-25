@@ -9,6 +9,7 @@ import { Link } from '@/i18n/navigation'
 import { stegaAttrFor, type StegaAttr } from '@/sanity/lib/stegaFactory'
 import { urlForImage } from '@/sanity/lib/utils'
 import { renderEmphasised } from './renderEmphasised'
+import { emphasis, inlineCode } from './richTextTags'
 
 type Fact = { _key: string; label: string; value: string }
 type TimelineEntry = { _key: string; year: string | null; what: string; where: string | null }
@@ -412,7 +413,7 @@ function Timeline({
     <section className="max-w-[1240px] mx-auto px-6 md:px-12 pt-24" data-screen-label="timeline">
       <SecHead num={t('trajectoryNum')} label={t('trajectoryLabel')}>
         {t.rich('trajectoryHeading', {
-          em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+          em: emphasis,
         })}
       </SecHead>
       <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 lg:gap-16 items-start">
@@ -469,7 +470,7 @@ function Repertoire({
     <section className="max-w-[1240px] mx-auto px-6 md:px-12 pt-24" data-screen-label="repertoire">
       <SecHead num={t('repertoireNum')} label={t('repertoireLabel')}>
         {t.rich('repertoireHeading', {
-          em: (chunks) => <em className="italic font-normal">{chunks}</em>,
+          em: emphasis,
         })}
       </SecHead>
       <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 lg:gap-16">
@@ -615,7 +616,7 @@ function EmptyState() {
       </p>
       <p className="font-serif italic text-lg text-ink-faint m-0 max-w-[50ch] mx-auto">
         {t.rich('emptyHint', {
-          code: (chunks) => <span className="not-italic font-mono text-sm text-ink">{chunks}</span>,
+          code: inlineCode,
         })}
       </p>
     </section>
