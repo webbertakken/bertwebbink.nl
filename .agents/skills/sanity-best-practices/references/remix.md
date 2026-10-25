@@ -117,9 +117,9 @@ Create a component to handle the connection.
 
 ```typescript
 import { enableVisualEditing } from '@sanity/visual-editing'
-import { useLiveMode } from '~/sanity/loader'
-import { client } from '~/sanity/client' // Your browser-safe client
 import { useEffect } from 'react'
+import { client } from '~/sanity/client' // Your browser-safe client
+import { useLiveMode } from '~/sanity/loader'
 
 export default function VisualEditing() {
   useEffect(() => enableVisualEditing(), [])

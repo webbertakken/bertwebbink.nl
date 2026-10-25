@@ -34,8 +34,8 @@ Vue components can be defined as render functions, SFCs, or JSX.
 ### Render Function Style (Concise)
 
 ```ts
-import { h } from 'vue'
 import type { PortableTextVueComponents } from '@portabletext/vue'
+import { h } from 'vue'
 
 const components: PortableTextVueComponents = {
   types: {

@@ -28,7 +28,6 @@ your framework:
 ```typescript
 // Framework-agnostic (Angular, Remix, SvelteKit, Astro, vanilla)
 import { defineQuery } from 'groq'
-
 // Next.js (re-exported for convenience)
 import { defineQuery } from 'next-sanity'
 ```
@@ -42,7 +41,6 @@ For VS Code syntax highlighting, either:
 
 ```typescript
 import { defineQuery } from 'groq'
-
 // ✅ Option A: groq tag (provides highlighting automatically)
 import groq from 'groq'
 const QUERY = defineQuery(groq`*[_type == "post"]`)

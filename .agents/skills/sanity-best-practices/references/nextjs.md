@@ -192,10 +192,10 @@ Surgically revalidate specific routes when documents change.
 **1. Create API Route:**
 
 ```typescript
+import { parseBody } from 'next-sanity/webhook'
 // src/app/api/revalidate/path/route.ts
 import { revalidatePath } from 'next/cache'
 import { type NextRequest, NextResponse } from 'next/server'
-import { parseBody } from 'next-sanity/webhook'
 
 type WebhookPayload = { path?: string }
 
@@ -253,10 +253,10 @@ const post = await sanityFetch({
 **2. Create API Route:**
 
 ```typescript
+import { parseBody } from 'next-sanity/webhook'
 // src/app/api/revalidate/tag/route.ts
 import { revalidateTag } from 'next/cache'
 import { type NextRequest, NextResponse } from 'next/server'
-import { parseBody } from 'next-sanity/webhook'
 
 type WebhookPayload = { tags: string[] }
 
@@ -373,8 +373,8 @@ Enable Presentation Tool and Visual Editing by setting up a draft mode route.
 **`src/app/api/draft-mode/enable/route.ts`:**
 
 ```typescript
-import { client } from '@/sanity/lib/client'
 import { defineEnableDraftMode } from 'next-sanity/draft-mode'
+import { client } from '@/sanity/lib/client'
 import { token } from '@/sanity/lib/token' // Helper to get token
 
 export const { GET } = defineEnableDraftMode({

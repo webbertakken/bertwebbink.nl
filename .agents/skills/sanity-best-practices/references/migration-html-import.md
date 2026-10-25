@@ -108,9 +108,9 @@ async function uploadImage(client, imageUrl) {
 Wrap this in `defineMigration` for reproducible imports:
 
 ```typescript
+import { htmlToBlocks } from '@portabletext/block-tools'
 // migrations/import-wordpress-posts/index.ts
 import { defineMigration, createOrReplace } from 'sanity/migrate'
-import { htmlToBlocks } from '@portabletext/block-tools'
 
 export default defineMigration({
   title: 'Import WordPress posts',

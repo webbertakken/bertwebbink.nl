@@ -13,8 +13,8 @@ description:
 Use the official `@sanity/astro` integration.
 
 ```javascript
-import { defineConfig } from 'astro/config'
 import sanity from '@sanity/astro'
+import { defineConfig } from 'astro/config'
 
 export default defineConfig({
   integrations: [
@@ -64,8 +64,8 @@ const posts = await sanityClient.fetch(POSTS_QUERY);
 It's best practice to abstract queries into a utility file (e.g., `src/utils/sanity.ts`).
 
 ```typescript
-import { sanityClient } from 'sanity:client'
 import { defineQuery } from 'groq'
+import { sanityClient } from 'sanity:client'
 
 const POSTS_QUERY = defineQuery(`*[_type == "post" && defined(slug.current)]`)
 

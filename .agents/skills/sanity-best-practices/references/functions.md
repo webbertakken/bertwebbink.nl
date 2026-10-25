@@ -111,9 +111,9 @@ export default defineBlueprint({
 ### 4. Write the Handler
 
 ```typescript
+import { createClient } from '@sanity/client'
 // functions/my-function/index.ts
 import { documentEventHandler } from '@sanity/functions'
-import { createClient } from '@sanity/client'
 
 interface PostData {
   _id: string
