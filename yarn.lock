@@ -8371,7 +8371,7 @@ __metadata:
   dependencies:
     "@sanity/client": "npm:^7.22"
     "@sanity/document-internationalization": "npm:^6.1.1"
-    "@sanity/icons": "npm:^3.7.4"
+    "@sanity/icons": "npm:^5.0.0"
     "@sanity/image-url": "npm:^2"
     "@sanity/language-filter": "npm:^5.0.1"
     "@sanity/types": "npm:^5.22"
