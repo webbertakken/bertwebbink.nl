@@ -1,4 +1,4 @@
-import { PublishIcon } from '@sanity/icons'
+import { PublishIcon } from '@sanity/icons/Publish'
 import { useState } from 'react'
 import { useClient, type DocumentActionDescription, type DocumentActionProps } from 'sanity'
 import { LOCALES } from '@/core/i18n/locales'

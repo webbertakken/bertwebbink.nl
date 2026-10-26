@@ -40,7 +40,7 @@
   "dependencies": {
     "@sanity/client": "^8.0.0",
     "@sanity/document-internationalization": "^6.1.1",
-    "@sanity/icons": "^3.7.4",
+    "@sanity/icons": "^5.0.0",
     "@sanity/image-url": "^2",
     "@sanity/language-filter": "^5.0.1",
     "@sanity/types": "^5.22",

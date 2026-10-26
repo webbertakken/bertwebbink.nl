@@ -15,7 +15,18 @@
     "unicorn/no-array-sort": "off",
     "jsx-a11y/media-has-caption": "off",
     "jsx-a11y/iframe-has-title": "off",
-    "react/iframe-missing-sandbox": "off"
+    "react/iframe-missing-sandbox": "off",
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "@sanity/icons",
+            "message": "The root entry exports no icons since v5; import from the subpath, e.g. '@sanity/icons/Book'."
+          }
+        ]
+      }
+    ]
   },
   "overrides": [
     {
