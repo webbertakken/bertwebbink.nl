@@ -62,7 +62,7 @@
     "sanity-plugin-asset-source-unsplash": "^7",
     "sanity-plugin-internationalized-array": "^5.1.1",
     "sanity-plugin-media": "^4",
-    "sonner": "^1.7.0",
+    "sonner": "^2.0.0",
     "styled-components": "^6.1.13",
     "tailwindcss": "^4.1.8"
   },
