@@ -89,7 +89,7 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^4.1.12"
   },
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.18.1",
   "dependenciesMeta": {
     "@parcel/watcher": {
       "built": true
