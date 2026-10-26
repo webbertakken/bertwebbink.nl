@@ -5614,21 +5614,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sanity/icons@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "@sanity/icons@npm:3.7.0"
+"@sanity/icons@npm:^3.7.0, @sanity/icons@npm:^3.7.4":
+  version: 3.8.0
+  resolution: "@sanity/icons@npm:3.8.0"
   peerDependencies:
     react: ^18.3 || ^19.0.0-0
-  checksum: 10/953adc0ccc7483bab83da8c7df6713026a7639695855330e09192f5856b44fb3b45b6b16799f20750c41a40f34ed062c0511aa6ecc67ae8d1485a581f464593c
-  languageName: node
-  linkType: hard
-
-"@sanity/icons@npm:^3.7.4":
-  version: 3.7.4
-  resolution: "@sanity/icons@npm:3.7.4"
-  peerDependencies:
-    react: ^18.3 || ^19.0.0-0
-  checksum: 10/4d100954148e0756e6abed83ecb629b1258beab52eb88d6fe5f1ae00562e11c45adc9655d401a36a0d2f49027aab50e5705f0b74e453133d256fb5e32fea439f
+  checksum: 10/f2a592e3adf7094335d46abcd9fab75e8d13834986dd1decc78152d8b00bfb0b3f396dc8767e8357311ac0eb73eebc6138da48be3b44a23f7392a120b65b3961
   languageName: node
   linkType: hard
 
