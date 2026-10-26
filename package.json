@@ -53,7 +53,7 @@
     "date-fns": "^4.1.0",
     "next": "^16.2.4",
     "next-intl": "^4.11.0",
-    "next-sanity": "^11.5",
+    "next-sanity": "^13.0.0",
     "pluralize-esm": "^9.0.5",
     "postcss": "^8.5.4",
     "react": "^19.2.5",
