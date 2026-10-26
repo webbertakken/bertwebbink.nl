@@ -1,4 +1,4 @@
-import { ComposeIcon } from '@sanity/icons'
+import { ComposeIcon } from '@sanity/icons/Compose'
 import { format, parseISO } from 'date-fns'
 import { defineField, defineType } from 'sanity'
 import { languageField } from '../fields/language'

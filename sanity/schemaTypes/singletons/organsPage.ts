@@ -1,4 +1,4 @@
-import { MasterDetailIcon } from '@sanity/icons'
+import { MasterDetailIcon } from '@sanity/icons/MasterDetail'
 import { defineField, defineType } from 'sanity'
 import { languageField } from '../fields/language'
 

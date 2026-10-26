@@ -1,17 +1,15 @@
-import {
-  BookIcon,
-  CogIcon,
-  ComposeIcon,
-  DocumentIcon,
-  DocumentTextIcon,
-  EarthGlobeIcon,
-  HomeIcon,
-  LinkIcon,
-  LockIcon,
-  MasterDetailIcon,
-  TranslateIcon,
-  UserIcon,
-} from '@sanity/icons'
+import { BookIcon } from '@sanity/icons/Book'
+import { CogIcon } from '@sanity/icons/Cog'
+import { ComposeIcon } from '@sanity/icons/Compose'
+import { DocumentIcon } from '@sanity/icons/Document'
+import { DocumentTextIcon } from '@sanity/icons/DocumentText'
+import { EarthGlobeIcon } from '@sanity/icons/EarthGlobe'
+import { HomeIcon } from '@sanity/icons/Home'
+import { LinkIcon } from '@sanity/icons/Link'
+import { LockIcon } from '@sanity/icons/Lock'
+import { MasterDetailIcon } from '@sanity/icons/MasterDetail'
+import { TranslateIcon } from '@sanity/icons/Translate'
+import { UserIcon } from '@sanity/icons/User'
 import pluralize from 'pluralize-esm'
 import type {
   StructureBuilder,
