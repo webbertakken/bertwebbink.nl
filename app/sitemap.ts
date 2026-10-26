@@ -28,7 +28,7 @@ function localisedPath(canonical: string, locale: Locale): string {
  * sibling translation actually exists.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { data: rows } = await sanityFetch({ query: sitemapData })
+  const { data: rows } = await sanityFetch({ query: sitemapData, stega: false })
 
   const headersList = await headers()
   const host = headersList.get('host') ?? ''
