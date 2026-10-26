@@ -74,7 +74,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript/native-preview": "^7.0.0-dev.20260425.1",
-    "@vitejs/plugin-react": "^4.7.0",
+    "@vitejs/plugin-react": "^6.0.0",
     "@vitest/coverage-v8": "4.1.12",
     "dotenv": "^16.5.0",
     "eslint-plugin-unicorn": "^64.0.0",
