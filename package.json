@@ -28,7 +28,7 @@
     "translate:ui": "tsx scripts/translate-ui-messages.ts",
     "translate:content": "tsx scripts/translate-content.ts",
     "backup:sanity": "tsx scripts/backup-sanity.ts",
-    "extract-types": "sanity schema extract --enforce-required-fields",
+    "extract-types": "sanity schema extract --enforce-required-fields --force",
     "setup:hooks": "node scripts/ensure-husky.mjs",
     "format": "oxfmt --write",
     "format:check": "oxfmt --check",

@@ -605,6 +605,23 @@ export type Slug = {
   source?: string
 }
 
+export type MediaFolderReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'media.folder'
+}
+
+export type MediaFolder = {
+  _id: string
+  _type: 'media.folder'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: string
+  parent?: MediaFolderReference
+}
+
 export type MediaTag = {
   _id: string
   _type: 'media.tag'
@@ -748,6 +765,8 @@ export type AllSanitySchemaTypes =
   | Journal
   | Organ
   | Slug
+  | MediaFolderReference
+  | MediaFolder
   | MediaTag
   | SanityImagePaletteSwatch
   | SanityImagePalette
@@ -1467,7 +1486,7 @@ export type SearchQueryResult = Array<
   | {
       _id: string
       _type: 'about'
-      _score: null
+      _score: number
       title: string
       slug: null
       editionNumber: null
@@ -1476,7 +1495,7 @@ export type SearchQueryResult = Array<
   | {
       _id: string
       _type: 'elsewhere'
-      _score: null
+      _score: number
       title: string | 'Untitled'
       slug: null
       editionNumber: null
@@ -1485,7 +1504,7 @@ export type SearchQueryResult = Array<
   | {
       _id: string
       _type: 'journal'
-      _score: null
+      _score: number
       title: string
       slug: string
       editionNumber: null
@@ -1494,7 +1513,7 @@ export type SearchQueryResult = Array<
   | {
       _id: string
       _type: 'organ'
-      _score: null
+      _score: number
       title: string
       slug: string
       editionNumber: null
@@ -1503,7 +1522,7 @@ export type SearchQueryResult = Array<
   | {
       _id: string
       _type: 'privacy'
-      _score: null
+      _score: number
       title: string
       slug: null
       editionNumber: null
@@ -1512,7 +1531,7 @@ export type SearchQueryResult = Array<
   | {
       _id: string
       _type: 'score'
-      _score: null
+      _score: number
       title: string
       slug: null
       editionNumber: number
@@ -1540,8 +1559,7 @@ export type ScoresQueryResult = Array<{
 }>
 
 // Query TypeMap
-import '@sanity/client'
-declare module '@sanity/client' {
+declare global {
   interface SanityQueries {
     '*[_type == "settings" && _id == "settings-" + $locale][0]': SettingsQueryResult
     '\n  *[_type == "settings" && _id == "settings-" + $locale][0] {\n    _id,\n    wordmark,\n    tagline\n  }\n': NavSettingsQueryResult
@@ -1568,4 +1586,8 @@ declare module '@sanity/client' {
     '\n  *[\n    _type in ["journal", "organ", "score", "about", "elsewhere", "privacy"] &&\n    (\n      (_type == "score") ||\n      (_type in ["about", "elsewhere", "privacy"] && language == $locale) ||\n      (_type in ["journal", "organ"] && language == $locale && defined(slug.current))\n    ) &&\n    (\n      title match $q ||\n      pt::text(content) match $q ||\n      pt::text(letter) match $q ||\n      pt::text(intro) match $q ||\n      excerpt match $q ||\n      work match $q ||\n      composer match $q ||\n      catalog match $q ||\n      builder match $q ||\n      location.city match $q ||\n      location.country match $q ||\n      location.building match $q ||\n      forInstrument[language == $locale][0].value match $q ||\n      edition[language == $locale][0].value match $q ||\n      blurb[language == $locale][0].value match $q\n    )\n  ]\n  | score(\n      boost(title match $q, 5),\n      boost(work match $q, 5),\n      boost(composer match $q, 4),\n      boost(excerpt match $q, 2)\n    )\n  | order(_score desc, _updatedAt desc)\n  [0...50]\n  {\n    _id,\n    _type,\n    _score,\n    "title": select(\n      _type == "score" => composer + " \u2014 " + work,\n      coalesce(title, "Untitled")\n    ),\n    "slug": slug.current,\n    "editionNumber": editionNumber,\n    "snippet": coalesce(\n      pt::text(content)[0...200],\n      pt::text(letter)[0...200],\n      pt::text(intro)[0...200],\n      excerpt,\n      coalesce(blurb[language == $locale][0].value, blurb[language == "nl"][0].value)\n    )\n  }\n': SearchQueryResult
     '\n  *[_type == "score"] | order(coalesce(editionNumber, 0) desc) {\n    _id,\n    composer,\n    work,\n    catalog,\n    era,\n    year,\n    pages,\n    editionNumber,\n    "forInstrument": coalesce(forInstrument[language == $locale][0].value, forInstrument[language == "nl"][0].value),\n    "edition": coalesce(edition[language == $locale][0].value, edition[language == "nl"][0].value),\n    "blurb": coalesce(blurb[language == $locale][0].value, blurb[language == "nl"][0].value),\n    "pdfUrl": pdfFile.asset->url,\n    isFeatured,\n  }\n': ScoresQueryResult
   }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module '@sanity/client' {
+  interface SanityQueries extends globalThis.SanityQueries {}
 }
