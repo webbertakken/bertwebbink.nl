@@ -5938,16 +5938,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sanity/incompatible-plugin@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@sanity/incompatible-plugin@npm:1.0.5"
-  peerDependencies:
-    react: ^16.9 || ^17 || ^18 || ^19
-    react-dom: ^16.9 || ^17 || ^18 || ^19
-  checksum: 10/a4bf1ab238a68589838d122ff830c678be562e974b6979ac7c9b4ee19a8e3881e17ef40899d0f1c0dc78264d49bb27529e3d91e36526c8a9274795b1496d70af
-  languageName: node
-  linkType: hard
-
 "@sanity/insert-menu@npm:^2.1.0":
   version: 2.1.0
   resolution: "@sanity/insert-menu@npm:2.1.0"
@@ -8367,7 +8357,7 @@ __metadata:
     sanity: "npm:^5.22"
     sanity-plugin-asset-source-unsplash: "npm:^7"
     sanity-plugin-internationalized-array: "npm:^5.1.1"
-    sanity-plugin-media: "npm:^4"
+    sanity-plugin-media: "npm:^6.0.0"
     sonner: "npm:^2.0.0"
     styled-components: "npm:^6.1.13"
     tailwindcss: "npm:^4.1.8"
@@ -9230,7 +9220,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^4.0.0, date-fns@npm:^4.1.0, date-fns@npm:^4.4.0":
+"date-fns@npm:^4.1.0, date-fns@npm:^4.4.0":
   version: 4.4.0
   resolution: "date-fns@npm:4.4.0"
   checksum: 10/ae702acea42fb8452abe74f6d133c2360de9a14f00985645684b0df9c12280276649e95b52298a4fd7dabcc3b38799eb111107da99320d1cd94ba1d8a3d1c174
@@ -10791,7 +10781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"groq@npm:^6.1.0":
+"groq@npm:^6.19.0":
   version: 6.20.0
   resolution: "groq@npm:6.20.0"
   checksum: 10/e676b910e0c07320ab307fada631e6b235a523b363e6ffcf516f5aa94c88443bc7f30c58fc8c7d7b4f155781013caf8087a25285b0fa8042988f94af8cb36dc6
@@ -13074,7 +13064,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.12, nanoid@npm:^3.3.16, nanoid@npm:^3.3.20":
+"nanoid@npm:^3.3.16, nanoid@npm:^3.3.20":
   version: 3.3.20
   resolution: "nanoid@npm:3.3.20"
   bin:
@@ -13107,6 +13097,15 @@ __metadata:
   bin:
     nanoid: bin/nanoid.js
   checksum: 10/a8cc355ed2176165a0fb5e0dbbac0b72f05d9ac08af50bf652ace22252d7a1455ef307b54681e39baf609a4da84600cad843bf01d9bd1cc1440f6fd166e19589
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "nanoid@npm:6.0.2"
+  bin:
+    nanoid: bin/nanoid.js
+  checksum: 10/c555e99171c0988195d71ba22a7acd96f18c767b4a1db5c2a3d75ebf9c302a269fcda3c22e2d6022f3e5a345dcf7188a36f88c6d5fffc2828c68a1b7f9996daf
   languageName: node
   linkType: hard
 
@@ -14323,7 +14322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:^7.79.0":
+"react-hook-form@npm:^7.90.0":
   version: 7.91.0
   resolution: "react-hook-form@npm:7.91.0"
   peerDependencies:
@@ -14490,7 +14489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-virtuoso@npm:^4.18.7":
+"react-virtuoso@npm:^4.18.11":
   version: 4.18.19
   resolution: "react-virtuoso@npm:4.18.19"
   peerDependencies:
@@ -15121,43 +15120,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sanity-plugin-media@npm:^4":
-  version: 4.3.6
-  resolution: "sanity-plugin-media@npm:4.3.6"
+"sanity-plugin-media@npm:^6.0.0":
+  version: 6.5.0
+  resolution: "sanity-plugin-media@npm:6.5.0"
   dependencies:
     "@hookform/resolvers": "npm:^4.1.3"
     "@reduxjs/toolkit": "npm:^2.12.0"
-    "@sanity/client": "npm:^7.23.0"
-    "@sanity/color": "npm:^3.0.6"
-    "@sanity/icons": "npm:^3.7.4"
-    "@sanity/incompatible-plugin": "npm:^1.0.5"
-    "@sanity/ui": "npm:^3.2.0"
+    "@sanity/client": "npm:^8.9.0"
+    "@sanity/color": "npm:^3.0.9"
+    "@sanity/icons": "npm:^5.2.3"
+    "@sanity/ui": "npm:^4.4.9"
     "@sanity/uuid": "npm:^3.0.3"
     "@tanem/react-nprogress": "npm:^5.0.63"
     copy-to-clipboard: "npm:^3.3.3"
-    date-fns: "npm:^4.0.0"
+    date-fns: "npm:^4.4.0"
     filesize: "npm:^9.0.11"
-    groq: "npm:^6.1.0"
+    groq: "npm:^6.19.0"
     is-hotkey-esm: "npm:^1.0.0"
-    nanoid: "npm:^3.3.12"
+    nanoid: "npm:^6.0.2"
     pluralize: "npm:^8.0.0"
     react-dropzone: "npm:^11.7.1"
     react-file-icon: "npm:^1.6.0"
-    react-hook-form: "npm:^7.79.0"
+    react-hook-form: "npm:^7.90.0"
     react-redux: "npm:^9.3.0"
     react-select: "npm:^5.10.2"
-    react-virtuoso: "npm:^4.18.7"
+    react-virtuoso: "npm:^4.18.11"
     redux: "npm:^5.0.1"
     redux-observable: "npm:3.0.0-rc.2"
     rxjs: "npm:^7.8.2"
     zod: "npm:^3.25.76"
   peerDependencies:
-    react: ^18.3 || ^19
-    react-dom: ^18.3 || ^19
-    react-is: ^18.3 || ^19
-    sanity: ^3.78 || ^4.0.0-0 || ^5 || ^6.0.0-0
+    react: ^19.2
+    react-dom: ^19.2
+    sanity: ^5 || ^6.0.0-0
     styled-components: ^6.1
-  checksum: 10/9fb3c5bd2cf3b9c8d26b4e40125331ef44999d974f23b4b735b478d6d9b841523b847e1cd7dda27f97948f76ef9b5b3c1f670447479b165a974a3db8ff58a8ba
+  checksum: 10/928525c0632c1419d5513d454f85eac1486100b42698b7d151ab510f2b07c007fc37f8fe554dcce99afe2a3538599d1868b1e64b6ca1aa699816ca77c222ff8d
   languageName: node
   linkType: hard
 
