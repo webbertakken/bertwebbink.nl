@@ -1,4 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>webbertakken/.github:renovate-config"]
+  "extends": ["local>webbertakken/.github:renovate-config"],
+  "packageRules": [
+    {
+      "description": "Vercel builds only Node.js 22.x and 24.x; keep Node on 24 until it supports a newer major. See docs/decisions/upgrade-deferrals.md",
+      "matchDepNames": ["node"],
+      "allowedVersions": "<25"
+    }
+  ]
 }
