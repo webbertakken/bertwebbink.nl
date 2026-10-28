@@ -118,6 +118,6 @@
     ".github/workflows/*.@(yml|yaml)": "actionlint"
   },
   "engines": {
-    "node": "24.x"
+    "node": "26.x"
   }
 }
