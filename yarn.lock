@@ -13595,13 +13595,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:7.29.1":
-  version: 7.29.1
-  resolution: "undici@npm:7.29.1"
-  checksum: 10/8b9eaf83615e96f83826c9b6b129bd378c26f750f183e931df89bf07dfae24a39736b3648c16c25904e59e34f9e151e7a852c82ef0f1fb8e8a1297c52ff3170c
-  languageName: node
-  linkType: hard
-
 "undici@npm:^7.21.0, undici@npm:^7.25.0, undici@npm:^7.30.1":
   version: 7.30.1
   resolution: "undici@npm:7.30.1"
