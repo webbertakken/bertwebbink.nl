@@ -42,7 +42,7 @@
     "@hookform/resolvers@npm:^4.1.3": "^6.0.0",
     "undici@npm:7.29.1": "^7.30.1",
     "uuid@npm:^10.0.0": "^14.0.0",
-    "postcss-selector-parser@npm:6.0.10": "^6.1.5"
+    "postcss-selector-parser@npm:6.0.10": "^7.0.0"
   },
   "dependencies": {
     "@sanity/client": "^8.0.0",
