@@ -2020,13 +2020,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hookform/resolvers@npm:^6.0.0":
-  version: 6.0.2
-  resolution: "@hookform/resolvers@npm:6.0.2"
+"@hookform/resolvers@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@hookform/resolvers@npm:7.0.0"
   dependencies:
     "@standard-schema/utils": "npm:^0.3.0"
   peerDependencies:
-    "@sinclair/typebox": ">=0.25.24"
     "@standard-schema/spec": ^1.0.0
     "@vinejs/vine": ^2.0.0 || ^3.0.0 || ^4.0.0
     ajv: ^8.12.0
@@ -2046,13 +2045,12 @@ __metadata:
     react-hook-form: ^7.55.0
     superstruct: ">=0.12.0"
     typanion: ^3.3.2
+    typebox: ^1.0.0
     valibot: ">=0.31.0 || ^1.0.0-beta.4 || ^1.0.0-rc"
     vest: ">=6.0.0"
     yup: ^1.0.0
     zod: ^3.25.0 || ^4.0.0
   peerDependenciesMeta:
-    "@sinclair/typebox":
-      optional: true
     "@standard-schema/spec":
       optional: true
     "@vinejs/vine":
@@ -2089,6 +2087,8 @@ __metadata:
       optional: true
     typanion:
       optional: true
+    typebox:
+      optional: true
     valibot:
       optional: true
     vest:
@@ -2097,7 +2097,7 @@ __metadata:
       optional: true
     zod:
       optional: true
-  checksum: 10/d9ece4e5a9519e210d804911cc1a6beb263271c37ffa395be755b1b16823661d5ed65ac1cb8a5df06f9c5ad14a5ae57bd49dd720820bde94346bcc7a13321403
+  checksum: 10/5d97377ac68ab26daf0a6d1112d9b7a926a905abdd333ff9a8430fa6598cee0591e536ad8f6404a9967e0cf5124770a58374a1079f9e8ab469ccc2dde56512f7
   languageName: node
   linkType: hard
 
