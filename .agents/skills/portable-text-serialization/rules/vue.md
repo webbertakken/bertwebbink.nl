@@ -16,8 +16,8 @@ npm install @portabletext/vue
 
 ```vue
 <script setup lang="ts">
-import { PortableText } from '@portabletext/vue'
 import type { PortableTextBlock } from '@portabletext/types'
+import { PortableText } from '@portabletext/vue'
 
 const props = defineProps<{ value: PortableTextBlock[] }>()
 </script>
